@@ -1,0 +1,1079 @@
+DEUTSCHE NORM Oktober 2022 
+
+DIN 77200-1 
+
+ICS 03.080.20; 13.310 Ersatz für 
+
+DIN 77200-1:2017-11 
+
+Sicherungsdienstleistungen – 
+
+Teil 1: Allgemeine Anforderungen an Sicherheitsdienstleister 
+
+Private security services – 
+
+Part 1: General requirements for security service providers 
+
+Services privés de sécurité – 
+
+Partie 1: Exigences générales pour les prestataires de services de sécurité 
+
+Gesamtumfang 29 Seiten 
+
+DIN-Normenausschuss Dienstleistungen (NADL) 
+
+© DIN Deutsches Institut für Normung e. V. ist Inhaber aller ausschließlichen Rechte weltweit – alle Rechte 
+
+der Verwertung, gleich in welcher Form und welchem Verfahren, sind weltweit DIN e. V. vorbehalten. 
+
+Alleinverkauf durch Beuth Verlag GmbH, 10772 Berlin 
+
+www.din.de 
+
+www.beuth.de 
+
+3320885 
+
+Normen-Download-DIN Media-Wolf Street GmbH-KdNr.8400590-LfNr.11068766001-2024-05-13 08:11 
+
+DIN 77200-1:2022-10 
+
+Inhalt 
+
+Seite 
+
+Vorwort . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 3 
+
+Einleitung . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 4 
+
+1 Anwendungsbereich . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 6 
+
+2 Normative Verweisungen . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 6 
+
+3 Begriffe . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 6 
+
+4 Allgemeine Anforderungen . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 10 
+
+4.1 Zu erbringende Nachweise . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 10 
+
+4.2 Organisationsstruktur . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 11 
+
+4.3 Versicherung . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 11 
+
+4.4 Haftung . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 12 
+
+4.5 Beschwerdemanagement . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 12 
+
+4.6 Qualitätsmanagement . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 12 
+
+4.7 Risikomanagement . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 12 
+
+4.8 Arbeits- und Gesundheitsschutz . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 12 
+
+4.9 Geschäftsräume . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 12 
+
+4.10 Verträge . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 12 
+
+4.11 Anforderungsprofile . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 13 
+
+4.12 Dienstanweisungen . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 13 
+
+4.13 Einsatz von Subunternehmern . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 13 
+
+4.14 Personal und Personaleinsatz . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 14 
+
+4.14.1 Einstellungsvoraussetzungen . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 14 
+
+4.14.2 Auswahl und Vorbereitung der Sicherheitsmitarbeiter . . . . . . . . . . . . . . . . . . . . . 14 
+
+4.14.3 Beschäftigungsbedingungen . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 14 
+
+4.14.4 Dienstausweise . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 14 
+
+4.14.5 Unterweisung . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 14 
+
+4.15 Bekleidung, Technik und Ausrüstung . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 15 
+
+4.15.1 Ausrüstung . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 15 
+
+4.15.2 Dienstkleidung . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 15 
+
+4.16 Kraftfahrzeuge . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 15 
+
+4.17 Kommunikationsmittel . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 15 
+
+4.18 Kontrollsysteme . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 16 
+
+4.19 Qualifikation und Weiterbildung . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 16 
+
+4.19.1 Qualifikation . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 16 
+
+4.19.2 Weiterbildungskonzept . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 16 
+
+4.20 Dokumentation, Melde- und Berichtswesen . . . . . . . . . . . . . . . . . . . . . . . . . . . . 17 
+
+4.21 Verwaltung von Schließmitteln . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 17 
+
+4.22 Umgang zur Verfügung gestellter Ausrüstung . . . . . . . . . . . . . . . . . . . . . . . . . . . 17 
+
+4.23 Angebotsdokumentation . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 17 
+
+4.24 Einsatz von Führungskräften . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 18 
+
+4.25 Einsatz von Sicherheitsmitarbeitern ohne Führungsfunktion (Einsatzkräfte) . . . . . . . 19 
+
+4.26 Einsatz von Auszubildenden und Praktikanten . . . . . . . . . . . . . . . . . . . . . . . . . . 19 
+
+AnhangA (normativ) Anforderungsprofile . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 21 
+
+Literaturhinweise . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 29 
+
+Tabellen 
+
+Tabelle A.1— Qualifikationsanforderungen (Mindestanforderungen) . . . . . . . . . . . . . . . . 22 2 
+
+Normen-Download-DIN Media-Wolf Street GmbH-KdNr.8400590-LfNr.11068766001-2024-05-13 08:11 
+
+DIN 77200-1:2022-10 
+
+Vorwort 
+
+Dieses Dokument wurde vom Arbeitsausschuss NA159-01-02AA „Wach- und Sicherheitsdienstleistungen“ im DIN-Normenausschuss Dienstleistungen (NADL) erarbeitet. 
+
+Es wird auf die Möglichkeit hingewiesen, dass einige Elemente dieses Dokuments Patentrechte berühren kön-nen. DIN ist nicht dafür verantwortlich, einige oder alle diesbezüglichen Patentrechte zu identifizieren. 
+
+DIN77200, Sicherungsdienstleistungen, besteht aus den folgenden Teilen: 
+
+— 
+
+Teil1: Allgemeine Anforderungen an Sicherheitsdienstleister 
+
+— 
+
+Teil2: Erweiterte Anforderungen an Sicherheitsdienstleister für besondere Leistungsbereiche 
+
+— 
+
+Teil3: Zertifizierungsverfahren zur Konformitätsbewertung von Sicherungsdienstleistungen nach DIN77200-1 und DIN77200-2 
+
+Aktuelle Informationen zu diesem Dokument können über die Internetseiten von DIN (www.din.de) durch eine Suche nach der Dokumentennummer aufgerufen werden. 
+
+Änderungen 
+
+Gegenüber DIN77200:2017-11 wurden folgende Änderungen vorgenommen: 
+
+a) 
+
+Anforderungen in AnhangA wurden angepasst; 
+
+b) 
+
+Begriff 3.8 „Sicherheitsdienstleistung im öffentlichen Personenverkehr” wurde entfernt; 
+
+c) 
+
+Ergänzung des Sicherheitsmitarbeiters im Begriff 3.11; 
+
+d) 
+
+Aufnahme der Servicekraft für Schutz und Sicherheit in 4.19.1; 
+
+e) 
+
+redaktionelle Änderungen. 
+
+Frühere Ausgaben DIN77200:2002-06, 2008-05 DIN77200-1:2017-11 3 
+
+Normen-Download-DIN Media-Wolf Street GmbH-KdNr.8400590-LfNr.11068766001-2024-05-13 08:11 
+
+DIN 77200-1:2022-10 
+
+Einleitung 
+
+In dieser Normenreihe werden Sicherungsdienstleistungen (SDL) behandelt, welche insbesondere den fol- genden Zwecken dienen: 
+
+— 
+
+Prävention zur Risikovorsorge; 
+
+— 
+
+Abwehr von Gefahren durch Straftaten, Betriebsausfälle, Schäden durch Naturereignisse; 
+
+— 
+
+Funktionsausfälle, technische Störungen und organisatorische Mängel festzustellen sowie 
+
+— 
+
+Schäden, die aus den genannten Gefahren folgen können zu erkennen, zu vermeiden oder zu reduzieren. 
+
+Mit dieser Normenreihe werden Auftraggebern (AG) von Sicherungsdienstleistungen (SDL) Hilfsmittel für die Planung und Überwachung an die Hand gegeben, die eine transparente Darstellung der für sie zu erbringenden SDL unter Einhaltung festgelegter Kriterien bietet. 
+
+Der Normteil DIN77200-1 enthält Mindestanforderungen an die Planung und Erbringung von Siche-rungsdienstleistungen (SDL). Zur besseren Übersicht werden die Sicherungsdienstleistungen in stationäre SDL, mobile SDL und den Veranstaltungssicherungsdienst unterteilt. Im Rahmen der Arbeiten an diesem Dokument wurde es erforderlich, die wesentlichen Unterschiede in der Erbringung von SDL anhand der durchzuführenden Tätigkeiten zu charakterisieren und begrifflich zu fassen. Es wurden daher folgende SDL begrifflich definiert: 
+
+— 
+
+Alarmdienst; 
+
+— 
+
+Empfangsdienst; 
+
+— 
+
+Kontrolldienst; 
+
+— 
+
+Revierdienst; 
+
+— 
+
+Interventionsdienst und 
+
+— 
+
+Veranstaltungssicherungsdienst. 
+
+Im AnhangA werden Anforderungsprofile aufgeführt, in denen die charakteristischen Tätigkeiten im Kontext der vorgenannten Sicherungsdienstleistungen mit ihren Leistungsmerkmalen anhand von Qualifi- kationsanforderungen an die Sicherheitsmitarbeiter festzulegen sind. Dies dient zur klaren Abgrenzung der SDL untereinander und bietet für den Sicherheitsdienstleister und den Auftraggeber die wesentliche Basis zur Festlegung des zu vereinbarenden Leistungsumfangs. Die relevanten Tätigkeiten der jeweiligen SDL sind als Anforderungsprofil in AnhangA in tabellarischer Form aufgeführt und dienen zur Planung von SDL in Absprache mit dem Auftraggeber oder als Grundlage für die Ausschreibung von SDL. 
+
+Die in diesem Dokument verwendeten Begriffe für SDL sollten zur Festlegung der Leistungskriterien für die jeweilige SDL nach AnhangA und zum eindeutigen Verständnis zwischen dem AG und dem Auftragnehmer (AN) insbesondere in der Kommunikation und im Rahmen der Vertragsgestaltung verwendet werden. Es bleibt den an dieser Norm interessierten Kreisen unbenommen auch andere Begriffe für die vereinbarten SDL zu verwenden. 
+
+Der Normteil DIN77200-2 enthält erweiterte Anforderungen an SDL für besondere Leistungsbereiche. 
+
+Der Normteil DIN77200-3 beschreibt das Prüfverfahren zur Bewertung von SDL, die auf Grundlage der bei-den vorgenannten Normteile geplant und erbracht werden. Er richtet sich insbesondere an Unternehmen, die in der Funktion als AN SDL nach dieser Normreihe anbieten– in dieser Normenreihe werden diese Unterneh-men als Sicherheitsdienstleister bezeichnet– und zur Darlegung ihrer Leistungsfähigkeit, zur Vertrauensbil-dung gegenüber potenziellen Kunden und interessierten Kreisen durch eine wirtschaftlich von der Branche 4 
+
+Normen-Download-DIN Media-Wolf Street GmbH-KdNr.8400590-LfNr.11068766001-2024-05-13 08:11 
+
+DIN 77200-1:2022-10 
+
+unabhängigen Stelle eine Konformitätserklärung benötigen. Dieser Normteil stellt nicht nur Anforderungen an das Prüfverfahren sondern auch an die Stellen (Konformitätsbewertungs- bzw. Zertifizierungsstellen), die eine Konformitätsbewertung für SDL anbieten und durchführen. 
+
+Die NormenreiheDIN77200 dient einem einheitlichen Verständnis zwischen AG und AN und der Transparenz und Eindeutigkeit in der Bestimmung/Festlegung des Auftragsumfangs. Sie enthält Leistungskriterien für die Vergabe von SDL durch öffentliche und private AG. 
+
+Die NormenreiheDIN77200 kann von AG, AN sowie Behörden, Nichtregierungsorganisationen und Verbrau-chern sowie allen interessierten Kreisen, einschließlich Zertifizierungsstellen, verwendet werden, um die Fähigkeit des AN zur Erfüllung von Anforderungen des AG, der gesetzlichen und behördlichen Anforderungen, die auf die SDL anwendbar sind, zu bewerten. 
+
+Aus Gründen der besseren Lesbarkeit wird auf die gleichzeitige Verwendung männlicher und weiblicher Sprachformen verzichtet. Sämtliche Personenbezeichnungen gelten gleichermaßen für jegliches Geschlecht. 5 
+
+Normen-Download-DIN Media-Wolf Street GmbH-KdNr.8400590-LfNr.11068766001-2024-05-13 08:11 
+
+DIN 77200-1:2022-10 
+
+1 Anwendungsbereich 
+
+Dieses Dokument legt allgemeine Anforderungen an Sicherheitsdienstleister fest und ist anzuwenden für Anbieter, Auftragnehmer (AN) und Auftraggeber (AG) von Sicherungsdienstleistungen (SDL) sowie Stellen, die Prüfungen auf Grundlage der in diesem Dokument festgelegten Anforderungen durchführen und die Leistungsfähigkeit der Sicherheitsdienstleister im Rahmen ihres Leistungsangebotes nach diesem Dokument bewerten (Konformitätsbewertung). 
+
+Dieses Dokument ist auch zur Angebotsdokumentation (siehe 4.23) geeignet, sofern ein Auftrag unter Einhal-tung der Anforderungen dieser Normreihe ausgeschrieben werden soll auch wenn der AN nicht entsprechend zertifiziert ist. 
+
+ANMERKUNG1 Anbieter und Auftragnehmer von Sicherungsdienstleistungen (SDL) werden in dieser Normenreihe unter dem Begriff Sicherheitsdienstleister zusammengefasst (siehe 3.1). 
+
+In diesem Teil der Normenreihe werden Anforderungen und Leistungskriterien ausschließlich an die nachfol-gend aufgeführten SDL und den ausführenden Sicherheitsdienstleister festgelegt. 
+
+1) 
+
+Stationäre SDL, im Einzelnen: 
+
+— 
+
+Alarmdienst; 
+
+— 
+
+Empfangsdienst; 
+
+— 
+
+Kontrolldienst; 
+
+2) 
+
+Mobile SDL, im Einzelnen: 
+
+— 
+
+Revierdienst; 
+
+— 
+
+Interventionsdienst; 
+
+— 
+
+Kontrolldienst; 
+
+3) 
+
+Veranstaltungssicherungsdienst. 
+
+ANMERKUNG2 Weitere Sicherungsdienstleistungen (SDL) für besondere Leistungsbereiche werden innerhalb dieser Normenreihe in DIN77200-2, behandelt. 
+
+2 Normative Verweisungen 
+
+Die folgenden Dokumente werden im Text in solcher Weise in Bezug genommen, dass einige Teile davon oder ihr gesamter Inhalt Anforderungen des vorliegenden Dokuments darstellen. Bei datierten Verweisungen gilt nur die in Bezug genommene Ausgabe. Bei undatierten Verweisungen gilt die letzte Ausgabe des in Bezug genommenen Dokuments (einschließlich aller Änderungen). 
+
+DINEN15602, Sicherheitsdienstleister/Sicherungsdienstleister— Begriffe 
+
+3 Begriffe 
+
+Für die Anwendung dieses Dokuments gelten die Begriffe nach DINEN15602 und die folgenden Begriffe. 
+
+DINund DKE stellen terminologische Datenbanken für die Verwendung in der Normung unter den folgenden Adressen bereit: 
+
+— 
+
+DIN-TERMinologieportal: verfügbar unter https://www.din.de/go/din-term 6 
+
+Normen-Download-DIN Media-Wolf Street GmbH-KdNr.8400590-LfNr.11068766001-2024-05-13 08:11 
+
+DIN 77200-1:2022-10 
+
+— 
+
+DKE-IEV: verfügbar unter http://www.dke.de/DKE-IEV 
+
+3.1 Sicherheitsdienstleister 
+
+Organisation, die als Auftragnehmer Sicherungsdienstleistungen anbietet und erbringt 
+
+3.2 Sicherungsdienstleistung 
+
+SDL 
+
+Handlungen und Maßnahmen des Auftragnehmers und seiner Hilfsperson (Mitarbeiter und Subunternehmer) zum Schutz von Leib, Leben, Gesundheit und Eigentum sowie anderer Rechtsgüter 
+
+BEISPIEL Beispiele für Sicherungsdienstleistungen sind: 
+
+— 
+
+Verhinderung oder Feststellung eines Eindringens, eines unbefugten Zutritts oder einer sonstigen unbefugten Hand-lung; 
+
+— 
+
+Verhinderung oder Feststellung von Diebstahl, Verlust, Veruntreuung, Zweckentfremdung von oder Verschleierung hinsichtlich Waren, Geld, Wertpapieren, Rechnungen, Wechseln oder wertvollen Dokumenten oder Papieren; 
+
+— 
+
+Schutz von Personen vor körperlichen Schäden; 
+
+— 
+
+Schutz und Management der Umwelt zu Lande und zu Wasser; 
+
+— 
+
+Durchsetzung (bei gleichzeitiger Einhaltung) der im Unternehmen geltenden Regeln, Bestimmungen, Verfahrens- weisen und Praktiken zur Eindämmung von Straftaten; 
+
+— 
+
+Anzeige und Festnahme von Zuwiderhandelnden, wie durch die nationale Gesetzgebung definiert. 
+
+3.3 Alarmdienst 
+
+Form der Sicherungsdienstleistung, bei der Sicherheitsmitarbeiter an einem stationären Ort spezifische Kon-trolltätigkeiten mittels technischer Systeme ausführen sowie Alarme bzw. Notmeldungen verfolgen und bei sicherheitsrelevanten Feststellungen Maßnahmen einleiten 
+
+3.4 Empfangsdienst 
+
+Form der Sicherungsdienstleistung, bei der Sicherheitsmitarbeiter die repräsentative, oftmals mehrsprachige Betreuung von Besuchern, Fremdfirmen, Lieferanten und Mitarbeitern ausüben sowie die Prüfung und Ertei-lung von Zugangserlaubnissen für diesen Personenkreis vornehmen 
+
+3.5 Revierdienst 
+
+Form der Sicherungsdienstleistung, bei der Sicherheitsmitarbeiter regelmäßig an mehreren räumlich nicht zusammenhängenden Objekten Kontrollen mit unterschiedlichen Aufgaben für mehr als einen Auftraggeber durchführen mit dem Auftrag, in einer definierten Häufigkeit spezifische Arbeiten, Vorgänge und Zustände zu sichern, zu überwachen und/oder zu kontrollieren sowie bei sicherheitsrelevanten Feststellungen Maßnah-men einzuleiten 
+
+3.6 Interventionsdienst 
+
+Form der Sicherungsdienstleistung, bei der Sicherheitsmitarbeiter auf Veranlassung die Durchführung ver-einbarter Maßnahmen aufgrund eines speziellen, nicht regelmäßig eintretenden Ereignisses am Ereignisort innerhalb einer festgelegten Frist vornehmen 7 
+
+Normen-Download-DIN Media-Wolf Street GmbH-KdNr.8400590-LfNr.11068766001-2024-05-13 08:11 
+
+DIN 77200-1:2022-10 
+
+3.7 Kontrolldienst 
+
+Form der Sicherungsdienstleistung, bei der Sicherheitsmitarbeiter an einem definierten Verrichtungsort Kon-trolltätigkeiten ausführen, Vorgänge und Zustände sichern, überwachen oder kontrollieren, u.a. Alarme bzw. Notmeldungen verfolgen sowie bei sicherheitsrelevanten Feststellungen Maßnahmen einleiten 
+
+Anmerkung1 zum Begriff: Der Kontrolldienst kann sowohl an einem definierten Verrichtungsort als auch auf mehreren räumlich voneinander entfernten Objekten erfolgen und ist somit in Abhängigkeit von der konkreten Tätigkeit sowohl den stationären als auch den mobilen SDL zuzuordnen. 
+
+3.8 Veranstaltungssicherungsdienst 
+
+Form der Sicherungsdienstleistung, bei Veranstaltungen mit folgenden Tätigkeiten: Durchsuchung der Besucher mit Körpernachschau, Bewachung von Produktionsmaterialien, Schutz des Künstlers im äußeren Zugangsbereich, mobile Streifen, Verfolgung von Alarmen und Notmeldungen und die Einleitung von Maßnahmen bei sicherheitsrelevanten Feststellungen 
+
+Anmerkung1 zum Begriff: Anforderungen an SDL für Veranstaltungen mit besonderer Sicherheitsrelevanz werden in DIN77200-2 festgelegt. 
+
+3.9 Sicherheitsmitarbeiter 
+
+SMA 
+
+Person, die gegen ein Honorar, Gehalt oder einen Lohn Sicherungsdienstleistungen erbringt 
+
+Anmerkung1 zum Begriff: Der Sicherheitsmitarbeiter kann sowohl eine Einsatzkraft oder eine Führungskraft sein. 
+
+3.10 Einsatzkraft 
+
+Sicherheitsmitarbeiter ohne Führungsfunktion, der zur Ausführung operativer Tätigkeiten im Rahmen beauf-tragter Sicherungsdienstleistungen eingesetzt wird 
+
+3.11 Führungskraft 
+
+Sicherheitsmitarbeiter, der anderen Sicherheitsmitarbeitern Anweisungen zur Ausführung operativer Tätig-keiten gibt und die fachliche Dienstaufsicht für die Leistungserbringung ausübt 
+
+BEISPIEL Teamleiter, Schichtführer, Objektleiter, Einsatzleiter usw. 
+
+3.12 Einsatzleitung 
+
+Organisationseinheit, die die Verantwortung für Vor- und Nachbereitung eines Einsatzes zur Erbringung von Sicherungsdienstleistungen trägt und die diesen Einsatz unmittelbar führt 
+
+Anmerkung1 zum Begriff: Die Einsatzleitung kann sich im Sinne einer Einsatzleitstelle an einem Standort befinden, von dem aus Betriebsabläufe gelenkt und/oder überwacht werden. 
+
+3.13 Dienstanweisung 
+
+schriftliche Anweisung an die Sicherheitsmitarbeiter, in der die Umsetzung der vertraglich vereinbarten Siche-rungsdienstleistungen festgelegt wird 8 
+
+Normen-Download-DIN Media-Wolf Street GmbH-KdNr.8400590-LfNr.11068766001-2024-05-13 08:11 
+
+DIN 77200-1:2022-10 
+
+3.14 Veranstaltung 
+
+jegliche organisierte Zusammenkunft von mehreren Personen im privaten oder öffentlichen Raum, gegen Bezahlung oder anderweitig, im Freien oder in Gebäuden 
+
+[QUELLE: DINEN15602:2008-04, 2.7.4, modifiziert– „der Öffentlichkeit“ durch „von mehreren Personen im privaten oder öffentlichen Raum“ ersetzt] 
+
+3.15 Auszubildender 
+
+Person, die im Rahmen einer Berufsausbildung nach dem Berufsausbildungsgesetz (BBiG) über eine IHK einen Ausbildungsabschluss z.B. als Fachkraft für Schutz und Sicherheit oder als Servicekraft für Schutz und Sicher-heit anstrebt 
+
+3.16 Praktikant 
+
+Person, die im Rahmen eines Berufspraktikums zeitlich befristet die Tätigkeitsfelder des Sicherheitsdienst- leisters kennenlernt 
+
+3.17 Schulung 
+
+Vermittlung erforderlicher Kenntnisse, Fähigkeiten und Fertigkeiten an Sicherheitsmitarbeiter zur Erfüllung einer Arbeitsaufgabe 
+
+3.18 Einweisung 
+
+Gesamtheit aller Maßnahmen zur tätigkeitsbezogenen Vermittlung der erforderlichen Kenntnisse in Vorbereitung auf die festgelegten Sicherungsdienstleistungen an Sicherheitsmitarbeiter für eine konkrete Arbeitsaufgabe 
+
+3.19 Training 
+
+Maßnahmen zur Vertiefung und Aufrechterhaltung der durch Schulung und/oder Einweisung vermittelten auf-tragsbezogenen Fertigkeiten an Sicherheitsmitarbeitern, die laufend über eine bestimmte Zeitspanne oder in festgelegten Intervallen durchgeführt werden 
+
+Anmerkung1 zum Begriff: Ein Training kann sich sowohl auf theoretische als auch auf praktische Fertigkeiten beziehen. 
+
+3.20 Einsatzkonzept 
+
+schriftliche, planerische Grundlage zur operativen Umsetzung der aus der Sicherheitsanalyse ermittelten Fak-ten und Einflussgrößen zur Umsetzung einer effektiven Gefahrenabwehr 
+
+3.21 Auftraggeber 
+
+AG 
+
+Person oder Organisation, die die Bereitstellung, Änderung oder Erweiterung von SDL anfordert und letztlich vertraglich vereinbart 
+
+3.22 Auftragnehmer 
+
+AN 
+
+Person oder Organisation, die für einen Auftraggeber SDL anbietet und letztlich erbringt 9 
+
+Normen-Download-DIN Media-Wolf Street GmbH-KdNr.8400590-LfNr.11068766001-2024-05-13 08:11 
+
+DIN 77200-1:2022-10 
+
+4 Allgemeine Anforderungen 
+
+4.1 Zu erbringende Nachweise 
+
+Folgende Nachweise müssen vom AN erbracht werden: 
+
+a) 
+
+für den AN (Sicherheitsdienstleister): 
+
+1) 
+
+mindestens einmal jährlich: 
+
+— 
+
+Auszug aus dem Gewerbezentralregister; 
+
+— 
+
+Unbedenklichkeitsbescheinigung des Finanzamtes; 
+
+— 
+
+Unbedenklichkeitsbescheinigung mindestens eines Sozialversicherungsträgers, nicht älter als sechs Monate; 
+
+2) 
+
+Datenschutzverpflichtungserklärung nach gültigem Datenschutzrecht zu erbringen durch eine vertre-tungsberechtigte Person; 
+
+3) 
+
+Verpflichtungserklärung zur Verschwiegenheit zu erbringen durch eine vertretungsberechtigte Per-son; 
+
+4) 
+
+Eigenerklärung zur Einhaltung des gesetzlichen Mindestlohns; 
+
+5) 
+
+schriftlich dokumentiertes Verfahren zur Sicherstellung 
+
+— 
+
+der Datenschutzverpflichtungserklärung nach gültigem Datenschutzrecht in seiner jeweils aktu-ellen Fassung, 
+
+— 
+
+der Verpflichtungserklärung zur Verschwiegenheit zu allen im Zusammenhang mit der Durchfüh-rung von SDL bekannt gewordenen Informationen, auch nach dem Ausscheiden aus dem Beschäf-tigungsverhältnis jedes Sicherheitsmitarbeiters vor Aufnahme der Tätigkeit, 
+
+— 
+
+des Beschwerdemanagements (4.5), 
+
+— 
+
+der Erstellung von Dienstanweisungen (4.12), 
+
+— 
+
+der Dienstausweise (4.14.4), 
+
+— 
+
+der Unterweisung (4.14.5), 
+
+— 
+
+der Qualifikation (4.19.1), 
+
+— 
+
+der Weiterbildung (4.19.2), 
+
+— 
+
+der Dokumentation, Melde- und Berichtswesen (4.20), 
+
+— 
+
+der Verwaltung von Schließmitteln (4.21). 
+
+b) 
+
+für die Mitarbeiter des AN, die mit Sicherungsdienstleistungen betraut sind: 
+
+1) 
+
+Nachweis der erfolgten Unterrichtung oder erfolgreich abgelegten Sachkundeprüfung nach §34aGewO; 
+
+2) 
+
+Nachweis der erfolgreich abgelegten Sachkundeprüfung nach §34aGewO spätestens zum Ablauf des sechsten Monats der durchgehenden Beschäftigung; für Sicherheitsmitarbeiter, welche zum Stichtag 10 
+
+Normen-Download-DIN Media-Wolf Street GmbH-KdNr.8400590-LfNr.11068766001-2024-05-13 08:11 
+
+DIN 77200-1:2022-10 
+
+des 13.10.2020 den Nachweis der durchgehenden dreijährigen Beschäftigung in der Durchführung von SDL erbringen, kann die Sachkundeprüfung entfallen, sofern gesetzlich nicht anders geregelt; 
+
+3) 
+
+Nachweise über die Einweisung in die Dienstanweisung (4.12); 
+
+4) 
+
+Datenschutzverpflichtungserklärung nach gültigem Datenschutzrecht; 
+
+ANMERKUNG1 Ausreichend ist ein Nachweis über arbeitsvertragliche Regelungen. 
+
+5) 
+
+Verpflichtungserklärung zur Verschwiegenheit zu allen im Zusammenhang mit der Durchführung von SDL bekannt gewordenen Informationen, auch nach dem Ausscheiden aus dem Beschäfti- gungsverhältnis. 
+
+ANMERKUNG2 Ausreichend ist ein Nachweis über arbeitsvertragliche Regelungen. 
+
+4.2 Organisationsstruktur 
+
+Der AN muss einen klar umrissenen Aufbau der Unternehmensführung haben, der erkennen lässt, dass er auf die Erbringung von SDL gerichtet ist. Für die operative Führung von Sicherungsdienstleistungen ist eine eigene Einsatzleitung, bestehend aus mindestens einer Führungskraft, erforderlich. 
+
+Der AN muss Folgendes nachweisen: 
+
+a) 
+
+ein Organigramm, aus dem der strukturelle Aufbau seiner Organisation ersichtlich ist sowie 
+
+b) 
+
+Stellenbeschreibungen für seine Führungskräfte. 
+
+ANMERKUNG Der Umfang der Tätigkeiten für Einsatzkräfte ist in den Dienstanweisungen, siehe 4.12, festgelegt. 
+
+4.3 Versicherung 
+
+Der AN ist verpflichtet, für sich und eingesetzte Sicherheitsmitarbeiter zur Deckung der Schäden, die dem AG oder Dritten bei der Durchführung der Sicherheitsdienstleistung entstehen können, eine Betriebshaft- pflichtversicherung, mindestens nach den gesetzlichen Bestimmungen, mit folgenden Deckungsumfängen, für die Dauer der Tätigkeit, dem AG gegenüber nachweislich aufrechtzuerhalten. 
+
+Die Mindesthöhe der Versicherungssumme beträgt je Schadensereignis EUR2.500.000,00 für Personen- und Sachschäden pauschal. 
+
+Im Rahmen dieser Versicherungssumme gelten folgende Ersatzleistungen als vereinbart: 
+
+1) 
+
+EUR250.000,00 für Vermögensschäden, insbesondere nach gültigem Datenschutzrecht; 
+
+2) 
+
+EUR250.000,00 für das Abhandenkommen bewachter Sachen, hier speziell auch der Nachweis der Versi-cherung von unerlaubten Handlungen seitens der Erfüllungsgehilfen des AN; 
+
+3) 
+
+EUR250.000,00 für das Abhandenkommen von Schlüsseln/Codekarten; 
+
+4) 
+
+EUR250.000,00 für Bearbeitungs-/Tätigkeitsschäden; 
+
+5) 
+
+EUR2.500.000,00 für Umwelthaftpflichtschäden. 
+
+Die Höchstersatzleistung des Versicherers für alle Versicherungsfälle eines Versicherungsjahres beträgt mindestens jeweils das Zweifache der vorstehend je Versicherungsfall vereinbarten Versicherungssumme, bei Umwelthaftpflichtschäden das Einfache. 
+
+Der AG kann im Rahmen der Besichtigung vom AN den Nachweis der gezahlten Versicherungsbeiträge sowie Einblick in den Umfang der Versicherung verlangen. 11 
+
+Normen-Download-DIN Media-Wolf Street GmbH-KdNr.8400590-LfNr.11068766001-2024-05-13 08:11 
+
+DIN 77200-1:2022-10 
+
+4.4 Haftung 
+
+Die vertragliche Haftung des AN für im Zuge der Dienstleistungserbringung entstehende und durch den AN zu verantwortende Schäden ist im Rahmen der Vertragsgestaltung zwischen AN und AG unter Beachtung der zwingenden gesetzlichen Bestimmungen zu vereinbaren. 
+
+Die Höhe der vom AG geforderten Haftungssummen ist zumindest für den Fall der einfachen Fahrlässigkeit zu begrenzen und von diesem unter Zugrundelegung des geforderten Einsatzkonzeptes und Leistungsumfangs zu definieren. 
+
+4.5 Beschwerdemanagement 
+
+Der AN hat ein dokumentiertes Verfahren zur Annahme und zum Umgang mit Kundenbeschwerden nachzu-weisen, zum Beispiel auf Grundlage der DINENISO9001. 
+
+4.6 Qualitätsmanagement 
+
+Der AN muss ein Qualitätsmanagementsystem vorweisen, zum Beispiel auf Grundlage der DINENISO9001. 
+
+Ein gleichbleibend hoher Qualitätsstandard ist durch regelmäßige Audits sicherzustellen. Darüber hinaus ist die Durchführung regelmäßiger institutionalisierter Besprechungen erforderlich, um die Qualität der innerbe-trieblichen Kommunikation sicherzustellen. 
+
+4.7 Risikomanagement 
+
+Der AN muss den Nachweis erbringen, dass vorhandene wesentliche Risiken im Hinblick auf seine betriebli-chen Prozesse und Verfahren sowie hierzu eingesetzter Technologien erkannt und gehandhabt werden, zum Beispiel auf Grundlage der DINENISO9001. Dabei sind insbesondere die kritischen Prozesse zu identifizieren und geeignete Maßnahmen zur Risikominimierung festzulegen. 
+
+4.8 Arbeits- und Gesundheitsschutz 
+
+Der AN muss den Nachweis erbringen, dass der Arbeits- und Gesundheitsschutz organisiert ist und den gesetz-lichen Anforderungen entspricht. Hierzu hat der AN auf Basis der von ihm schriftlich für jeden Leistungsort durchzuführenden Gefährdungsbeurteilung und der daraus abgeleiteten Maßnahmen den Nachweis zu erbrin-gen, dass diese Maßnahmen umgesetzt sind und die Einsatzkräfte diesen Anforderungen genügen. Der AN muss vor Aufnahme der Arbeit nachweisen, dass die Sicherheitsmitarbeiter entsprechend den jeweils zutref-fenden staatlichen und berufsgenossenschaftlichen Vorschriften unterwiesen und belehrt sind. 
+
+4.9 Geschäftsräume 
+
+Der AN muss über Räumlichkeiten im Sinne eigenständiger und für die Öffentlichkeit eindeutig kenntlich gemachter Geschäftsräume verfügen, in denen die Aufzeichnungen zu den SDL zusammen mit anderen Geschäftsschriftstücken, Personalunterlagen, Objektdaten und Dienstanweisungen, die für die ordnungs- gemäße Führung der Geschäftsorgane erforderlich sind, verfügbar sind. 
+
+4.10 Verträge 
+
+Der AN muss für die Erbringung von SDL grundsätzlich schriftliche Verträge mit dem AG abschließen. Der Vertragsabschluss ist zu dokumentieren. 
+
+ANMERKUNG Insbesondere bei kurzfristigen und kurzzeitigen SDL kann an Stelle eines schriftlichen Vertrages auf eine schriftliche Auftragsbestätigung des AG oder AN abgestellt werden. 
+
+Die Verträge haben die Bestimmungen und Bedingungen sowie die übertragenen Befugnisse zu enthalten, unter denen die SDL ausgeführt werden müssen, wobei die Verantwortlichkeiten des AN sowie dessen Ansprechpartner besonders hervorzuheben sind. 12 
+
+Normen-Download-DIN Media-Wolf Street GmbH-KdNr.8400590-LfNr.11068766001-2024-05-13 08:11 
+
+DIN 77200-1:2022-10 
+
+Die Dienstanweisung ist Bestandteil des Vertrages. 
+
+4.11 Anforderungsprofile 
+
+Im Anforderungsprofil sind in Absprache zwischen AG und AN die zu erbringenden SDL mit den jeweils erfor-derlichen Tätigkeiten festzulegen, wie in AnhangA dargestellt. 
+
+Das erstellte Anforderungsprofil ist Vertragsbestandteil und bildet zugleich die Grundlage für die Bestimmung des Einweisungs-, Aus- und Weiterbildungsbedarfes von Sicherheitsmitarbeitern. Der AN muss jederzeit in geeigneter Form den Nachweis erbringen können, dass die eingesetzten Sicherheitsmitarbeiter diesem festge-legten Anforderungsprofil entsprechen. 
+
+Das Anforderungsprofil ist hinsichtlich seiner Aktualität mindestens jährlich zu überprüfen und ggf. zu präzi-sieren. 
+
+4.12 Dienstanweisungen 
+
+Dienstanweisungen sind objekt- und/oder aufgabenspezifisch zu gestalten. Sie müssen die Einzelheiten der Dienstdurchführung, die sich aus dem Vertrag mit dem jeweiligen AG ergeben, regeln. Insbesondere müssen sie Festlegungen zum Kräfteeinsatz, Arbeitsinhalt und zur Dauer der SDL treffen. Dienstanweisungen werden nach der Erarbeitung des Anforderungsprofils bzw. des Einsatzkonzeptes erstellt und sind auf das jeweilige Schutzobjekt bzw. auf den jeweiligen Auftrag bezogen. Sie müssen weiterhin Einzelheiten zu Notfallverfahren, zu Kommunikationsregeln (insbesondere Grundlagen der einsatzbezogenen Kommunikation mit Einsatzkräf-ten und operativen Führungskräften von Behörden und Organisationen mit Sicherheitsaufgaben), zur Ausrüs-tung der Sicherheitsmitarbeiter, zum Meldewesen, zum Arbeits- und Gesundheitsschutz, zum Beispiel Pausen- und Ablöseregelungen, enthalten. Der AG sollte dem AN die erforderlichen Informationen zur Verfügung stel-len, um die Dienstanweisung nach diesen Kriterien erstellen zu können. 
+
+Die Dienstanweisungen müssen für den jeweiligen Sicherheitsmitarbeiter des AN in Vorbereitung auf den Dienst und während des Dienstes jederzeit am Leistungsort verfügbar sein. Die Einsatzleitung muss jeder-zeit auf die Dienstanweisungen Zugriff haben und mit der betrieblichen Praxis im Schutzobjekt vertraut sein. Die Dienstanweisungen sind mindestens alle zwölf Monate nachweislich formell zu prüfen und bei Bedarf zu aktualisieren. 
+
+Für den Bereich der Interventionsdienste ist die Dienstanweisung als schematisches Regelwerk zu erstellen. Für den Einzelfall muss dieses Regelwerk durch konkrete Interventionsanweisungen spezifiziert werden. 
+
+4.13 Einsatz von Subunternehmern 
+
+Der Einsatz von Subunternehmen bedarf der vorherigen schriftlichen Zustimmung des AG. Die weiterführende Unterbeauftragung von Leistungen durch den Subunternehmer des im direkten Kundenauftrag handelnden AN ist nicht zulässig. 
+
+Sicherheitsmitarbeiter die arbeitsvertraglich beim AN gebunden sind dürfen nicht über einen Subunternehmer oder als selbstständiger Subunternehmer für den AN tätig sein. 
+
+Der AN muss bei jeder Auftragsvergabe an einen Subunternehmer prüfen und dokumentieren, dass das jewei-lige Subunternehmen die beauftragten Dienstleistungen entsprechend den Anforderungen nach diesem Doku-ment erfüllt. Diese Prüfung hat bei Aufträgen mit einer Dauer von mehr als zwölf Monaten mindestens einmal jährlich zu erfolgen. 
+
+Der AN hat die vom Subunternehmen in den Einsatz entsandten Sicherheitsmitarbeiter, vor deren Einsatz schriftlich und namentlich dem AG zu benennen. Die Anforderungen nach 4.14.2 sind auch durch den Sub- unternehmer einzuhalten. 
+
+Einzelvertraglich können abweichende Regelungen zwischen AN und AG getroffen werden. 13 
+
+Normen-Download-DIN Media-Wolf Street GmbH-KdNr.8400590-LfNr.11068766001-2024-05-13 08:11 
+
+DIN 77200-1:2022-10 
+
+4.14 Personal und Personaleinsatz 
+
+4.14.1 Einstellungsvoraussetzungen 
+
+Der AN muss grundsätzlich zur Durchführung von SDL angestelltes Personal beschäftigen, das mindestens folgende Kriterien erfüllt: 
+
+a) 
+
+ständiger Wohnsitz in den Staaten der EU bzw. EFTA; 
+
+b) 
+
+Beherrschung der deutschen Sprache in Wort und Schrift in einem der jeweiligen SDL angemessenem Niveau; 
+
+ANMERKUNG Eine Kategorisierung von Sprachniveaus bietet der Gemeinsame Europäische Referenzrahmen für Spra-chen. 
+
+c) 
+
+Auszug aus dem Bundeszentralregister oder vergleichbare Dokumente. 
+
+Die Erfüllung dieser und ggf. darüberhinausgehende Auswahlkriterien für Sicherheitsmitarbeiter hat der AN zu dokumentieren. 
+
+Der AN hat dem AG die dokumentierte Einhaltung der vorstehenden Kriterien offenzulegen. 
+
+4.14.2 Auswahl und Vorbereitung der Sicherheitsmitarbeiter 
+
+Die Auswahl und Vorbereitung von Sicherheitsmitarbeitern muss auf der Grundlage des mit dem AG abge-stimmten Anforderungsprofils erfolgen, siehe 4.11. 
+
+Das erstellte Anforderungsprofil ist Grundlage für die Bestimmung des Aus- und Weiterbildungsbedarfes. Der AN muss jederzeit in geeigneter Form den Nachweis erbringen können, dass die eingesetzten Sicher- heitsmitarbeiter diesem festgelegten Anforderungsprofil entsprechen. Dem AG ist auf dessen Verlangen dieser Nachweis einschließlich der zutreffenden Aus- und Weiterbildungspläne vorzulegen. 
+
+Vor dem ersten Einsatz der Sicherheitsmitarbeiter beim jeweiligen AG sind diese entsprechend der Dienst- anweisung (4.12) einzuweisen. 
+
+4.14.3 Beschäftigungsbedingungen 
+
+Für die Sicherheitsmitarbeiter des AN muss ein schriftlich abgefasster Arbeitsvertrag bestehen. 
+
+4.14.4 Dienstausweise 
+
+Dem AG müssen auf Verlangen Dienstausweis-Muster vorgelegt werden. Dienstausweise ausgeschiedener (ehemaliger) Beschäftigter sind einzubehalten bzw. einzuziehen und zu vernichten oder zu entwerten. Der AN muss durch geeignete Maßnahmen dem Missbrauch von Dienstausweisen vorbeugen. 
+
+4.14.5 Unterweisung 
+
+Der AN muss die Unterweisung der Sicherheitsmitarbeiter in die Inhalte der Dienstanweisung sowie zu den einschlägigen rechtlichen Bestimmungen des Gewerbes vor Aufnahme des Dienstes nachweisen. Im Rahmen des Interventionsdienstes ist die Unterweisung in das schematische Regelwerk nach 4.12 ausreichend. 
+
+Die Unterweisung ist entsprechend den vorgegebenen Fristen, jedoch mindestens alle zwölf Monate nachweis-lich zu wiederholen. 14 
+
+Normen-Download-DIN Media-Wolf Street GmbH-KdNr.8400590-LfNr.11068766001-2024-05-13 08:11 
+
+DIN 77200-1:2022-10 
+
+4.15 Bekleidung, Technik und Ausrüstung 
+
+4.15.1 Ausrüstung 
+
+Der AN muss sicherstellen, dass die Sicherheitsmitarbeiter die dem AG angebotsgemäß zugesicherte und für die Erfüllung der jeweiligen Aufgaben erforderliche und zweckdienliche Ausrüstung erhalten und nutzen. Die Beschaffung, der Unterhalt und die Pflege dieser Ausrüstung haben durch den AN zu erfolgen. Die Sicherheits-mitarbeiter sind durch den AN in der Handhabung und dem Einsatz entsprechend zu schulen. 
+
+Zur Dienstausführung erforderliche Ausrüstung ist vom AN zu bestimmen und den Sicherheitsmitarbeitern unentgeltlich zu stellen. 
+
+4.15.2 Dienstkleidung 
+
+Der AN muss die Sicherheitsmitarbeiter mit einer für den jeweiligen Auftrag zweckmäßigen, unver- wechselbaren und einheitlichen Dienstkleidung (bei Erfordernis Winterausrüstung und Wetterschutz) ausstatten. 
+
+Die erforderliche Dienstkleidung ist vom AN den Sicherheitsmitarbeitern unentgeltlich zu stellen. 
+
+Im Regelfall hat die Dienstkleidung Kennzeichnungen zu enthalten, die den AN, der für die Durchführung der SDL verantwortlich ist, und den Träger der Bekleidung als Sicherheitsmitarbeiter des AN gegenüber der Öffent-lichkeit eindeutig kennzeichnen. Sofern weitere Funktionskennzeichnungen bei bestimmten SDL erforderlich sind, so sind diese einsatzabhängig z.B. auf Sicherheitswesten nachzuweisen. 
+
+ANMERKUNG Dieses Dokument regelt nicht die Verwendung von Persönlichen Schutzausrüstungen (PSA). Die Verwen-dung von PSA wird in der Verordnung über Sicherheit und Gesundheitsschutz bei der Benutzung persönlicher Schutzaus-rüstungen bei der Arbeit und in den Vorschriften und Regeln von Staat und Unfallversicherungsträgern behandelt. 
+
+4.16 Kraftfahrzeuge 
+
+Kraftfahrzeuge, die für SDL im Sinne dieses Dokumentes regelmäßig zu einem öffentlich erkennbaren Einsatz kommen, müssen auf den AN/AG zugelassen oder durch diese geleast/gemietet sein und eindeutig und dau-erhaft mit dem Firmennamen als Firmenfahrzeug gekennzeichnet sein. 
+
+BEISPIEL Aufgeklebte Folien. 
+
+Der AN muss sicherstellen, dass die jeweiligen Kraftfahrzeugführer für das jeweilige Kraftfahrzeug (den je- weiligen Fahrzeugtyp, einschließlich seiner Sonder- und Zusatzausrüstungen) in die Bedienung und Hand- habung bzw. Nutzung nachweislich eingewiesen sind. 
+
+Der AN muss sicherstellen, dass sich die Kraftfahrzeugführer spätestens zwölf Monate nach erstmaligem Ein-satz einem Fahrsicherheitstraining unterziehen, welches innerhalb von jeweils fünf Jahren zu wiederholen ist. 
+
+Die erstmalige Einweisung und wiederkehrende Unterweisung der Kraftfahrzeugführer sowie die durchge- führten Fahrsicherheitstraining sind schriftlich nachzuweisen. 
+
+4.17 Kommunikationsmittel 
+
+Der AN muss sicherstellen, dass alle zu SDL eingesetzten Sicherheitsmitarbeiter, insofern diese nicht ununterbrochen mündlich mit den Führungskräften kommunizieren können, über Kommunikationsmittel verfügen, mit denen grundsätzlich ohne Unterbrechung zur Einsatzleitung und umgekehrt Verbindung hergestellt werden kann. 
+
+Sicherheitsmitarbeiter, die einzeln an oder in Objekten Dienst versehen bzw. mit Fahrzeugen oder zu Fuß im Einsatz sind, müssen zum Zeitpunkt der Aufnahme ihres Einsatzes zu einer Einsatzleitung Verbindung aufneh-men. Darüber hinaus hat die Verbindungsaufnahme während des Einsatzes in der Regel stündlich zu erfolgen. Über diese Verbindungen ist in der Einsatzleitung ein Nachweis zu führen. 15 
+
+Normen-Download-DIN Media-Wolf Street GmbH-KdNr.8400590-LfNr.11068766001-2024-05-13 08:11 
+
+DIN 77200-1:2022-10 
+
+Die Kommunikationsmittel einzeln eingesetzter Sicherheitsmitarbeiter sollten mit einer Einrichtung zur selbsttätig wirkenden Alarmauslösung versehen sein. 
+
+4.18 Kontrollsysteme 
+
+Der AN kann zum Nachweis realisierter SDL gegenüber dem AG Kontrollsysteme zum Einsatz bringen. Techni-sche Kontrollsysteme sind insbesondere zum Nachweis durchgeführter Kontrollgänge, z.B. im Rahmen der SDL bzw. zu durchgeführten Handlungen und Maßnahmen im Zusammenhang mit der Aufschaltung von Gefahren-meldeanlagen und dem Interventionsdienst u.ä. geeignet. Bei Einsatz derartiger Systeme sind die gesammelten Daten dem AG zur turnusmäßigen Auswertung anzubieten. 
+
+ANMERKUNG Kontrollsysteme können u.a. sein: Videoaufzeichnungssysteme, elektronisch oder mechanisch gestützte Wächterkontrollsysteme, Computerleitsysteme bzw. andere Einrichtungen mit minutengenauer Erfassung von Daten bzw. durchgeführter Tätigkeiten oder veranlasster Handlungen sowie Maßnahmen. 
+
+4.19 Qualifikation und Weiterbildung 
+
+4.19.1 Qualifikation 
+
+Die Mindestqualifikation der Einsatzkräfte zur Durchführung der jeweiligen beauftragten Tätigkeit ist auf Grundlage eines auftragsspezifischen Anforderungsprofils nach TabelleA.1 festzulegen. 
+
+Die Sicherheitsmitarbeiter müssen zusätzlich den Nachweis einer abgeschlossenen und aktuellen Ersthelfer- qualifizierung erbringen. Diese Qualifikation ist regelmäßig, mindestens jedoch alle 2Jahre, zu erneuern. 
+
+Für Interventionskräfte muss über die o.g. Qualifikation hinaus die erfolgreiche Teilnahme an einer auf den Interventionsdienst gerichteten tätigkeitsbezogenen 24-stündigen Schulungsmaßnahme sowie an fünf durch-geführten Interventionen nachgewiesen werden. 
+
+Führungskräfte müssen den Nachweis einer abgeschlossenen Ausbildung zur Fachkraft für Schutz und Sicher-heit, zur Servicekraft für Schutz und Sicherheit oder geprüften Schutz- und Sicherheitskraft bzw. IHK-geprüften Werkschutzfachkraft sowie zwei Jahre Berufserfahrung nach abgelegter Prüfung bzw. eine höherwertige Qua-lifikation mit Bezug zum Sicherheitsgewerbe nachweisen. Hiervon befreit sind Führungskräfte, welche zum Stichtag des 13.10.2020 eine Führungsfunktion bereits nachweislich für mindestens eine Zeitspanne von mehr als drei Jahren bekleidet haben. 
+
+4.19.2 Weiterbildungskonzept 
+
+Der AN hat für die Sicherheitsmitarbeiter ein verwendungsbezogenes schriftlich dokumentiertes Weiter- bildungskonzept nachzuweisen, auf dessen Grundlage die Inhalte der verlangten Qualifikation (siehe 4.19.1) jährlich aufzufrischen und ggf. neue Weiterbildungsinhalte zu vermitteln sind. 
+
+Der konkrete Weiterbildungsbedarf ist aus den Anforderungen der jeweiligen Verwendung, einer Analyse der persönlichen Voraussetzungen sowie den Entwicklungsmöglichkeiten des Mitarbeiters zu ermitteln. Für im Unternehmen vollzeitbeschäftigte Sicherheitsmitarbeiter sind für die Weiterbildung mindestens 40Unterrichtseinheiten je 45min je Jahr nachzuweisen. Für nicht in Vollzeit beschäftigte Sicherheitsmitar- beiter kann der Mindestzeitaufwand zur Weiterbildung auf 24Unterrichtseinheiten je 45min je Jahr reduziert werden. Es wird empfohlen, die Weiterbildung grundsätzlich in Form von Präsenzunterricht durchzuführen. Hiervon kann durch Einsatz von qualitätsgesicherten „Distance Learning“ Verfahren in einem Umfang von maximal 50% der geforderten Unterrichtseinheiten abgewichen werden. 
+
+Die Ein- und Unterweisung der Mitarbeiter nach 3.18 und 4.14.5 sind keine Aus- und Weiterbildungszeiten im Sinne dieses Abschnitts. 16 
+
+Normen-Download-DIN Media-Wolf Street GmbH-KdNr.8400590-LfNr.11068766001-2024-05-13 08:11 
+
+DIN 77200-1:2022-10 
+
+4.20 Dokumentation, Melde- und Berichtswesen 
+
+Der AN muss durch eine schriftlich dokumentierte Festlegung von Verantwortlichkeiten auf den einzelnen Leitungsebenen sicherstellen, dass über alle für die Erfüllung der vertraglich vereinbarten Aufgabenstellung sowie über die dabei für den Arbeits- und Gesundheitsschutz relevanten Prozesse bzw. getroffene sicherheits-gefährdenden Feststellungen Aufzeichnungen geführt, gesammelt, geprüft, gegebenenfalls verteilt, an den AG übermittelt und archiviert werden. 
+
+Durch Aufzeichnungen muss nachgewiesen werden, dass die Aufgabeninhalte qualitativ und quantitativ erfüllt, vorgeschriebene Prüfungen/Beurteilungen vorgenommen, veranlasste Maßnahmen und deren Wirksamkeit dokumentiert worden sind (Einsatzdokumentation). 
+
+4.21 Verwaltung von Schließmitteln 
+
+Schlüssel, Codes, Codekarten, Schließkombinationen u. ä. (im Weiteren Schließmittel genannt), die vom AG dem AN für die Ausführung von SDL überlassen werden, müssen nachweislich quittiert werden, wobei die Quittung Datum, Uhrzeit sowie Namen der die Schließmittel empfangenden Person zusammen mit der Zweck-bestimmung des bereitgestellten Schließmittels enthält. Eine Quittung dieser Empfangsbestätigung ist dem AG zu übergeben. 
+
+Schließmittel müssen auf Wunsch des AG codiert werden, so dass nicht direkt Name und Anschrift des zu schlie-ßenden Bereiches, zu dem sie gehören, festgestellt werden können. 
+
+Jeweils nach Beendigung eines Auftrages, einer Einsatzfahrt oder eines Dienstwechsels sind die dem AN über-gebenen Schließmittel zu prüfen. Diese Prüfung ist nachweispflichtig. Der AN muss sicherstellen, dass empfan-gene Schließmittel nur an Berechtigte ausgegeben werden. 
+
+Die Revision der Schließmittel beim AN muss periodisch, jedoch mindestens einmal jährlich, durchgeführt und dokumentiert werden. Die technischen/organisatorischen Maßnahmen hierzu müssen vom AN getroffen wer-den. 
+
+4.22 Umgang zur Verfügung gestellter Ausrüstung 
+
+Vom AG für SDL zur Verfügung gestellte Ausrüstung (z.B. Kommunikationsmittel, Fahrzeuge, Prüfgeräte) muss so behandelt werden, dass ihre Identifikation und ihr Zustand sowohl sachlich, personell als auch örtlich jeder-zeit nachweisbar ist. Ausrüstungsgegenstände, die im unmittelbaren Zusammenhang mit der Sicherheit des Schutzobjektes stehen (z.B. Schlüssel, Codekarten), müssen sowohl während ihrer Aufbewahrung als auch im unmittelbaren operativen Einsatz vor unberechtigtem Zugriff bzw. vor Verlust geschützt sein. 
+
+4.23 Angebotsdokumentation 
+
+Bei der Beauftragung von SDL nach diesem Dokument sollten vom AG die nachfolgend aufgeführten Bedingun-gen für den spezifischen Auftrag festgelegt werden: 
+
+— 
+
+eindeutige Nennung der SDL nach diesem Dokument; 
+
+— 
+
+Dokumentation des Vertragsabschlusses in schriftlicher Form (siehe 4.10); 
+
+— 
+
+Vorliegen eines auftragsspezifischen Anforderungsprofils nach 4.11 und AnhangA; 
+
+— 
+
+Festlegung der Art und Weise in der die Freigabe der abgestimmten Dienstanweisung nach 4.12 dokumen-tiert wird; 
+
+— 
+
+schriftliche Aussage nach 4.13, ob der Einsatz von Subunternehmern akzeptiert wird; 
+
+— 
+
+Wunsch des Einsatzes von Kontrollsystemen nach 4.18 sowie gewünschte Art der darzulegenden Aus- wertungen; 17 
+
+Normen-Download-DIN Media-Wolf Street GmbH-KdNr.8400590-LfNr.11068766001-2024-05-13 08:11 
+
+DIN 77200-1:2022-10 
+
+— 
+
+Dokumentation des Weiterbildungskonzeptes (siehe 4.19); 
+
+— 
+
+Art und Weise in der sicherheitsgefährdende Feststellungen im Rahmen der Erbringung der jeweiligen SDL an den AG übermittelt und in welcher Art und Weise diese archiviert werden sollen (siehe 4.20); 
+
+— 
+
+Art und Umfang der geplanten Schließmittelübergabe an den Sicherheitsdienstleister; 
+
+— 
+
+schriftliche Zusammenstellung der dem Sicherheitsdienstleister zur Verfügung gestellten Ausrüstung (siehe 4.22); 
+
+— 
+
+bei beauftragten stationären SDL, Festlegungen für den Einsatz einer Führungskraft nach Abschnitt 4.24, die vor Ort als Ansprechpartner dient; 
+
+— 
+
+Festlegung, ob die Einweisung der Sicherheitsmitarbeiter in die objektbezogenen Tätigkeiten zur Erbrin-gung der jeweiligen SDL nach 4.25 durch den AN oder den AG bzw. durch vom AG beauftragte Personen erfolgt; 
+
+— 
+
+schriftliche Aussage, ob der Einsatz von Auszubildenden unter den Bedingungen nach 4.26 erlaubt ist; 
+
+— 
+
+Festlegung, ob der Sicherheitsdienstleister für die auftragsspezifisch festgelegten SDL die Zertifizierung der beauftragten SDL nachzuweisen hat. 
+
+Sofern der AG auf die Verwendung eines zertifizierten AN verzichtet, ist der AG verantwortlich dafür, dass die Inhalte dieses Dokuments vollständige Anwendung finden. 
+
+Der AN muss im Rahmen eines Angebotes oder einer Vorinformation zu SDL eine Dokumentation zur Verfü-gung stellen, die kurzgefasst und grundsätzlich Aussagen zur auftragsbezogenen Einhaltung der Anforderun-gen nach dieser Norm enthält. 
+
+Der AN muss darüber hinaus im Rahmen seines Angebots ein kunden- und auftragsbezogenes Einsatzkonzept entwickeln, aus welchem auch die funktionsbezogenen Qualifikationen seiner Sicherheitsmitarbeiter ersicht-lich sind. 
+
+Die Angebotsdokumentation hat auf Wunsch des AG außerdem u.a. folgende Angaben zu enthalten: 
+
+a) 
+
+Kopie der Gewerbeerlaubnis nach §34aGewO; 
+
+b) 
+
+Auszug aus dem Gewerbezentralregister (nicht älter als zwölf Monate); 
+
+c) 
+
+Unbedenklichkeitsbescheinigungen des Finanzamtes und der für den AN wichtigen Sozialversiche- rungsträger aus dem laufenden Geschäftsjahr; 
+
+d) 
+
+Aussagen zur Entlohnung sowie ggf. freiwillige Leistungen; 
+
+e) 
+
+Darlegung des Umsatzanteils der angefragten SDL im Verhältnis zu den Umsätzen des letzten abge- schlossenen Geschäftsjahres des AN. Sollte der Umsatzanteil der angefragten SDL im Verhältnis zum aktuellen Gesamtumsatz des AN einen Wert von 15% überschreiten, so hat der AN eine auftragsbezogene Liquiditäts- und Finanzplanung zu erarbeiten und zu dokumentieren. 
+
+4.24 Einsatz von Führungskräften 
+
+Der AN muss aus seinem Personalbestand für jede SDL geeignete Führungskräfte zur unmittelbaren operativen Führung und Kontrolle der operativen Sicherheitsmitarbeiter bestimmen. 
+
+Die Führungskraft muss für die jeweilige stationäre SDL über auftragsspezifische Kenntnisse verfügen, die Organisationsstrukturen des AG (in einem der Dienstleistung angemessenen Umfang) kennen und ihr Handeln und das der ihr unterstellten Sicherheitsmitarbeiter danach ausrichten können. Sie muss vom AN mit einem 18 
+
+Normen-Download-DIN Media-Wolf Street GmbH-KdNr.8400590-LfNr.11068766001-2024-05-13 08:11 
+
+DIN 77200-1:2022-10 
+
+dem AG bekannten klaren Kompetenzrahmen ausgestattet sein. Diese Führungskraft muss den unmittelba-ren Kontakt vor Ort mit dem AG pflegen, den Einsatz der Sicherheitsmitarbeiter planen und organisieren, die im Dienst befindlichen Kräfte anleiten und kontrollieren sowie alle Abweichungen bei der Auftragserfüllung erkennen, korrigieren und erforderlichenfalls weitermelden. 
+
+Die Führungskraft muss für die jeweilige mobile SDL über Kenntnisse der schematischen Regelwerke zur SDL verfügen, Zugriff auf die konkreten Anweisungen zum Schutzobjekt des AG haben und ihr Handeln und das der ihr unterstellten Sicherheitsmitarbeiter danach ausrichten können. Diese Führungskraft muss den Einsatz der Sicherheitsmitarbeiter planen und organisieren, die im Einsatz befindlichen Kräfte anleiten und kontrollieren sowie alle Abweichungen bei der Auftragserfüllung erkennen, korrigieren und erforderlichenfalls weitermel-den. 
+
+Die Führungskraft hat u.a. dafür Sorge zu tragen, dass 
+
+a) 
+
+die Vorgaben zum Einsatz der Sicherheitsmitarbeiter eingehalten werden, 
+
+b) 
+
+Fahrzeuge, Kommunikationsmittel und sonstige Ausrüstungsgegenstände sich in einwandfreiem und betriebsbereitem Zustand befinden, 
+
+c) 
+
+die ordnungsgemäße Übernahme der Ausrüstung durch die Sicherheitsmitarbeiter nachweislich bestätigt wird, 
+
+d) 
+
+im Falle des Ausfalls von Ausrüstung (z.B. durch Defekt o.a.) unverzüglich für Ersatz gesorgt wird. 
+
+4.25 Einsatz von Sicherheitsmitarbeitern ohne Führungsfunktion (Einsatzkräfte) 
+
+Einsatzkräfte müssen grundsätzlich durch eine mit dem Objekt und den Aufgaben vertraute Person des AN auf der Grundlage der Dienstanweisung in das konkrete Tätigkeitsfeld vor Ort eingewiesen werden. In Ausnahme-fällen sowie grundsätzlich in Bundeswehrliegenschaften kann die Einweisung, sofern es der AG für erforderlich hält, auch durch ihn oder einen vom AG beauftragten Dritten erfolgen. Mit Ausnahme von Bundeswehrliegen-schaften muss jedoch in der Regel eine mit dem Objekt und den Aufgaben vertraute Person des AN anwesend sein. Die erfolgreiche Einweisung ist entsprechend schriftlich nachzuweisen. 
+
+Bei der Auftragserteilung für Einsatzkräfte muss eindeutig nachvollziehbar sein: 
+
+a) 
+
+die klare Identifizierung (z.B. durch Anschrift und Bezeichnung) des zu kontrollierenden Objektes; 
+
+b) 
+
+die exakte Beschreibung der Örtlichkeiten und der inhaltlichen Tätigkeiten, die dort zu erbringen sind; 
+
+c) 
+
+die Abfolge und Dauer der Tätigkeit; 
+
+d) 
+
+die Anzahl der Wiederholungen der Tätigkeiten in einem zuvor definierten Zeitfenster; 
+
+e) 
+
+die Modalitäten des zeitlichen Nachweises über die durchgeführten Tätigkeiten (z.B. mittels eines elektro-nischen Wächterkontrollsystems); 
+
+f) 
+
+Adressaten für die Alarmierung bzw. Information bei sicherheitsrelevanten Vorkommnissen; 
+
+g) 
+
+Abweichungen vom Sollzustand im zu kontrollierenden Bereich; 
+
+h) 
+
+Ort und Art von vorhandenen Gefährdungen in den einzelnen Objekten sowie die sich daraus ableitenden Schutzmaßnahmen und -ausrüstung für die Sicherheitsmitarbeiter. 
+
+4.26 Einsatz von Auszubildenden und Praktikanten 
+
+Auszubildende und Praktikanten dürfen als Sicherheitsmitarbeiter nur dann eingesetzt werden, wenn sie die Anforderungen nach 4.1.b) erfüllen. Auszubildende und Praktikanten müssen zu jedem Zeitpunkt während 19 
+
+Normen-Download-DIN Media-Wolf Street GmbH-KdNr.8400590-LfNr.11068766001-2024-05-13 08:11 
+
+DIN 77200-1:2022-10 
+
+ihres Einsatzes beim AG durch mindestens einen Sicherheitsmitarbeiter am selben Arbeitsort geführt und angeleitet werden. Der Einsatz von Auszubildenden und Praktikanten bedarf der vorherigen schriftlichen Zustimmung des AG. 
+
+Der Einsatz von Auszubildenden als von Auftraggebern vergütete Einsatzkraft ist zeitlich auf ein der Berufs- ausbildung förderliches Maß zu begrenzen und darf im Jahresdurchschnitt monatlich 60h nicht überschreiten. 
+
+Auszubildende und Praktikanten dürfen keine weiteren Erwerbs- oder Nebentätigkeiten beim AN ausüben und auch nicht vom AN als selbstständiger Subunternehmer eingesetzt werden. 20 
+
+Normen-Download-DIN Media-Wolf Street GmbH-KdNr.8400590-LfNr.11068766001-2024-05-13 08:11 
+
+DIN 77200-1:2022-10 
+
+AnhangA (normativ) Anforderungsprofile 
+
+Die Mindestqualifikation der Einsatzkräfte zur Durchführung der jeweiligen Tätigkeit, die Dauer und Häufigkeit der Durchführung der nachfolgend aufgeführten Tätigkeiten sowie die zur sicheren Durchführung der Tätig-keiten bereitzustellende Ausrüstung ist in den Dienstanweisungen auf Grundlage eines auftragsspezifischen Anforderungsprofils festzulegen. 
+
+Abhängig vom Einsatzkonzept können die Qualifikationsanforderungen an die Tätigkeiten nach TabelleA.1 individuell erhöht werden. 
+
+Für die Durchführung sämtlicher nachstehender Tätigkeiten hat der AG im Rahmen des Anforderungsprofils festzulegen, welche Sprachkenntnisse zur Durchführung ggf. in Verbindung mit Fremdsprachenkenntnissen erforderlich sind. 
+
+Qualifikationsanforderungen an die Einsatzkräfte zur Durchführung der Tätigkeiten nach TabelleA.1: 
+
+A– Grundanforderungen 
+
+— 
+
+Qualifikation nach 4.1.b) 1) und 4.1.b) 2) 
+
+B– Erweiterte Anforderungen 
+
+— 
+
+Qualifikation durch Nachweis der erfolgreich abgelegten Prüfung zur geprüften Schutz- und Sicherheits-kraft/IHK-geprüften Werkschutzfachkraft, zur Servicekraft für Schutz und Sicherheit oder eine gleich- oder höherwertige Qualifikation mit Bezug zum Sicherheitsgewerbe. 
+
+Alternativ zur geforderten Qualifikation nach „B“ darf diese durch eine ununterbrochene Tätigkeit im Sicher-heitsgewerbe von mindestens 3Jahren ersetzt werden. 
+
+C– Hohe Anforderungen 
+
+— 
+
+Qualifikation durch Nachweis der erfolgreich abgelegten Prüfung zur Fachkraft für Schutz und Sicher- heit/Meister für Schutz und Sicherheit/IHK-geprüfter Werkschutzmeister oder eine mindestens gleich- oder höherwertige Qualifikation mit Bezug zum Sicherheitsgewerbe. 
+
+ANMERKUNG Als eine gleichwertige Qualifikation kann z.B. eine abgeschlossene Laufbahnprüfung im mittleren Polizei-, Zoll- oder Vollzugsdienst zusätzlich zu einer Qualifikation nach „B“ angesehen werden. 
+
+In Absprache mit dem AG kann die nachfolgende Liste um weitere zu erbringende Tätigkeiten ergänzt werden.  
