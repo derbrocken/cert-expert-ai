@@ -1,0 +1,21 @@
+{
+  "_comment": "Layer 1 company and document metadata — Tool 1 placeholder convention. See docs/PLACEHOLDER_REGISTRY.md. Replace demo values with real data before production use.",
+
+  "CompanyName":        "Cert-Expert GmbH",
+  "CompanyStreet":      "Musterstraße 1",
+  "CompanyZip":         "10115",
+  "CompanyCity":        "Berlin",
+  "CompanyCountry":     "Deutschland",
+  "CompanyAddressLine": "",
+
+  "CompanyEmail":       "info@cert-expert.de",
+  "CompanyAddress":     "Musterstraße 1, 10115 Berlin, Deutschland",
+
+  "_logo_note": "LogoPath is not a DOCX placeholder. It tells docx_builder.py which file to pass to the renderer as {Logo}.",
+  "LogoPath":           "assets/cert_expert_logo.png",
+
+  "DocVersion":         "1.0",
+  "DocDate":            "18.05.2026",
+  "CreatedBy":          "M. Mahra",
+  "ApprovedBy":         ""
+}

@@ -1,0 +1,17 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+venv/
+.env
+.env.*
+
+# Node.js
+shared/renderer/node_modules/
+shared/renderer/package-lock.json
+
+# Outputs (generated files — not committed)
+outputs/
+
+# macOS
+.DS_Store

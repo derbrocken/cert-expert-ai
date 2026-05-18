@@ -1,0 +1,13 @@
+{
+  "name": "cert-expert-renderer",
+  "version": "1.0.0",
+  "description": "Standalone DOCX rendering layer for Cert-Expert AI bots",
+  "main": "render.js",
+  "scripts": {
+    "test": "node render.js"
+  },
+  "dependencies": {
+    "easy-template-x": "^7.0.3",
+    "image-size": "^2.0.2"
+  }
+}

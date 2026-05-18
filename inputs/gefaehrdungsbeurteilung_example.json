@@ -1,0 +1,27 @@
+{
+  "_comment": "Beispiel-Input für Gefährdungsbeurteilung. Alle 'required'-Felder müssen gefüllt sein, sonst werden sie als OFFENER PUNKT markiert.",
+
+  "event_name": "K1-Kampfturnier Berlin Open",
+  "event_type": "Kampfsportveranstaltung",
+  "event_date": "2026-06-14",
+  "event_location": "Sporthalle Musterstraße 12, 10115 Berlin",
+
+  "expected_attendees": 350,
+  "security_staff_count": 6,
+
+  "venue_capacity": 500,
+  "venue_exits": 4,
+
+  "special_risks": [
+    "Erhöhtes Aggressionspotenzial unter Zuschauern bei intensiven Kämpfen",
+    "Alkoholkonsum im Außenbereich möglich",
+    "Eingeschränkte Sichtbarkeit im hinteren Zuschauerbereich"
+  ],
+
+  "client_name": "Sportclub Musterhausen e.V.",
+  "created_by": "M. Mahra",
+  "doc_version": "1.0",
+
+  "approved_by": "",
+  "notes": "Erste Pilotveranstaltung dieser Art für den Auftraggeber. Besondere Sorgfalt bei der Risikobewertung."
+}
