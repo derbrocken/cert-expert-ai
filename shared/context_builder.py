@@ -46,6 +46,32 @@ _SYSTEM_PROMPT_ORDER = (
     ("prompts", ("base/hallucination_guard.md", "base/open_point_instruction.md")),
 )
 
+# Stable ordering for audit metadata (matches assembly order groups).
+_KNOWLEDGE_MODULE_META_ORDER = (
+    "prompts",
+    "rules",
+    "products",
+    "standards",
+    "sdls",
+    "guides",
+    "examples",
+)
+
+
+def knowledge_modules_considered(blueprint: Blueprint) -> list[str]:
+    """
+    Return every loaded knowledge file as ``category/relative_path_under_category``
+    (e.g. ``guides/risk_patterns/aggressive_groups.md``), in deterministic order.
+    Used for review JSON (`knowledge_modules_considered`) without relying on
+    the LLM to self-report sources.
+    """
+    lines: list[str] = []
+    for cat in _KNOWLEDGE_MODULE_META_ORDER:
+        for path in blueprint.context_module_paths.get(cat, ()):
+            rel = _category_relative_name(cat, path)
+            lines.append(f"{cat}/{rel}")
+    return lines
+
 
 def build_system_prompt(blueprint: Blueprint) -> str:
     """

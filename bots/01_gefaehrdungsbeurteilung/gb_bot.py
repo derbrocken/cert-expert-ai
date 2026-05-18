@@ -36,7 +36,11 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 
 from shared.api_client import ask_qwen
 from shared.blueprint_loader import Blueprint, BlueprintError, load_blueprint
-from shared.context_builder import build_system_prompt, build_user_prompt
+from shared.context_builder import (
+    build_system_prompt,
+    build_user_prompt,
+    knowledge_modules_considered,
+)
 from shared.docx_builder import DocxRenderError, render_docx
 from shared.docx_writer import save_structured_docx
 from shared.input_loader import load_input
@@ -46,7 +50,7 @@ from shared.quality_checker import check as qa_check
 DEFAULT_INPUT = "inputs/gb_event_kampfsport.json"
 DEFAULT_BLUEPRINT_ID = "gb_event_kampfsport"
 MAX_RETRIES = 3
-PIPELINE_VERSION = "1.2"
+PIPELINE_VERSION = "1.3"
 
 VALID_OUTPUT_MODES = ("review", "final", "both")
 DEFAULT_OUTPUT_MODE = "review"
@@ -178,6 +182,9 @@ def run(
     event_slug = _event_slug(data)
     date_slug = datetime.now().strftime("%Y%m%d_%H%M%S")
 
+    kmods = knowledge_modules_considered(blueprint)
+    reviewer_output["knowledge_modules_considered"] = kmods
+
     reviewer_output["meta"] = {
         "created_at":        datetime.now().isoformat(timespec="seconds"),
         "input_file":        str(input_path),
@@ -187,6 +194,7 @@ def run(
         "created_by":        data.get("created_by", ""),
         "pipeline_version":  PIPELINE_VERSION,
         "output_mode":       output_mode,
+        "knowledge_modules_considered": kmods,
     }
 
     json_name = f"{blueprint.blueprint_id}_{event_slug}_{date_slug}.json"

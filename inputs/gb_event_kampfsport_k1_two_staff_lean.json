@@ -1,0 +1,42 @@
+{
+  "_comment": "Gleiches Szenario wie gb_event_kampfsport_k1_two_staff.json, aber Blueprint gb_event_kampfsport_lean (reduzierter System-Kontext).",
+
+  "blueprint_id": "gb_event_kampfsport_lean",
+
+  "input_data": {
+    "event_name":          "K1 Regional Cup Nord 2026",
+    "event_type":          "Kampfsportveranstaltung",
+    "combat_sports_type":  "K1",
+
+    "event_date":          "2026-09-20",
+    "event_start_time":    "14:00",
+    "event_end_time":      "20:00",
+    "event_location":      "Stadthalle Beispielstadt, Halle A, Friedrichstraße 8",
+    "outdoor_area":        false,
+
+    "expected_attendees":  180,
+    "security_staff_count": 2,
+
+    "venue_capacity":      400,
+    "venue_exits":         3,
+
+    "alcohol_served":      false,
+    "medical_service":     "Ringarzt und ein Rettungssanitäter durch den Veranstalter vor Ort gemeldet.",
+    "evacuation_plan_available": true,
+    "official_requirements": "",
+    "prior_incidents":     "Keine sicherheitsrelevanten Vorfälle bei vergleichbaren Veranstaltungen am Ort bekannt.",
+
+    "special_risks": [
+      "Übliche emotionale Anspannung bei Vollkontakt-Kämpfen im Rahmen eines Sportturniers",
+      "Kurzzeitige Menschenansammlungen am Einlass und bei Fighter-Check-in/Gewichtsmessung",
+      "Zwei eingesetzte Sicherheitskräfte begrenzen gleichzeitige Intervention an mehreren Stellen"
+    ],
+
+    "client_name":  "Kampfsportverein Beispiel e.V.",
+    "created_by":   "Smoke-Test Automatik",
+    "approved_by":  "Vorstand Kampfsportverein Beispiel e.V.",
+    "doc_version":  "0.9-smoke",
+
+    "notes": "Aufgaben der Sicherheit gemäß Auftraggeber: Einlassbeobachtung, Besucherführung, Konfliktprävention, Unterstützung bei Interventionen, Notfallmeldung. Es liegt eine normale Veranstaltung ohne besondere Sicherheitsrelevanz im Sinne von Großereignis oder organisierten rivalisierenden Gruppen vor — keine zusätzlichen Hochrisiko-Annahmen ohne Belege."
+  }
+}
