@@ -37,7 +37,17 @@
     ],
     "guides": [
       "content_blocks/risikobewertung.md",
-      "content_blocks/schutzmassnahmen.md"
+      "content_blocks/schutzmassnahmen.md",
+      "risk_patterns/aggressive_groups.md",
+      "risk_patterns/crowd_dynamics.md",
+      "risk_patterns/bottlenecks.md",
+      "risk_patterns/alcohol_related_conflicts.md",
+      "control_measures/access_control.md",
+      "control_measures/deescalation.md",
+      "control_measures/visitor_separation.md",
+      "control_measures/evacuation_management.md",
+      "control_measures/radio_communication.md",
+      "event_phases/ingress_egress.md"
     ],
     "examples": [
       "gb_gefaehrdungen/veranstaltungsschutz_kampfsport.md",
