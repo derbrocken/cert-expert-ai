@@ -15,3 +15,7 @@ outputs/
 
 # macOS
 .DS_Store
+
+# Python virtual environments
+.venv/
+venv/
