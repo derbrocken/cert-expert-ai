@@ -11,6 +11,7 @@ parent_standard: DIN 77200-1
 knowledge_path: knowledge/1_standards/DIN 77200-1/Führungsanforderungen.md
 source_documents:
   - inputs/raw_standards/din/DIN_77200_1_2022
+  - inputs/raw_standards/din/DIN_77200_2_2020
 norm_references:
   - "3.11"
   - "3.12"
@@ -113,7 +114,7 @@ Führung ist **übergreifend**: Jeder SDL-Typ erfordert geeignete Führungskräf
 *(Nicht normativ — typische Branchenpraxis)*
 
 - **Operative** Führung (Schicht-/Objektleitung) im Organigramm von **kaufmännischer Führung** trennen.
-- Pro stationärem Vertrag **einen benannten AG-Ansprechpartner** im Einsatzkonzept festlegen.
+- Pro stationärem Vertrag **einen benannten AG-Ansprechpartner** bzw. **Kompetenzrahmen** in Vertragsunterlagen, Anforderungsprofil, Dienstanweisung oder **ggf. Einsatzkonzept** (Angebots-/komplexer Kontext) festlegen — **nicht** pauschal Einsatzkonzept je einfachem stationären Projekt.
 - **Kompetenzmatrix** führen: Wer darf anweisen, eskalieren, Überstunden freigeben, von Posten ablösen?
 - Mobile SDL/Revier: Einsatzleitung als zentrale Leitstelle mit definierter Übergabe an Außenführung.
 - Führungsakten mit [[Qualifikationsanforderungen]] und [[Dienstanweisungen]] in Personal- und QM-Ordnern verknüpfen.
@@ -161,7 +162,7 @@ Auditor-Traces: Vertrag → Organigramm → benannte Führungskraft → Qualifik
 |----------|-------|-------------------|
 | Organigramm | Struktur und Einsatzleitung | [[Auditnachweise]] |
 | Stellenbeschreibung Führungskraft | Rollendefinition | — |
-| Einsatzkonzept / Schichtplan | Wer führt welchen Einsatz | [[Dienstanweisungen]] |
+| Schichtplan / *(ggf. Einsatzkonzept)* | Wer führt welchen Einsatz | [[Dienstanweisungen]] |
 | Dienstanweisung | Aufgabenumfang beaufsichtigter Kräfte | [[Dienstanweisungen]] |
 | Qualifikationsnachweise Führung | Prüfung 4.19.1 | [[Qualifikationsanforderungen]] |
 | Kompetenzrahmen (AG-seitig) | Stationäre SDL | — |
@@ -223,8 +224,8 @@ Auditor-Traces: Vertrag → Organigramm → benannte Führungskraft → Qualifik
 
 | Produkt | Nutzung dieses Moduls |
 |---------|----------------------|
-| Einsatzkonzept (EC) | Kräfteführung, Einsatzleitung, Kommunikation, Eskalation |
-| Sicherheitskonzept (SK) | Organisatorische Führungsstruktur, Ansprechpartner |
+| Sicherheitskonzept (SK) | **AG-Eingabe** — Führungsstruktur aus SK/EK ableiten; **77200-2:** AG **muss** SK bereitstellen (Kap. 4) | [[Erforderliche Dokumente]] |
+| Einsatzkonzept (EK) | Kräfte, Einsatzleitung, Kommunikation, Medien — **77200-2:** AN **muss** EK (Kap. 4) · **77200-1 einfach:** normalerweise nicht · **77200-1 Veranstaltung:** kontextabhängig | [[Erforderliche Dokumente]] |
 | Dienstanweisung (ODA) | Abgrenzung Führungskraft vs. Einsatzkraft; Verweis auf DI-Zugriff |
 | Anforderungsprofil | Ersetzt keine Führungsqualifikation — verweist auf 4.19.1 |
 
@@ -233,6 +234,7 @@ Auditor-Traces: Vertrag → Organigramm → benannte Führungskraft → Qualifik
 - Keine erfundenen Teamleiter, Kompetenzgrenzen oder Organigrammdetails — Projektinput oder `[OFFENER PUNKT]`.
 - **Führungskraft** (3.11) und **Einsatzkraft** (3.10) in allen Texten unterscheiden.
 - Stationär vs. mobile SDL: korrekter 4.24-Zweig (AG-Kontakt vs. Regelwerksfokus).
+- **77200-1 vs. 77200-2:** Bei **DIN 77200-2** (Kap. 5–8) SK+EK **normativ** — Führung aus EK dokumentieren; **77200-1-Veranstaltung ohne 77200-2** nicht pauschal SK/EK nachfordern.
 - [[Qualifikationsanforderungen]] mitladen bei Zeugnissen oder Berufserfahrungsjahren.
 - [[Dienstanweisungen]] mitladen bei operativen Aufgaben beaufsichtigter Kräfte.
 
@@ -274,7 +276,8 @@ Führung nach 4.24 gilt für **jede** SDL im Geltungsbereich. SDL-spezifische Sc
 | [[stationärer_kontrolldienst]] / [[stationärer_empfangsdienst]] / [[alarmdienst]] | AG-Kontakt vor Ort, Objektwissen (4.24 stationär) |
 | [[revierdienst]] / [[mobiler_kontrolldienst]] | Regelwerke, Objektanweisungen, zentrale Einsatzleitung (4.24 mobil) |
 | [[interventionsdienst]] | Schematisches Regelwerk plus fallbezogene Anweisungen (4.12) |
-| [[veranstaltungsdienst]] | Veranstaltungsleitung, eskalationsintensive Lagen |
+| [[veranstaltungsdienst]] | **77200-1:** Führung kontextabhängig · **77200-2 Kap. 5:** SK (AG) → EK (AN) → DI; Einzelfallbewertung 5.1 |
+| *77200-2 ÖPV / Objekt / Unterkunft* | SK+EK **erforderlich** (Kap. 4); Führungsqualifikation je Kap. 6–8 — siehe [[Erforderliche Dokumente]] |
 
 SDL-Pfade: `knowledge/3_sdls/<sdl_slug>/`
 
@@ -292,6 +295,7 @@ SDL-Pfade: `knowledge/3_sdls/<sdl_slug>/`
 | Kommunikationsmittel | 4.17 |
 | Einsatz von Führungskräften | 4.24 |
 | Angebotsdokumentation | 4.23 (stationäre Führung) |
+| DIN 77200-2:2020-07 | Kap. 4 (SK/EK); Kap. 5–8 je Anwendungsgruppe (`source_documents`) |
 | Cert-Expert | [[overview]] — CEKS v1, Modultaxonomie |
 
 *Kein Normvolltext. Kritische Schwellen vor Zertifizierungsentscheidungen gegen Primärquelle prüfen.*

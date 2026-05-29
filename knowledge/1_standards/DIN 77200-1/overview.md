@@ -12,6 +12,7 @@ parent_standard: DIN 77200-1
 knowledge_path: knowledge/1_standards/DIN 77200-1/overview.md
 source_documents:
   - inputs/raw_standards/din/DIN_77200_1_2022
+  - inputs/raw_standards/din/DIN_77200_2_2020
 chunk_strategy: hierarchical
 recommended_chunk_size: section
 module_creation_status: master_ready
@@ -45,6 +46,7 @@ related_processes:
 related_modules:
   - leadership_requirements
   - qualification_requirements
+  - requirements_profile
   - further_training
   - insurance_requirements
   - required_documents
@@ -161,6 +163,7 @@ parent_standard: DIN 77200-1
 knowledge_path: ""
 source_documents:
   - inputs/raw_standards/din/DIN_77200_1_2022
+  - inputs/raw_standards/din/DIN_77200_2_2020
 norm_references: []
 related_modules: []
 related_processes: []
@@ -346,6 +349,7 @@ graph TD
     Hub --> Training["Weiterbildung"]
     Hub --> Insurance["Versicherungsanforderungen"]
     Hub --> Documents["Erforderliche Dokumente"]
+    Hub --> Profil["Anforderungsprofile"]
     Hub --> Complaint["Beschwerdemanagement"]
     Hub --> Sub["Subunternehmer"]
     Hub --> Risk["Risikobeurteilung"]
@@ -353,6 +357,8 @@ graph TD
     Hub --> Audit["Auditnachweise"]
 
     Qualification --> Training
+    Profil --> Qualification
+    Profil --> Site
     Leadership --> Site
     Risk --> Documents
     Audit --> Documents
@@ -388,6 +394,7 @@ graph LR
     Risk["Risikobeurteilung"] -.-> GB
     Site["Dienstanweisungen"] -.-> ODA
     Qualification["Qualifikationsanforderungen"] -.-> Profil
+    ProfilMod["Anforderungsprofile"] -.-> Profil
 ```
 
 ### Prozesse & Nachweise
@@ -423,8 +430,9 @@ Geplante Detailmodule (`module_creation_status: master_ready` am Index). Wikilin
 | `module_id` | Modul | Normanker | Audit | Dokumentation |
 |-------------|-------|-----------|-------|---------------|
 | `qualification_requirements` | [[Qualifikationsanforderungen]] | 4.19.1, Anhang A | Qualifikationsmatrix vs. Profil | Zeugnisse, §34a |
+| `requirements_profile` | [[Anforderungsprofile]] | 4.11, Anhang A, Anhang C | Profil first; AG/AN-Abstimmung; Jahresprüfung | Anforderungsprofil, Qualifikationsmatrix |
 | `insurance_requirements` | [[Versicherungsanforderungen]] | 4.3, 4.4 | Police, Deckungssummen | Versicherungsnachweise |
-| `subcontractors` | [[Subunternehmer]] | 4.13 | Sub-Prüfung, AG-Freigabe | Personenlisten, Prüfberichte |
+| `subcontractors` | [[Subunternehmer]] | 4.13 | Sub-Prüfung, AG-Zustimmung (4.13) | Personenlisten, Prüfberichte |
 
 ### Operative Anforderungen
 
@@ -448,7 +456,7 @@ Geplante Detailmodule (`module_creation_status: master_ready` am Index). Wikilin
 | `required_documents` | [[Erforderliche Dokumente]] | 4.1, 4.20, 4.23 | Nachweisportfolio | Angebotsmappe, Meldewesen |
 | `audit_evidence` | [[Auditnachweise]] | 4.1, 4.6, 4.18 | QMS, Kontrollsysteme | Auditberichte, Konformität |
 
-**SDL-Platzhalter** (strukturell, `type: standard_module`): `allgemeine_anforderungen`, `Stationäre Sicherungsdienstleistungen`, `mobile_sicherungsdienstleistungen`, `interventionsdienst`, `veranstaltungsdienst` — Routing zu [[overview]] und `knowledge/3_sdls/`.
+**SDL-Platzhalter** (strukturell, `type: standard_module`): `Stationäre Sicherungsdienstleistungen`, `mobile_sicherungsdienstleistungen`, `interventionsdienst`, `veranstaltungsdienst` — Routing zu [[overview]] und `knowledge/3_sdls/`. *(Kein aktives Modul `allgemeine_anforderungen` in DIN 77200-1 — siehe inaktive Platzhalter unter `DIN 77200-2/`.)*
 
 ---
 
@@ -458,7 +466,7 @@ Reservierte Master-Indizes (`knowledge/1_standards/`) — **ohne Inhalt**, nur S
 
 | Standard | Zielpfad | Status |
 |----------|----------|--------|
-| DIN 77200-2 | `DIN 77200-2/overview.md` | reserviert |
+| DIN 77200-2 | `DIN 77200-2/` | Primärquelle in `inputs/raw_standards/DIN/` — Wissensmodule **inaktiv** |
 | DIN 77200-3 | `DIN 77200-3/overview.md` | reserviert |
 | ISO 9001 | `ISO 9001/overview.md` | reserviert |
 | ISO 14001 | `ISO 14001/overview.md` | reserviert |
@@ -565,8 +573,8 @@ Besondere Leistungsbereiche → **DIN 77200-2**. Zertifizierungsverfahren → **
 #### 3.8 Veranstaltungssicherungsdienst
 
 - **Thema:** SDL bei Veranstaltungen (Kontrollen, Streifen, Alarme)
-- **Relevanz für Audits:** Abgrenzung zu DIN 77200-2 bei besonderer Sicherheitsrelevanz
-- **Relevanz für Dokumentation:** Einsatzkonzept, GB, SK
+- **Relevanz für Audits:** **77200-1:** SDL-Typ **≠** automatisch SK/EK — **Auslöser** (Vertrag, AG-Vorgabe, Gefährdung, …) prüfen; Abgrenzung zu **77200-2 Kap. 5** (besondere Sicherheitsrelevanz)
+- **Relevanz für Dokumentation:** **Einfach:** Profil → DI · **Mit Auslösern:** SK → Profil → EK → DI · **77200-2 Kap. 5:** SK (AG, muss) → Profil → EK (AN, muss) → DI
 
 #### 3.9–3.22 Weitere Begriffe
 
@@ -583,7 +591,7 @@ Besondere Leistungsbereiche → **DIN 77200-2**. Zertifizierungsverfahren → **
 | 3.17 | Schulung | Abgrenzung zu Einweisung/Weiterbildung |
 | 3.18 | Einweisung | 4.14.5; nicht als Weiterbildungszeit |
 | 3.19 | Training | Aufrechterhaltung von Fertigkeiten |
-| 3.20 | Einsatzkonzept | Angebots- und Planungsdokument (4.23) |
+| 3.20 | Einsatzkonzept (EK) | **77200-1:** Angebot 4.23, Betrieb kontextabhängig · **77200-2:** AN **muss** (Kap. 4) |
 | 3.21 | Auftraggeber (AG) | Vertragspartner; Informationspflichten |
 | 3.22 | Auftragnehmer (AN) | Nachweispflichten; QM/RM |
 
@@ -653,13 +661,13 @@ Besondere Leistungsbereiche → **DIN 77200-2**. Zertifizierungsverfahren → **
 
 - **Thema:** AG/AN-Abstimmung der SDL-Tätigkeiten gemäß Anhang A; Vertragsbestandteil; jährliche Überprüfung; Basis für Aus-/Weiterbildung
 - **Relevanz für Audits:** Profilabgleich mit eingesetztem Personal
-- **Relevanz für Dokumentation:** **Anforderungsprofil**, Qualifikationsmatrix
+- **Relevanz für Dokumentation:** **Anforderungsprofil**, Qualifikationsmatrix — Detailmodul: [[Anforderungsprofile]]
 
 #### 4.12 Dienstanweisungen
 
-- **Thema:** Objekt-/aufgabenspezifisch; Kräfteeinsatz, Notfall, Kommunikation, AGS, Meldewesen; Verfügbarkeit am Leistungsort; jährliche Prüfung; Interventions-Regelwerk
-- **Relevanz für Audits:** Inhalt, Aktualität, Verfügbarkeit
-- **Relevanz für Dokumentation:** **Dienstanweisung / ODA**, Prüfprotokolle
+- **Thema:** Objekt-/aufgabenspezifisch; Kräfteeinsatz, Notfall, Kommunikation, AGS, Meldewesen; Verfügbarkeit am Leistungsort; jährliche Prüfung; Interventions-Regelwerk; **AG-Abstimmung / dokumentierte Freigabe der abgestimmten DI** (4.23); **interne Freigabe / Lenkung nach QMS** (4.6)
+- **Relevanz für Audits:** Inhalt, Aktualität, Verfügbarkeit; getrennte Prüfung AG-Spur vs. QMS-Spur
+- **Relevanz für Dokumentation:** **Dienstanweisung / ODA**, Prüfprotokolle — Erstellung primär aus Profil (4.11/4.12), *(ggf. Einsatzkonzept)* bei Angebots-/komplexem Kontext
 
 #### 4.13 Einsatz von Subunternehmern
 
@@ -765,9 +773,9 @@ Besondere Leistungsbereiche → **DIN 77200-2**. Zertifizierungsverfahren → **
 
 #### 4.23 Angebotsdokumentation
 
-- **Thema:** AG-Vorgaben für Auftragsfestlegung; AN-Angebotsunterlagen; Einsatzkonzept; Gewerbe-/Register-/Finanznachweise
-- **Relevanz für Audits:** Angebotsvollständigkeit bei Ausschreibungen
-- **Relevanz für Dokumentation:** **Angebotsmappe**, Einsatzkonzept, Konformitätserklärung
+- **Thema:** AG-Vorgaben für Auftragsfestlegung; AN-Angebotsunterlagen; **auftragsbezogenes Einsatzkonzept (4.23-Angebot)**; Gewerbe-/Register-/Finanznachweise; Festlegung **AG-Abstimmung / dokumentierte Freigabe der abgestimmten DI**
+- **Relevanz für Audits:** Angebotsvollständigkeit bei Ausschreibungen — Einsatzkonzept **Angebotskontext**, nicht pauschal je SDL im Betrieb
+- **Relevanz für Dokumentation:** **Angebotsmappe**, *(ggf.)* Einsatzkonzept, Konformitätserklärung
 
 #### 4.24 Einsatz von Führungskräften
 
@@ -901,17 +909,18 @@ Melde-, Berichts- und Archivwesen; Einsatzdokumentation; Angebotsdokumentation.
 
 Objekt-/aufgabenspezifische operative Regelungen als Vertragsbestandteil.
 
-- **Normkapitel:** 4.12; Begriff 3.13
-- **Audit-Schwerpunkte:** Verfügbarkeit am Leistungsort, jährliche Prüfung, Interventions-Regelwerk
-- **Dokumente:** Dienstanweisung, Prüfprotokoll
+- **Normkapitel:** 4.12; 4.23; Begriff 3.13
+- **Audit-Schwerpunkte:** Verfügbarkeit am Leistungsort, jährliche Prüfung, Interventions-Regelwerk; **AG-Abstimmung / dokumentierte Freigabe der abgestimmten DI**; **interne Freigabe / Lenkung nach QMS**
+- **Dokumente:** Dienstanweisung, Prüfprotokoll — *(ggf. Einsatzkonzept)* nur Angebots-/komplexer Kontext
 
 ### Anforderungsprofile
 
-Vertragliche Festlegung der SDL-Tätigkeiten und Qualifikationsanforderungen.
+Vertragliche Festlegung der SDL-Tätigkeiten und Qualifikationsanforderungen — **zentrales Steuerungsdokument** (profil-first).
 
-- **Normkapitel:** 4.11, Anhang A
-- **Audit-Schwerpunkte:** Aktualität (jährlich), Abgleich mit eingesetztem Personal
+- **Normkapitel:** 4.11, Anhang A; **77200-2:** Anhang C
+- **Audit-Schwerpunkte:** Aktualität (jährlich), Abstimmung AG/AN, Abgleich mit eingesetztem Personal
 - **Dokumente:** Anforderungsprofil, Qualifikationsmatrix
+- **Detailmodul:** [[Anforderungsprofile]]
 
 ### Risikomanagement
 
@@ -958,7 +967,7 @@ Organisierter AGS mit Gefährdungsbeurteilung je Leistungsort und Unterweisung.
 Zulassung, Prüfung und Benennung eingesetzter Subunternehmer-SMA.
 
 - **Normkapitel:** 4.13
-- **Audit-Schwerpunkte:** AG-Freigabe, Prüfzyklen, Personenlisten
+- **Audit-Schwerpunkte:** AG-Zustimmung (4.13), Prüfzyklen, Personenlisten
 - **Dokumente:** Subunternehmer-Akte, Prüfberichte
 
 ### Auditierung
@@ -979,13 +988,30 @@ Implizit über QM (4.6), Beschwerde- und Risikomanagement; regelmäßige institu
 
 ---
 
+## Dokumentenkette SK / EK
+
+Zentrale Referenz: [[Erforderliche Dokumente]]. **77200-1** und **77200-2** getrennt betrachten.
+
+| Kontext | Typische Kette | SK | EK |
+|---------|----------------|----|----|
+| **Einfache SDL (77200-1)** | Vertrag → Profil → DI → Einweisung → Leistung | normalerweise nicht erforderlich | normalerweise nicht erforderlich *(Betrieb)* |
+| **Veranstaltung (nur 77200-1)** | **Einfach:** Profil → DI → Einweisung → Leistung | normalerweise nicht | normalerweise nicht |
+| **Veranstaltung + Auslöser** *(77200-1)* | SK → Profil → EK → DI → … | kontextabhängig / vertraglich | folgt typischerweise bei SK |
+| **DIN 77200-2 (Kap. 5–8)** | SK (AG) → Profil → EK (AN) → DI (aus EK) → Einweisung → Leistung | **erforderlich** (AG **muss**) | **erforderlich** (AN **muss**) |
+
+**77200-1 Veranstaltung — SK/EK-Auslöser** *(mindestens einer; keine Normpflicht durch SDL-Typ allein):* AG stellt SK bereit · Vertrag/Ausschreibung fordert SK · behördliche Auflagen · besondere Gefährdungslage · erhöhte Sicherheitsrelevanz · mehrere SDL-Anbieter/komplexe Schnittstellen · Großveranstaltung/komplexe Struktur · besondere Schutzgüter/erhöhte Besuchergefährdung.
+
+**DIN 77200-2 Primärquelle (Kap. 4):** AG **muss** SK zur Angebotserstellung bereitstellen — ohne SK keine SDL nach 77200-2. AN **muss** EK erstellen; DI **aus EK** (77200-1, 4.12). Kap. 5 = Veranstaltungen **mit besonderer** Sicherheitsrelevanz (5.1) — **≠** jede 77200-1-Veranstaltung.
+
+---
+
 ## Verknüpfte Dokumenttypen
 
 | Dokumenttyp | Bezug zu DIN 77200-1 | Typische Normanker |
 |-------------|----------------------|-------------------|
 | Gefährdungsbeurteilung (GB) | AGS je Leistungsort | 4.8 |
-| Sicherheitskonzept (SK) | Planung, Schutzziele, Risikovorsorge | Einleitung, 4.7, 4.23 |
-| Einsatzkonzept (EC) | Operative Umsetzung, Kräfte, Kommunikation | 3.20, 4.12, 4.17, 4.23 |
+| Sicherheitskonzept (SK) | **AG-Planungsgrundlage**; **77200-2:** AG **muss** bereitstellen | 77200-2, Kap. 4; Einleitung 77200-2 |
+| Einsatzkonzept (EK) | **77200-2:** AN **muss**; **77200-1:** Angebot 4.23 + kontextabhängig im Betrieb | 77200-2, Kap. 4; 77200-1, 3.20, 4.12, 4.23 |
 | Dienstanweisung / ODA | Objektbezogene Regelungen | 4.12 |
 | Anforderungsprofil | Vertragliche Leistungs- und Qualifikationsfestlegung | 4.11, Anhang A |
 | Angebotsdokumentation | Ausschreibung, Konformitätserklärung | 4.23 |
@@ -1004,9 +1030,9 @@ Implizit über QM (4.6), Beschwerde- und Risikomanagement; regelmäßige institu
 | Revierdienst | `revierdienst/` | Mobil |
 | Interventionsdienst | `interventionsdienst/` | Mobil; Regelwerk 4.12 |
 | Kontrolldienst (mobil) | `mobiler_kontrolldienst/` | Mobil |
-| Veranstaltungssicherungsdienst | `veranstaltungsdienst/` | Veranstaltung; DIN 77200-2 bei besonderer Relevanz |
+| Veranstaltungssicherungsdienst | `veranstaltungsdienst/` | **77200-1:** nicht pauschal SK/EK · **77200-2 Kap. 5:** besondere Sicherheitsrelevanz |
 
-**Hinweis:** Besondere Leistungsbereiche (Flüchtlingsunterkünfte, Objekte mit besonderer Sicherheitsrelevanz, Veranstaltungen mit erhöhter Gefährdung, ÖPNV) werden in **DIN 77200-2** behandelt und bauen auf dieser Übersicht auf.
+**Hinweis:** Besondere Leistungsbereiche (Flüchtlingsunterkünfte, Objekte mit besonderer Sicherheitsrelevanz, Veranstaltungen mit **besonderer** Sicherheitsrelevanz, ÖPNV) sind **DIN 77200-2 Kap. 5–8**. Dort: SK **muss** vom AG, EK **muss** vom AN (Kap. 4). **77200-1-Veranstaltungssicherungsdienst ohne 77200-2-Tatbestand:** einfache Veranstaltung → Profil → DI; **mit Auslösern** → SK/EK-Kette — SDL-Typ allein löst **nicht** SK/EK aus.
 
 ---
 
@@ -1015,7 +1041,7 @@ Implizit über QM (4.6), Beschwerde- und Risikomanagement; regelmäßige institu
 | Prozess | Beschreibung | Normanker |
 |---------|--------------|-----------|
 | Zertifizierung / Konformitätsbewertung | Nachweis der Leistungsfähigkeit nach DIN 77200-Reihe | Einleitung; DIN 77200-3 |
-| Auftrags- / Angebotsprozess | Ausschreibung, Angebotsmappe, Einsatzkonzept | 4.23, 4.10 |
+| Auftrags- / Angebotsprozess | Ausschreibung, Angebotsmappe, **Einsatzkonzept (4.23-Angebot)**; Profil → DI | 4.23, 4.10 |
 | Personalauswahl & Qualifikation | Einstellung, Profilabgleich, §34a | 4.1, 4.14, 4.19, Anhang A |
 | Einsatzplanung & Führung | Einsatzleitung, Führungskräfte, Kommunikation | 4.2, 4.17, 4.24, 4.25 |
 | Beschwerdemanagement | Reklamationen, Korrekturmaßnahmen | 4.5 |

@@ -11,6 +11,7 @@ parent_standard: DIN 77200-1
 knowledge_path: knowledge/1_standards/DIN 77200-1/Auditnachweise.md
 source_documents:
   - inputs/raw_standards/din/DIN_77200_1_2022
+  - inputs/raw_standards/din/DIN_77200_2_2020
 norm_references:
   - "4.1"
   - "4.3"
@@ -142,7 +143,7 @@ Detaildokumente (Vertrag, Profil, DI, Qualifikation): [[Erforderliche Dokumente]
 | Dienstausweise | 4.14.4 | [[Erforderliche Dokumente]] |
 | Unterweisung | 4.14.5 | [[Qualifikationsanforderungen]] |
 | Qualifikation | 4.19.1 | [[Qualifikationsanforderungen]] |
-| Weiterbildung | 4.19.2 | [[Weiterbildung]] *(geplant)* |
+| Weiterbildung | 4.19.2 | [[Weiterbildung]] |
 | Melde- und Berichtswesen | 4.20 | [[Erforderliche Dokumente]] |
 | Schließmittelverwaltung | 4.21 | [[Erforderliche Dokumente]] |
 
@@ -286,13 +287,17 @@ Detail: [[Erforderliche Dokumente]] — Meldewesen/Berichte.
 
 ```
 Vertrag 4.10
+  → (ggf.) SK — AG-Planungsgrundlage (77200-1: nur bei **Auslösern**; 77200-2: **muss**)
   → Profil 4.11
-  → DI 4.12 (+ AG-Freigabe 4.23)
+  → (ggf.) EK — AN (77200-1: Auslöser/Angebot 4.23; 77200-2: **muss**)
+  → DI 4.12 (+ AG-Abstimmung / dokumentierte Freigabe der abgestimmten DI 4.23)
   → Personal 4.1 b + 4.14.2
   → Einweisung 4.25
   → Laufzeit: Meldewesen 4.20 / Kontrolle 4.18
   → Führung 4.24
 ```
+
+*(Einfache SDL / einfache 77200-1-Veranstaltung ohne Auslöser: Profil → DI ohne pauschales SK/EK.)*
 
 ### Spur C — Personal-Stichprobe
 
@@ -347,7 +352,7 @@ Auftragsbezogene NCs (Vertrag, Profil, DI): [[Erforderliche Dokumente]] — NC-V
 - **Audit-Ready-Ordner** je Auftrag + **Systemordner** 4.1/QMS getrennt.
 - Vor Zertifizierung: Mock-Audit entlang Spur A + Stichprobe Spur B.
 - NC-Register mit Wirksamkeitsprüfung — aligned zu 4.6.
-- Digitale Signatur/Freigabe für GB, DI, EC — `approved_by` in Cert-Expert-Produkten.
+- Digitale Signatur/Freigabe für GB, DI, *(ggf. Einsatzkonzept)* — `approved_by` in Cert-Expert-Produkten.
 
 ---
 
@@ -453,8 +458,9 @@ Auftragsbezogene NCs (Vertrag, Profil, DI): [[Erforderliche Dokumente]] — NC-V
 | Cert-Expert-Produkt | Audit-Relevanz |
 |--------------------|----------------|
 | GB | 4.8 — bis Freigabe kein Konformitätsnachweis |
-| EC / SK | Angebot/Planung — Konsistenz mit Profil |
-| ODA / DI | 4.12 — Verfügbarkeit + Freigabespur |
+| Sicherheitskonzept (SK) | **77200-2:** AG **muss** — ohne SK keine SDL nach 77200-2; **77200-1 einfach / Veranstaltung ohne Auslöser:** fehlendes SK ≠ pauschal NC |
+| Einsatzkonzept (EK) | **77200-2:** AN **muss**, DI aus EK; **77200-1:** Angebot 4.23 + nur bei **Auslösern** audit-relevant |
+| ODA / DI | 4.12 — Verfügbarkeit + **AG-Abstimmung / dokumentierte Freigabe der abgestimmten DI** + **interne Freigabe / Lenkung nach QMS** |
 | Angebotsmappe | 4.23 + Konformitätskurzdoku |
 
 ---
@@ -491,7 +497,8 @@ Auftragsbezogene NCs (Vertrag, Profil, DI): [[Erforderliche Dokumente]] — NC-V
 
 - **Norm / Audit / Best Practice** trennen; **keine Normtexte** kopieren.
 - [[Erforderliche Dokumente]] für **Dokumentenketten**; dieses Modul für **Nachweisqualität & Audit-Spuren**.
-- `approved_by` leer bei GB/DI/EC ⇒ **kein Audit-Nachweis der Freigabe** — `[OFFENER PUNKT]`.
+- SDL-Kontext vor SK/EK-Bewertung: **77200-1 einfach** / **77200-1 Veranstaltung** (Auslöser prüfen) / **77200-2 Kap. 5–8** — bei 77200-2 fehlendes SK oder EK **normrelevant** (Kap. 4); bei 77200-1-Veranstaltung **ohne Auslöser** fehlendes SK/EK **≠** pauschal NC.
+- `approved_by` leer bei GB/DI/(ggf. Einsatzkonzept) ⇒ **kein Audit-Nachweis der Freigabe** — `[OFFENER PUNKT]`.
 - Internes Audit-Protokoll **belegt nicht** fehlende §34a-Nachweise.
 - **77200-3** nur einordnen — kein Zertifizierungsverfahren erfinden.
 - Fristenangaben nur mit Datum aus Projektinput — sonst `[OFFENER PUNKT]`.
@@ -507,7 +514,7 @@ Auftragsbezogene NCs (Vertrag, Profil, DI): [[Erforderliche Dokumente]] — NC-V
 | [[overview]] | Master-Index; Auditierung-Themenbereich |
 | [[Erforderliche Dokumente]] | Dokumentenlogik & Auftragskette |
 | [[Qualifikationsanforderungen]] | 4.1 b; Personal-Stichprobe |
-| [[Dienstanweisungen]] | DI-Verfügbarkeit, Prüfzyklus, Freigabe |
+| [[Dienstanweisungen]] | DI-Verfügbarkeit, Prüfzyklus, AG-Abstimmung / dokumentierte Freigabe, interne Freigabe / Lenkung nach QMS |
 | [[Führungsanforderungen]] | 4.2, 4.24 — Führungsnachweise |
 | [[Weiterbildung]] | 4.19.2 — UE-Nachweise |
 | [[Subunternehmer]] | 4.13 — Sub-Audit |
@@ -534,7 +541,7 @@ Auftragsbezogene NCs (Vertrag, Profil, DI): [[Erforderliche Dokumente]] — NC-V
 | Revier / mobiler Kontrolldienst | 4.18 Kontrollgänge; Revierprotokolle |
 | Interventionsdienst | Alarm-/Interventionsprotokolle; 4.19.1 |
 | Stationäre SDL | GB Objekt; Führung vor Ort; DI-Verfügbarkeit |
-| Veranstaltungsdienst | Einsatzdokumentation; Meldewesen; ggf. SK/EC |
+| Veranstaltungsdienst | **77200-1:** Profil → DI ohne Auslöser · **mit Auslösern:** SK/EK prüfen · **77200-2 Kap. 5:** SK+EK **erforderlich** (5.1) |
 
 ---
 
@@ -543,6 +550,7 @@ Auftragsbezogene NCs (Vertrag, Profil, DI): [[Erforderliche Dokumente]] — NC-V
 | Quelle | Typ |
 |--------|-----|
 | DIN 77200-1:2022-10 — 4.1, 4.3, 4.5–4.9, 4.18, 4.20, 4.23 | Norm |
+| DIN 77200-2:2020-07 — Kap. 4 SK/EK (`source_documents`) | Norm |
 | DIN 77200-3 (Konformitätsbewertung) | Normreihe — Einordnung |
 | Literaturhinweis DIN EN ISO 9001 (4.6, 4.5, 4.7) | QMS-Referenz |
 | [[Erforderliche Dokumente]] | Peer — Dokumentenkette |
