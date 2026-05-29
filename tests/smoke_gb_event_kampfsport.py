@@ -2,7 +2,7 @@
 End-to-end smoke test for the gb_event_kampfsport pipeline — without LLM.
 
 What this test covers (Phase 1 minimum):
-  1. Blueprint loads cleanly from knowledge/blueprints/gb_event_kampfsport.json
+  1. Blueprint loads cleanly from knowledge/6_blueprint/gb_event_kampfsport.json
   2. All referenced knowledge modules exist on disk
   3. Input file inputs/gb_event_kampfsport.json loads cleanly via input_loader
   4. context_builder produces a non-empty system_prompt with the expected sections

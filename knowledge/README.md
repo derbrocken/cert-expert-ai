@@ -27,14 +27,16 @@ Globales, wiederverwendbares Fachwissen für die Cert-Expert AI Fachbots.
 
 ```
 knowledge/
-├── standards/     Rechtliche Regelwerke und Normen (Überblicksebene)
-├── sdls/          Fachliches Domänenwissen pro Sicherheitsdienstleistungsbereich
-├── products/      Dokumentprodukt-Wissen (GB, SK, EC, ODA) + Cert-Expert-Terminologie
-├── blueprints/    Blueprint-Konfigurationsdateien (JSON) — maschinenlesbar
-├── rules/         Harte Bot-Verhaltensregeln (base/, products/, blueprints/)
-├── examples/      Positiv-Beispiele für fachlichen Inhalt pro Inhaltsblock
-├── guides/        Schreibanleitungen für Inhaltsblöcke und Schreibstil
-└── prompts/       Wiederverwendbare Prompt-Bausteine und User-Prompt-Templates
+├── 1_standards/     Normen und Standards (Überblicksebene)
+├── 2_regulations/   Rechtliche Regelwerke (Überblicksebene)
+├── 3_sdls/          Fachliches Domänenwissen pro Sicherheitsdienstleistungsbereich
+├── 5_products/      Dokumentprodukt-Wissen (GB, SK, EC, ODA) + Cert-Expert-Terminologie
+├── 6_blueprint/     Blueprint-Konfigurationsdateien (JSON) — maschinenlesbar
+├── 7_guides/        Schreibanleitungen für Inhaltsblöcke und Schreibstil
+├── 9_rules/         Harte Bot-Verhaltensregeln (base/, products/, blueprints/)
+└── 10_examples/     Positiv-Beispiele für fachlichen Inhalt pro Inhaltsblock
+
+prompts/             Wiederverwendbare Prompt-Bausteine (Repo-Root, nicht unter knowledge/)
 ```
 
 ---
@@ -50,11 +52,8 @@ knowledge/
 
 ---
 
-## Namenskonventionen
+## Verwandte Dokumentation
 
-- Ordnernamen: `snake_case`, Deutsch
-- Dateien: `snake_case.md` oder `snake_case.json`
-- Beispieldateien: `{block_typ}/{sdl_bereich}_{subtyp}.md`
-  z. B. `examples/gb_gefaehrdungen/veranstaltungsschutz_kampfsport.md`
-- Blueprint-Configs: `{document_product}_{sdl_bereich}_{subtyp}.json`
-  z. B. `blueprints/gb_event_kampfsport.json`
+- [`docs/KNOWLEDGE_ARCHITECTURE.md`](../docs/KNOWLEDGE_ARCHITECTURE.md) — Architektur und Lade-Reihenfolge
+- [`docs/KNOWLEDGE_CURATION_GUIDE.md`](../docs/KNOWLEDGE_CURATION_GUIDE.md) — Kuratierungsrichtlinien
+- [`docs/BLUEPRINT_ARCHITECTURE.md`](../docs/BLUEPRINT_ARCHITECTURE.md) — Blueprint-System

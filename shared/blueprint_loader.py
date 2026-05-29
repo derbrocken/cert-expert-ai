@@ -1,11 +1,11 @@
 """
 shared/blueprint_loader.py — Lädt und validiert eine Blueprint-Konfiguration
-aus `knowledge/blueprints/{blueprint_id}.json`.
+aus `knowledge/6_blueprint/{blueprint_id}.json`.
 
 Verantwortlichkeit:
 - Blueprint-JSON laden
 - Pflichtfelder prüfen
-- Pfade zu Wissensmodulen (relativ zu knowledge/{kategorie}/) ermitteln
+- Pfade zu Wissensmodulen (relativ zur logischen Kategorie, z. B. products/) ermitteln
 - Auflösung aller referenzierten Knowledge-Dateien auf absolute Pfade
 - KEINE Datei-Inhalte lesen — das ist Aufgabe des context_builder
 
@@ -20,7 +20,9 @@ from pathlib import Path
 from typing import Any
 
 _PROJECT_ROOT = Path(__file__).resolve().parent.parent
-_BLUEPRINTS_DIR = _PROJECT_ROOT / "knowledge" / "blueprints"
+_KNOWLEDGE_ROOT = _PROJECT_ROOT / "knowledge"
+_BLUEPRINTS_DIR = _KNOWLEDGE_ROOT / "6_blueprint"
+_PROMPTS_DIR = _PROJECT_ROOT / "prompts"
 
 REQUIRED_BLUEPRINT_FIELDS = (
     "blueprint_id",
@@ -95,7 +97,7 @@ def load_blueprint(blueprint_id: str) -> Blueprint:
     if not config_path.exists():
         raise BlueprintError(
             f"Blueprint-Config nicht gefunden: {config_path}\n"
-            f"Verfügbare Blueprints siehe knowledge/blueprints/."
+            f"Verfügbare Blueprints siehe knowledge/6_blueprint/."
         )
 
     try:
@@ -159,14 +161,15 @@ def _validate_required_fields(raw: dict, config_path: Path) -> None:
         raise BlueprintError("input_schema.required (Liste) ist Pflicht.")
 
 
+# Logische Blueprint-Kategorie → physischer Ordner (relativ zu repo root).
 _KNOWLEDGE_CATEGORY_DIRS = {
-    "standards": "standards",
-    "sdls":      "sdls",
-    "products":  "products",
-    "rules":     "rules",
-    "guides":    "guides",
-    "examples":  "examples",
-    "prompts":   "prompts",
+    "standards": _KNOWLEDGE_ROOT / "2_regulations",
+    "sdls":      _KNOWLEDGE_ROOT / "3_sdls",
+    "products":  _KNOWLEDGE_ROOT / "5_products",
+    "rules":     _KNOWLEDGE_ROOT / "9_rules",
+    "guides":    _KNOWLEDGE_ROOT / "7_guides",
+    "examples":  _KNOWLEDGE_ROOT / "10_examples",
+    "prompts":   _PROMPTS_DIR,
 }
 
 
@@ -175,11 +178,9 @@ def _resolve_context_modules(
     blueprint_id: str,
 ) -> dict[str, tuple[Path, ...]]:
     """
-    Resolve each category's relative module paths to absolute Paths
-    rooted under knowledge/{category}/. Missing files raise BlueprintError —
-    we never silently skip referenced knowledge.
+    Resolve each category's relative module paths to absolute Paths.
+    Missing files raise BlueprintError — we never silently skip referenced knowledge.
     """
-    knowledge_root = _PROJECT_ROOT / "knowledge"
     resolved: dict[str, tuple[Path, ...]] = {}
 
     for category, entries in context_modules.items():
@@ -196,7 +197,7 @@ def _resolve_context_modules(
                 f"(Blueprint {blueprint_id})."
             )
 
-        category_dir = knowledge_root / _KNOWLEDGE_CATEGORY_DIRS[category]
+        category_dir = _KNOWLEDGE_CATEGORY_DIRS[category]
         paths: list[Path] = []
         missing: list[str] = []
         for rel in entries:

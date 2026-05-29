@@ -47,7 +47,7 @@ Real domain intelligence lives in the **knowledge modules**.
 
 ## SDL terminology (binding)
 
-- **Repository path (unchanged):** `knowledge/sdls/veranstaltungsschutz/`
+- **Repository path (unchanged):** `knowledge/3_sdls/veranstaltungsschutz/`
 - **Canonical prose name in modules:** **Veranstaltungsdienst (DIN 77200-1)**
 
 The folder name reflects the Cert-Expert domain label; in running text inside
@@ -58,7 +58,7 @@ stay consistent.
 
 | Concept | Meaning | Examples (illustrative) |
 |--------|---------|-------------------------|
-| **SDL** | Service category per DIN 77200-1 | Veranstaltungsdienst — repo path `knowledge/sdls/veranstaltungsschutz/` |
+| **SDL** | Service category per DIN 77200-1 | Veranstaltungsdienst — repo path `knowledge/3_sdls/veranstaltungsschutz/` |
 | **Event subtype** | Genre / format of the event | Kampfsport, Fußball, Festival, Straßenfest — `subtypes/*.md` |
 | **Interface / component** | Partner or domain that cuts across event types and **document products** | Sanitätsdienst, Polizei, Feuerwehr, Veranstalter, Hallenbetrieb, Technik — **not** an SDL subtype |
 
@@ -76,7 +76,7 @@ with `kampfsport.md` et al. as if “Sanität were a genre.”
 
 ### Level 1 — Standards / normative foundations
 
-**Path:** `knowledge/standards/`
+**Path:** `knowledge/2_regulations/`
 
 Contains: normative requirements, legal principles, minimum expectations,
 duties, boundaries, prohibitions, typical evidence types.
@@ -91,7 +91,7 @@ never be fabricated**.
 
 ### Level 2 — SDL / service-domain knowledge
 
-**Path:** `knowledge/sdls/veranstaltungsschutz/` (Veranstaltungsdienst)
+**Path:** `knowledge/3_sdls/veranstaltungsschutz/` (Veranstaltungsdienst)
 
 **Layout:**
 
@@ -113,9 +113,9 @@ interfaces such as **Sanitätsdienst** are **not** subtypes; they are covered at
 
 ### Level 3 — Product knowledge
 
-**Path:** `knowledge/products/`
+**Path:** `knowledge/5_products/`
 
-Per product (e.g. `gefaehrdungsbeurteilung/`, `sicherheitskonzept/`):
+Per product (e.g. `Gefährdungsbeurteilung/`, `sicherheitskonzept/`):
 purpose, expected depth, important chapters, language level, mandatory
 information, **reviewer-relevant boundaries**.
 
@@ -123,7 +123,7 @@ information, **reviewer-relevant boundaries**.
 
 ### Level 4 — Guides (method & formulation)
 
-**Path:** `knowledge/guides/`
+**Path:** `knowledge/7_guides/`
 
 Method knowledge: assessment logic, formulation rules, writing standards,
 anti-hallucination behavior, consistency rules.
@@ -136,7 +136,7 @@ inputs.
 
 ### Level 5 — Examples / raw-style material
 
-**Path:** `knowledge/examples/`
+**Path:** `knowledge/10_examples/`
 
 Style, structure, and depth references only. **Not** a source of facts:
 no leaking numbers, paragraphs, channel names, or deployment splits into model
@@ -146,11 +146,11 @@ output unless present in **job input**.
 
 ### Additional layers (already in architecture)
 
-- **`knowledge/rules/`** — hard behavior rules (base / product / blueprint)
-- **`knowledge/prompts/`** — templates and injectable instruction fragments
+- **`knowledge/9_rules/`** — hard behavior rules (base / product / blueprint)
+- **`prompts/`** — templates and injectable instruction fragments
 
 Bot-facing **reviewer handoff** rules:
-`knowledge/rules/base/reviewer_handoff.md`.
+`knowledge/9_rules/base/reviewer_handoff.md`.
 
 Human-facing reviewer governance: `docs/REVIEWER_LOGIC.md`.
 
@@ -161,7 +161,7 @@ Human-facing reviewer governance: `docs/REVIEWER_LOGIC.md`.
 **Path:** `projects/_knowledge_raw/` — **global** intake for all SDLs, products,
 interfaces, norms, and reviewer logic. **Never** referenced by blueprints or
 loaders. **Norms and raw extracts do not drive document generation** until
-curated into `knowledge/standards/` (or other live modules).
+curated into `knowledge/2_regulations/` (or other live modules).
 
 **Layout:**
 
@@ -192,7 +192,7 @@ projects/_knowledge_raw/
 │   ├── mobiler_dienst/
 │   └── interventionsdienst/
 ├── produkte/
-│   ├── gefaehrdungsbeurteilung/
+│   ├── Gefährdungsbeurteilung/
 │   ├── sicherheitskonzept/
 │   ├── einsatzkonzept/
 │   └── oda/
@@ -207,7 +207,7 @@ projects/_knowledge_raw/
 | Branch | Purpose |
 |--------|---------|
 | **`normen/`** | Global raw regulatory and standards material. |
-| **`sdls/`** | Raw field knowledge per service domain (map to `knowledge/sdls/` when curating). |
+| **`sdls/`** | Raw field knowledge per service domain (map to `knowledge/3_sdls/` when curating). |
 | **`produkte/`** | Raw **document/product** methodology (GB, SK, EK/EC, ODA). |
 | **`schnittstellen/`** | Cross-cutting interfaces (several SDLs and products). **Sanitätsdienst** lives here, not under `subtypes/`. |
 | **`reviewerlogik/`** | Internal QA, approval, and “never auto-finalize” drafts. |
@@ -277,14 +277,14 @@ SDL `base` + subtype without duplicating monoliths.
 Initial **fachliche** expansion for all event blueprints:
 
 1. **Veranstaltungsphasen** and **general interface logic** in  
-   `knowledge/sdls/veranstaltungsschutz/base.md`
+   `knowledge/3_sdls/veranstaltungsschutz/base.md`
 
 2. Genre-specific depth (e.g. Kampfsport vs Festival) follows from **explicit
-   expert input** staged under `projects/_knowledge_raw/sdls/veranstaltungsschutz/subtypes/`, then curation into `knowledge/sdls/.../subtypes/`.
+   expert input** staged under `projects/_knowledge_raw/sdls/veranstaltungsschutz/subtypes/`, then curation into `knowledge/3_sdls/.../subtypes/`.
    **Interface** topics (Sanitätsdienst, Behörden, Auftraggeber) follow from
    `projects/_knowledge_raw/schnittstellen/`; **normative** raw material from
    `projects/_knowledge_raw/normen/`. After curation: `base.md`,
-   `knowledge/standards/`, and product rules — not from autonomous model
+   `knowledge/2_regulations/`, and product rules — not from autonomous model
    invention.
 
 ---

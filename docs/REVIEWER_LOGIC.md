@@ -4,7 +4,7 @@ Version: 1.0 | Stand: 2026-05-18 | Status: governance
 
 This document is **human-facing**. It is **not** loaded into model prompts.
 Bot-facing operational rules derived from it live in
-`knowledge/rules/base/reviewer_handoff.md`.
+`knowledge/9_rules/base/reviewer_handoff.md`.
 
 ---
 
@@ -48,7 +48,7 @@ Reviewers **must** verify items in these categories when present or implied:
 | **Freigabe der GB / SK / EC / ODA** | `approved_by` and sign-off roles are human decisions. |
 
 This list is **not exhaustive**. Product-specific rules in
-`knowledge/rules/products/*.md` and blueprint rules may add mandatory review
+`knowledge/9_rules/products/*.md` and blueprint rules may add mandatory review
 triggers.
 
 ---
@@ -82,7 +82,7 @@ or supply evidence.
 
 ## Related files
 
-- `knowledge/rules/base/reviewer_handoff.md` — condensed model instructions
-- `knowledge/rules/base/hallucination_boundaries.md` — factual boundaries
-- `knowledge/rules/base/open_points_rules.md` — open-point discipline
-- `knowledge/rules/products/gb_rules.md` — GB product rules
+- `knowledge/9_rules/base/reviewer_handoff.md` — condensed model instructions
+- `knowledge/9_rules/base/hallucination_boundaries.md` — factual boundaries
+- `knowledge/9_rules/base/open_points_rules.md` — open-point discipline
+- `knowledge/9_rules/products/gb_rules.md` — GB product rules

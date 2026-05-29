@@ -284,7 +284,7 @@ immer als `[OFFENER PUNKT] (aus [Dokumenttyp])` weitergegeben.
 ## 6. Blueprint-Registry — Zukünftige Implementierung
 
 Die Blueprint-Registry ist **noch nicht implementiert**. Sie wird als JSON- oder
-YAML-Konfigurationsdatei je Blueprint in `knowledge/blueprints/` gespeichert.
+YAML-Konfigurationsdatei je Blueprint in `knowledge/6_blueprint/` gespeichert.
 
 ### 6.1 Geplante Struktur pro Blueprint
 
@@ -460,7 +460,7 @@ shared/
 
 ```
 shared/
-├── blueprint_loader.py   ← Lädt Blueprint-Konfiguration aus knowledge/blueprints/
+├── blueprint_loader.py   ← Lädt Blueprint-Konfiguration aus knowledge/6_blueprint/
 ├── dependency_resolver.py← Löst Upstream-Abhängigkeiten auf
 └── context_builder.py    ← Baut Kontext aus Blueprint + Upstream + Input
 

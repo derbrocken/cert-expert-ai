@@ -76,7 +76,7 @@ Vollständige Spezifikation der `projects/`-Schicht: `docs/PROJECT_ARCHITECTURE.
 Das Wissen ist in acht Kategorien unterteilt. Jede Kategorie ist nach ihrem
 **intrinsischen Typ** organisiert — nicht danach, welcher Blueprint sie verwendet.
 
-### 1.1 Standards (`knowledge/standards/`)
+### 1.1 Standards (`knowledge/2_regulations/`)
 
 Rechtliche Regelwerke, Normen und Verordnungen als Orientierungsrahmen.
 Gespeichert als **Überblicksdokumente** — kein Volltext, keine zitierfähigen Nummern.
@@ -105,7 +105,7 @@ standards/
 **Selektionsregel:** Blueprints referenzieren explizit, welche Standards geladen werden.
 VStättVO wird nur für eventbezogene Blueprints geladen. BetrSichV nur für Objekt-Blueprints.
 
-### 1.2 SDLs — Sicherheitsdienstleistungs-Wissensmodule (`knowledge/sdls/`)
+### 1.2 SDLs — Sicherheitsdienstleistungs-Wissensmodule (`knowledge/3_sdls/`)
 
 Fachliches Domänenwissen pro Sicherheitsdienstleistungsbereich.
 Jede SDL definiert: typische Gefährdungen, Risikoprofile, Schutzmaßnahmen,
@@ -156,7 +156,7 @@ sdls/
     └── base.md                 ← ÖPNV-Sicherheitsdienst, Fahrgastkontakt, Eskalation
 ```
 
-### 1.3 Products (`knowledge/products/`)
+### 1.3 Products (`knowledge/5_products/`)
 
 Wissen über die Cert-Expert-Dokumentprodukte: Zweck, Aufbau, Inhaltsblöcke und
 Abgrenzungen. Auch: Corporate Language, Terminologie und Formulierungsstandards.
@@ -165,7 +165,7 @@ Abgrenzungen. Auch: Corporate Language, Terminologie und Formulierungsstandards.
 
 ```
 products/
-├── gefaehrdungsbeurteilung/
+├── Gefährdungsbeurteilung/
 │   ├── purpose.md              ← Zweck, rechtliche Grundlage, Abgrenzung
 │   ├── structure_guide.md      ← Typische Kapitelstruktur, was wo hingehört
 │   └── content_blocks.md       ← GB_*-Platzhalter: was jeder Block enthalten muss
@@ -190,7 +190,7 @@ products/
     └── services_overview.md     ← Leistungsportfolio (für Kontext, nicht Zitat)
 ```
 
-### 1.4 Blueprints (`knowledge/blueprints/`)
+### 1.4 Blueprints (`knowledge/6_blueprint/`)
 
 Maschinenlesbare Konfigurationsdateien. Jede Datei beschreibt einen Blueprint als
 **Komposition von Modulen** aus anderen Kategorien. Blueprint-Configs werden von
@@ -207,14 +207,14 @@ Maschinenlesbare Konfigurationsdateien. Jede Datei beschreibt einen Blueprint al
   "modes": ["standalone", "flow"],
 
   "context_modules": {
-    "standards":  ["vstaettvo/overview.md", "dguv_v1/overview.md", "arbschg/overview.md"],
+    "standards":  ["VStättVO/overview.md", "dguv_v1/overview.md", "arbschg/overview.md"],
     "sdls":       ["veranstaltungsschutz/base.md", "veranstaltungsschutz/subtypes/kampfsport.md"],
-    "products":   ["gefaehrdungsbeurteilung/purpose.md", "gefaehrdungsbeurteilung/content_blocks.md"],
+    "products":   ["Gefährdungsbeurteilung/purpose.md", "Gefährdungsbeurteilung/content_blocks.md"],
     "rules":      ["base/hallucination_boundaries.md", "base/open_points_rules.md",
                    "base/citation_rules.md", "products/gb_rules.md",
                    "blueprints/gb_event.md"],
     "guides":     ["content_blocks/risikobewertung.md", "content_blocks/schutzmassnahmen.md"],
-    "examples":   ["gb_gefaehrdungen/veranstaltungsschutz_kampfsport.md",
+    "examples":   ["gb_gefährdungen/veranstaltungsschutz_kampfsport.md",
                    "gb_schutzmassnahmen/veranstaltungsschutz_kampfsport.md"],
     "prompts":    ["base/system_base.md", "base/hallucination_guard.md",
                    "base/open_point_instruction.md", "products/gb_user_prompt_template.md"]
@@ -244,7 +244,7 @@ Maschinenlesbare Konfigurationsdateien. Jede Datei beschreibt einen Blueprint al
 `gb_event_kampfsport`, tauscht aber `kampfsport.md` gegen `festival.md` und lädt
 andere Beispiele. Nur das Unterschiedliche wird neu definiert.
 
-### 1.5 Rules (`knowledge/rules/`)
+### 1.5 Rules (`knowledge/9_rules/`)
 
 Harte Regeln für Bot-Verhalten. Die wichtigste Kategorie für Halluzinationsschutz
 und OFFENER PUNKT-Logik.
@@ -276,7 +276,7 @@ rules/
 **Ladereihenfolge:** `base/*` → `products/{product}.md` → `blueprints/{blueprint}.md`
 Jede Ebene kann Regeln der vorherigen Ebene präzisieren, aber nicht außer Kraft setzen.
 
-### 1.6 Examples (`knowledge/examples/`)
+### 1.6 Examples (`knowledge/10_examples/`)
 
 Positiv-Beispiele für gut formulierten fachlichen Inhalt pro Inhaltsblock.
 Zeigen akzeptierbaren Schreibstil und Detailtiefe ohne Halluzinationen zu provozieren.
@@ -293,7 +293,7 @@ examples/
 │   ├── objektschutz_standard.md
 │   └── mobile_sicherheit.md
 │
-├── gb_gefaehrdungen/
+├── gb_gefährdungen/
 │   ├── veranstaltungsschutz_kampfsport.md
 │   ├── veranstaltungsschutz_festival.md
 │   ├── objektschutz_standard.md
@@ -315,10 +315,10 @@ examples/
 ```
 
 **Namenskonvention:** `{placeholder_namespace}_{sdl_domain}_{sdl_subtype}.md`
-Beispiel: `gb_gefaehrdungen/veranstaltungsschutz_kampfsport.md`
+Beispiel: `gb_gefährdungen/veranstaltungsschutz_kampfsport.md`
 → Inhaltsblock `GB_GEFAEHRDUNGEN`, SDL-Bereich Veranstaltungsschutz, Subtyp Kampfsport.
 
-### 1.7 Guides (`knowledge/guides/`)
+### 1.7 Guides (`knowledge/7_guides/`)
 
 Schreibanleitungen. Erklären, wie ein Abschnitt aufgebaut sein muss, welche
 Strukturelemente erwartet werden und welche Formulierungsmuster funktionieren.
@@ -341,7 +341,7 @@ guides/
     └── stop_prinzip.md          ← Substitution → Technisch → Organisatorisch → Persönlich
 ```
 
-### 1.8 Prompts (`knowledge/prompts/`)
+### 1.8 Prompts (`prompts/`)
 
 Wiederverwendbare Prompt-Bausteine und User-Prompt-Templates mit Variablen.
 Werden vom Context Builder zu vollständigen Prompts assembliert — nicht direkt an Qwen übergeben.
@@ -420,7 +420,7 @@ knowledge/
 │       └── base.md
 │
 ├── products/
-│   ├── gefaehrdungsbeurteilung/
+│   ├── Gefährdungsbeurteilung/
 │   │   ├── purpose.md
 │   │   ├── structure_guide.md
 │   │   └── content_blocks.md
@@ -489,7 +489,7 @@ knowledge/
 │   │   ├── veranstaltungsschutz_konzert.md
 │   │   ├── objektschutz_standard.md
 │   │   └── mobile_sicherheit.md
-│   ├── gb_gefaehrdungen/
+│   ├── gb_gefährdungen/
 │   │   ├── veranstaltungsschutz_kampfsport.md
 │   │   ├── veranstaltungsschutz_festival.md
 │   │   ├── objektschutz_standard.md
@@ -609,9 +609,9 @@ gb_event_kampfsport          gb_event_festival
         ├── rules/blueprints/gb_event.md
         ├── sdls/veranstaltungsschutz/base.md
         ├── sdls/veranstaltungsschutz/crowd_management.md
-        ├── standards/vstaettvo/overview.md
+        ├── standards/VStättVO/overview.md
         ├── standards/dguv_v1/overview.md
-        ├── products/gefaehrdungsbeurteilung/purpose.md
+        ├── products/Gefährdungsbeurteilung/purpose.md
         ├── guides/content_blocks/risikobewertung.md
         └── prompts/base/*
 
@@ -632,7 +632,7 @@ blueprint_id = "gb_event_kampfsport"
         │
         ▼
 blueprint_loader.py
-  → liest knowledge/blueprints/gb_event_kampfsport.json
+  → liest knowledge/6_blueprint/gb_event_kampfsport.json
   → gibt context_modules dict zurück
         │
         ▼
@@ -694,7 +694,7 @@ gb_bot.py → ask_qwen(system_prompt, user_prompt)
 | Kontext | System | Inhalte |
 |---|---|---|
 | **Entwicklungskontext** | Cursor / Claude | `docs/*.md`, Quellcode, Blueprint-Specs, diese Datei |
-| **Operativer Kontext** | Qwen (Laufzeit) | `knowledge/rules/`, `knowledge/sdls/`, `knowledge/standards/`, `knowledge/examples/`, `knowledge/guides/`, `knowledge/prompts/` |
+| **Operativer Kontext** | Qwen (Laufzeit) | `knowledge/9_rules/`, `knowledge/3_sdls/`, `knowledge/2_regulations/`, `knowledge/10_examples/`, `knowledge/7_guides/`, `prompts/` |
 
 **Trennungsregel:** `docs/`-Dateien gelangen **niemals** in Qwen-Prompts.
 `knowledge/`-Dateien enthalten **keine** technischen Architektur-Informationen.
@@ -755,8 +755,8 @@ Das System bleibt offline-fähig. Kein Cloud-Retrieval, keine externen API-Diens
 4. `rules/products/gb_rules.md`
 5. `sdls/veranstaltungsschutz/base.md`
 6. `sdls/veranstaltungsschutz/subtypes/kampfsport.md`
-7. `standards/vstaettvo/overview.md`
-8. `examples/gb_gefaehrdungen/veranstaltungsschutz_kampfsport.md`
+7. `standards/VStättVO/overview.md`
+8. `examples/gb_gefährdungen/veranstaltungsschutz_kampfsport.md`
 
 ### Phase 2 — Automatisiert, blueprint-gesteuert (geplant)
 

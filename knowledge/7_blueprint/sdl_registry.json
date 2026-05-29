@@ -1,0 +1,468 @@
+{
+  "registry_version": "1.0",
+  "last_updated": "2026-05-18",
+  "status": "initial",
+  "description": "Living registry of SDL groups, normative standards, and their relationships to knowledge modules, document products, and future blueprints. Add new entries without restructuring — extend arrays and objects only.",
+
+  "_usage_notes": [
+    "This registry is read by humans and future tooling — not by Qwen.",
+    "status values: 'initial' = structure defined, no content yet | 'planned' = content authoring started | 'active' = knowledge module exists and is used",
+    "knowledge_path is relative to repo root.",
+    "related_products refers to document product IDs (gb, sk, ec, oda).",
+    "future_blueprint_examples are illustrative — not final blueprint IDs."
+  ],
+
+  "normative_standards": {
+    "_description": "Parent standards that define the normative framework for Cert-Expert services and documents.",
+
+    "din_77200_1": {
+      "id": "din_77200_1",
+      "display_name": "DIN 77200-1 — Sicherungsdienstleistungen: Anforderungen",
+      "short_name": "DIN 77200-1",
+      "type": "service_standard",
+      "knowledge_path": "knowledge/1_standards/DIN 77200-1",
+      "status": "active",
+      "notes": "Definiert die grundlegenden Anforderungen an Sicherungsdienstleistungen. Vier Hauptanwendungsgruppen (stationär, mobil, Intervention, Veranstaltung). Basis für alle SDL-Gruppen in diesem Registry.",
+      "sdl_groups": [
+        "sdl_stationaer",
+        "sdl_mobil",
+        "sdl_interventionsdienst",
+        "sdl_veranstaltungsdienst"
+      ]
+    },
+
+    "din_77200_2": {
+      "id": "din_77200_2",
+      "display_name": "DIN 77200-2 — Sicherungsdienstleistungen: Besondere Anwendungsgruppen",
+      "short_name": "DIN 77200-2",
+      "type": "service_standard",
+      "knowledge_path": "knowledge/1_standards/DIN 77200-2",
+      "status": "planned",
+      "notes": "Besondere Anwendungsgruppen mit erhöhten Anforderungen. Baut auf DIN 77200-1 auf und definiert spezifische Zusatzanforderungen pro Anwendungsgruppe.",
+      "sdl_groups": [
+        "sdl_fluechtlingsunterkunft",
+        "sdl_objekt_besondere_relevanz",
+        "sdl_veranstaltung_erhoehte_gefaehrdung",
+        "sdl_opv"
+      ]
+    },
+
+    "iso_9001": {
+      "id": "iso_9001",
+      "display_name": "ISO 9001 — Qualitätsmanagementsystem",
+      "short_name": "ISO 9001",
+      "type": "management_system",
+      "knowledge_path": "knowledge/1_standards/ISO 9001",
+      "status": "planned",
+      "notes": "Qualitätsmanagementsystem für Cert-Expert als Organisation. Relevant für interne Prozesse, Dokumentenlenkung, und Nachweisführung — nicht spezifisch für einzelne SDL-Typen.",
+      "sdl_groups": []
+    },
+
+    "iso_14001": {
+      "id": "iso_14001",
+      "display_name": "ISO 14001 — Umweltmanagementsystem",
+      "short_name": "ISO 14001",
+      "type": "management_system",
+      "knowledge_path": "knowledge/1_standards/ISO 14001",
+      "status": "planned",
+      "notes": "Umweltmanagementsystem. Relevant wenn Cert-Expert Umweltaspekte in Dienstleistungsverträgen oder Gefährdungsbeurteilungen berücksichtigen muss.",
+      "sdl_groups": []
+    },
+
+    "iso_45001": {
+      "id": "iso_45001",
+      "display_name": "ISO 45001 — Arbeits- und Gesundheitsschutzmanagementsystem",
+      "short_name": "ISO 45001",
+      "type": "management_system",
+      "knowledge_path": "knowledge/1_standards/ISO 45001",
+      "status": "planned",
+      "notes": "Arbeitssicherheitsmanagementsystem. Hochrelevant für Gefährdungsbeurteilungen und Einsatzkonzepte. Komplementär zu ArbSchG und DGUV V1.",
+      "sdl_groups": [
+        "sdl_stationaer",
+        "sdl_mobil",
+        "sdl_interventionsdienst",
+        "sdl_veranstaltungsdienst"
+      ]
+    },
+
+    "arbschg": {
+      "id": "arbschg",
+      "display_name": "ArbSchG — Arbeitsschutzgesetz",
+      "short_name": "ArbSchG",
+      "type": "legal",
+      "knowledge_path": "knowledge/2_regulations/arbschg",
+      "status": "initial",
+      "notes": "Gesetzliche Pflicht zur Gefährdungsbeurteilung (§5). Basisgesetz für alle GB-Dokumente.",
+      "sdl_groups": ["*"]
+    },
+
+    "dguv_v1": {
+      "id": "dguv_v1",
+      "display_name": "DGUV Vorschrift 1 — Grundsätze der Prävention",
+      "short_name": "DGUV V1",
+      "type": "legal",
+      "knowledge_path": "knowledge/2_regulations/dguv_v1",
+      "status": "initial",
+      "notes": "Unfallverhütungsvorschrift. TOP-Prinzip und Schutzmaßnahmen-Hierarchie. Relevant für alle SDL-Typen.",
+      "sdl_groups": ["*"]
+    },
+
+    "VStättVO": {
+      "id": "vstaettvo",
+      "display_name": "VStättVO — Versammlungsstättenverordnung (länderspezifisch)",
+      "short_name": "VStättVO",
+      "type": "legal",
+      "knowledge_path": "knowledge/2_regulations/VStättVO",
+      "status": "initial",
+      "notes": "Länderspezifisch. Relevant für Veranstaltungs-Blueprints und Objekte mit Versammlungsstättencharakter.",
+      "sdl_groups": [
+        "sdl_veranstaltungsdienst",
+        "sdl_veranstaltung_erhoehte_gefaehrdung",
+        "sdl_objekt_besondere_relevanz"
+      ]
+    },
+
+    "bewachv": {
+      "id": "bewachv",
+      "display_name": "BewachV / §34a GewO — Bewachungsverordnung",
+      "short_name": "BewachV",
+      "type": "legal",
+      "knowledge_path": "knowledge/2_regulations/bewachv",
+      "status": "initial",
+      "notes": "Anforderungen an Sicherheitspersonal. Sachkunde, Zuverlässigkeit, Ausrüstung. Relevant für alle Fachbot-Dokumente.",
+      "sdl_groups": ["*"]
+    }
+  },
+
+  "sdl_groups": {
+
+    "sdl_stationaer": {
+      "id": "sdl_stationaer",
+      "display_name": "Stationäre Sicherungsdienstleistungen",
+      "standard_parent": "din_77200_1",
+      "standard_section": "Abschnitt stationär",
+      "knowledge_path": "knowledge/3_sdls/objektschutz",
+      "possible_subtypes": [
+        {
+          "id": "standard_objekt",
+          "display_name": "Standardobjekt / Gewerbeobjekt",
+          "knowledge_path": "knowledge/3_sdls/objektschutz/subtypes/standard_objekt.md",
+          "status": "initial"
+        },
+        {
+          "id": "sondergebaeude",
+          "display_name": "Gebäude mit besonderer Sicherheitsrelevanz",
+          "knowledge_path": "knowledge/3_sdls/objektschutz/subtypes/sondergebäude.md",
+          "status": "planned"
+        },
+        {
+          "id": "empfangsdienst",
+          "display_name": "Empfangs- und Schließdienst",
+          "knowledge_path": "knowledge/3_sdls/empfangsdienst/base.md",
+          "status": "planned"
+        }
+      ],
+      "related_products": ["gb", "sk", "oda"],
+      "related_standards": ["din_77200_1", "arbschg", "dguv_v1", "iso_45001", "bewachv"],
+      "status": "initial",
+      "notes": "Größte SDL-Gruppe. Umfasst alle stationären Bewachungsaufgaben an festen Objekten.",
+      "future_blueprint_examples": [
+        "gb_object_standard",
+        "gb_object_sondergebäude",
+        "sk_object_standard",
+        "oda_standard"
+      ]
+    },
+
+    "sdl_mobil": {
+      "id": "sdl_mobil",
+      "display_name": "Mobile Sicherungsdienstleistungen",
+      "standard_parent": "din_77200_1",
+      "standard_section": "Abschnitt mobil",
+      "knowledge_path": "knowledge/3_sdls/mobile_sicherheit",
+      "possible_subtypes": [
+        {
+          "id": "streifendienst",
+          "display_name": "Fahrender Streifendienst",
+          "knowledge_path": "knowledge/3_sdls/mobile_sicherheit/base.md",
+          "status": "initial"
+        },
+        {
+          "id": "alleinarbeit",
+          "display_name": "Streifendienst in Alleinarbeit",
+          "knowledge_path": "knowledge/3_sdls/mobile_sicherheit/subtypes/alleinarbeit.md",
+          "status": "planned"
+        }
+      ],
+      "related_products": ["gb", "ec", "oda"],
+      "related_standards": ["din_77200_1", "arbschg", "dguv_v1", "iso_45001", "bewachv"],
+      "status": "initial",
+      "notes": "Mobile Dienste mit Fahrzeug. Alleinarbeit-Risiken, Dunkelheit, wechselnde Umgebungen.",
+      "future_blueprint_examples": [
+        "gb_mobile_service",
+        "ec_mobile_service",
+        "oda_mobile_standard"
+      ]
+    },
+
+    "sdl_interventionsdienst": {
+      "id": "sdl_interventionsdienst",
+      "display_name": "Interventionsdienst",
+      "standard_parent": "din_77200_1",
+      "standard_section": "Abschnitt Interventionsdienst",
+      "knowledge_path": "knowledge/3_sdls/interventionsdienst",
+      "possible_subtypes": [
+        {
+          "id": "alarm_reaktion",
+          "display_name": "Alarmreaktion und Lagefeststellung",
+          "knowledge_path": "knowledge/3_sdls/interventionsdienst/base.md",
+          "status": "initial"
+        },
+        {
+          "id": "mobile_reaktion",
+          "display_name": "Mobile Interventionseinheit",
+          "knowledge_path": "knowledge/3_sdls/interventionsdienst/subtypes/mobile_reaktion.md",
+          "status": "planned"
+        }
+      ],
+      "related_products": ["gb", "ec", "oda"],
+      "related_standards": ["din_77200_1", "arbschg", "dguv_v1", "iso_45001", "bewachv"],
+      "status": "initial",
+      "notes": "Schnelle Alarmreaktion. Erhöhtes Gefährdungspotenzial durch unbekannte Lageentwicklung.",
+      "future_blueprint_examples": [
+        "gb_intervention",
+        "ec_intervention",
+        "oda_intervention"
+      ]
+    },
+
+    "sdl_veranstaltungsdienst": {
+      "id": "sdl_veranstaltungsdienst",
+      "display_name": "Veranstaltungsdienst",
+      "standard_parent": "din_77200_1",
+      "standard_section": "Abschnitt Veranstaltungsdienst",
+      "knowledge_path": "knowledge/3_sdls/veranstaltungsschutz",
+      "possible_subtypes": [
+        {
+          "id": "kampfsport",
+          "display_name": "Kampfsportveranstaltung (K1, MMA, Boxen)",
+          "knowledge_path": "knowledge/3_sdls/veranstaltungsschutz/subtypes/kampfsport.md",
+          "status": "initial"
+        },
+        {
+          "id": "festival",
+          "display_name": "Festival / Mehrtagesveranstaltung",
+          "knowledge_path": "knowledge/3_sdls/veranstaltungsschutz/subtypes/festival.md",
+          "status": "planned"
+        },
+        {
+          "id": "konzert",
+          "display_name": "Konzert / Live-Musik",
+          "knowledge_path": "knowledge/3_sdls/veranstaltungsschutz/subtypes/konzert.md",
+          "status": "planned"
+        },
+        {
+          "id": "messe",
+          "display_name": "Messe / Ausstellung",
+          "knowledge_path": "knowledge/3_sdls/veranstaltungsschutz/subtypes/messe.md",
+          "status": "planned"
+        },
+        {
+          "id": "standard_event",
+          "display_name": "Standardveranstaltung",
+          "knowledge_path": "knowledge/3_sdls/veranstaltungsschutz/subtypes/standard_event.md",
+          "status": "planned"
+        }
+      ],
+      "related_products": ["gb", "sk", "ec", "oda"],
+      "related_standards": ["din_77200_1", "VStättVO", "arbschg", "dguv_v1", "iso_45001", "bewachv"],
+      "status": "initial",
+      "notes": "Erste aktiv implementierte SDL-Gruppe (Subtyp kampfsport). Crowd-Dynamik, temporäre Strukturen, wechselnde Lagebilder.",
+      "future_blueprint_examples": [
+        "gb_event_kampfsport",
+        "gb_event_festival",
+        "gb_event_konzert",
+        "gb_event_standard",
+        "sk_event_standard",
+        "ec_event_kampfsport",
+        "oda_event_standard"
+      ]
+    },
+
+    "sdl_fluechtlingsunterkunft": {
+      "id": "sdl_fluechtlingsunterkunft",
+      "display_name": "Sicherungsdienstleistungen in Flüchtlingsunterkünften",
+      "standard_parent": "din_77200_2",
+      "standard_section": "Besondere Anwendungsgruppe: Unterkünfte",
+      "knowledge_path": "knowledge/3_sdls/unterkunft",
+      "possible_subtypes": [
+        {
+          "id": "gefluechtete",
+          "display_name": "Geflüchtetenunterkunft / Erstaufnahme",
+          "knowledge_path": "knowledge/3_sdls/unterkunft/subtypes/gefluechtete.md",
+          "status": "initial"
+        },
+        {
+          "id": "wohnheim",
+          "display_name": "Gemeinschaftswohnheim",
+          "knowledge_path": "knowledge/3_sdls/unterkunft/subtypes/wohnheim.md",
+          "status": "planned"
+        }
+      ],
+      "related_products": ["gb", "sk", "oda"],
+      "related_standards": ["din_77200_2", "din_77200_1", "arbschg", "dguv_v1", "bewachv"],
+      "status": "initial",
+      "notes": "Besondere psychosoziale Risiken. Sprachbarrieren, Konflikte, Schutzbedürftigkeit der Bewohner. DIN 77200-2 definiert Zusatzanforderungen.",
+      "future_blueprint_examples": [
+        "gb_accommodation_gefluechtete",
+        "gb_accommodation_wohnheim",
+        "sk_accommodation_standard",
+        "oda_accommodation"
+      ]
+    },
+
+    "sdl_objekt_besondere_relevanz": {
+      "id": "sdl_objekt_besondere_relevanz",
+      "display_name": "Objekte mit besonderer Sicherheitsrelevanz",
+      "standard_parent": "din_77200_2",
+      "standard_section": "Besondere Anwendungsgruppe: Kritische Objekte",
+      "knowledge_path": "knowledge/3_sdls/objektschutz",
+      "possible_subtypes": [
+        {
+          "id": "kritische_infrastruktur",
+          "display_name": "Kritische Infrastruktur (KRITIS)",
+          "knowledge_path": "knowledge/3_sdls/objektschutz/subtypes/sondergebäude.md",
+          "status": "planned"
+        },
+        {
+          "id": "behoerden_einrichtungen",
+          "display_name": "Behörden und öffentliche Einrichtungen",
+          "knowledge_path": "knowledge/3_sdls/objektschutz/subtypes/sondergebäude.md",
+          "status": "planned"
+        }
+      ],
+      "related_products": ["gb", "sk", "ec", "oda"],
+      "related_standards": ["din_77200_2", "din_77200_1", "arbschg", "dguv_v1", "iso_45001", "bewachv"],
+      "status": "planned",
+      "notes": "Erhöhte Anforderungen durch besondere Schutzziele. DIN 77200-2 Zusatzanforderungen aktiv.",
+      "future_blueprint_examples": [
+        "gb_object_special",
+        "sk_object_special",
+        "ec_object_special"
+      ]
+    },
+
+    "sdl_veranstaltung_erhoehte_gefaehrdung": {
+      "id": "sdl_veranstaltung_erhoehte_gefaehrdung",
+      "display_name": "Veranstaltungen mit erhöhter Gefährdung",
+      "standard_parent": "din_77200_2",
+      "standard_section": "Besondere Anwendungsgruppe: Risikoveranstaltungen",
+      "knowledge_path": "knowledge/3_sdls/veranstaltungsschutz",
+      "possible_subtypes": [
+        {
+          "id": "kampfsport",
+          "display_name": "Kampfsportveranstaltung",
+          "knowledge_path": "knowledge/3_sdls/veranstaltungsschutz/subtypes/kampfsport.md",
+          "status": "initial",
+          "notes": "Überschneidet sich mit sdl_veranstaltungsdienst/kampfsport — Subtyp-Modul wird geteilt"
+        },
+        {
+          "id": "hochrisiko_event",
+          "display_name": "Hochrisiko-Veranstaltung (Fan-Events, politische Veranstaltungen)",
+          "knowledge_path": "knowledge/3_sdls/veranstaltungsschutz/subtypes/hochrisiko.md",
+          "status": "needs_detailing"
+        }
+      ],
+      "related_products": ["gb", "sk", "ec"],
+      "related_standards": ["din_77200_2", "din_77200_1", "VStättVO", "arbschg", "dguv_v1", "bewachv"],
+      "status": "planned",
+      "notes": "Subgruppe von Veranstaltungsdienst mit erhöhten DIN 77200-2-Anforderungen. Kämpfsport ist der erste Anwendungsfall.",
+      "future_blueprint_examples": [
+        "gb_event_kampfsport",
+        "sk_event_kampfsport",
+        "ec_event_kampfsport"
+      ]
+    },
+
+    "sdl_opv": {
+      "id": "sdl_opv",
+      "display_name": "Sicherungsdienstleistungen im öffentlichen Personenverkehr (ÖPV)",
+      "standard_parent": "din_77200_2",
+      "standard_section": "Besondere Anwendungsgruppe: ÖPV",
+      "knowledge_path": "knowledge/3_sdls/opv",
+      "possible_subtypes": [
+        {
+          "id": "opv_bahnhof",
+          "display_name": "Bahnhof / ÖPNV-Knotenpunkt",
+          "knowledge_path": "knowledge/3_sdls/opv/base.md",
+          "status": "planned"
+        },
+        {
+          "id": "opv_fahrzeug",
+          "display_name": "Fahrzeug-Begleitung (Zug, Bus)",
+          "knowledge_path": "knowledge/3_sdls/opv/base.md",
+          "status": "needs_detailing"
+        }
+      ],
+      "related_products": ["gb", "sk", "ec", "oda"],
+      "related_standards": ["din_77200_2", "din_77200_1", "arbschg", "dguv_v1", "bewachv"],
+      "status": "planned",
+      "notes": "Besondere Anforderungen durch öffentlichen Raum, Fahrgastkontakt, Eskalationsprävention.",
+      "future_blueprint_examples": [
+        "gb_opv_standard",
+        "sk_opv_standard",
+        "ec_opv_standard",
+        "oda_opv"
+      ]
+    }
+  },
+
+  "document_products": {
+    "_description": "The AI-generated document types. Each product can be instantiated by multiple blueprints.",
+
+    "gb": {
+      "id": "gb",
+      "display_name": "Gefährdungsbeurteilung",
+      "knowledge_path": "knowledge/5_products/Gefährdungsbeurteilung",
+      "placeholder_namespace": "GB_*",
+      "status": "initial",
+      "legal_basis": ["arbschg", "dguv_v1"],
+      "notes": "Pflichtdokument. Immer vor EC und ODA. Basis für alle nachgelagerten Dokumente."
+    },
+    "sk": {
+      "id": "sk",
+      "display_name": "Sicherheitskonzept",
+      "knowledge_path": "knowledge/5_products/sicherheitskonzept",
+      "placeholder_namespace": "SK_*",
+      "status": "planned",
+      "legal_basis": ["VStättVO", "bewachv"],
+      "notes": "Kann extern (vom Kunden) kommen oder intern generiert werden."
+    },
+    "ec": {
+      "id": "ec",
+      "display_name": "Einsatzkonzept",
+      "knowledge_path": "knowledge/5_products/einsatzkonzept",
+      "placeholder_namespace": "EC_*",
+      "status": "planned",
+      "legal_basis": ["din_77200_1", "bewachv"],
+      "notes": "Baut auf GB auf. Definiert Kräfteplanung, Ablauf, Kommunikation."
+    },
+    "oda": {
+      "id": "oda",
+      "display_name": "Objektdienstanweisung (ODA)",
+      "knowledge_path": "knowledge/5_products/oda",
+      "placeholder_namespace": "ODA_*",
+      "status": "planned",
+      "legal_basis": ["din_77200_1", "bewachv"],
+      "notes": "Tägliche Dienstanweisung. Konsistent mit EC und GB."
+    }
+  },
+
+  "extension_notes": {
+    "how_to_add_sdl": "Add a new entry to 'sdl_groups' with all required fields. Set status to 'needs_detailing'. Create the knowledge_path folder. Add to relevant normative_standards.sdl_groups array.",
+    "how_to_add_subtype": "Add to the parent sdl_group's 'possible_subtypes' array. Create the knowledge file at the specified knowledge_path.",
+    "how_to_add_standard": "Add to 'normative_standards'. Reference from relevant sdl_groups via 'related_standards'.",
+    "how_to_add_blueprint": "Create JSON in knowledge/6_blueprint/{id}.json. Reference this registry for SDL and standard relationships. Add to parent sdl_group's 'future_blueprint_examples'.",
+    "status_lifecycle": "needs_detailing → planned → initial → active"
+  }
+}

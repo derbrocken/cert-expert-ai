@@ -5,8 +5,7 @@ Phase 1 — manuell, dateibasiert:
 - Lädt referenzierte Knowledge-Module aus dem Blueprint
 - Konkateniert sie in fester, dokumentierter Reihenfolge zu einem
   System-Prompt
-- Rendert das User-Prompt-Template aus knowledge/prompts/products/ mit
-  den Inputfeldern
+- Rendert das User-Prompt-Template aus prompts/products/ mit den Inputfeldern
 - Kein Retrieval, kein Vektor-Index, kein Caching
 
 Reihenfolge des System-Prompts (höchste Priorität zuerst):
@@ -137,16 +136,18 @@ def build_user_prompt(
 
 
 def _category_relative_name(category: str, path: Path) -> str:
-    """Return the relative POSIX-style name under knowledge/{category}/."""
+    """Return the relative POSIX-style name under the logical category root."""
     parts = list(path.parts)
-    try:
+    if category == "prompts" and "prompts" in parts:
+        idx = parts.index("prompts")
+        return "/".join(parts[idx + 1:])
+    if "knowledge" in parts:
         idx = parts.index("knowledge")
-    except ValueError:
-        return path.name
-    sub = parts[idx + 1:]
-    if sub and sub[0] == category:
-        sub = sub[1:]
-    return "/".join(sub)
+        sub = parts[idx + 1:]
+        if sub:
+            sub = sub[1:]  # skip numbered layer (2_regulations, 5_products, …)
+        return "/".join(sub)
+    return path.name
 
 
 def _render_module(category: str, path: Path) -> str:

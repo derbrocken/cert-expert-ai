@@ -2,7 +2,7 @@
 
 Version: 1.0 | Erstellt: 2026-05-18 | Status: Initial
 
-Maschinenlesbares Register: `knowledge/blueprints/sdl_registry.json`
+Maschinenlesbares Register: `knowledge/6_blueprint/sdl_registry.json`
 
 ---
 
@@ -45,7 +45,7 @@ Rechtliche Grundlagen, die für alle SDL-Typen gelten:
 ## DIN 77200-1 — Sicherungsdienstleistungen: Anforderungen
 
 Definiert die vier Grundtypen von Sicherungsdienstleistungen.
-Jede SDL-Gruppe korrespondiert mit einem Knowledge-Pfad unter `knowledge/sdls/`.
+Jede SDL-Gruppe korrespondiert mit einem Knowledge-Pfad unter `knowledge/3_sdls/`.
 
 ```
 DIN 77200-1
@@ -57,28 +57,28 @@ DIN 77200-1
 
 ### Stationäre Sicherungsdienstleistungen
 
-- **Knowledge-Pfad:** `knowledge/sdls/objektschutz/`
+- **Knowledge-Pfad:** `knowledge/3_sdls/objektschutz/`
 - **Subtypen:** Standardobjekt, Sondergebäude, Empfangsdienst
 - **Dokumente:** GB, SK, ODA
 - **Blueprint-Beispiele:** `gb_object_standard`, `gb_object_sondergebaeude`, `oda_standard`
 
 ### Mobile Sicherungsdienstleistungen
 
-- **Knowledge-Pfad:** `knowledge/sdls/mobile_sicherheit/`
+- **Knowledge-Pfad:** `knowledge/3_sdls/mobile_sicherheit/`
 - **Subtypen:** Streifendienst, Alleinarbeit
 - **Dokumente:** GB, EC, ODA
 - **Blueprint-Beispiele:** `gb_mobile_service`, `ec_mobile_service`
 
 ### Interventionsdienst
 
-- **Knowledge-Pfad:** `knowledge/sdls/interventionsdienst/`
+- **Knowledge-Pfad:** `knowledge/3_sdls/interventionsdienst/`
 - **Subtypen:** Alarmreaktion, Mobile Interventionseinheit
 - **Dokumente:** GB, EC, ODA
 - **Blueprint-Beispiele:** `gb_intervention`, `ec_intervention`
 
 ### Veranstaltungsdienst
 
-- **Knowledge-Pfad:** `knowledge/sdls/veranstaltungsschutz/`
+- **Knowledge-Pfad:** `knowledge/3_sdls/veranstaltungsschutz/`
 - **Subtypen:** Kampfsport *(initial)*, Festival, Konzert, Messe, Standard
 - **Dokumente:** GB, SK, EC, ODA
 - **Blueprint-Beispiele:** `gb_event_kampfsport` *(aktiv)*, `gb_event_festival`, `sk_event_standard`
@@ -103,7 +103,7 @@ DIN 77200-2
 
 ### Flüchtlingsunterkünfte
 
-- **Knowledge-Pfad:** `knowledge/sdls/unterkunft/`
+- **Knowledge-Pfad:** `knowledge/3_sdls/unterkunft/`
 - **Subtypen:** Geflüchtetenunterkunft *(initial)*, Gemeinschaftswohnheim
 - **Dokumente:** GB, SK, ODA
 - **Blueprint-Beispiele:** `gb_accommodation_gefluechtete`
@@ -111,7 +111,7 @@ DIN 77200-2
 
 ### Objekte mit besonderer Sicherheitsrelevanz
 
-- **Knowledge-Pfad:** `knowledge/sdls/objektschutz/` (Subtyp `sondergebaeude`)
+- **Knowledge-Pfad:** `knowledge/3_sdls/objektschutz/` (Subtyp `sondergebaeude`)
 - **Subtypen:** Kritische Infrastruktur, Behörden / öffentliche Einrichtungen
 - **Dokumente:** GB, SK, EC, ODA
 - **Blueprint-Beispiele:** `gb_object_special`, `sk_object_special`
@@ -119,7 +119,7 @@ DIN 77200-2
 
 ### Veranstaltungen mit erhöhter Gefährdung
 
-- **Knowledge-Pfad:** `knowledge/sdls/veranstaltungsschutz/` (Subtypen kampfsport, hochrisiko)
+- **Knowledge-Pfad:** `knowledge/3_sdls/veranstaltungsschutz/` (Subtypen kampfsport, hochrisiko)
 - **Subtypen:** Kampfsportveranstaltung *(initial)*, Hochrisiko-Event
 - **Dokumente:** GB, SK, EC
 - **Blueprint-Beispiele:** `gb_event_kampfsport`, `sk_event_kampfsport`
@@ -128,7 +128,7 @@ DIN 77200-2
 
 ### ÖPV — Öffentlicher Personenverkehr
 
-- **Knowledge-Pfad:** `knowledge/sdls/opv/`
+- **Knowledge-Pfad:** `knowledge/3_sdls/opv/`
 - **Subtypen:** Bahnhof / ÖPNV-Knotenpunkt, Fahrzeug-Begleitung
 - **Dokumente:** GB, SK, EC, ODA
 - **Blueprint-Beispiele:** `gb_opv_standard`, `ec_opv_standard`

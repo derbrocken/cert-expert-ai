@@ -1,0 +1,180 @@
+{
+  "blueprint_id":   "gb_event_kampfsport",
+  "document_type":  "gb_event_kampfsport",
+  "display_name":   "Gefährdungsbeurteilung — Kampfsportveranstaltung",
+  "version":        "1.0",
+  "status":         "active",
+  "template_file":  "templates/gb_event_kampfsport.docx",
+  "modes":          ["standalone", "flow"],
+
+  "product":           "gb",
+  "sdl_group":         "sdl_veranstaltungsdienst",
+  "sdl_subtype":       "kampfsport",
+  "placeholder_namespace": "GB_*",
+
+  "context_modules": {
+    "standards": [
+      "arbschg/overview.md",
+      "dguv_v1/overview.md",
+      "VStättVO/overview.md"
+    ],
+    "sdls": [
+      "veranstaltungsschutz/base.md",
+      "veranstaltungsschutz/subtypes/kampfsport.md"
+    ],
+    "products": [
+      "Gefährdungsbeurteilung/purpose.md",
+      "Gefährdungsbeurteilung/content_blocks.md"
+    ],
+    "rules": [
+      "base/hallucination_boundaries.md",
+      "base/open_points_rules.md",
+      "base/citation_rules.md",
+      "base/output_format_rules.md",
+      "base/reviewer_handoff.md",
+      "products/gb_rules.md",
+      "blueprints/gb_event_kampfsport.md"
+    ],
+    "guides": [
+      "content_blocks/risikobewertung.md",
+      "content_blocks/schutzmassnahmen.md",
+      "risk_patterns/aggressive_groups.md",
+      "risk_patterns/crowd_dynamics.md",
+      "risk_patterns/bottlenecks.md",
+      "risk_patterns/alcohol_related_conflicts.md",
+      "control_measures/access_control.md",
+      "control_measures/deescalation.md",
+      "control_measures/visitor_separation.md",
+      "control_measures/evacuation_management.md",
+      "control_measures/radio_communication.md",
+      "event_phases/ingress_egress.md"
+    ],
+    "examples": [
+      "gb_gefährdungen/veranstaltungsschutz_kampfsport.md",
+      "gb_schutzmassnahmen/veranstaltungsschutz_kampfsport.md"
+    ],
+    "prompts": [
+      "base/system_base.md",
+      "base/hallucination_guard.md",
+      "base/open_point_instruction.md",
+      "products/gb_user_prompt_template.md"
+    ]
+  },
+
+  "conditional_modules": [],
+
+  "input_schema": {
+    "required": [
+      "event_name",
+      "event_type",
+      "event_date",
+      "event_location",
+      "expected_attendees",
+      "security_staff_count",
+      "venue_capacity",
+      "venue_exits",
+      "special_risks",
+      "client_name",
+      "created_by",
+      "doc_version"
+    ],
+    "optional": [
+      "approved_by",
+      "notes",
+      "event_start_time",
+      "event_end_time",
+      "alcohol_served",
+      "outdoor_area",
+      "prior_incidents",
+      "medical_service",
+      "evacuation_plan_available",
+      "official_requirements",
+      "combat_sports_type"
+    ],
+    "field_labels": {
+      "event_name":            "Veranstaltungsname",
+      "event_type":            "Veranstaltungstyp",
+      "event_date":            "Veranstaltungsdatum",
+      "event_location":        "Veranstaltungsort",
+      "expected_attendees":    "Erwartete Zuschauerzahl",
+      "security_staff_count":  "Anzahl Sicherheitsmitarbeiter",
+      "venue_capacity":        "Hallenkapazität",
+      "venue_exits":           "Anzahl Notausgänge",
+      "special_risks":         "Besondere Risiken",
+      "client_name":           "Auftraggeber",
+      "created_by":            "Erstellt von",
+      "doc_version":           "Dokumentversion",
+      "approved_by":           "Freigegeben von",
+      "notes":                 "Hinweise",
+      "event_start_time":      "Beginn",
+      "event_end_time":        "Ende",
+      "alcohol_served":        "Alkoholausschank",
+      "outdoor_area":          "Außenbereich",
+      "prior_incidents":       "Vorangegangene Vorfälle",
+      "medical_service":       "Sanitätsdienst",
+      "evacuation_plan_available": "Fluchtwegplan vorhanden",
+      "official_requirements": "Behördliche Auflagen",
+      "combat_sports_type":    "Kampfsportart"
+    },
+    "critical_triggers": [
+      {
+        "id": "venue_exits_missing_or_zero",
+        "condition": "venue_exits is missing OR venue_exits == 0",
+        "open_point": "Anzahl Notausgänge nicht angegeben oder Null — sicherheitstechnisch nicht verhandelbar."
+      },
+      {
+        "id": "overbooking",
+        "condition": "expected_attendees > venue_capacity",
+        "open_point": "Erwartete Zuschauerzahl überschreitet die genehmigte Hallenkapazität — Überbelegung rechtlich kritisch."
+      },
+      {
+        "id": "no_security_staff",
+        "condition": "security_staff_count < 1",
+        "open_point": "Keine Sicherheitsmitarbeiter angegeben — eine Gefährdungsbeurteilung ist ohne Personalansatz nicht aussagekräftig."
+      },
+      {
+        "id": "approval_missing",
+        "condition": "approved_by is empty",
+        "open_point": "Freigabe durch Verantwortlichen ausstehend — Feld 'Freigegeben von' ist leer."
+      },
+      {
+        "id": "combat_sports_type_missing",
+        "condition": "combat_sports_type is empty",
+        "open_point": "Kampfsportart (z. B. K1, MMA, Boxen) nicht angegeben — kampfsportartspezifische Risiken können nicht präzisiert werden."
+      },
+      {
+        "id": "medical_service_missing",
+        "condition": "medical_service is empty",
+        "open_point": "Sanitätsdienst nicht im Input angegeben — bei Kampfsportveranstaltungen ist Art und Umfang zwingend zu klären."
+      }
+    ]
+  },
+
+  "ai_blocks": [
+    "GB_TAETIGKEIT",
+    "GB_GEFAEHRDUNGEN",
+    "GB_RISIKOBEWERTUNG",
+    "GB_SCHUTZMASSNAHMEN",
+    "GB_VERANTWORTLICHKEITEN",
+    "GB_OFFENE_PUNKTE"
+  ],
+
+  "static_blocks": [
+    "Dokumenttitel",
+    "Kapitelüberschriften",
+    "Bewertungsmatrix-Legende",
+    "STOP-Prinzip-Erklärung",
+    "Unterschriftsfeld",
+    "rechtlicher Hinweis (Fußzeile)"
+  ],
+
+  "qa_rules": {
+    "require_approved_by": true,
+    "max_open_points_for_ok": 0,
+    "critical_fields": ["venue_exits", "security_staff_count", "combat_sports_type", "medical_service"]
+  },
+
+  "upstream":   [],
+  "downstream": ["ec_event_kampfsport", "oda_event_standard"],
+  "exports":    ["risk_findings", "measures", "open_points"]
+}

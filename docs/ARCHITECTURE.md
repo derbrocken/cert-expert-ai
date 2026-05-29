@@ -262,7 +262,7 @@ For the integration concept and future portal touchpoints see `docs/PROJECT_ARCH
 Each new bot follows the same pattern as `gb_bot.py`:
 
 1. Create `bots/0N_<name>/` folder with the bot script
-2. Define a blueprint in `knowledge/blueprints/{blueprint_id}.json` (Phase 2)
+2. Define a blueprint in `knowledge/6_blueprint/{blueprint_id}.json` (Phase 2)
 3. Create the DOCX template in `templates/{blueprint_id}.docx`
 4. Define the placeholder namespace (`SK_*`, `EC_*`, `ODA_*`) — register in
    `docs/PLACEHOLDER_REGISTRY.md`

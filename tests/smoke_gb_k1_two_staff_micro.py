@@ -48,8 +48,8 @@ MICRO_EXPECTED_MODULES = (
     "rules/base/reviewer_handoff.md",
     "rules/products/gb_rules.md",
     "rules/blueprints/gb_event_kampfsport_micro.md",
-    "products/gefaehrdungsbeurteilung/purpose.md",
-    "products/gefaehrdungsbeurteilung/content_blocks.md",
+    "products/Gefährdungsbeurteilung/purpose.md",
+    "products/Gefährdungsbeurteilung/content_blocks.md",
     "guides/content_blocks/risikobewertung.md",
     "guides/content_blocks/schutzmassnahmen.md",
     "guides/runtime_summaries/risk_patterns_k1_small_event_summary.md",
@@ -82,7 +82,7 @@ MICRO_GUIDE_MARKERS = (
     "### [guides/runtime_summaries/kampfsport_sdl_small_event_summary.md]",
 )
 
-# Aus `knowledge/rules/blueprints/gb_event_kampfsport.md` — darf im Micro-Prompt nicht vorkommen.
+# Aus `knowledge/9_rules/blueprints/gb_event_kampfsport.md` — darf im Micro-Prompt nicht vorkommen.
 FULL_ONLY_RISIKO_HEADING = "## Risikoschwerpunkte (immer adressieren)"
 
 # Explizite „Annahme von Hochrisiko“-Imperative (keine negierenden VERBOT-Formulierungen testen)

@@ -132,7 +132,7 @@ dem gewählten Blueprint.
 ```
 Nutzer wählt: gb_event_kampfsport
         ↓
-Portal lädt Blueprint-Config (knowledge/blueprints/gb_event_kampfsport.json)
+Portal lädt Blueprint-Config (knowledge/6_blueprint/gb_event_kampfsport.json)
         ↓
 Portal zeigt Formularfelder aus input_schema.required + input_schema.optional
         ↓
