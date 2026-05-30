@@ -41,7 +41,7 @@ Dieser Ordner dient **ausschließlich** der übergreifenden Steuerung: Architekt
 
 | Datei | Zweck |
 |-------|-------|
-| [[CURRENT_STATE]] | Ist-Stand — Module, Vorlagen, Bereinigungen |
+| [[CURRENT_STATE]] | **Agent-Snapshot** — Branch, Commit, abgeschlossen/offen (zuerst lesen) |
 | [[ARCHITECTURE]] | Schichtenmodell, Ablageregeln, Verweise |
 | [[AGENT_RULES]] | Retrieval, Pfade, inhaltliche Grenzen |
 | [[ROADMAP]] | Geplante Erweiterungen (ohne Migration) |

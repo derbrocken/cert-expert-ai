@@ -59,7 +59,8 @@ V2 **strukturiert und codiert**; V1 **erklärt und vertieft**. Bei Abweichung: V
 - [x] Alle V2-Dateien nur unter `qualifications/` (5 Dateien + README)
 - [x] `qualifikationssystem/` nur V1 (01–05 + README)
 - [x] Personalfreigabe / SDL- / Einsatzfreigabe V1 — `qualifications/05`–`07`
-- [ ] Tool-2-Datenmodell — geplant, **nach** CEKS-Freigabekette
+- [x] Tool-2-Domäne V1 (fachlich) — `qualifications/08_tool2_data_model_v1.md`
+- [ ] Tool-2-Implementierung (Software/DB/API) — **bewusst getrennt** von `08`
 - [ ] VA Kap. 7 V9 — Katalog/V1 abgleichen, wenn eingearbeitet
 
 ---

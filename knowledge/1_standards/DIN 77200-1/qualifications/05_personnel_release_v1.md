@@ -153,9 +153,9 @@ pruefer: Schichtleitung Qualität / 2026-05-28
 | `QualificationEvidence` | Prüfung je `codes_geprueft` |
 | `ProjectProfile` | `profil_ref` |
 
-Hooks: [[03_matrix_release_hooks_v2#Tool-2-Anbindung (Perspektive)]]
+Domäne: [[08_tool2_data_model_v1]] · Hooks: [[03_matrix_release_hooks_v2#Tool-2-Anbindung (Perspektive)]]
 
-**Nächste Schicht:** [[07_einsatz_release_v1]] — Einsatz/Schicht vor operativem Start.
+**Nächste Schicht:** [[06_sdl_release_v1]] → [[07_einsatz_release_v1]] — Einsatz/Schicht vor operativem Start.
 
 ---
 

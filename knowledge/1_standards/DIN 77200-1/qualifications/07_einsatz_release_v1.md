@@ -182,20 +182,17 @@ Operativer Einsatz (Tool 2 / Projektakte — später)
 
 ---
 
-## Tool 2 — Perspektive (nicht jetzt)
+## Tool 2 — Perspektive
 
-Tool 2 kommt **danach** als **Datenmodell** und Projektakte — nicht in diesem Schritt.
-
-Geplante Anknüpfung (Orientierung aus [[03_matrix_release_hooks_v2#Tool-2-Anbindung (Perspektive)]]):
+Fachliches Domänenmodell (Objekte, Vererbung): [[08_tool2_data_model_v1]].
 
 | Entität | Bezug Einsatzfreigabe |
 |---------|----------------------|
-| `Shift` / `Assignment` | `schicht_datum`, `objekt_auftrag_ref` |
-| `ReleaseDecision` | `05` / `06` |
 | `DeploymentRelease` | Felder dieses Schemas (`07`) |
-| `QualificationEvidence` | Prüfung vor Einsatz |
+| `PersonnelRelease` / `SDLRelease` | Voraussetzung (`freigabe_id_personal`, `status_sdl_freigabe`) |
+| `QualificationEvidence` | Prüfung vor Einsatz (`nachweise_abgelaufen`) |
 
-**Keine** Tool-1- oder Tool-2-Implementierung in diesem Dokument.
+**Keine** Implementierung (Software/DB/API) in `07` oder `08`.
 
 ---
 

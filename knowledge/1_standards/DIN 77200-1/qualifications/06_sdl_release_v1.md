@@ -94,7 +94,7 @@ Detailregeln und Beispiele: [[../qualifikationssystem/05_sdl_freigabelogik#Entsc
 
 Inhalt = Felder aus `05` + `norm_sdl` / `anhang_ref` oben.
 
-**Nächste Schicht:** [[07_einsatz_release_v1]] — konkreter Einsatz/Schicht.
+**Nächste Schicht:** [[07_einsatz_release_v1]] — konkreter Einsatz/Schicht. Domäne Tool 2: [[08_tool2_data_model_v1]].
 
 ---
 

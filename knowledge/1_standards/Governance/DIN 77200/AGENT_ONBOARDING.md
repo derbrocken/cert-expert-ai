@@ -11,11 +11,13 @@
 
 | Nr | Datei | Warum |
 |----|-------|-------|
-| 1 | **AGENT_ONBOARDING.md** (diese Datei) | Einstieg, Regeln, Stopps |
-| 2 | [[CURRENT_STATE]] | Was existiert heute — Ist-Stand |
+| 1 | [[CURRENT_STATE]] | **Ist-Stand zuerst** — Branch, Commit, abgeschlossen/offen |
+| 2 | **AGENT_ONBOARDING.md** (diese Datei) | Regeln, Stopps, Routing |
 | 3 | [[ARCHITECTURE]] | Wo gehört welcher Inhalt hin |
-| 4 | [[ROADMAP]] | Was geplant ist — ohne selbst umz planen |
-| 5 | [[AGENT_RULES]] | Retrieval, Pfade, inhaltliche Grenzen |
+| 4 | [[AGENT_RULES]] | Retrieval, Pfade, inhaltliche Grenzen |
+| 5 | [[ROADMAP]] | Geplant — nicht vorausimplementieren |
+
+**Abschlussregel:** Nach abgeschlossenem Schritt [[CURRENT_STATE]] aktualisieren + Commit-Empfehlung (siehe dort).
 
 **Ergänzend bei Arbeit:**
 
@@ -79,18 +81,17 @@ Ohne **explizite Freigabe** des Nutzers:
 
 ---
 
-## Was als Nächstes kommt (Roadmap — nicht vorausimplementieren)
+## Was als Nächstes kommt
 
-| Thema | Status | Hinweis |
-|-------|--------|---------|
-| Qualifikationssystem V1 vertiefen | geplant | nur `qualifikationssystem/01`–`05` — **keine** neuen V2-Dateien dort |
-| Qualifikationssystem V2+ | **fertig** | `qualifications/` — Katalog, Matrix, Hooks |
-| Qualifikationsmatrix | **fertig** | `qualifications/04_qualifikationsmatrix_logik.md` |
-| Personalfreigabe | geplant | CEKS-Dokument in `qualifications/` (nicht V1-Ordner duplizieren) |
-| SDL-Freigabelogik | V1 + V2 | `05` (Detail) · `03`/`04` (Codes/Matrix) |
-| Tool-2-Anbindung | **spätere Perspektive** | Projektakten — **noch nicht implementiert** |
+**Offen / nicht anfangen ohne Auftrag:** siehe [[CURRENT_STATE#Offene nächste Schritte]].
 
-Siehe [[ROADMAP]]. Tool 2 ist **Zielbild**, keine bestehende Codebasis in diesem Repo.
+| Thema | Status |
+|-------|--------|
+| Freigabekette + Tool-2-Domäne (`04`–`08`) | **abgeschlossen** (CEKS) |
+| Tool-2-Implementierung | **offen** — **nicht** ohne Freigabe weiterarbeiten |
+| VA Kap. 7, Tool-1-Profil-Export | **offen** |
+
+Siehe [[ROADMAP]] für Details.
 
 ---
 
@@ -102,14 +103,14 @@ Siehe [[ROADMAP]]. Tool 2 ist **Zielbild**, keine bestehende Codebasis in diesem
 | A/B/C, §34a, Ersthelfer | `DIN 77200-1/Qualifikationsanforderungen.md` |
 | Besondere SDL, SK/EK | `DIN 77200-2/README.md` → Modul 05–08 |
 | Profil-Vorlage | `DIN 77200-*/anforderungsprofile/77200-*_*.md` |
-| Freigabeentscheid | `qualifications/05` · SDL-Fokus: `06` · Matrix: `04` · Detail DE: `qualifikationssystem/05` |
+| Freigabeentscheid | `05` → `06` → `07` · Domäne Tool 2: `08` · Matrix: `04` · Detail DE: `qualifikationssystem/05` |
 
 ---
 
 ## Erste Aktion bei Unklarheit
 
-1. [[CURRENT_STATE]] lesen  
-2. [[AGENT_RULES]] prüfen  
+1. [[CURRENT_STATE]] lesen (Pflicht vor Änderungen)  
+2. Diese Datei + [[AGENT_RULES]] prüfen  
 3. Nutzer fragen — **nicht** strukturell improvisieren  
 
 Verifikation gegen Norm: `inputs/raw_standards/` — nur vor produktiven Entscheidungen, nicht als Ersatz für CEKS-Module.

@@ -32,6 +32,7 @@ Dokumentation: [[../../Governance/DIN 77200/QUALIFICATION_V1_V2]]
 | 5 | [[05_personnel_release_v1]] | Personalfreigabe V1 — Schema, Prüfablauf, Status |
 | 6 | [[06_sdl_release_v1]] | SDL-Freigabe V1 — dünne Zusatzschicht (gleiche Logik wie 05) |
 | 7 | [[07_einsatz_release_v1]] | Einsatzfreigabe V1 — Schicht/Einsatz, letzte CEKS-Schicht |
+| 8 | [[08_tool2_data_model_v1]] | Tool-2-Domäne V1 — fachliches Datenmodell (keine Implementierung) |
 | — | **README.md** | dieser Einstieg |
 
 ---
@@ -44,7 +45,8 @@ Dokumentation: [[../../Governance/DIN 77200/QUALIFICATION_V1_V2]]
 4. [[05_personnel_release_v1]] — bei Freigabeentscheid Person + Verwendung  
 5. [[06_sdl_release_v1]] — SDL-Dokumentationsfokus (optional, gleiche Entscheidung)  
 6. [[07_einsatz_release_v1]] — vor konkretem Einsatz/Schicht  
-7. [[03_matrix_release_hooks_v2]] — Tool-2-Felder, Kurz-Hooks (Datenmodell später)  
+7. [[08_tool2_data_model_v1]] — fachliche Domäne Tool 2 (Objekte, Vererbung)
+8. [[03_matrix_release_hooks_v2]] — Kurz-Hooks (ergänzt durch `08`)  
 8. Bei Audit-Tiefe: [[../qualifikationssystem/05_sdl_freigabelogik]] (V1)
 
 ---
@@ -77,7 +79,8 @@ V2 **ersetzt** V1 nicht — beide Ordner bleiben. Inhalte widersprechen sich nic
 
 - [x] Personalfreigabe V1 CEKS — [[05_personnel_release_v1]]
 - [ ] VA Kap. 7 V9 im Katalog  
-- [ ] Tool 2 — **keine** Implementierung im Knowledge-Standard
+- [x] Tool-2-Domäne V1 (fachlich) — [[08_tool2_data_model_v1]]
+- [ ] Tool 2 — **Implementierung** (Software/DB/API) bewusst getrennt
 
 ---
 

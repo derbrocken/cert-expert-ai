@@ -1,6 +1,6 @@
 # Qualifikationsmatrix, Personalfreigabe & SDL-Freigabe — V2 Hooks
 
-Einstieg: [[README]] · Katalog: [[02_qualification_catalog_v2]] · Matrix: [[04_qualifikationsmatrix_logik]] · Freigabekette: [[05_personnel_release_v1]] → [[06_sdl_release_v1]] → [[07_einsatz_release_v1]] · V1-Modell: [[../qualifikationssystem/05_sdl_freigabelogik]]
+Einstieg: [[README]] · Katalog: [[02_qualification_catalog_v2]] · Matrix: [[04_qualifikationsmatrix_logik]] · Freigabekette: [[05_personnel_release_v1]] → [[06_sdl_release_v1]] → [[07_einsatz_release_v1]] · Domäne Tool 2: [[08_tool2_data_model_v1]] · V1-Modell: [[../qualifikationssystem/05_sdl_freigabelogik]]
 
 **Status:** CEKS-Vorbereitung — **keine** Tool-2-Implementierung, **keine** Personalnamen im Knowledge-Standard.
 
@@ -112,15 +112,23 @@ Detailregeln: [[../qualifikationssystem/05_sdl_freigabelogik#Entscheidungsregeln
 
 ## Tool-2-Anbindung (Perspektive)
 
+**Vollständiges Domänenmodell:** [[08_tool2_data_model_v1]] — Kernobjekte, Freigabekette, Vererbung, Governance.
+
+Kurzüberblick (Hooks — Details in `08`):
+
 | Tool-2-Entität | V2-Hook |
 |----------------|---------|
-| `Person` | `codes[]` mit Gültigkeit |
-| `QualificationEvidence` | `code`, `document_id`, `valid_until` |
-| `ReleaseDecision` | Schema Personalfreigabe oben |
-| `ProjectProfile` | Link Anhang A/C Vorlage |
-| `AuditExport` | Matrix + Freigabe + Nachweise |
+| `Person` | `person_ref` — Nachweisportfolio |
+| `QualificationEvidence` | Nachweis je Code aus Katalog `02` |
+| `EvidenceReference` | Verknüpfung Entscheidung ↔ Nachweis |
+| `ReleaseDecision` | Muster für alle Freigabeschichten |
+| `PersonnelRelease` | [[05_personnel_release_v1]] |
+| `SDLRelease` | [[06_sdl_release_v1]] |
+| `DeploymentRelease` | [[07_einsatz_release_v1]] |
+| `Blocker` | kritische Prüfgründe |
+| `ProjectProfile` | `profil_ref` — Anhang A/C |
 
-Governance später: [[../../Governance/DIN 77200/ROADMAP]]
+Governance: [[../../Governance/DIN 77200/ROADMAP]] · **keine** Implementierung im Knowledge-Standard.
 
 ---
 
