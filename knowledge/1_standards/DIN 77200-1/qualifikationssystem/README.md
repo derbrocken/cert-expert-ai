@@ -49,7 +49,8 @@ Vorlagen: `anforderungsprofile/` (77200-1 und 77200-2).
 Anforderungsprofil → 01 → 02 → 03 → 04 → Einweisung → 05 SDL-Freigabe
 ```
 
-Operative Code-Matrix und Profil-Ableitung: **V2** — [[../qualifications/04_qualifikationsmatrix_logik]].
+Operative Code-Matrix: **V2** — [[../qualifications/04_qualifikationsmatrix_logik]].  
+Freigabeentscheid V2+: [[../qualifications/05_personnel_release_v1]] · SDL-Fokus: [[../qualifications/06_sdl_release_v1]].
 
 ---
 

@@ -67,7 +67,7 @@ Ausgefüllte Projektprofile: künftig **Tool 2** (Perspektive) / `10_examples/` 
 | Aspekt | Inhalt |
 |--------|--------|
 | **Zweck** | Dokumentierte Entscheidung: Person erfüllt Profil + Qualifikation + Schulung + Einweisung für **diese** Verwendung |
-| **Ablageort Wissen** | `qualifikationssystem/05_sdl_freigabelogik.md`; Vertiefung geplant |
+| **Ablageort Wissen** | `qualifications/05_personnel_release_v1.md` · SDL-Fokus: `06_sdl_release_v1.md` · Detail DE: `qualifikationssystem/05` |
 | **Ablageort Projekt** | Später Tool 2 — **noch nicht implementiert** |
 | **77200-1 / 77200-2** | 77200-1-Logik; 77200-2-Zusatzfreigabe nach SDL-Schulung |
 | **Status** | **geplant** (Logik V1 in 05) |

@@ -77,6 +77,8 @@ Detailregeln: [[../qualifikationssystem/05_sdl_freigabelogik#Entscheidungsregeln
 
 ## SDL-Freigabelogik
 
+**V1 Zusatzschicht:** [[06_sdl_release_v1]] — gleiche Logik wie [[05_personnel_release_v1]], SDL-Dokumentationsfokus.
+
 ### SDL-Freigabe vs. Personalfreigabe
 
 | Begriff | Ebene |

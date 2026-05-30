@@ -102,7 +102,7 @@ Siehe [[ROADMAP]]. Tool 2 ist **Zielbild**, keine bestehende Codebasis in diesem
 | A/B/C, §34a, Ersthelfer | `DIN 77200-1/Qualifikationsanforderungen.md` |
 | Besondere SDL, SK/EK | `DIN 77200-2/README.md` → Modul 05–08 |
 | Profil-Vorlage | `DIN 77200-*/anforderungsprofile/77200-*_*.md` |
-| Freigabeentscheid | `qualifications/04` + `03` · Detail V1: `qualifikationssystem/05` |
+| Freigabeentscheid | `qualifications/05` · SDL-Fokus: `06` · Matrix: `04` · Detail DE: `qualifikationssystem/05` |
 
 ---
 

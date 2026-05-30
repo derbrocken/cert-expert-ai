@@ -30,6 +30,7 @@ Dokumentation: [[../../Governance/DIN 77200/QUALIFICATION_V1_V2]]
 | 3 | [[03_matrix_release_hooks_v2]] | Personalfreigabe-Schema, SDL-Freigabe-Hooks |
 | 4 | [[04_qualifikationsmatrix_logik]] | Profil → Codes — 77200-1 + 77200-2 Kap. 5–8 |
 | 5 | [[05_personnel_release_v1]] | Personalfreigabe V1 — Schema, Prüfablauf, Status |
+| 6 | [[06_sdl_release_v1]] | SDL-Freigabe V1 — dünne Zusatzschicht (gleiche Logik wie 05) |
 | — | **README.md** | dieser Einstieg |
 
 ---
@@ -40,7 +41,8 @@ Dokumentation: [[../../Governance/DIN 77200/QUALIFICATION_V1_V2]]
 2. [[02_qualification_catalog_v2]]  
 3. [[04_qualifikationsmatrix_logik]] — bei SDL-/Profil-Freigabe  
 4. [[05_personnel_release_v1]] — bei Freigabeentscheid Person + Verwendung  
-5. [[03_matrix_release_hooks_v2]] — Tool-2-Felder, SDL-Freigabe-Hooks  
+5. [[06_sdl_release_v1]] — SDL-Dokumentationsfokus (optional, gleiche Entscheidung)  
+6. [[03_matrix_release_hooks_v2]] — Tool-2-Felder, Kurz-Hooks  
 6. Bei Audit-Tiefe: [[../qualifikationssystem/05_sdl_freigabelogik]] (V1)
 
 ---
