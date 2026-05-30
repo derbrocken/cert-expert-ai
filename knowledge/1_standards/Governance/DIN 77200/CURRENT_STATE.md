@@ -2,7 +2,7 @@
 
 **Stand:** 2026-05-30  
 **Branch:** `cursor/din-77200-1-anforderungsprofile`  
-**Letzter bekannter Commit:** *(wird nach Push gesetzt)*
+**Letzter bekannter Commit:** `5fd6660` — *Add Tool 2 domain model and agent CURRENT_STATE snapshot*
 
 ---
 
