@@ -1,8 +1,8 @@
 # Qualifikationsmatrix — Ableitungslogik (V2)
 
-Einstieg: [[README]] · Katalog: [[02_qualification_catalog_v2]] · Hooks: [[03_matrix_release_hooks_v2]] · Profile: [[../anforderungsprofile/77200-1_revierdienst]], [[../anforderungsprofile/77200-1_interventionsdienst]], [[../anforderungsprofile/77200-1_veranstaltungsdienst]], [[../../DIN 77200-2/anforderungsprofile/77200-2_veranstaltung_besondere_sicherheitsrelevanz]], [[../../DIN 77200-2/anforderungsprofile/77200-2_oepnv]]
+Einstieg: [[README]] · Katalog: [[02_qualification_catalog_v2]] · Hooks: [[03_matrix_release_hooks_v2]] · Profile: [[../anforderungsprofile/77200-1_revierdienst]], [[../anforderungsprofile/77200-1_interventionsdienst]], [[../anforderungsprofile/77200-1_veranstaltungsdienst]], [[../../DIN 77200-2/anforderungsprofile/77200-2_veranstaltung_besondere_sicherheitsrelevanz]], [[../../DIN 77200-2/anforderungsprofile/77200-2_oepnv]], [[../../DIN 77200-2/anforderungsprofile/77200-2_fluechtlings_asylunterkuenfte]]
 
-**Status:** CEKS-Referenzlogik — Revier, Intervention, Veranstaltung (77200-1 + 77200-2), ÖPNV — **keine** Personalzeilen, **keine** Normabschrift.
+**Status:** CEKS-Referenzlogik — alle **77200-2-Kap.-5–8-**Referenz-SDL + ausgewählte **77200-1**-SDL — **keine** Personalzeilen, **keine** Normabschrift.
 
 ---
 
@@ -72,7 +72,7 @@ Nur wenn Profil aus **Anhang C** / Vorlage `77200-2_*`:
 | ÖPNV | `Z772-OEPNV` |
 | Veranstaltung Kap. 5 | `Z772-VER-AN` (alle SMA) · `Z772-VER-FK` + `FK-01` (nur Führungsrolle) |
 | Objekt Kap. 7 | `Z772-OBJ` |
-| Unterkunft Kap. 8 | `Z772-UNTER` |
+| Unterkunft Kap. 8 | `Z772-UNTER` (alle SMA) · `FK-01` (nur Schichtleitung) |
 
 **Revierdienst (77200-1):** `codes_z772` = **leer**, sofern kein paralleles 77200-2-Profil.
 
@@ -301,6 +301,77 @@ Modul: [[../../DIN 77200-2/05_veranstaltungen_besondere_sicherheitsrelevanz]] ·
 
 ---
 
+## Referenz-SDL: Flüchtlings- und Asylunterkünfte (77200-2)
+
+**Profilvorlage:** `77200-2/anforderungsprofile/77200-2_fluechtlings_asylunterkuenfte.md` · Anhang C Tabelle C.4  
+**Normteil:** 77200-1-Basis **und** 77200-2 Kap. 8 · Modul: [[../../DIN 77200-2/08_fluechtlings_und_asylunterkuenfte]]
+
+### SDL-Zusatz nach Rolle
+
+| Rolle | `codes_z772` / Führung | `freigabe_kritisch` |
+|-------|------------------------|---------------------|
+| **Einsatzkraft (SMA)** | `Z772-UNTER` | ja |
+| **Schichtleitung** | `Z772-UNTER; FK-01` | ja |
+
+Sobald **mindestens eine** Profilzeile `Erbringen = Ja` hat, gilt für **jede** freigegebene Einsatzkraft mindestens `Z772-UNTER` (Unterkunftsschulung: Deeskalation, Hausordnung, sensibler Umgang — Katalog).
+
+**Kein** gesonderter `Z772-*`-FK-Code — Führung über `FK-01` und [[../Führungsanforderungen]].
+
+### SDL-Baseline (jede aktive Zeile)
+
+```
+PQ-EH; PQ-DGUV; PQ-DS; PQ-DI-U; WB-40; EW-OBJ; EW-EINS
+```
+
+| Ergänzung | Regel |
+|-----------|-------|
+| `PQ-BSH` | **kontext** — wenn GB/Unterkunftsregelwerk Brandschutzhelfer verlangt (Wohnblock, Evakuierung) |
+| `PQ-DS` | besondere Relevanz — datenschutzkonforme Lageinformation nur in Einweisung/Briefing, nicht im Knowledge-Standard |
+
+### Beispiel-Matrix (Auszug)
+
+| profil_ref | taetigkeit_kurz | stufe | ag_erh. | codes_erforderlich | codes_z772 (SMA) | kritisch |
+|------------|-----------------|-------|---------|-------------------|------------------|----------|
+| C.4-2-einfach | Überwachung — einfach | A | nein | `GQ-A-34A-S; PQ-EH; PQ-DGUV; PQ-DS; PQ-DI-U; WB-40; EW-OBJ; EW-EINS` | `Z772-UNTER` | ja |
+| C.4-2-erweitert | Überwachung — erweitert | B | nein | `GQ-B-GSSK; …` | `Z772-UNTER` | ja |
+| C.4-6-komplex | Alarmverifikation — komplex | B | nein | `GQ-B-GSSK; …` | `Z772-UNTER` | ja |
+| C.4-8-komplex | Zu-/Ausgangskontrolle — komplex | B | nein | `GQ-B-GSSK; …` | `Z772-UNTER` | ja |
+| C.4-9-komplex | Besucherlenkung — komplex | B | nein | `GQ-B-GSSK; …` | `Z772-UNTER` | ja |
+| C.4-16-komplex | Personen-/Gepäckkontrolle — komplex | B | nein | `GQ-B-GSSK; …` | `Z772-UNTER` | ja |
+
+**Schichtleitung** (logisch): `codes_z772` = `Z772-UNTER; FK-01`
+
+### Dokumentkette (Projekt — kein Qualifikationscode)
+
+Wie andere **77200-2**-SDL (Kap. 4):
+
+- SK (AG/Betreiber) — Unterkunftsstruktur, Konfliktlage, Schnittstellen  
+- EK (AN) — Schichten, Meldewege, Eskalation an Leitung/Polizei  
+- Unterkunfts-DI — Hausordnung, Verhalten, Medien, Notfall  
+
+Fehlende SK/EK: **nicht freigegeben** auf **Auftragsebene**.
+
+### Objektbezogene Einweisung
+
+| Code | Unterkunft |
+|------|------------|
+| `EW-OBJ` | Begehung: Bereiche, Sperrzonen, Notwege — **Pflicht** vor Ersteinsatz |
+| `EW-EINS` | Tageslage/Schichtbriefing (Konflikte, neue Gruppen — datenschutzkonform) — **Pflicht** praxisnah |
+
+### Freigabe-Hinweise (Unterkunft)
+
+| Situation | Ergebnis |
+|-----------|----------|
+| `Z772-UNTER` fehlt | **nicht freigegeben** |
+| Schichtleitung ohne `FK-01` | **nicht freigegeben** für Führungsrolle |
+| SK oder EK fehlt | **nicht freigegeben** (Auftragsebene) |
+| `EW-OBJ` oder `EW-EINS` fehlt | **nicht freigegeben** bzw. **eingeschränkt** mit Auflage |
+| SMA ersetzt Polizei/Sozialarbeit (Organisation) | **nicht freigegeben** — außerhalb Befugnis |
+
+Katalog: [[02_qualification_catalog_v2#Unterkunft-Schulung (Kap. 8)]]
+
+---
+
 ## Personalfreigabe — Anwendung der Matrix
 
 ### Prüfablauf (logisch)
@@ -331,6 +402,9 @@ Siehe [[03_matrix_release_hooks_v2#Personalfreigabe]] — `freigabe_id`, `person
 | ÖPNV ohne Schulung | `Z772-OEPNV` | ÖPNV |
 | Keine Objekteinweisung | `EW-OBJ` | alle |
 | Kein Einsatz-/Event-Briefing | `EW-EINS` | Veranstaltung, ÖPNV |
+| Unterkunft ohne Kap.-8-Schulung | `Z772-UNTER` | Flüchtlings-/Asylunterkünfte |
+| Unterkunft Schichtleitung ohne FK | `FK-01` | Flüchtlings-/Asylunterkünfte (Führung) |
+| Unterkunft 77200-2: SK/EK fehlt | Dokumentkette | Flüchtlings-/Asylunterkünfte (Auftrag) |
 | WB-Jahr unvollständig | `WB-40` / `WB-24` | alle |
 | DI-Unterweisung > 1 Jahr | `PQ-DI-U` | alle |
 
@@ -359,7 +433,9 @@ Gleicher Algorithmus — Profilvorlage aus `anforderungsprofile/` lesen, `codes_
 | Veranstaltungssicherungsdienst | `77200-1_veranstaltungsdienst` | — (+ SK/EK Auslöser) | **ausgearbeitet** |
 | Veranstaltung bes. Relevanz | `77200-2_veranstaltung_*` | `Z772-VER-AN`; FK: `Z772-VER-FK; FK-01` | **ausgearbeitet** |
 | ÖPNV | `77200-2_oepnv` | `Z772-OEPNV` | **ausgearbeitet** |
-| Flüchtlingsunterkunft | `77200-2_fluechtlings_*` | `Z772-UNTER` | geplant |
+| Flüchtlings-/Asylunterkünfte | `77200-2_fluechtlings_*` | `Z772-UNTER`; FK: `FK-01` | **ausgearbeitet** |
+| Objekte bes. Relevanz | `77200-2_gebaeude_*` | `Z772-OBJ` | geplant |
+| Alarm-/Empfangs-/Kontrolldienste | `77200-1_*` (Spalten 1–3, 6) | — | geplant |
 
 ---
 
@@ -382,7 +458,7 @@ Gleiches Muster für alle ausgearbeiteten SDL — Grundlage für spätere **Pers
 | 77200-1 Standard | Anhang A | optional `SDL-*` | EW-OBJ; SK/EK nur bei Auslöser (Veranstaltung) |
 | 77200-2 besonders | Anhang C | `Z772-*` Pflicht | SK+EK Pflicht (Kap. 4/5–8) |
 
-**Noch nicht in 04:** Alarm-, Empfangs-, Kontroll-, Mobildienste (77200-1); Objekt Kap. 7; Unterkunft Kap. 8 — gleicher Algorithmus.
+**Noch nicht in 04:** Alarm-, Empfangs-, Kontroll- (stationär/mobil) (77200-1 Spalten 1–3, 6); Objekt Kap. 7 — gleicher Algorithmus.
 
 ---
 

@@ -26,7 +26,7 @@ V2 ist das **strukturierte Qualifikationswissen** für Cert-Expert AI: Nachweisl
 | 1 | [[01_qualification_system_v2]] | System, Typen, Verhältnis Norm/CEKS/Tool 2 |
 | 2 | [[02_qualification_catalog_v2]] | Katalog — je Qualifikation mit Standardfeldern |
 | 3 | [[03_matrix_release_hooks_v2]] | Matrix, Personalfreigabe, SDL-Freigabe (Hooks) |
-| 4 | [[04_qualifikationsmatrix_logik]] | Ableitungslogik Profil → Codes (Revier, Intervention, Veranstaltung, ÖPNV) |
+| 4 | [[04_qualifikationsmatrix_logik]] | Ableitungslogik Profil → Codes (77200-2 Kap. 5–8 + Referenz 77200-1) |
 
 **V1-Baustein-Detail:** weiterhin in `qualifikationssystem/01`–`05` für Audit-Tiefe.
 
