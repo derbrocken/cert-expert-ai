@@ -268,6 +268,21 @@ Einstieg: [[README]] · System: [[01_qualification_system_v2]]
 | **Führungsrollen** | **ja** — Einsatzleiter |
 | **Freigabe-Hinweis** | Rolle EK = Leitung → Schulung Pflicht |
 
+### Veranstaltung — Einsatzkräfte-Schulung (Kap. 5)
+
+| Feld | Inhalt |
+|------|--------|
+| **Qualifikationsname** | Veranstaltungsschulung für Sicherheitsmitarbeiter (AN) |
+| **Qualifikationscode** | `Z772-VER-AN` |
+| **Beschreibung** | Zusatzschulung für SMA bei Veranstaltungen mit besonderer Sicherheitsrelevanz — Ablauf, Deeskalation, Einlass, Teamarbeit (EK-bezogen) |
+| **Norm-/Praxisbezug** | DIN 77200-2 Kap. 5 · [[../../DIN 77200-2/05_veranstaltungen_besondere_sicherheitsrelevanz]] |
+| **Nachweis** | Schulungsnachweis / Teilnehmerliste |
+| **Gültigkeit** | veranstaltungs-/projektbezogen |
+| **Wiederholung / WB** | Auffrischung bei EK- oder Lageänderung; ≠ 4.19.2-UE |
+| **Relevanz SDLs** | 77200-2 Kap. 5 — **alle** freigegebenen Einsatzkräfte |
+| **Führungsrollen** | nein (Einsatzkraft) |
+| **Freigabe-Hinweis** | Profil `77200-2_veranstaltung_*` ohne `Z772-VER-AN` → **nicht freigegeben** |
+
 ### ÖPNV-Schulung (Kap. 6)
 
 | Feld | Inhalt |

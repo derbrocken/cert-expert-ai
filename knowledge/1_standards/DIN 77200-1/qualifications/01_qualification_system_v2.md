@@ -105,7 +105,7 @@ Führungskräfte (3.11) unterliegen **gesonderten** Anforderungen — nicht auto
 |-------------|-------------------------------|
 | 77200-1 allgemein | GQ-A/B/C aus Profil Anhang A |
 | Interventionsdienst | GQ + `SDL-INT-24H`, `SDL-INT-5X` |
-| 77200-2 Kap. 5 | + `Z772-VER-FK`, Veranstaltungsschulung |
+| 77200-2 Kap. 5 | + `Z772-VER-AN` (SMA), `Z772-VER-FK` + `FK-01` (Führung) |
 | 77200-2 Kap. 6 | + `Z772-OEPNV` |
 | 77200-2 Kap. 7/8 | + `Z772-OBJ`, `Z772-UNTER` |
 

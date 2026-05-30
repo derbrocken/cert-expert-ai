@@ -151,7 +151,8 @@ Governance später: [[../../Governance/DIN 77200/ROADMAP]]
 - [ ] Vollständiger Tool-1-Export aller Profilzeilen (Generator)
 - [ ] VA Kap. 7 V9 in Katalog einpflegen
 - [x] Intervention in [[04_qualifikationsmatrix_logik#Referenz-SDL: Interventionsdienst (77200-1)]]
-- [ ] Weitere SDL in 04 ergänzen (Veranstaltung, Unterkunft, …)
+- [x] Veranstaltung (77200-1 + 77200-2) in [[04_qualifikationsmatrix_logik]]
+- [ ] Weitere SDL in 04 ergänzen (Unterkunft, Objekt Kap. 7, …)
 - [ ] Personalfreigabe-Vorlage (Tool 2) — **nicht** im Knowledge-Standard
 
 ---

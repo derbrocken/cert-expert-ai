@@ -1,8 +1,8 @@
 # Qualifikationsmatrix — Ableitungslogik (V2)
 
-Einstieg: [[README]] · Katalog: [[02_qualification_catalog_v2]] · Hooks: [[03_matrix_release_hooks_v2]] · Profile: [[../anforderungsprofile/77200-1_revierdienst]], [[../anforderungsprofile/77200-1_interventionsdienst]], [[../../DIN 77200-2/anforderungsprofile/77200-2_oepnv]]
+Einstieg: [[README]] · Katalog: [[02_qualification_catalog_v2]] · Hooks: [[03_matrix_release_hooks_v2]] · Profile: [[../anforderungsprofile/77200-1_revierdienst]], [[../anforderungsprofile/77200-1_interventionsdienst]], [[../anforderungsprofile/77200-1_veranstaltungsdienst]], [[../../DIN 77200-2/anforderungsprofile/77200-2_veranstaltung_besondere_sicherheitsrelevanz]], [[../../DIN 77200-2/anforderungsprofile/77200-2_oepnv]]
 
-**Status:** CEKS-Referenzlogik für **Revierdienst** (77200-1) und **ÖPNV** (77200-2) — **keine** Personalzeilen, **keine** Normabschrift.
+**Status:** CEKS-Referenzlogik — Revier, Intervention, Veranstaltung (77200-1 + 77200-2), ÖPNV — **keine** Personalzeilen, **keine** Normabschrift.
 
 ---
 
@@ -70,7 +70,7 @@ Nur wenn Profil aus **Anhang C** / Vorlage `77200-2_*`:
 | SDL | `codes_z772` (gesamt SDL, sobald eine Zeile aktiv) |
 |-----|---------------------------------------------------|
 | ÖPNV | `Z772-OEPNV` |
-| Veranstaltung Kap. 5 | `Z772-VER-FK` (nur FK-Rollen) |
+| Veranstaltung Kap. 5 | `Z772-VER-AN` (alle SMA) · `Z772-VER-FK` + `FK-01` (nur Führungsrolle) |
 | Objekt Kap. 7 | `Z772-OBJ` |
 | Unterkunft Kap. 8 | `Z772-UNTER` |
 
@@ -207,6 +207,100 @@ Detail V1: [[../qualifikationssystem/03_sdl_zusatzqualifikationen]] · Katalog: 
 
 ---
 
+## Referenz-SDL: Veranstaltungssicherungsdienst (77200-1)
+
+**Profilvorlage:** `anforderungsprofile/77200-1_veranstaltungsdienst.md` · Anhang A Tabelle A.1 Spalte 7  
+**Normteil:** nur 77200-1 · `codes_z772`: —
+
+### Abgrenzung 77200-1 vs. 77200-2 Veranstaltung
+
+| Kontext | Profil | Zusatzschulung | SK/EK (Dokumentkette) |
+|---------|--------|----------------|------------------------|
+| **Einfache Veranstaltung** | `77200-1_veranstaltungsdienst` | keine `Z772-*` | SK/EK **nicht** durch SDL-Typ allein — nur bei **Auslösern**/Vertrag (s. u.) |
+| **Besondere Sicherheitsrelevanz** | `77200-2_veranstaltung_besondere_sicherheitsrelevanz` | `Z772-VER-AN` (+ FK-Codes) | SK (AG) + EK (AN) **Pflicht** Kap. 5 — prüfen in Projektakte, **kein** Ersatz für Qualifikationscodes |
+
+### SDL-Baseline (jede aktive Zeile)
+
+```
+PQ-EH; PQ-DGUV; PQ-DS; PQ-DI-U; WB-40; EW-OBJ; EW-EINS
+```
+
+### Beispiel-Matrix (Auszug)
+
+| profil_ref | taetigkeit_kurz | stufe | ag_erh. | codes_erforderlich | codes_z772 | kritisch |
+|------------|-----------------|-------|---------|-------------------|------------|----------|
+| A.1-Sp7-2-einfach | Überwachung — einfach | A | nein | `GQ-A-34A-S; PQ-EH; PQ-DGUV; PQ-DS; PQ-DI-U; WB-40; EW-OBJ; EW-EINS` | — | ja |
+| A.1-Sp7-18-komplex | Personen-/Gepäckkontrolle — komplex | B | nein | `GQ-B-GSSK; PQ-EH; …; EW-EINS` | — | ja |
+| A.1-Sp7-10-komplex | Zu-/Ausgangskontrolle — komplex | B | nein | `GQ-B-GSSK; …` | — | ja |
+| A.1-Sp7-20-einfach | Verkehrslenkung — einfach | A | nein | `GQ-A-34A-S; …` | — | ja |
+
+### Freigabe-Hinweise (77200-1 Veranstaltung)
+
+| Situation | Ergebnis |
+|-----------|----------|
+| Nur Stufe A im Profil, Einsatz an Kontrollstelle B | **nicht freigegeben** für B-Zeile |
+| Auslöser SK/EK im Vertrag, SK/EK fehlen in Akte | **organisatorisch nicht freigabefähig** — Qualifikationscodes können trotzdem erfüllt sein; Freigabe mit Auflage/Dokumentenprüfung |
+| Groß/event ohne `EW-EINS` am Tag | **eingeschränkt** oder **nicht freigegeben** (Organisation) |
+
+Modul: [[../Erforderliche_Dokumente]] (Auslöser SK/EK) · [[../Dienstanweisungen]]
+
+---
+
+## Referenz-SDL: Veranstaltungen mit besonderer Sicherheitsrelevanz (77200-2)
+
+**Profilvorlage:** `77200-2/anforderungsprofile/77200-2_veranstaltung_besondere_sicherheitsrelevanz.md` · Anhang C Tabelle C.1  
+**Normteil:** 77200-1-Basis **und** 77200-2 Kap. 5
+
+### SDL-Zusatz nach Rolle
+
+| Rolle | `codes_z772` / Führung | `freigabe_kritisch` |
+|-------|------------------------|---------------------|
+| **Einsatzkraft (SMA)** | `Z772-VER-AN` | ja |
+| **Einsatzleitung / Gruppenführung** | `Z772-VER-AN; Z772-VER-FK; FK-01` | ja |
+
+Sobald **mindestens eine** Profilzeile `Erbringen = Ja` hat, gilt für **jede** freigegebene Einsatzkraft mindestens `Z772-VER-AN`.
+
+### SDL-Baseline (jede aktive Zeile)
+
+```
+PQ-EH; PQ-DGUV; PQ-DS; PQ-DI-U; WB-40; EW-OBJ; EW-EINS
+```
+
+### Beispiel-Matrix (Auszug)
+
+| profil_ref | taetigkeit_kurz | stufe | ag_erh. | codes_erforderlich | codes_z772 (SMA) | kritisch |
+|------------|-----------------|-------|---------|-------------------|------------------|----------|
+| C.1-2-einfach | Überwachung — einfach | A | nein | `GQ-A-34A-S; PQ-EH; …; EW-EINS` | `Z772-VER-AN` | ja |
+| C.1-16-erweitert | Personen-/Gepäckkontrolle — erweitert | B | nein | `GQ-B-GSSK; …` | `Z772-VER-AN` | ja |
+| C.1-16-komplex | Personen-/Gepäckkontrolle — komplex | C | nein | `GQ-C-MS; …` | `Z772-VER-AN` | ja |
+| C.1-6-komplex | Alarmverifikation — komplex | B | nein | `GQ-B-GSSK; …` | `Z772-VER-AN` | ja |
+| C.1-9-komplex | Besucherlenkung — komplex | B | nein | `GQ-B-GSSK; …` | `Z772-VER-AN` | ja |
+
+**Führungsrolle** (zusätzliche Spalte logisch): `codes_z772` = `Z772-VER-AN; Z772-VER-FK; FK-01`
+
+### Dokumentkette (Projekt — kein Qualifikationscode)
+
+Vor SDL-Freigabe auf **Auftragsebene** prüfen (Tool 2 später):
+
+- SK vom AG vorhanden und an EK/DI angebunden  
+- EK vom AN vorhanden, an Profil und DI angeknüpft  
+- AG-Einstufung „besondere Sicherheitsrelevanz“ dokumentiert  
+
+Fehlende SK/EK: **nicht freigegeben** für den **Auftrag** — unabhängig von erfüllten GQ/PQ/Z772-Codes der Person.
+
+Modul: [[../../DIN 77200-2/05_veranstaltungen_besondere_sicherheitsrelevanz]] · Katalog: [[02_qualification_catalog_v2#Veranstaltung — Einsatzkräfte-Schulung (Kap. 5)]]
+
+### Freigabe-Hinweise (77200-2 Veranstaltung)
+
+| Situation | Ergebnis |
+|-----------|----------|
+| `Z772-VER-AN` fehlt | **nicht freigegeben** |
+| Einsatzleitung ohne `Z772-VER-FK` / `FK-01` | **nicht freigegeben** für Führungsrolle |
+| SK oder EK fehlt (Auftrag) | **nicht freigegeben** (Auftragsebene) |
+| Nur Einlass-Streife (A), Profil aktiviert auch C-Zeile | **nicht freigegeben** ohne GQ-C |
+
+---
+
 ## Personalfreigabe — Anwendung der Matrix
 
 ### Prüfablauf (logisch)
@@ -223,7 +317,7 @@ Detail V1: [[../qualifikationssystem/03_sdl_zusatzqualifikationen]] · Katalog: 
 
 Siehe [[03_matrix_release_hooks_v2#Personalfreigabe]] — `freigabe_id`, `person_ref`, `verwendung`, `profil_ref`, `codes_geprueft`, `status`.
 
-### Typische Blocker (Revier, Intervention, ÖPNV)
+### Typische Blocker (alle Referenz-SDL)
 
 | Blocker | Code | SDL |
 |---------|------|-----|
@@ -231,8 +325,12 @@ Siehe [[03_matrix_release_hooks_v2#Personalfreigabe]] — `freigabe_id`, `person
 | Ersthelfer abgelaufen | `PQ-EH` | alle |
 | Intervention ohne 24-h-Schulung | `SDL-INT-24H` | Interventionsdienst |
 | Intervention ohne 5 Einsätze | `SDL-INT-5X` | Interventionsdienst |
+| Veranstaltung 77200-2 ohne AN-Schulung | `Z772-VER-AN` | Veranstaltung Kap. 5 |
+| Veranstaltung FK ohne Leitungsschulung | `Z772-VER-FK` / `FK-01` | Veranstaltung Kap. 5 (Führung) |
+| Veranstaltung 77200-2: SK/EK fehlt | Dokumentkette | Veranstaltung Kap. 5 (Auftrag) |
 | ÖPNV ohne Schulung | `Z772-OEPNV` | ÖPNV |
 | Keine Objekteinweisung | `EW-OBJ` | alle |
+| Kein Einsatz-/Event-Briefing | `EW-EINS` | Veranstaltung, ÖPNV |
 | WB-Jahr unvollständig | `WB-40` / `WB-24` | alle |
 | DI-Unterweisung > 1 Jahr | `PQ-DI-U` | alle |
 
@@ -258,9 +356,33 @@ Gleicher Algorithmus — Profilvorlage aus `anforderungsprofile/` lesen, `codes_
 |-----|---------|-------------|--------------|
 | Revierdienst | `77200-1_revierdienst` | — | **ausgearbeitet** |
 | Interventionsdienst | `77200-1_interventionsdienst` | `SDL-INT-24H; SDL-INT-5X` | **ausgearbeitet** |
+| Veranstaltungssicherungsdienst | `77200-1_veranstaltungsdienst` | — (+ SK/EK Auslöser) | **ausgearbeitet** |
+| Veranstaltung bes. Relevanz | `77200-2_veranstaltung_*` | `Z772-VER-AN`; FK: `Z772-VER-FK; FK-01` | **ausgearbeitet** |
 | ÖPNV | `77200-2_oepnv` | `Z772-OEPNV` | **ausgearbeitet** |
-| Veranstaltung bes. Relevanz | `77200-2_veranstaltung_*` | `Z772-VER-FK` (FK) | geplant |
 | Flüchtlingsunterkunft | `77200-2_fluechtlings_*` | `Z772-UNTER` | geplant |
+
+---
+
+## Einheitliches Freigabemodell (Übersicht)
+
+Gleiches Muster für alle ausgearbeiteten SDL — Grundlage für spätere **Personalfreigabe** und Tool 2:
+
+```
+(1) Profil — aktive Zeilen + höchste Stufe
+(2) GQ-* — je Zeile / aggregiert
+(3) PQ-* + WB-* + EW-* — Baseline
+(4) SDL-* (77200-1) oder Z772-* (77200-2) — SDL-/Rollenbezug
+(5) Dokumentkette SK/EK/DI — wo normativ (77200-2, 77200-1-Auslöser)
+═══════════════════════════════════════
+→ Freigabeentscheid (Person + Verwendung + Auftrag)
+```
+
+| SDL-Typ | Profil | Zusatzcodes | Dokumentkette |
+|---------|--------|-------------|---------------|
+| 77200-1 Standard | Anhang A | optional `SDL-*` | EW-OBJ; SK/EK nur bei Auslöser (Veranstaltung) |
+| 77200-2 besonders | Anhang C | `Z772-*` Pflicht | SK+EK Pflicht (Kap. 4/5–8) |
+
+**Noch nicht in 04:** Alarm-, Empfangs-, Kontroll-, Mobildienste (77200-1); Objekt Kap. 7; Unterkunft Kap. 8 — gleicher Algorithmus.
 
 ---
 
