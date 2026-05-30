@@ -2,7 +2,7 @@
 
 **Stand:** 2026-05-30  
 **Branch:** `cursor/din-77200-1-anforderungsprofile`  
-**Branch-Tip / letzter Commit:** `856867d` — *Update CURRENT_STATE commit pointer*  
+**Branch-Tip / letzter Commit:** `76ec6ce` — *Clarify CEKS current state release chain*  
 **Substantieller Arbeitsstand:** `5fd6660` — *Add Tool 2 domain model and agent CURRENT_STATE snapshot*
 
 ---
