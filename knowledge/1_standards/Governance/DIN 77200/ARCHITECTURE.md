@@ -6,7 +6,7 @@
 
 | Schicht | Pfad | Inhalt |
 |---------|------|--------|
-| **Governance** | `1_standards/din_77200/` | Architektur, Roadmap, Agentenregeln — **kein Fachwissen** |
+| **Governance** | `1_standards/Governance/DIN 77200/` | Architektur, Roadmap, Agentenregeln — **kein Fachwissen** |
 | **Norm 77200-1** | `1_standards/DIN 77200-1/` | CEKS-Module, Anhang-A-Vorlagen, Qualifikationssystem |
 | **Norm 77200-2** | `1_standards/DIN 77200-2/` | Kap.-5–8-Module, Anhang-C-Vorlagen |
 | **SDL** | `3_sdls/<slug>/` | Einsatzkontext, keine Normvorlagen duplizieren |
@@ -19,7 +19,7 @@
 
 ```
 Neuer DIN-77200-Inhalt?
-  ├─ Governance / Meta / Roadmap?     → din_77200/
+  ├─ Governance / Meta / Roadmap?     → Governance/DIN 77200/
   ├─ Nur DIN 77200-1?                 → DIN 77200-1/ (+ Unterordner)
   ├─ Nur DIN 77200-2?                 → DIN 77200-2/ (+ Unterordner)
   ├─ Ausgefülltes Projekt?            → 10_examples/
@@ -45,7 +45,7 @@ Unterscheidung **innerhalb der Datei:** `Norm-SDL`, `Referenz Anhang A/C`, YAML-
 ## Verworfene Strukturidee (2026-05)
 
 Zentralisierung aller Dokumenttypen unter `din_77200/<dokumenttyp>/` — **nicht umgesetzt**.  
-Begründung: Vault bleibt normzentriert; `din_77200` nur Governance.
+Begründung: Vault bleibt normzentriert; Governance liegt unter `Governance/DIN 77200/`.
 
 Details: [[MIGRATION#Verworfene Strukturidee]]
 
@@ -53,6 +53,6 @@ Details: [[MIGRATION#Verworfene Strukturidee]]
 
 ## Verknüpfungen
 
-- Master-Index 77200-1: [[../DIN 77200-1/overview|overview]]
-- Anforderungsprofil-Modul: [[../DIN 77200-1/Anforderungsprofile|Anforderungsprofile]]
-- Qualifikationssystem: [[../DIN 77200-1/qualifikationssystem/README|qualifikationssystem]]
+- Master-Index 77200-1: [[../../DIN 77200-1/overview|overview]]
+- Anforderungsprofil-Modul: [[../../DIN 77200-1/Anforderungsprofile|Anforderungsprofile]]
+- Qualifikationssystem: [[../../DIN 77200-1/qualifikationssystem/README|qualifikationssystem]]

@@ -18,4 +18,4 @@ Pfad (dieser Ordner): `knowledge/1_standards/DIN 77200-1/anforderungsprofile/`
 
 Regenerierung: `python3 scripts/generate_anforderungsprofile.py`
 
-Modul: [[Anforderungsprofile]] · Governance: [[../../din_77200/README|din_77200]]
+Modul: [[Anforderungsprofile]] · Governance: [[../../Governance/DIN 77200/README|Governance DIN 77200]]

@@ -451,7 +451,7 @@ SDL-spezifische Normvorlagen (normzentriert):
 | DIN 77200-1 Anhang A | `knowledge/1_standards/DIN 77200-1/anforderungsprofile/` | `_master_77200-1.md` |
 | DIN 77200-2 Anhang C | `knowledge/1_standards/DIN 77200-2/anforderungsprofile/` | `_master_77200-2.md` |
 
-Governance/Architektur: `knowledge/1_standards/din_77200/`
+Governance/Architektur: `knowledge/1_standards/Governance/DIN 77200/`
 
 Stufen A/B/C und Tätigkeitstexte sind in den SDL-Vorlagen **vorbelegt** (vollständiger Anhang-A- bzw. Anhang-C-Extrakt je SDL). Projektspezifisch auszufüllen: Erbringen, AG-Erhöhung, Bemerkung. Regenerierung: `scripts/generate_anforderungsprofile.py`.
 

@@ -6,9 +6,9 @@ Geplante Erweiterungen — **ohne** Migration der normzentrierten Fachablage.
 
 ## Kurzfristig
 
-- [ ] Pfad-Links in `Anforderungsprofile.md`, Vorlagen-READMEs auf normzentrierte Pfade vereinheitlichen
+- [x] Pfad-Links in `Anforderungsprofile.md`, Vorlagen-READMEs auf normzentrierte Pfade vereinheitlichen
 - [x] Fehlablagen in `anforderungsprofile/` bereinigen (`fluechtlings_*` nur 77200-2; `veranstaltungssicherungsdienst` nur 77200-1)
-- [ ] `10_examples/anforderungsprofile/` endgültig entfernen (veraltete Dubletten)
+- [x] `10_examples/anforderungsprofile/` endgültig entfernen (veraltete Dubletten)
 - [ ] VA Kap. 7 V9 Organisation Qualifikation einarbeiten → `qualifikationssystem/` oder `Weiterbildung.md`
 
 ---
@@ -24,8 +24,8 @@ Geplante Erweiterungen — **ohne** Migration der normzentrierten Fachablage.
 
 ## Explizit nicht geplant
 
-- ~~Zentralisierung aller Dokumenttypen unter `din_77200/<typ>/`~~ — verworfen
-- ~~Migration von CEKS-Modulen aus `DIN 77200-1/` nach `din_77200/`~~
+- ~~Zentralisierung aller Dokumenttypen unter `din_77200/<typ>/`~~ — verworfen (Governance jetzt: `Governance/DIN 77200/`)
+- ~~Migration von CEKS-Modulen aus `DIN 77200-1/` nach Governance~~
 - ~~Root-Ordner `knowledge/standards/`~~
 
 Siehe [[MIGRATION]].
