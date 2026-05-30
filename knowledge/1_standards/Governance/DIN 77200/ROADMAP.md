@@ -15,7 +15,7 @@ Geplante Erweiterungen — **ohne** Migration der normzentrierten Fachablage.
 
 ## Mittelfristig
 
-- [ ] Qualifikationsmatrizen-**Logik** (keine Personalzeilen) als Modul oder Erweiterung `qualifikationssystem/`
+- [x] Qualifikationsmatrizen-**Logik** in `qualifications/04` (keine Personalzeilen)
 - [ ] 77200-2 Kap. 5–8 Module von Platzhalter auf aktive CEKS-Module
 - [ ] Tool-1-Slots: Profil → Qualifikationssystem → Freigabe
 - [ ] Einheitliche YAML: `document_type`, `norm_part`, `annex_reference`

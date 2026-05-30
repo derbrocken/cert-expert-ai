@@ -46,6 +46,7 @@ Dieser Ordner dient **ausschließlich** der übergreifenden Steuerung: Architekt
 | [[AGENT_RULES]] | Retrieval, Pfade, inhaltliche Grenzen |
 | [[ROADMAP]] | Geplante Erweiterungen (ohne Migration) |
 | [[MIGRATION]] | Historie — **verworfene** Dokumenttyp-Zentralisierung |
+| [[QUALIFICATION_V1_V2]] | Ordnerentscheidung `qualifikationssystem/` vs. `qualifications/` |
 
 ---
 
@@ -56,7 +57,8 @@ knowledge/1_standards/
 ├── DIN 77200-1/
 │   ├── overview.md, *.md (CEKS-Module)
 │   ├── anforderungsprofile/     ← Anhang A
-│   └── qualifikationssystem/    ← Bausteine 01–05
+│   ├── qualifikationssystem/    ← V1 Legacy, Bausteine 01–05 (DE)
+│   └── qualifications/          ← V2+ aktuell: Katalog, Matrix, Hooks
 ├── DIN 77200-2/
 │   ├── *.md (Kap. 5–8 Module)
 │   └── anforderungsprofile/     ← Anhang C

@@ -33,18 +33,30 @@
 | Auditnachweise | `Auditnachweise.md` | aktiv |
 | Führungsanforderungen | `Führungsanforderungen.md` | aktiv |
 
-### Qualifikationssystem (77200-1)
+### Qualifikationssystem V1 (77200-1, Legacy)
 
-Pfad: `knowledge/1_standards/DIN 77200-1/qualifikationssystem/`
+Pfad: `knowledge/1_standards/DIN 77200-1/qualifikationssystem/` — **parallel zu V2, nicht migrieren**
 
 | Datei | Inhalt |
 |-------|--------|
-| `README.md` | Einstieg, Profil-first |
+| `README.md` | V1/Legacy, Verweis V2 |
 | `01_grundqualifikationen.md` | Stufen A/B/C |
 | `02_pflichtqualifikationen.md` | Ersthelfer, Brandschutz, §34a, … |
 | `03_sdl_zusatzqualifikationen.md` | SDL-spezifische Zusätze |
 | `04_weiterbildungslogik.md` | 4.19.2-Logik |
-| `05_sdl_freigabelogik.md` | Freigabeentscheid, keine Personalmatrix |
+| `05_sdl_freigabelogik.md` | Freigabeentscheid (Detail DE) |
+
+### Qualifikationssystem V2+ (77200-1, aktuell)
+
+Pfad: `knowledge/1_standards/DIN 77200-1/qualifications/` — siehe [[QUALIFICATION_V1_V2]]
+
+| Datei | Inhalt |
+|-------|--------|
+| `README.md` | Einstieg V2+ |
+| `01_qualification_system_v2.md` | Systemübersicht |
+| `02_qualification_catalog_v2.md` | Qualifikationscodes |
+| `03_matrix_release_hooks_v2.md` | Freigabe-Hooks, Personalfreigabe-Schema |
+| `04_qualifikationsmatrix_logik.md` | Matrix 77200-1 + 77200-2 Kap. 5–8 |
 
 ### Anforderungsprofil-Vorlagen
 
@@ -125,7 +137,8 @@ Pfad: `knowledge/1_standards/Governance/DIN 77200/`
 ```
 Profil-Vorlage 77200-1?  → knowledge/1_standards/DIN 77200-1/anforderungsprofile/77200-1_<sdl>.md
 Profil-Vorlage 77200-2?  → knowledge/1_standards/DIN 77200-2/anforderungsprofile/77200-2_<sdl>.md
-Qualifikationslogik?     → knowledge/1_standards/DIN 77200-1/qualifikationssystem/
+Qualifikationslogik V2+? → knowledge/1_standards/DIN 77200-1/qualifications/
+Qualifikationslogik V1?  → knowledge/1_standards/DIN 77200-1/qualifikationssystem/
 Normmodul / CEKS?        → knowledge/1_standards/DIN 77200-1/*.md oder DIN 77200-2/*.md
 Governance / Meta?       → knowledge/1_standards/Governance/DIN 77200/
 Ausgefülltes Projekt?    → 10_examples/

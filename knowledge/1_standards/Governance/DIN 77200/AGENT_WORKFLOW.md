@@ -98,7 +98,9 @@ Neuer Inhalt?
 |--------|----------------|
 | Profil in `10_examples/` und Standards | Nur Standards = Vorlagen |
 | Unprefixed + prefixed Profile | Nur `77200-1_*` / `77200-2_*` |
-| Qualifikation im Anforderungsprofil | Nur in qualifikationssystem/ |
+| Qualifikation im Anforderungsprofil | Nur in Profil-Vorlagen — **nicht** in qualifikationssystem/ oder qualifications/ |
+| Qualifikationscodes / Matrix | Nur in `qualifications/` (V2+) |
+| Qualifikations-Bausteine DE | Nur in `qualifikationssystem/` (V1) |
 | Parallel README in Governance und Fach | Governance = Meta, Fach = CEKS |
 
 ---

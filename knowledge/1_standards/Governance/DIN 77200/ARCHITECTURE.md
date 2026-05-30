@@ -33,7 +33,8 @@ Neuer DIN-77200-Inhalt?
 | Dokumenttyp | Ablage 77200-1 | Ablage 77200-2 |
 |-------------|----------------|----------------|
 | Anforderungsprofil (Vorlage) | `anforderungsprofile/` (Anhang A) | `anforderungsprofile/` (Anhang C) |
-| Qualifikationssystem | `qualifikationssystem/` | — (Verweis auf 77200-1 + Anhang C in 03) |
+| Qualifikationssystem V1 (Legacy) | `qualifikationssystem/` | Bausteine 01–05 |
+| Qualifikationssystem V2+ | `qualifications/` | Katalog, Matrix — **aktueller Arbeitsstand** |
 | CEKS-Modul | `*.md` (overview, Qualifikation, …) | `*.md` (Übersicht, Kap. 5–8) |
 | Dienstanweisung (Standard) | `Dienstanweisungen.md` | objektbezogen über 77200-2-Module |
 | Weiterbildung | `Weiterbildung.md` | Kap.-5–8-Ergänzungen in Modulen |
@@ -55,4 +56,6 @@ Details: [[MIGRATION#Verworfene Strukturidee]]
 
 - Master-Index 77200-1: [[../../DIN 77200-1/overview|overview]]
 - Anforderungsprofil-Modul: [[../../DIN 77200-1/Anforderungsprofile|Anforderungsprofile]]
-- Qualifikationssystem: [[../../DIN 77200-1/qualifikationssystem/README|qualifikationssystem]]
+- Qualifikationssystem V2+: [[../../DIN 77200-1/qualifications/README|qualifications]]
+- Qualifikationssystem V1: [[../../DIN 77200-1/qualifikationssystem/README|qualifikationssystem]]
+- Ordnerentscheidung: [[QUALIFICATION_V1_V2]]

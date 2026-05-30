@@ -1,67 +1,80 @@
-# Qualifikationssystem V2 — DIN 77200-1 (CEKS)
+# Qualifikationssystem V2+ — DIN 77200-1 (CEKS)
 
 **Pfad:** `knowledge/1_standards/DIN 77200-1/qualifications/`  
-**Version:** V2 (CEKS-Wissensbasis)  
-**Vorgänger:** [[../qualifikationssystem/README|Qualifikationssystem V1]] — **bleibt erhalten**, nicht löschen
+**Status:** **aktueller Arbeitsstand** (V2+) — Katalog, Matrix, Freigabe-Vorbereitung  
+**Legacy V1:** [[../qualifikationssystem/README|qualifikationssystem/]] — **parallel, nicht migrieren**
 
 ---
 
-## Zweck
+## Ordnerentscheidung (kurz)
 
-V2 ist das **strukturierte Qualifikationswissen** für Cert-Expert AI: Nachweislogik, Gültigkeiten, SDL-Bezug und Vorbereitung für **Qualifikationsmatrix**, **Personalfreigabe** und **SDL-Freigabelogik**.
+| | `qualifications/` (hier) | `qualifikationssystem/` (V1) |
+|--|--------------------------|------------------------------|
+| **Sprache Dateinamen** | Englisch (`*_v2.md`) | Deutsch (`01_`–`05_`) |
+| **Neue CEKS-Arbeit** | **ja** | **nein** (nur Pflege 01–05) |
+| **Matrix / Codes** | **ja** | Verweis nur |
+| **Migration** | **verboten** ohne Architekturentscheidung | Ordner bleibt |
 
-| V2 liefert | V2 liefert nicht |
-|------------|------------------|
-| Qualifikationskatalog mit Prüffeldern | Mitarbeiter-Gesamtlisten |
-| Logik Profil → Nachweis → Freigabe | Normabschrift |
-| CEKS-/Tool-Vorbereitung | Tool-2-Implementierung (später) |
-| Abgrenzung 77200-1 / 77200-2 | Eigenes Qualifikationssystem in 77200-2 |
+Dokumentation: [[../../Governance/DIN 77200/QUALIFICATION_V1_V2]]
+
+**Alle V2-Dateien liegen ausschließlich in diesem Ordner** (keine V2-Kopien unter `qualifikationssystem/`).
 
 ---
 
-## Lesereihenfolge
+## Dateien (V2 — vollständige Liste)
 
 | Nr | Datei | Inhalt |
 |----|-------|--------|
-| 1 | [[01_qualification_system_v2]] | System, Typen, Verhältnis Norm/CEKS/Tool 2 |
-| 2 | [[02_qualification_catalog_v2]] | Katalog — je Qualifikation mit Standardfeldern |
-| 3 | [[03_matrix_release_hooks_v2]] | Matrix, Personalfreigabe, SDL-Freigabe (Hooks) |
-| 4 | [[04_qualifikationsmatrix_logik]] | Ableitungslogik — DIN 77200-1 vollständig, 77200-2 Kap. 5–8 vollständig |
+| 1 | [[01_qualification_system_v2]] | System, Typen, 77200-1 / 77200-2 |
+| 2 | [[02_qualification_catalog_v2]] | Qualifikationscodes (GQ, PQ, SDL, Z772, WB, EW, FK) |
+| 3 | [[03_matrix_release_hooks_v2]] | Personalfreigabe-Schema, SDL-Freigabe-Hooks |
+| 4 | [[04_qualifikationsmatrix_logik]] | Profil → Codes — 77200-1 + 77200-2 Kap. 5–8 |
+| — | **README.md** | dieser Einstieg |
 
-**V1-Baustein-Detail:** weiterhin in `qualifikationssystem/01`–`05` für Audit-Tiefe.
+---
+
+## Lesereihenfolge (Agenten)
+
+1. [[01_qualification_system_v2]]  
+2. [[02_qualification_catalog_v2]]  
+3. [[04_qualifikationsmatrix_logik]] — bei SDL-/Profil-Freigabe  
+4. [[03_matrix_release_hooks_v2]] — bei Personalfreigabe / Tool-2-Vorbereitung  
+5. Bei Audit-Tiefe: [[../qualifikationssystem/05_sdl_freigabelogik]] (V1)
 
 ---
 
 ## Architekturregel
 
 ```
-Anforderungsprofil (77200-1 / Anhang C über 77200-2)
-        ↓
-Qualifikationssystem V2 (dieser Ordner)
-        ↓
-Freigabeentscheid (später Governance + Tool 2)
-        ↓
-Einsatz (Projektakte — Tool 2, Perspektive)
+Anforderungsprofil → qualifications/ (V2) → Freigabeentscheid → Projektakte (Tool 2, später)
 ```
 
-- **77200-1:** Grundqualifikation, Pflichtnachweise, WB, Freigabelogik  
-- **77200-2:** nur **Zusatz**-Schulungen/Einweisungen — [[../../DIN 77200-2/04_qualifikationen_und_schulungen|77200-2 Qualifikationen]]  
-- **Governance:** Agentenregeln, später erweiterte Freigabelogik — [[../../Governance/DIN 77200/AGENT_RULES]]
+- **77200-2:** Zusatz nur über `Z772-*` im Katalog — kein zweites Qualifikationssystem in 77200-2  
+- **Governance:** [[../../Governance/DIN 77200/AGENT_RULES]]
 
 ---
 
-## Verwandte Module
+## Abgrenzung zu V1 (keine Dublette)
 
-| Modul | Rolle |
-|-------|-------|
-| [[../Anforderungsprofile]] | Input: Tätigkeit + Stufe A/B/C |
-| [[../Qualifikationsanforderungen]] | Audit-Modul, Normtiefe |
-| [[../Weiterbildung]] | 4.19.2 Detail |
-| [[../Führungsanforderungen]] | Führungsqualifikation |
-| [[../qualifikationssystem/05_sdl_freigabelogik]] | V1-Freigabemodell |
+| Inhalt | V2 | V1 |
+|--------|----|----|
+| Qualifikationsmatrix alle SDL | **04** | — |
+| Code-Katalog | **02** | — |
+| Freigabe-Detailprosa DE | Verweis | **05** |
+| Grundqualifikation Narrativ | Verweis | **01** |
+
+V2 **ersetzt** V1 nicht — beide Ordner bleiben. Inhalte widersprechen sich nicht: V2 = operative Ableitung; V1 = vertiefende Bausteine.
+
+---
+
+## Geplant (noch nicht angelegt)
+
+- [ ] Personalfreigabe V1 CEKS-Dokument — **nur hier**, nicht unter `qualifikationssystem/`  
+- [ ] VA Kap. 7 V9 im Katalog  
+- [ ] Tool 2 — **keine** Implementierung im Knowledge-Standard
 
 ---
 
 ## Verifikation
 
-Inhalte sind CEKS-Interpretation auf Basis DIN 77200-1/-2. Vor Zertifizierungsentscheidungen: Primärquelle `inputs/raw_standards/` und künftig VA Kap. 7 V9.
+CEKS-Interpretation — Primärquelle `inputs/raw_standards/`, Modul [[../Qualifikationsanforderungen]].

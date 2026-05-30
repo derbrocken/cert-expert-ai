@@ -11,9 +11,10 @@ Keine Vorlagen in diesem Dokument. Siehe Fachmodule und `anforderungsprofile/`.
 | Dokumenttyp | Zweck (kurz) | Ablageort | Normbezug | Status |
 |-------------|--------------|-----------|-----------|--------|
 | Anforderungsprofil | Vertragliche Tätigkeiten + Stufen | siehe unten | 77200-1 + ggf. 77200-2 | **vorhanden** (V1) |
-| Qualifikationssystem | Prüfbausteine, Freigabelogik | `DIN 77200-1/qualifikationssystem/` | 77200-1 | **vorhanden** (V1) |
-| Qualifikationsmatrix | Profil → Qualifikation → Nachweis | `DIN 77200-1/qualifications/04_qualifikationsmatrix_logik.md` | 77200-1 (+ 77200-2) | **vorhanden** (Logik V2; Referenz-SDL inkl. Veranstaltung) |
-| Personalfreigabe | Freigabe zum Einsatz je Rolle | Logik in qualifikationssystem/ | 77200-1 | **geplant** (Logik teilweise in 05) |
+| Qualifikationssystem V1 | Prüfbausteine 01–05 (Legacy DE) | `DIN 77200-1/qualifikationssystem/` | 77200-1 | **vorhanden** (parallel) |
+| Qualifikationssystem V2+ | Katalog, Matrix, Hooks | `DIN 77200-1/qualifications/` | 77200-1 (+ 77200-2) | **vorhanden** (aktueller Stand) |
+| Qualifikationsmatrix | Profil → Qualifikation → Nachweis | `qualifications/04_qualifikationsmatrix_logik.md` | 77200-1 + 77200-2 | **vorhanden** |
+| Personalfreigabe | Freigabe je Verwendung | geplant: `qualifications/` · Schema in `03` · Detail V1: `05` | 77200-1 | **geplant** |
 | Dienstanweisung / ODA | Operative Regeln am Objekt | Wissensmodul + Projektakte | 77200-1 (+ 77200-2 DI) | Modul **vorhanden**, ODA **Projekt** |
 | Gefährdungsbeurteilung | Gefährdungen am Einsatzort | Wissensmodul / Projekt | 77200-1 / 77200-2 | Modul **vorhanden**, GB **Projekt** |
 | Sicherheitskonzept | AG-Planungsgrundlage | Projekt / AG | 77200-2 (Pflicht bei 77200-2) | **Projekt** — Wissen in 77200-2 |
@@ -43,9 +44,10 @@ Ausgefüllte Projektprofile: künftig **Tool 2** (Perspektive) / `10_examples/` 
 | Aspekt | Inhalt |
 |--------|--------|
 | **Zweck** | Logik für Grundqualifikation, Pflichtnachweise, SDL-Zusätze, WB, **Freigabeentscheid** — keine Mitarbeiter-Gesamtliste |
-| **Ablageort** | `DIN 77200-1/qualifikationssystem/` (README, 01–05) |
+| **Ablageort V1** | `DIN 77200-1/qualifikationssystem/` (01–05) |
+| **Ablageort V2+** | `DIN 77200-1/qualifications/` — Katalog, operative Logik |
 | **77200-1 / 77200-2** | **Nur 77200-1** — 77200-2 ergänzt Zusatzschulungen über Fachmodule |
-| **Status** | **vorhanden** (V1) — Vertiefung geplant |
+| **Status** | V1 + V2+ **vorhanden** — siehe [[QUALIFICATION_V1_V2]] |
 
 ---
 
@@ -54,7 +56,7 @@ Ausgefüllte Projektprofile: künftig **Tool 2** (Perspektive) / `10_examples/` 
 | Aspekt | Inhalt |
 |--------|--------|
 | **Zweck** | Abbildung: Profil-Tätigkeit → Stufe A/B/C → erforderlicher Nachweis → Audit-Hilfe |
-| **Ablageort** | Geplant: Erweiterung `qualifikationssystem/` oder eigenes Modul unter `DIN 77200-1/` |
+| **Ablageort** | `qualifications/04_qualifikationsmatrix_logik.md` |
 | **77200-1 / 77200-2** | Primär 77200-1; 77200-2-Zusatzschulungen als extra Spalte/Regel |
 | **Status** | **geplant** — keine Personalnamen im Knowledge-Standard |
 

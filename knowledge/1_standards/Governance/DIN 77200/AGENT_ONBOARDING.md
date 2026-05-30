@@ -59,7 +59,8 @@ Weitere Schichten (nur lesen, nicht verschieben):
 | Generator Anforderungsprofile | **fertig** | `scripts/generate_anforderungsprofile.py` |
 | DIN 77200-1 Wissensmodule | **fertig** | `DIN 77200-1/*.md`, `overview.md` |
 | DIN 77200-2 Wissensmodule | **fertig** | `DIN 77200-2/README.md`, `01_`–`08_*.md` |
-| Qualifikationssystem V1 | **fertig** | `DIN 77200-1/qualifikationssystem/` (01–05) |
+| Qualifikationssystem V1 (Legacy) | **fertig** | `DIN 77200-1/qualifikationssystem/` (01–05) — parallel, nicht migrieren |
+| Qualifikationssystem V2+ | **fertig** | `DIN 77200-1/qualifications/` — **aktueller Arbeitsstand** |
 | Governance-Grundstruktur | **fertig** | `Governance/DIN 77200/` |
 
 Details: [[CURRENT_STATE]]
@@ -82,10 +83,11 @@ Ohne **explizite Freigabe** des Nutzers:
 
 | Thema | Status | Hinweis |
 |-------|--------|---------|
-| Qualifikationssystem vertiefen | geplant | Erweiterung in `qualifikationssystem/`, nicht Parallelordner |
-| Qualifikationsmatrix | **V2-Logik** (Referenz-SDL inkl. Veranstaltung) | `qualifications/04_qualifikationsmatrix_logik.md` — keine Personalzeilen |
-| Personalfreigabe | geplant | Prozess + Nachweislogik |
-| SDL-Freigabelogik | **V1 vorhanden** | `qualifikationssystem/05_sdl_freigabelogik.md` — vertiefen |
+| Qualifikationssystem V1 vertiefen | geplant | nur `qualifikationssystem/01`–`05` — **keine** neuen V2-Dateien dort |
+| Qualifikationssystem V2+ | **fertig** | `qualifications/` — Katalog, Matrix, Hooks |
+| Qualifikationsmatrix | **fertig** | `qualifications/04_qualifikationsmatrix_logik.md` |
+| Personalfreigabe | geplant | CEKS-Dokument in `qualifications/` (nicht V1-Ordner duplizieren) |
+| SDL-Freigabelogik | V1 + V2 | `05` (Detail) · `03`/`04` (Codes/Matrix) |
 | Tool-2-Anbindung | **spätere Perspektive** | Projektakten — **noch nicht implementiert** |
 
 Siehe [[ROADMAP]]. Tool 2 ist **Zielbild**, keine bestehende Codebasis in diesem Repo.
@@ -100,7 +102,7 @@ Siehe [[ROADMAP]]. Tool 2 ist **Zielbild**, keine bestehende Codebasis in diesem
 | A/B/C, §34a, Ersthelfer | `DIN 77200-1/Qualifikationsanforderungen.md` |
 | Besondere SDL, SK/EK | `DIN 77200-2/README.md` → Modul 05–08 |
 | Profil-Vorlage | `DIN 77200-*/anforderungsprofile/77200-*_*.md` |
-| Freigabeentscheid | `DIN 77200-1/qualifikationssystem/05_sdl_freigabelogik.md` |
+| Freigabeentscheid | `qualifications/04` + `03` · Detail V1: `qualifikationssystem/05` |
 
 ---
 

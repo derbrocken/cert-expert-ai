@@ -431,7 +431,7 @@ Geplante Detailmodule (`module_creation_status: master_ready` am Index). Wikilin
 |-------------|-------|-----------|-------|---------------|
 | `qualification_requirements` | [[Qualifikationsanforderungen]] | 4.19.1, Anhang A | Qualifikationsmatrix vs. Profil | Zeugnisse, §34a |
 | `requirements_profile` | [[Anforderungsprofile]] | 4.11, Anhang A, Anhang C | Profil first; AG/AN-Abstimmung; Jahresprüfung | Anforderungsprofil, Qualifikationsmatrix |
-| — | [[qualifikationssystem/README\|Qualifikationssystem]] | 4.19.1, 4.19.2, Pflichtnachweise | SDL-Freigabelogik (Bausteine 01–05) | Freigabeentscheid, nicht Mitarbeiterliste |
+| — | [[qualifications/README\|Qualifikationssystem V2+]] · [[qualifikationssystem/README\|V1 Legacy]] | 4.19.1, 4.19.2, Katalog, Matrix | Freigabeentscheid — V2: `qualifications/`, V1: 01–05 |
 | `insurance_requirements` | [[Versicherungsanforderungen]] | 4.3, 4.4 | Police, Deckungssummen | Versicherungsnachweise |
 | `subcontractors` | [[Subunternehmer]] | 4.13 | Sub-Prüfung, AG-Zustimmung (4.13) | Personenlisten, Prüfberichte |
 
