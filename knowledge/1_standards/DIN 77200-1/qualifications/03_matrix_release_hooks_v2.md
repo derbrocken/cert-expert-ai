@@ -153,7 +153,8 @@ Governance später: [[../../Governance/DIN 77200/ROADMAP]]
 - [x] Intervention in [[04_qualifikationsmatrix_logik#Referenz-SDL: Interventionsdienst (77200-1)]]
 - [x] Veranstaltung (77200-1 + 77200-2) in [[04_qualifikationsmatrix_logik]]
 - [x] Flüchtlings-/Asylunterkünfte in [[04_qualifikationsmatrix_logik#Referenz-SDL: Flüchtlings- und Asylunterkünfte (77200-2)]]
-- [ ] Weitere SDL in 04 ergänzen (Objekt Kap. 7, 77200-1 Spalten 1–3/6, …)
+- [x] Objekte bes. Relevanz (Kap. 7) in [[04_qualifikationsmatrix_logik#Referenz-SDL: Objekte mit besonderer Sicherheitsrelevanz (77200-2)]]
+- [ ] Weitere SDL in 04 ergänzen (77200-1 Spalten 1–3/6, …)
 - [ ] Personalfreigabe-Vorlage (Tool 2) — **nicht** im Knowledge-Standard
 
 ---

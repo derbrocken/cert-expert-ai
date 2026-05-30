@@ -1,8 +1,8 @@
 # Qualifikationsmatrix — Ableitungslogik (V2)
 
-Einstieg: [[README]] · Katalog: [[02_qualification_catalog_v2]] · Hooks: [[03_matrix_release_hooks_v2]] · Profile: [[../anforderungsprofile/77200-1_revierdienst]], [[../anforderungsprofile/77200-1_interventionsdienst]], [[../anforderungsprofile/77200-1_veranstaltungsdienst]], [[../../DIN 77200-2/anforderungsprofile/77200-2_veranstaltung_besondere_sicherheitsrelevanz]], [[../../DIN 77200-2/anforderungsprofile/77200-2_oepnv]], [[../../DIN 77200-2/anforderungsprofile/77200-2_fluechtlings_asylunterkuenfte]]
+Einstieg: [[README]] · Katalog: [[02_qualification_catalog_v2]] · Hooks: [[03_matrix_release_hooks_v2]] · Profile: [[../anforderungsprofile/77200-1_revierdienst]], [[../anforderungsprofile/77200-1_interventionsdienst]], [[../anforderungsprofile/77200-1_veranstaltungsdienst]], [[../../DIN 77200-2/anforderungsprofile/77200-2_veranstaltung_besondere_sicherheitsrelevanz]], [[../../DIN 77200-2/anforderungsprofile/77200-2_oepnv]], [[../../DIN 77200-2/anforderungsprofile/77200-2_fluechtlings_asylunterkuenfte]], [[../../DIN 77200-2/anforderungsprofile/77200-2_gebaeude_besondere_sicherheitsrelevanz]]
 
-**Status:** CEKS-Referenzlogik — alle **77200-2-Kap.-5–8-**Referenz-SDL + ausgewählte **77200-1**-SDL — **keine** Personalzeilen, **keine** Normabschrift.
+**Status:** CEKS-Referenzlogik — **77200-2 Kap. 5–8 vollständig** + ausgewählte **77200-1**-SDL — **keine** Personalzeilen, **keine** Normabschrift.
 
 ---
 
@@ -71,7 +71,7 @@ Nur wenn Profil aus **Anhang C** / Vorlage `77200-2_*`:
 |-----|---------------------------------------------------|
 | ÖPNV | `Z772-OEPNV` |
 | Veranstaltung Kap. 5 | `Z772-VER-AN` (alle SMA) · `Z772-VER-FK` + `FK-01` (nur Führungsrolle) |
-| Objekt Kap. 7 | `Z772-OBJ` |
+| Objekt Kap. 7 | `Z772-OBJ` (alle SMA) · `FK-01` (nur Objektleitung) |
 | Unterkunft Kap. 8 | `Z772-UNTER` (alle SMA) · `FK-01` (nur Schichtleitung) |
 
 **Revierdienst (77200-1):** `codes_z772` = **leer**, sofern kein paralleles 77200-2-Profil.
@@ -372,6 +372,80 @@ Katalog: [[02_qualification_catalog_v2#Unterkunft-Schulung (Kap. 8)]]
 
 ---
 
+## Referenz-SDL: Objekte mit besonderer Sicherheitsrelevanz (77200-2)
+
+**Profilvorlage:** `77200-2/anforderungsprofile/77200-2_gebaeude_besondere_sicherheitsrelevanz.md` · Anhang C Tabelle C.3  
+**Normteil:** 77200-1-Basis **und** 77200-2 Kap. 7 · Modul: [[../../DIN 77200-2/07_objekte_besondere_sicherheitsrelevanz]]
+
+### SDL-Zusatz nach Rolle
+
+| Rolle | `codes_z772` / Führung | `freigabe_kritisch` |
+|-------|------------------------|---------------------|
+| **Einsatzkraft (SMA)** | `Z772-OBJ` | ja |
+| **Objektleitung** | `Z772-OBJ; FK-01` | ja |
+
+Sobald **mindestens eine** Profilzeile `Erbringen = Ja` hat, gilt für **jede** freigegebene Einsatzkraft mindestens `Z772-OBJ` (objektbezogene Sicherheitsschulung — Katalog).
+
+**Kein** separater `Z772-OBJ-FK`-Code — Objektleitung zusätzlich `FK-01` und [[../Führungsanforderungen]].
+
+### SDL-Baseline (jede aktive Zeile)
+
+```
+PQ-EH; PQ-DGUV; PQ-DS; PQ-DI-U; WB-40; EW-OBJ
+```
+
+| Ergänzung | Regel |
+|-----------|-------|
+| `PQ-BSH` | **kontext** — wenn GB/Objektregelwerk Brandschutzhelfer verlangt |
+| `EW-EINS` | bei Schichtwechsel, Technikänderung, Langzeiteinsatz — Briefing/Quartalslage |
+
+Anhang C.3 erlaubt **häufig Stufe C** bei komplexen Tätigkeiten (Technik, Alarm, Verkehr) — höchste aktive Zeile bestimmt Mindest-`GQ-*`.
+
+### Beispiel-Matrix (Auszug)
+
+| profil_ref | taetigkeit_kurz | stufe | ag_erh. | codes_erforderlich | codes_z772 (SMA) | kritisch |
+|------------|-----------------|-------|---------|-------------------|------------------|----------|
+| C.3-2-einfach | Überwachung — einfach | A | nein | `GQ-A-34A-S; PQ-EH; PQ-DGUV; PQ-DS; PQ-DI-U; WB-40; EW-OBJ` | `Z772-OBJ` | ja |
+| C.3-1-komplex | Video/GMA — komplex | C | nein | `GQ-C-MS; PQ-EH; …; EW-OBJ` | `Z772-OBJ` | ja |
+| C.3-6-komplex | Alarmverifikation — komplex | C | nein | `GQ-C-MS; …` | `Z772-OBJ` | ja |
+| C.3-13-komplex | Fahrzeugkontrolle/Ladung/Gefahrgut — komplex | C | nein | `GQ-C-MS; …` | `Z772-OBJ` | ja |
+| C.3-18-komplex | Verkehrslenkung — komplex | C | nein | `GQ-C-MS; …` | `Z772-OBJ` | ja |
+| C.3-11-komplex | Schließmittelverwaltung — komplex | C | nein | `GQ-C-MS; …` | `Z772-OBJ` | ja |
+
+**Objektleitung** (logisch): `codes_z772` = `Z772-OBJ; FK-01`
+
+### Dokumentkette (Projekt — kein Qualifikationscode)
+
+Wie **77200-2 Kap. 4** (alle besonderen SDL):
+
+- **SK (AG)** — Schutzbedarf, Zonen, Bedrohungsanalyse  
+- **EK (AN)** — Besetzung, Schichten, Alarmabläufe, Eskalation  
+- **Objekt-DI** — Zonen, Schlüssel, Besucher, Technik, Notfall  
+
+Fehlende SK/EK: **nicht freigegeben** auf **Auftragsebene**.
+
+### Objektbezogene Einweisung
+
+| Code | Objekt Kap. 7 |
+|------|---------------|
+| `EW-OBJ` | Objektbegehung, Zonenplan, Technik (GMA, Zutritt, Notschaltung) — **Pflicht** vor Ersteinsatz; bei Objektwechsel/Umbau **erneuern** |
+| `EW-EINS` | Schicht-/Wechselbriefing, Technikänderung — ergänzend, praxisnah **kritisch** bei Leitstelle/Technikposten |
+
+Katalog: [[02_qualification_catalog_v2#Objekt-Schulung (Kap. 7)]] · Einweisung: [[02_qualification_catalog_v2#Objekt-Einweisung]]
+
+### Freigabe-Hinweise (Objekt)
+
+| Situation | Ergebnis |
+|-----------|----------|
+| `Z772-OBJ` fehlt | **nicht freigegeben** |
+| Objektleitung ohne `FK-01` | **nicht freigegeben** für Führungsrolle |
+| SK oder EK fehlt | **nicht freigegeben** (Auftragsebene) |
+| Profil verlangt C, Nachweis nur B | **nicht freigegeben** für C-Zeilen |
+| `EW-OBJ` veraltet (Umbau, neue Zonen) | **nicht freigegeben** bis neue Einweisung |
+| Schließmittel-Tätigkeit ohne Registerführung | **eingeschränkt** / organisationsintern **nicht freigegeben** |
+
+---
+
 ## Personalfreigabe — Anwendung der Matrix
 
 ### Prüfablauf (logisch)
@@ -405,6 +479,10 @@ Siehe [[03_matrix_release_hooks_v2#Personalfreigabe]] — `freigabe_id`, `person
 | Unterkunft ohne Kap.-8-Schulung | `Z772-UNTER` | Flüchtlings-/Asylunterkünfte |
 | Unterkunft Schichtleitung ohne FK | `FK-01` | Flüchtlings-/Asylunterkünfte (Führung) |
 | Unterkunft 77200-2: SK/EK fehlt | Dokumentkette | Flüchtlings-/Asylunterkünfte (Auftrag) |
+| Objekt ohne Kap.-7-Schulung | `Z772-OBJ` | Objekte bes. Relevanz |
+| Objekt Objektleitung ohne FK | `FK-01` | Objekte bes. Relevanz (Führung) |
+| Objekt 77200-2: SK/EK fehlt | Dokumentkette | Objekte bes. Relevanz (Auftrag) |
+| Objekt-Einweisung veraltet | `EW-OBJ` | Objekte bes. Relevanz |
 | WB-Jahr unvollständig | `WB-40` / `WB-24` | alle |
 | DI-Unterweisung > 1 Jahr | `PQ-DI-U` | alle |
 
@@ -434,7 +512,7 @@ Gleicher Algorithmus — Profilvorlage aus `anforderungsprofile/` lesen, `codes_
 | Veranstaltung bes. Relevanz | `77200-2_veranstaltung_*` | `Z772-VER-AN`; FK: `Z772-VER-FK; FK-01` | **ausgearbeitet** |
 | ÖPNV | `77200-2_oepnv` | `Z772-OEPNV` | **ausgearbeitet** |
 | Flüchtlings-/Asylunterkünfte | `77200-2_fluechtlings_*` | `Z772-UNTER`; FK: `FK-01` | **ausgearbeitet** |
-| Objekte bes. Relevanz | `77200-2_gebaeude_*` | `Z772-OBJ` | geplant |
+| Objekte bes. Relevanz | `77200-2_gebaeude_*` | `Z772-OBJ`; FK: `FK-01` | **ausgearbeitet** |
 | Alarm-/Empfangs-/Kontrolldienste | `77200-1_*` (Spalten 1–3, 6) | — | geplant |
 
 ---
@@ -458,7 +536,7 @@ Gleiches Muster für alle ausgearbeiteten SDL — Grundlage für spätere **Pers
 | 77200-1 Standard | Anhang A | optional `SDL-*` | EW-OBJ; SK/EK nur bei Auslöser (Veranstaltung) |
 | 77200-2 besonders | Anhang C | `Z772-*` Pflicht | SK+EK Pflicht (Kap. 4/5–8) |
 
-**Noch nicht in 04:** Alarm-, Empfangs-, Kontroll- (stationär/mobil) (77200-1 Spalten 1–3, 6); Objekt Kap. 7 — gleicher Algorithmus.
+**Noch nicht in 04:** Alarm-, Empfangs-, Kontroll- (stationär/mobil) (77200-1 Spalten 1–3, 6) — gleicher Algorithmus.
 
 ---
 
