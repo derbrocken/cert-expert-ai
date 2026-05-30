@@ -1,6 +1,6 @@
 # Qualifikationsmatrix, Personalfreigabe & SDL-Freigabe — V2 Hooks
 
-Einstieg: [[README]] · Katalog: [[02_qualification_catalog_v2]] · Matrix: [[04_qualifikationsmatrix_logik]] · Personalfreigabe: [[05_personnel_release_v1]] · V1-Modell: [[../qualifikationssystem/05_sdl_freigabelogik]]
+Einstieg: [[README]] · Katalog: [[02_qualification_catalog_v2]] · Matrix: [[04_qualifikationsmatrix_logik]] · Freigabekette: [[05_personnel_release_v1]] → [[06_sdl_release_v1]] → [[07_einsatz_release_v1]] · V1-Modell: [[../qualifikationssystem/05_sdl_freigabelogik]]
 
 **Status:** CEKS-Vorbereitung — **keine** Tool-2-Implementierung, **keine** Personalnamen im Knowledge-Standard.
 

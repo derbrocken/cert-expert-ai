@@ -58,7 +58,8 @@ V2 **strukturiert und codiert**; V1 **erklärt und vertieft**. Bei Abweichung: V
 
 - [x] Alle V2-Dateien nur unter `qualifications/` (5 Dateien + README)
 - [x] `qualifikationssystem/` nur V1 (01–05 + README)
-- [ ] Personalfreigabe V1-Dokument — geplant unter `qualifications/`, **nicht** in V1-Ordner duplizieren
+- [x] Personalfreigabe / SDL- / Einsatzfreigabe V1 — `qualifications/05`–`07`
+- [ ] Tool-2-Datenmodell — geplant, **nach** CEKS-Freigabekette
 - [ ] VA Kap. 7 V9 — Katalog/V1 abgleichen, wenn eingearbeitet
 
 ---

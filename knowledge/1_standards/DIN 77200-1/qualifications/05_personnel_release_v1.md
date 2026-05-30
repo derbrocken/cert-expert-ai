@@ -155,6 +155,8 @@ pruefer: Schichtleitung Qualität / 2026-05-28
 
 Hooks: [[03_matrix_release_hooks_v2#Tool-2-Anbindung (Perspektive)]]
 
+**Nächste Schicht:** [[07_einsatz_release_v1]] — Einsatz/Schicht vor operativem Start.
+
 ---
 
 ## Agent-Regeln
