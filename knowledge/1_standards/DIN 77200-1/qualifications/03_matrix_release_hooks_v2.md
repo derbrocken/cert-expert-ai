@@ -150,7 +150,8 @@ Governance später: [[../../Governance/DIN 77200/ROADMAP]]
 - [x] Ableitungslogik Profil-Zeile → `codes_erforderlich` — [[04_qualifikationsmatrix_logik]]
 - [ ] Vollständiger Tool-1-Export aller Profilzeilen (Generator)
 - [ ] VA Kap. 7 V9 in Katalog einpflegen
-- [ ] Weitere SDL in 04 ergänzen (Intervention, Veranstaltung, …)
+- [x] Intervention in [[04_qualifikationsmatrix_logik#Referenz-SDL: Interventionsdienst (77200-1)]]
+- [ ] Weitere SDL in 04 ergänzen (Veranstaltung, Unterkunft, …)
 - [ ] Personalfreigabe-Vorlage (Tool 2) — **nicht** im Knowledge-Standard
 
 ---

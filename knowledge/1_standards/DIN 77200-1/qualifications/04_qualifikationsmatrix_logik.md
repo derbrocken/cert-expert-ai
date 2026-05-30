@@ -1,6 +1,6 @@
 # Qualifikationsmatrix — Ableitungslogik (V2)
 
-Einstieg: [[README]] · Katalog: [[02_qualification_catalog_v2]] · Hooks: [[03_matrix_release_hooks_v2]] · Profile: [[../anforderungsprofile/77200-1_revierdienst]], [[../../DIN 77200-2/anforderungsprofile/77200-2_oepnv]]
+Einstieg: [[README]] · Katalog: [[02_qualification_catalog_v2]] · Hooks: [[03_matrix_release_hooks_v2]] · Profile: [[../anforderungsprofile/77200-1_revierdienst]], [[../anforderungsprofile/77200-1_interventionsdienst]], [[../../DIN 77200-2/anforderungsprofile/77200-2_oepnv]]
 
 **Status:** CEKS-Referenzlogik für **Revierdienst** (77200-1) und **ÖPNV** (77200-2) — **keine** Personalzeilen, **keine** Normabschrift.
 
@@ -80,8 +80,8 @@ Nur wenn Profil aus **Anhang C** / Vorlage `77200-2_*`:
 
 | SDL | Zusatz nur wenn Tätigkeit im Profil aktiv |
 |-----|-------------------------------------------|
-| Interventionsdienst | `SDL-INT-24H`, `SDL-INT-5X` |
-| Revier / Standard-77200-1 | keine SDL-*-Codes außer Schritt 5–6 |
+| Interventionsdienst | `SDL-INT-24H`, `SDL-INT-5X` — **Pflicht** sobald Profil `77200-1_interventionsdienst` und ≥1 Zeile aktiv (siehe Referenz-SDL unten) |
+| Revier / sonstige Standard-77200-1 | keine SDL-*-Codes |
 
 ### Schritt 7 — Verwendungs-Freigabe (Aggregation)
 
@@ -153,6 +153,60 @@ codes_erforderlich (zusätzlich zur Zeile): PQ-EH; PQ-DGUV; PQ-DS; PQ-DI-U; WB-4
 
 ---
 
+## Referenz-SDL: Interventionsdienst (77200-1)
+
+**Profilvorlage:** `anforderungsprofile/77200-1_interventionsdienst.md` · Anhang A Tabelle A.1 Spalte 5  
+**Normteil:** nur 77200-1 · `codes_z772`: —
+
+### SDL-Zusatz (gesamtes Profil)
+
+Sobald **mindestens eine** Profilzeile `Erbringen = Ja` hat, gelten **zusätzlich** zu jeder Zeilen-Matrix:
+
+```
+SDL-INT-24H; SDL-INT-5X
+```
+
+| Code | Freigabe-Hinweis | `freigabe_kritisch` |
+|------|------------------|---------------------|
+| `SDL-INT-24H` | Interventionsbezogene Erstschulung (24 h) — fehlt → **nicht freigegeben** für Interventionsdienst | ja |
+| `SDL-INT-5X` | Fünf dokumentierte Interventionen — < 5 → **nicht freigegeben** | ja |
+
+**Abgrenzung:** `SDL-*` ersetzt **nicht** die aus der Profilzeile abgeleitete Stufe A/B/C (`GQ-*`). Beides ist Konjunktion.
+
+### SDL-Baseline (jede aktive Zeile — wie Revier)
+
+```
+PQ-EH; PQ-DGUV; PQ-DS; PQ-DI-U; WB-40; EW-OBJ
+```
+
+(`WB-24` bei Teilzeitbeschäftigung laut Organisation.)
+
+### Beispiel-Matrix (Auszug)
+
+| profil_ref | taetigkeit_kurz | stufe | ag_erh. | codes_erforderlich | codes_z772 | kritisch |
+|------------|-----------------|-------|---------|-------------------|------------|----------|
+| A.1-Sp5-2-einfach | Überwachung — einfach | A | nein | `GQ-A-34A-S; PQ-EH; PQ-DGUV; PQ-DS; PQ-DI-U; WB-40; EW-OBJ; SDL-INT-24H; SDL-INT-5X` | — | ja |
+| A.1-Sp5-8-komplex | Alarmverifikation — komplex | B | nein | `GQ-B-GSSK; PQ-EH; PQ-DGUV; PQ-DS; PQ-DI-U; WB-40; EW-OBJ; SDL-INT-24H; SDL-INT-5X` | — | ja |
+| A.1-Sp5-7-komplex | Arbeitsstättenverordnung — komplex | C | nein | `GQ-C-MS; PQ-EH; PQ-DGUV; PQ-DS; PQ-DI-U; WB-40; EW-OBJ; SDL-INT-24H; SDL-INT-5X` | — | ja |
+| A.1-Sp5-21-erweitert | Schadensmeldung/Verkehrsunfall — erweitert | B | nein | `GQ-B-GSSK; PQ-EH; PQ-DGUV; PQ-DS; PQ-DI-U; WB-40; EW-OBJ; SDL-INT-24H; SDL-INT-5X` | — | ja |
+| A.1-Sp5-21-komplex | Schadensmeldung — komplex | B | nein | `GQ-B-GSSK; …; SDL-INT-24H; SDL-INT-5X` | — | ja |
+
+**Praxis:** Interventionsaufträge aktivieren oft Zeilen 8 (Alarm) und 21 (Schadensmeldung) — Freigabe verlangt dann **höchste** Profil-Stufe (hier bis B oder C) **plus** beide SDL-Codes.
+
+### Freigabe-Hinweise (Intervention)
+
+| Situation | Ergebnis |
+|-----------|----------|
+| Profil Stufe B, Nachweis nur A | **nicht freigegeben** für B-Zeilen |
+| `SDL-INT-24H` fehlt | **nicht freigegeben** (gesamter Interventionsdienst) |
+| `SDL-INT-5X` unvollständig | **nicht freigegeben** |
+| Nur Teiltätigkeiten freigegeben | **eingeschränkt** — `einschraenkung` + ggf. ohne Interventionseinsätze |
+| WB unter Soll | **eingeschränkt** mit Auflage bis Datum |
+
+Detail V1: [[../qualifikationssystem/03_sdl_zusatzqualifikationen]] · Katalog: [[02_qualification_catalog_v2#Intervention — 24-Stunden-Schulung]]
+
+---
+
 ## Personalfreigabe — Anwendung der Matrix
 
 ### Prüfablauf (logisch)
@@ -169,16 +223,18 @@ codes_erforderlich (zusätzlich zur Zeile): PQ-EH; PQ-DGUV; PQ-DS; PQ-DI-U; WB-4
 
 Siehe [[03_matrix_release_hooks_v2#Personalfreigabe]] — `freigabe_id`, `person_ref`, `verwendung`, `profil_ref`, `codes_geprueft`, `status`.
 
-### Typische Blocker (Revier + ÖPNV)
+### Typische Blocker (Revier, Intervention, ÖPNV)
 
-| Blocker | Code |
-|---------|------|
-| Stufe zu niedrig | `GQ-*` |
-| Ersthelfer abgelaufen | `PQ-EH` |
-| ÖPNV ohne Schulung | `Z772-OEPNV` |
-| Keine Objekteinweisung | `EW-OBJ` |
-| WB-Jahr unvollständig | `WB-40` / `WB-24` |
-| DI-Unterweisung > 1 Jahr | `PQ-DI-U` |
+| Blocker | Code | SDL |
+|---------|------|-----|
+| Stufe zu niedrig | `GQ-*` | alle |
+| Ersthelfer abgelaufen | `PQ-EH` | alle |
+| Intervention ohne 24-h-Schulung | `SDL-INT-24H` | Interventionsdienst |
+| Intervention ohne 5 Einsätze | `SDL-INT-5X` | Interventionsdienst |
+| ÖPNV ohne Schulung | `Z772-OEPNV` | ÖPNV |
+| Keine Objekteinweisung | `EW-OBJ` | alle |
+| WB-Jahr unvollständig | `WB-40` / `WB-24` | alle |
+| DI-Unterweisung > 1 Jahr | `PQ-DI-U` | alle |
 
 ---
 
@@ -196,13 +252,15 @@ Tool-2-Entitäten: [[03_matrix_release_hooks_v2#Tool-2-Anbindung (Perspektive)]]
 
 ## Erweiterung auf weitere SDL
 
-Gleicher Algorithmus — Profilvorlage aus `anforderungsprofile/` lesen, `codes_z772` aus SDL-Tabelle Schritt 5.
+Gleicher Algorithmus — Profilvorlage aus `anforderungsprofile/` lesen, `codes_z772` aus Schritt 5, SDL-* aus Schritt 6.
 
-| SDL | Vorlage | `codes_z772` |
-|-----|---------|--------------|
-| Intervention | `77200-1_interventionsdienst` | — + `SDL-INT-24H; SDL-INT-5X` |
-| Veranstaltung bes. Relevanz | `77200-2_veranstaltung_*` | `Z772-VER-FK` (FK) |
-| Flüchtlingsunterkunft | `77200-2_fluechtlings_*` | `Z772-UNTER` |
+| SDL | Vorlage | Zusatzcodes | Status in 04 |
+|-----|---------|-------------|--------------|
+| Revierdienst | `77200-1_revierdienst` | — | **ausgearbeitet** |
+| Interventionsdienst | `77200-1_interventionsdienst` | `SDL-INT-24H; SDL-INT-5X` | **ausgearbeitet** |
+| ÖPNV | `77200-2_oepnv` | `Z772-OEPNV` | **ausgearbeitet** |
+| Veranstaltung bes. Relevanz | `77200-2_veranstaltung_*` | `Z772-VER-FK` (FK) | geplant |
+| Flüchtlingsunterkunft | `77200-2_fluechtlings_*` | `Z772-UNTER` | geplant |
 
 ---
 

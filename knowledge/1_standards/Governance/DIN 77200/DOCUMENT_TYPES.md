@@ -12,7 +12,7 @@ Keine Vorlagen in diesem Dokument. Siehe Fachmodule und `anforderungsprofile/`.
 |-------------|--------------|-----------|-----------|--------|
 | Anforderungsprofil | Vertragliche Tätigkeiten + Stufen | siehe unten | 77200-1 + ggf. 77200-2 | **vorhanden** (V1) |
 | Qualifikationssystem | Prüfbausteine, Freigabelogik | `DIN 77200-1/qualifikationssystem/` | 77200-1 | **vorhanden** (V1) |
-| Qualifikationsmatrix | Profil → Qualifikation → Nachweis | `DIN 77200-1/qualifications/04_qualifikationsmatrix_logik.md` | 77200-1 (+ 77200-2) | **vorhanden** (Logik V2; Revier + ÖPNV) |
+| Qualifikationsmatrix | Profil → Qualifikation → Nachweis | `DIN 77200-1/qualifications/04_qualifikationsmatrix_logik.md` | 77200-1 (+ 77200-2) | **vorhanden** (Logik V2; Revier, Intervention, ÖPNV) |
 | Personalfreigabe | Freigabe zum Einsatz je Rolle | Logik in qualifikationssystem/ | 77200-1 | **geplant** (Logik teilweise in 05) |
 | Dienstanweisung / ODA | Operative Regeln am Objekt | Wissensmodul + Projektakte | 77200-1 (+ 77200-2 DI) | Modul **vorhanden**, ODA **Projekt** |
 | Gefährdungsbeurteilung | Gefährdungen am Einsatzort | Wissensmodul / Projekt | 77200-1 / 77200-2 | Modul **vorhanden**, GB **Projekt** |

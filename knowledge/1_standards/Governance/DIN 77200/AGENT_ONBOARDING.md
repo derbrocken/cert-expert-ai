@@ -83,7 +83,7 @@ Ohne **explizite Freigabe** des Nutzers:
 | Thema | Status | Hinweis |
 |-------|--------|---------|
 | Qualifikationssystem vertiefen | geplant | Erweiterung in `qualifikationssystem/`, nicht Parallelordner |
-| Qualifikationsmatrix | **V2-Logik** (Revier, ÖPNV) | `qualifications/04_qualifikationsmatrix_logik.md` — keine Personalzeilen |
+| Qualifikationsmatrix | **V2-Logik** (Revier, Intervention, ÖPNV) | `qualifications/04_qualifikationsmatrix_logik.md` — keine Personalzeilen |
 | Personalfreigabe | geplant | Prozess + Nachweislogik |
 | SDL-Freigabelogik | **V1 vorhanden** | `qualifikationssystem/05_sdl_freigabelogik.md` — vertiefen |
 | Tool-2-Anbindung | **spätere Perspektive** | Projektakten — **noch nicht implementiert** |
