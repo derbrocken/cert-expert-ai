@@ -28,7 +28,8 @@ branchenübliche Vorgehensweisen für einen bestimmten Tätigkeitsbereich.
 
 | Ordner | Bereich |
 |---|---|
-| `veranstaltungsschutz/` | Veranstaltungen aller Art — Basis + Subtypes (kampfsport, festival, konzert, messe) |
+| `veranstaltungsschutz/` | Veranstaltungen aller Art (77200-1) — Basis + Subtypes (kampfsport, festival, konzert, messe) |
+| `veranstaltung_besondere_sicherheitsrelevanz/` | **77200-2 Kap. 5** — besondere Relevanz, SK+EK-Pflicht — [[veranstaltung_besondere_sicherheitsrelevanz/base]] |
 | `objektschutz/` | Stationärer Objektschutz — Basis + Subtypes (standard, sondergebäude, opv) |
 | `interventionsdienst/` | Alarmreaktion und Intervention — Basis + Subtypes |
 | `mobile_sicherheit/` | Streifendienst, mobile Einsätze — Basis + Subtypes (alleinarbeit) |
