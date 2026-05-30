@@ -1,5 +1,7 @@
 # Anforderungsprofile — Normvorlagen (DIN 77200-2)
 
+Wissensbasis: [[../README|DIN 77200-2 README]] · Module: [[../01_uebersicht|Übersicht]]
+
 Normvorlagen für SDL-Anforderungsprofile nach **DIN 77200-2 Anhang C** (Tabellen C.1–C.4). Ausgefüllte Projektakten gehören nach `knowledge/10_examples/`.
 
 Jede Vorlage ist ein **vollständiger Arbeits-Extrakt auf Basis der hinterlegten Normdaten** für die jeweilige Anhang-C-Tabelle: Tätigkeitstexte und Mindestqualifikation (Stufe A/B/C) sind vorbelegt; AG und AN füllen gemeinsam **Erbringen**, **AG-Erhöhung** und **Bemerkung** aus.
