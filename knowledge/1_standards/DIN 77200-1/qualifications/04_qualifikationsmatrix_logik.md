@@ -1,8 +1,8 @@
 # Qualifikationsmatrix — Ableitungslogik (V2)
 
-Einstieg: [[README]] · Katalog: [[02_qualification_catalog_v2]] · Hooks: [[03_matrix_release_hooks_v2]] · Profile: [[../anforderungsprofile/77200-1_revierdienst]], [[../anforderungsprofile/77200-1_interventionsdienst]], [[../anforderungsprofile/77200-1_veranstaltungsdienst]], [[../../DIN 77200-2/anforderungsprofile/77200-2_veranstaltung_besondere_sicherheitsrelevanz]], [[../../DIN 77200-2/anforderungsprofile/77200-2_oepnv]], [[../../DIN 77200-2/anforderungsprofile/77200-2_fluechtlings_asylunterkuenfte]], [[../../DIN 77200-2/anforderungsprofile/77200-2_gebaeude_besondere_sicherheitsrelevanz]]
+Einstieg: [[README]] · Katalog: [[02_qualification_catalog_v2]] · Hooks: [[03_matrix_release_hooks_v2]] · Profile: [[../anforderungsprofile/_master_77200-1|77200-1 Master]] · [[../../DIN 77200-2/anforderungsprofile/_master_77200-2|77200-2 Master]]
 
-**Status:** CEKS-Referenzlogik — **77200-2 Kap. 5–8 vollständig** + ausgewählte **77200-1**-SDL — **keine** Personalzeilen, **keine** Normabschrift.
+**Status:** CEKS-Referenzlogik — **DIN 77200-1 (Anhang A) vollständig** · **77200-2 Kap. 5–8 vollständig** — **keine** Personalzeilen, **keine** Normabschrift.
 
 ---
 
@@ -81,7 +81,7 @@ Nur wenn Profil aus **Anhang C** / Vorlage `77200-2_*`:
 | SDL | Zusatz nur wenn Tätigkeit im Profil aktiv |
 |-----|-------------------------------------------|
 | Interventionsdienst | `SDL-INT-24H`, `SDL-INT-5X` — **Pflicht** sobald Profil `77200-1_interventionsdienst` und ≥1 Zeile aktiv (siehe Referenz-SDL unten) |
-| Revier / sonstige Standard-77200-1 | keine SDL-*-Codes |
+| Revier, Alarm, Empfang, Kontrolle (st./mobil), Veranstaltung 77200-1 | keine `SDL-*`-Codes (Ausnahme: nur Intervention) |
 
 ### Schritt 7 — Verwendungs-Freigabe (Aggregation)
 
@@ -446,6 +446,57 @@ Katalog: [[02_qualification_catalog_v2#Objekt-Schulung (Kap. 7)]] · Einweisung:
 
 ---
 
+## 77200-1 Standard-SDL: Alarmdienst, Empfangsdienst, stationärer Kontrolldienst, mobiler Kontrolldienst
+
+**Gemeinsame Regel:** Gleicher Algorithmus wie [[#Referenz-SDL: Revierdienst (77200-1)]] — **kein** `SDL-*`, **kein** `Z772-*`, **keine** neuen Qualifikationscodes. Freigabe ausschließlich aus **Profilzeile** + Baseline.
+
+### Baseline (jede aktive Zeile)
+
+```
+PQ-EH; PQ-DGUV; PQ-DS; PQ-DI-U; WB-40; EW-OBJ
+```
+
+| Ergänzung | SDL |
+|-----------|-----|
+| `PQ-BSH` | kontext — GB/Objekt |
+| `EW-EINS` | Schicht/wechselnde Objekte — **mobiler Kontrolldienst** praxisnah **empfohlen** |
+| `FK-01` | nur bei dokumentierter Führungsrolle |
+
+`codes_z772`: — · `codes_erforderlich` je Zeile: GQ aus Stufe A/B/C (Schritt 2) + Baseline oben.
+
+### Kompakt-Referenz je SDL
+
+| SDL | Profilvorlage | Anhang A | Schwerpunkt (typisch) | Beispiel `profil_ref` | Einweisung |
+|-----|---------------|----------|------------------------|----------------------|------------|
+| **Alarmdienst** | `77200-1_alarmdienst.md` | Spalte 1 | GMA/Technik (Nr. 1), Alarmverifikation bis **C** (Nr. 8), Zugang | `A.1-Sp1-8-komplex` → `GQ-C-MS; …` | `EW-OBJ` **Pflicht** (Leitstelle/Technik) |
+| **Empfangsdienst** | `77200-1_stationaerer_empfangsdienst.md` | Spalte 2 | Besucherlenkung (Nr. 11), Zugangskontrolle (Nr. 9–10) | `A.1-Sp2-11-komplex` → `GQ-B-GSSK; …` | `EW-OBJ` Empfang/Objekt |
+| **Kontrolldienst (stationär)** | `77200-1_stationaerer_kontrolldienst.md` | Spalte 3 | Überwachung bis **C** (Nr. 2), Alarm B (Nr. 8), Zugang B/C | `A.1-Sp3-2-komplex` → `GQ-C-MS; …` | `EW-OBJ` Posten/Objekt |
+| **Kontrolldienst (mobil)** | `77200-1_mobiler_kontrolldienst.md` | Spalte 6 | Revier unterwegs: Überwachung, Schließmittel, Schadensmeldung (Nr. 21) | `A.1-Sp6-2-komplex` → `GQ-C-MS; …` | `EW-OBJ` je Objekt; **`EW-EINS`** bei Wechsel |
+
+**Agent:** Vollständige Zeilenliste immer aus der **Profilvorlage** ableiten — nicht aus dieser Tabelle hardcodieren.
+
+### Beispiel-Matrix (je SDL je 1 Zeile)
+
+| SDL | profil_ref | stufe | codes_erforderlich (Auszug) | kritisch |
+|-----|------------|-------|----------------------------|----------|
+| Alarm | `A.1-Sp1-1-komplex` | B | `GQ-B-GSSK; PQ-EH; …; EW-OBJ` | ja |
+| Empfang | `A.1-Sp2-2-einfach` | A | `GQ-A-34A-S; PQ-EH; …; EW-OBJ` | ja |
+| Kontrolle st. | `A.1-Sp3-8-komplex` | B | `GQ-B-GSSK; PQ-EH; …; EW-OBJ` | ja |
+| Kontrolle mobil | `A.1-Sp6-21-erweitert` | B | `GQ-B-GSSK; PQ-EH; …; EW-OBJ; EW-EINS` | ja |
+
+### Freigabe-Hinweise (Standard-SDL)
+
+| Situation | Ergebnis |
+|-----------|----------|
+| Höchste aktive Profil-Stufe nicht abgedeckt | **nicht freigegeben** |
+| Alarm/Leitstelle ohne Technik-Einweisung | **nicht freigegeben** (`EW-OBJ`) |
+| Mobiler Dienst neues Objekt ohne `EW-OBJ` | **nicht freigegeben** |
+| Paralleles 77200-2-Profil am Auftrag | zusätzlich Schritt 5 (`Z772-*`) — nicht durch 77200-1 ersetzen |
+
+Verweis Technik-Einweisung Alarm: [[../qualifikationssystem/03_sdl_zusatzqualifikationen#SDL-Zusatzqualifikationen]]
+
+---
+
 ## Personalfreigabe — Anwendung der Matrix
 
 ### Prüfablauf (logisch)
@@ -513,7 +564,10 @@ Gleicher Algorithmus — Profilvorlage aus `anforderungsprofile/` lesen, `codes_
 | ÖPNV | `77200-2_oepnv` | `Z772-OEPNV` | **ausgearbeitet** |
 | Flüchtlings-/Asylunterkünfte | `77200-2_fluechtlings_*` | `Z772-UNTER`; FK: `FK-01` | **ausgearbeitet** |
 | Objekte bes. Relevanz | `77200-2_gebaeude_*` | `Z772-OBJ`; FK: `FK-01` | **ausgearbeitet** |
-| Alarm-/Empfangs-/Kontrolldienste | `77200-1_*` (Spalten 1–3, 6) | — | geplant |
+| Alarmdienst | `77200-1_alarmdienst` | — | **ausgearbeitet** (Sammelblock) |
+| Empfangsdienst | `77200-1_stationaerer_empfangsdienst` | — | **ausgearbeitet** (Sammelblock) |
+| Kontrolldienst (stationär) | `77200-1_stationaerer_kontrolldienst` | — | **ausgearbeitet** (Sammelblock) |
+| Kontrolldienst (mobil) | `77200-1_mobiler_kontrolldienst` | — | **ausgearbeitet** (Sammelblock) |
 
 ---
 
@@ -536,12 +590,13 @@ Gleiches Muster für alle ausgearbeiteten SDL — Grundlage für spätere **Pers
 | 77200-1 Standard | Anhang A | optional `SDL-*` | EW-OBJ; SK/EK nur bei Auslöser (Veranstaltung) |
 | 77200-2 besonders | Anhang C | `Z772-*` Pflicht | SK+EK Pflicht (Kap. 4/5–8) |
 
-**Noch nicht in 04:** Alarm-, Empfangs-, Kontroll- (stationär/mobil) (77200-1 Spalten 1–3, 6) — gleicher Algorithmus.
+**77200-1:** alle Anhang-A-Spalten 1–7 in `04` abgedeckt (Spalten 1–3, 6 kompakt; 4–5, 7 als Referenzblock).
 
 ---
 
 ## Offen / Verifikation
 
+- [x] DIN 77200-1 Anhang A — Matrixlogik in `04` (kompakt + Referenz-SDL)
 - [ ] Weitere Profil-Zeilen als Vollmatrix exportieren (Tool 1) — nicht manuell im Knowledge duplizieren
 - [ ] VA Kap. 7 V9 — PQ-/WB-Fristen gegen Organisation abstimmen
 - [ ] AG-Erhöhung: organisationsinterne Mindeststufen-Regel schriftlich fixieren
