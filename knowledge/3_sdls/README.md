@@ -24,6 +24,39 @@ branchenübliche Vorgehensweisen für einen bestimmten Tätigkeitsbereich.
 
 ---
 
+## SDL-Layer für Dokumentenbots (Veranstaltung)
+
+Für **Veranstaltungs-**Dokumente (GB, SK, EK, ODA) werden SDL-Schichten **kombiniert** — Ordner **nicht** zusammenführen, **keine** Umbenennung, **keine** Migration.
+
+```
+Schicht 4 — Produktwissen     knowledge/6_products/{Gefährdungsbeurteilung|sicherheitskonzept|einsatzkonzept|oda}/
+Schicht 3 — 77200-2 Kap. 5    knowledge/3_sdls/veranstaltung_besondere_sicherheitsrelevanz/base.md   (optional, wenn zutreffend)
+Schicht 2 — Event-Subtyp      knowledge/3_sdls/veranstaltungsschutz/subtypes/{kampfsport|fussball|konzert|…}.md   (optional)
+Schicht 1 — SDL-Basis        knowledge/3_sdls/veranstaltungsschutz/base.md
+```
+
+| Schicht | Pfad | Rolle |
+|---------|------|--------|
+| **1 — Allgemeine SDL-Basis** | `veranstaltungsschutz/` | Veranstaltungsschutz allgemein (77200-1): Phasen, Crowd, Schnittstellen — [[veranstaltungsschutz/base]] |
+| **2 — Subtype (optional)** | `veranstaltungsschutz/subtypes/` | Spezifische Event-Untertypen: Kampfsport, Fußball, Konzert, Festival, Messe, … — [[veranstaltungsschutz/README#Ordner subtypes/]] |
+| **3 — Besondere Sicherheitsrelevanz (optional)** | `veranstaltung_besondere_sicherheitsrelevanz/` | **Keine Dublette** — **Zusatzschicht** DIN 77200-2 Kap. 5: AG-Einstufung, SK+EK-Pflicht, Schutzbedarf — [[veranstaltung_besondere_sicherheitsrelevanz/base]] |
+| **4 — Produkt** | `6_products/` | Dokumenttyp: GB, SK, EK, ODA — Platzhalter, Kapitellogik, Abhängigkeiten SK→GB→EK→ODA |
+
+**Blueprint** listet in `context_modules` explizit, welche Pfade geladen werden (s. `knowledge/7_blueprint/*.json`).
+
+**Beispiele:**
+
+| Fall | Schichten laden |
+|------|-----------------|
+| Stadtfest, 77200-1 | 1 (+ ggf. 2) + 4 |
+| Kampfsport-Event, 77200-1 | 1 + 2 `kampfsport` + 4 |
+| Großevent **besondere Relevanz**, 77200-2 Kap. 5 | **1 + 2 + 3** + 4 |
+| Kap. 5 ohne Genre-Subtyp | 1 + 3 + 4 |
+
+Weitere SDL-Ordner (Objekt, ÖPNV, …) folgen dem Muster **Basis + Subtypes** — nur Veranstaltung hat die **zusätzliche** Kap.-5-Schicht.
+
+---
+
 ## Ordner
 
 | Ordner | Bereich |

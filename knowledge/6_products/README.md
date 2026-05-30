@@ -10,6 +10,8 @@ Platzhalter-Definitionen und Cert-Expert-spezifische Terminologie.
 - **Pro Dokumentprodukt ein Unterordner.** `Gefährdungsbeurteilung/`, `sicherheitskonzept/`,
   `einsatzkonzept/`, `oda/` und `cert_expert/` (allgemeine Terminologie).
 
+- **SDL-Layer Schicht 4.** Bot-Kontext wird mit SDL-Modulen kombiniert (Basis → optional Subtyp → optional Kap.-5 → **dieses Produkt**). Siehe [[../3_sdls/README#SDL-Layer für Dokumentenbots (Veranstaltung)]].
+
 - **Immer geladen wenn das Produkt aktiv ist.** `Gefährdungsbeurteilung/content_blocks.md`
   wird für alle GB-Blueprints geladen — unabhängig vom spezifischen Blueprint.
 
