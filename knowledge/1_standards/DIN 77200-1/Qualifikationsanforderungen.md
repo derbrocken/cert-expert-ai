@@ -409,6 +409,7 @@ Dokumentenkette SK/EK: [[Erforderliche Dokumente]] — Profil bleibt zentrale **
 |-------|-----------|
 | [[overview]] | Master-Index, Tabelle A.1-Index, CEKS-Governance |
 | [[Anforderungsprofile]] | 4.11, Anhang A/C — **Kernmodul** Profil-first |
+| Qualifikationssystem (`knowledge/1_standards/DIN 77200-1/qualifikationssystem/`) | Prüfbausteine + SDL-Freigabelogik — **nach** Profil, **vor** Personalakte/Einsatz |
 | [[Führungsanforderungen]] | 4.19.1 Führungsqualifikation und Führungs-Übergang 2020-10-13 |
 | [[Weiterbildung]] | 4.19.2 — nach Erstqualifikation, nicht §34a/Ersthelfer |
 | [[Dienstanweisungen]] | 4.12 — Tätigkeitsumfang; DI-Einweisung 4.14.5 |

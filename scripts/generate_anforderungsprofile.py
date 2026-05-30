@@ -6,7 +6,8 @@ from __future__ import annotations
 from pathlib import Path
 
 KNOWLEDGE_ROOT = Path(__file__).resolve().parents[1] / "knowledge"
-OUTPUT_DIR = KNOWLEDGE_ROOT / "standards" / "din_77200" / "anforderungsprofile"
+OUTPUT_DIR_77200_1 = KNOWLEDGE_ROOT / "1_standards" / "DIN 77200-1" / "anforderungsprofile"
+OUTPUT_DIR_77200_2 = KNOWLEDGE_ROOT / "1_standards" / "DIN 77200-2" / "anforderungsprofile"
 
 PURPOSE_NOTE = (
     "Dieses Dokument dient der gemeinsamen AG/AN-Festlegung der tatsächlich zu "
@@ -174,49 +175,49 @@ ANHANG_A_MATRIX: list[tuple[int, str | None, list[str | None]]] = [
 
 SDL_77200_1 = [
     {
-        "file": "alarmdienst.md",
+        "file": "77200-1_alarmdienst.md",
         "title": "Alarmdienst",
         "norm_sdl": "Alarmdienst",
         "column": 0,
         "spalte": 1,
     },
     {
-        "file": "empfangsdienst.md",
+        "file": "77200-1_stationaerer_empfangsdienst.md",
         "title": "Empfangsdienst",
         "norm_sdl": "Empfangsdienst",
         "column": 1,
         "spalte": 2,
     },
     {
-        "file": "kontrolldienst_stationaer.md",
+        "file": "77200-1_stationaerer_kontrolldienst.md",
         "title": "Kontrolldienst (stationär)",
         "norm_sdl": "Kontrolldienst (stationär)",
         "column": 2,
         "spalte": 3,
     },
     {
-        "file": "revierdienst.md",
+        "file": "77200-1_revierdienst.md",
         "title": "Revierdienst",
         "norm_sdl": "Revierdienst",
         "column": 3,
         "spalte": 4,
     },
     {
-        "file": "interventionsdienst.md",
+        "file": "77200-1_interventionsdienst.md",
         "title": "Interventionsdienst",
         "norm_sdl": "Interventionsdienst",
         "column": 4,
         "spalte": 5,
     },
     {
-        "file": "kontrolldienst_mobil.md",
+        "file": "77200-1_mobiler_kontrolldienst.md",
         "title": "Kontrolldienst (mobil)",
         "norm_sdl": "Kontrolldienst (mobil)",
         "column": 5,
         "spalte": 6,
     },
     {
-        "file": "veranstaltungssicherungsdienst.md",
+        "file": "77200-1_veranstaltungsdienst.md",
         "title": "Veranstaltungssicherungsdienst",
         "norm_sdl": "Veranstaltungssicherungsdienst",
         "column": 6,
@@ -492,28 +493,28 @@ ANHANG_C_TABLES: dict[str, list[tuple[int, str | None, str]]] = {
 
 SDL_77200_2 = [
     {
-        "file": "veranstaltung_besondere_sicherheitsrelevanz.md",
+        "file": "77200-2_veranstaltung_besondere_sicherheitsrelevanz.md",
         "title": "Veranstaltungen mit besonderer Sicherheitsrelevanz",
         "norm_sdl": "Veranstaltungen mit besonderer Sicherheitsrelevanz",
         "table": "C.1",
         "referenz": "Anhang C Tabelle C.1",
     },
     {
-        "file": "oepnv.md",
+        "file": "77200-2_oepnv.md",
         "title": "Sicherungsdienstleistungen im öffentlichen Personenverkehr (ÖPNV)",
         "norm_sdl": "Sicherungsdienstleistungen im öffentlichen Personenverkehr (ÖPNV)",
         "table": "C.2",
         "referenz": "Anhang C Tabelle C.2",
     },
     {
-        "file": "objekte_besonderer_sicherheitsrelevanz.md",
+        "file": "77200-2_gebaeude_besondere_sicherheitsrelevanz.md",
         "title": "Objekte mit besonderer Sicherheitsrelevanz",
         "norm_sdl": "Objekte mit besonderer Sicherheitsrelevanz",
         "table": "C.3",
         "referenz": "Anhang C Tabelle C.3",
     },
     {
-        "file": "fluechtlings_asylunterkuenfte.md",
+        "file": "77200-2_fluechtlings_asylunterkuenfte.md",
         "title": "Flüchtlings- und Asylunterkünfte",
         "norm_sdl": "Flüchtlings- und Asylunterkünfte",
         "table": "C.4",
@@ -645,13 +646,13 @@ def main() -> None:
 
     for meta in SDL_77200_1:
         content = generate_77200_1_template(meta)
-        path = OUTPUT_DIR / meta["file"]
+        path = OUTPUT_DIR_77200_1 / meta["file"]
         path.write_text(content, encoding="utf-8")
         counts[meta["file"]] = len(build_77200_1_rows(meta["column"]))
 
     for meta in SDL_77200_2:
         content = generate_77200_2_template(meta)
-        path = OUTPUT_DIR / meta["file"]
+        path = OUTPUT_DIR_77200_2 / meta["file"]
         path.write_text(content, encoding="utf-8")
         counts[meta["file"]] = len(build_77200_2_rows(meta["table"]))
 

@@ -1,18 +1,21 @@
-# Anforderungsprofile — Normvorlagen
+# Anforderungsprofile — Normvorlagen (DIN 77200-2)
 
-Zentraler Dokumenttyp für SDL-Anforderungsprofile (DIN 77200-1 Anhang A · DIN 77200-2 Anhang C). Ausgefüllte Projektakten gehören nach `knowledge/10_examples/`.
+Normvorlagen für SDL-Anforderungsprofile nach **DIN 77200-2 Anhang C** (Tabellen C.1–C.4). Ausgefüllte Projektakten gehören nach `knowledge/10_examples/`.
 
-Jede Vorlage ist ein **vollständiger Arbeits-Extrakt auf Basis der hinterlegten Normdaten** für die jeweilige SDL bzw. Anhang-C-Tabelle: Tätigkeitstexte und Mindestqualifikation (Stufe A/B/C) sind vorbelegt; AG und AN füllen gemeinsam **Erbringen**, **AG-Erhöhung** und **Bemerkung** aus.
+Jede Vorlage ist ein **vollständiger Arbeits-Extrakt auf Basis der hinterlegten Normdaten** für die jeweilige Anhang-C-Tabelle: Tätigkeitstexte und Mindestqualifikation (Stufe A/B/C) sind vorbelegt; AG und AN füllen gemeinsam **Erbringen**, **AG-Erhöhung** und **Bemerkung** aus.
 
 Vor produktiver Nutzung sind Tätigkeitstexte und Stufen A/B/C gegen die gültige Primärquelle der DIN 77200 zu verifizieren.
 
 | Master | Referenz | Inhalt |
 |--------|----------|--------|
-| [[_master_77200-1]] | Anhang A | Sieben SDL — Tabelle A.1 je Spalte |
 | [[_master_77200-2]] | Anhang C | Vier SDL — Tabellen C.1–C.4 |
 
-Pfad: `knowledge/standards/din_77200/anforderungsprofile/`
+**Vorlagen:** [[77200-2_veranstaltung_besondere_sicherheitsrelevanz]] · [[77200-2_oepnv]] · [[77200-2_gebaeude_besondere_sicherheitsrelevanz]] · [[77200-2_fluechtlings_asylunterkuenfte]]
 
-Regenerierung aller SDL-Dateien: `python3 scripts/generate_anforderungsprofile.py`
+**77200-1 Anhang A:** `knowledge/1_standards/DIN 77200-1/anforderungsprofile/`
 
-Modul: [[Anforderungsprofile]]
+Pfad (dieser Ordner): `knowledge/1_standards/DIN 77200-2/anforderungsprofile/`
+
+Regenerierung: `python3 scripts/generate_anforderungsprofile.py`
+
+Modul: [[../DIN 77200-1/Anforderungsprofile|Anforderungsprofile]] · Governance: [[../../din_77200/README|din_77200]]

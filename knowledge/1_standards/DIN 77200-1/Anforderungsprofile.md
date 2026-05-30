@@ -349,7 +349,7 @@ Anforderungsprofil (aktuell?)
 | Produkt | Nutzung dieses Moduls |
 |---------|----------------------|
 | **Anforderungsprofil** | Kernprodukt — Tätigkeiten, SDL-Bezug, Stufen |
-| **Vorlagen (Schicht B)** | `knowledge/10_examples/anforderungsprofile/` — je SDL 77200-1/77200-2 |
+| **Vorlagen (Schicht B)** | `DIN 77200-1/anforderungsprofile/` (Anhang A) · `DIN 77200-2/anforderungsprofile/` (Anhang C) |
 | **Qualifikationsmatrix** | Ableitung Tabelle A.1 aus Profil |
 | **Angebotsdokumentation** | Profilentwurf, 4.23-Bezug |
 | **Dienstanweisung** | Downstream — Tätigkeitsumfang |
@@ -444,20 +444,24 @@ Anforderungsprofil (aktuell?)
 
 ## Vorlagen (Cert-Expert Best Practice)
 
-SDL-spezifische Formularvorlagen (Schicht **B**): `knowledge/10_examples/anforderungsprofile/`
+SDL-spezifische Normvorlagen (normzentriert):
 
-| Standard | Master | SDL-Vorlagen |
-|----------|--------|--------------|
-| **77200-1** | `_master_77200-1.md` | 7 Dateien `77200-1_<sdl_slug>.md` (Alarm … Veranstaltung) |
-| **77200-2** | `_master_77200-2.md` | 4 Dateien `77200-2_<sdl_slug>.md` (Kap. 5–8, Anhang C) |
+| Referenz | Pfad | Master |
+|----------|------|--------|
+| DIN 77200-1 Anhang A | `knowledge/1_standards/DIN 77200-1/anforderungsprofile/` | `_master_77200-1.md` |
+| DIN 77200-2 Anhang C | `knowledge/1_standards/DIN 77200-2/anforderungsprofile/` | `_master_77200-2.md` |
 
-Stufen A/B/C und Anhang-C-Zeilen **nicht** in Vorlagen hardcodiert — aus Primärquelle übernehmen.
+Governance/Architektur: `knowledge/1_standards/din_77200/`
+
+Stufen A/B/C und Tätigkeitstexte sind in den SDL-Vorlagen **vorbelegt** (vollständiger Anhang-A- bzw. Anhang-C-Extrakt je SDL). Projektspezifisch auszufüllen: Erbringen, AG-Erhöhung, Bemerkung. Regenerierung: `scripts/generate_anforderungsprofile.py`.
+
+Vor produktiver Nutzung sind Tätigkeitstexte und Stufen A/B/C gegen die gültige Primärquelle der DIN 77200 zu verifizieren.
 
 ---
 
 ## Offene Punkte
 
-- [x] Cert-Expert-Vorlage Anforderungsprofil (77200-1 / 77200-2-Anhang-C-Felder) → `knowledge/10_examples/anforderungsprofile/`
+- [x] Cert-Expert-Vorlage Anforderungsprofil (77200-1 / 77200-2-Anhang-C-Felder) → normzentriert unter `DIN 77200-1/anforderungsprofile/` und `DIN 77200-2/anforderungsprofile/`
 - [ ] Profil-Prüfprotokoll-Vorlage (jährlich, 4.11)
 - [ ] Mapping Profil-Feld → Blueprint/RAG-Slots je SDL-Spalte
 - [ ] Querverweis [[Subunternehmer]] — Profilparität Sub-SMA
