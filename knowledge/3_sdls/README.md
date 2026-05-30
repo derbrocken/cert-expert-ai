@@ -26,34 +26,64 @@ branchenübliche Vorgehensweisen für einen bestimmten Tätigkeitsbereich.
 
 ## SDL-Layer für Dokumentenbots (Veranstaltung)
 
-Für **Veranstaltungs-**Dokumente (GB, SK, EK, ODA) werden SDL-Schichten **kombiniert** — Ordner **nicht** zusammenführen, **keine** Umbenennung, **keine** Migration.
+Für **Veranstaltungs-**Dokumente (GB, SK, EK, ODA) werden SDL-Schichten **kombiniert** — Ordner **nicht** zusammenführen, **keine** Umbenennung, **keine** Migration, **keine** kombinierten Ordner wie `kampfsport_besonders/`.
+
+### Veranstaltungstyp vs. Sicherheitsrelevanz (zwei unabhängige Achsen)
+
+| Achse | Was es ist | Wo im Knowledge | Automatisch? |
+|-------|------------|-----------------|--------------|
+| **Veranstaltungstyp** | Genre/Format des Events (Kampfsport, Fußball, Konzert, Festival, …) | `veranstaltungsschutz/subtypes/{typ}.md` | Aus Blueprint/Input (`event_type`, Subtyp-ID) |
+| **Besondere Sicherheitsrelevanz** | **Einstufung/Klassifizierung** durch den AG (DIN 77200-2 Kap. 5) — erhöhter Schutzbedarf, SK+EK-Pflicht | `veranstaltung_besondere_sicherheitsrelevanz/base.md` | **Nur** wenn Einstufung im Auftrag/Input belegt ist |
+
+**Wichtig:** **Kampfsport ist ein Veranstaltungstyp (Schicht 2), keine Sicherheitsklasse.** Ein Kampfsport-Event kann **ohne** besondere Sicherheitsrelevanz (nur 77200-1) oder **mit** AG-Einstufung (zusätzlich Schicht 3) laufen. **Niemals** Schicht 3 allein aus „Kampfsport“ ableiten.
 
 ```
-Schicht 4 — Produktwissen     knowledge/6_products/{Gefährdungsbeurteilung|sicherheitskonzept|einsatzkonzept|oda}/
-Schicht 3 — 77200-2 Kap. 5    knowledge/3_sdls/veranstaltung_besondere_sicherheitsrelevanz/base.md   (optional, wenn zutreffend)
-Schicht 2 — Event-Subtyp      knowledge/3_sdls/veranstaltungsschutz/subtypes/{kampfsport|fussball|konzert|…}.md   (optional)
-Schicht 1 — SDL-Basis        knowledge/3_sdls/veranstaltungsschutz/base.md
+Schicht 4 — Produktwissen          knowledge/6_products/{gb|sk|ec|oda}/…
+Schicht 3 — Sicherheitsrelevanz      knowledge/3_sdls/veranstaltung_besondere_sicherheitsrelevanz/base.md   # nur bei Einstufung
+Schicht 2 — Veranstaltungstyp        knowledge/3_sdls/veranstaltungsschutz/subtypes/{kampfsport|fussball|konzert|…}.md   # optional
+Schicht 1 — Veranstaltungsschutz     knowledge/3_sdls/veranstaltungsschutz/base.md
 ```
 
 | Schicht | Pfad | Rolle |
 |---------|------|--------|
-| **1 — Allgemeine SDL-Basis** | `veranstaltungsschutz/` | Veranstaltungsschutz allgemein (77200-1): Phasen, Crowd, Schnittstellen — [[veranstaltungsschutz/base]] |
-| **2 — Subtype (optional)** | `veranstaltungsschutz/subtypes/` | Spezifische Event-Untertypen: Kampfsport, Fußball, Konzert, Festival, Messe, … — [[veranstaltungsschutz/README#Ordner subtypes/]] |
-| **3 — Besondere Sicherheitsrelevanz (optional)** | `veranstaltung_besondere_sicherheitsrelevanz/` | **Keine Dublette** — **Zusatzschicht** DIN 77200-2 Kap. 5: AG-Einstufung, SK+EK-Pflicht, Schutzbedarf — [[veranstaltung_besondere_sicherheitsrelevanz/base]] |
-| **4 — Produkt** | `6_products/` | Dokumenttyp: GB, SK, EK, ODA — Platzhalter, Kapitellogik, Abhängigkeiten SK→GB→EK→ODA |
+| **1 — Veranstaltungsschutz (Basis)** | `veranstaltungsschutz/` | Allgemeine SDL-Basis für Veranstaltungen (77200-1): Phasen, Crowd, Schnittstellen — [[veranstaltungsschutz/base]] |
+| **2 — Veranstaltungstyp (optional)** | `veranstaltungsschutz/subtypes/` | **Veranstaltungstypen**, nicht Sicherheitsklassen: Kampfsport, Fußball, Konzert, … — [[veranstaltungsschutz/README#Ordner subtypes/]] |
+| **3 — Besondere Sicherheitsrelevanz (optional)** | `veranstaltung_besondere_sicherheitsrelevanz/` | **Zusatzschicht / Sicherheitsklasse** DIN 77200-2 Kap. 5 — nur bei dokumentierter AG-Einstufung — [[veranstaltung_besondere_sicherheitsrelevanz/base]] |
+| **4 — Produkt** | `6_products/` | GB, SK, EK, ODA — Inhaltsblöcke und Dokumentlogik |
 
-**Blueprint** listet in `context_modules` explizit, welche Pfade geladen werden (s. `knowledge/7_blueprint/*.json`).
+### Skalierbare Bot-Logik (`context_modules.sdls`)
 
-**Beispiele:**
+Der Blueprint (oder Orchestrator) setzt **explizit**, welche SDL-Dateien geladen werden — **keine** automatische Kopplung Typ ↔ Kap. 5.
 
-| Fall | Schichten laden |
-|------|-----------------|
-| Stadtfest, 77200-1 | 1 (+ ggf. 2) + 4 |
-| Kampfsport-Event, 77200-1 | 1 + 2 `kampfsport` + 4 |
-| Großevent **besondere Relevanz**, 77200-2 Kap. 5 | **1 + 2 + 3** + 4 |
-| Kap. 5 ohne Genre-Subtyp | 1 + 3 + 4 |
+```yaml
+# Beispiel: Kampfsport, ohne besondere Sicherheitsrelevanz (77200-1)
+context_modules:
+  sdls:
+    - veranstaltungsschutz/base.md
+    - veranstaltungsschutz/subtypes/kampfsport.md
+    # veranstaltung_besondere_sicherheitsrelevanz/base.md  ← NICHT laden
 
-Weitere SDL-Ordner (Objekt, ÖPNV, …) folgen dem Muster **Basis + Subtypes** — nur Veranstaltung hat die **zusätzliche** Kap.-5-Schicht.
+# Beispiel: Kampfsport, mit AG-Einstufung besondere Sicherheitsrelevanz (77200-2 Kap. 5)
+context_modules:
+  sdls:
+    - veranstaltungsschutz/base.md
+    - veranstaltungsschutz/subtypes/kampfsport.md
+    - veranstaltung_besondere_sicherheitsrelevanz/base.md   # nur wenn Einstufung zutrifft
+```
+
+Entscheidung Schicht 3 über Input-Felder (perspektivisch), z. B. `besondere_sicherheitsrelevanz: ja`, `norm_context: 77200-2-kap5`, `profil_ref: 77200-2_veranstaltung_…` — nicht über `combat_sports_type` allein.
+
+### Beispiele (Kombinationen)
+
+| Fall | Schichten | Hinweis |
+|------|-----------|---------|
+| **Kampfsport normal** (77200-1, kein Kap.-5-Tatbestand) | **1 + 2** + 4 | Subtyp `kampfsport`, **ohne** `veranstaltung_besondere_sicherheitsrelevanz/base` |
+| **Kampfsport + besondere Sicherheitsrelevanz** (AG-Einstufung, Kap. 5) | **1 + 2 + 3** + 4 | Gleicher Subtyp + **zusätzlich** Schicht 3 |
+| Konzert ohne Einstufung | 1 + 2 `konzert` + 4 | Typ unabhängig von Schicht 3 |
+| Großevent Kap. 5, Typ unklar/allgemein | 1 + 3 + 4 | Schicht 3 **ohne** Subtyp möglich |
+| Stadtfest 77200-1 | 1 (+ ggf. 2) + 4 | Kein Subtyp nötig |
+
+Weitere SDL-Ordner (Objekt, ÖPNV, …) folgen **Basis + Subtypes** — nur Veranstaltung hat die **orthogonale** Kap.-5-Schicht (Sicherheitsrelevanz ≠ Veranstaltungstyp).
 
 ---
 

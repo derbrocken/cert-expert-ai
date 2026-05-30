@@ -6,25 +6,50 @@
 
 ---
 
-## SDL-Layer (Schicht 3 von 4)
+## SDL-Layer (Schicht 3 von 4) — Sicherheitsrelevanz, nicht Veranstaltungstyp
 
-**Keine Dublette** zu [[../veranstaltungsschutz/README]] — dies ist die **DIN-77200-2-Kap.-5-Zusatzschicht** für Veranstaltungen mit besonderer Sicherheitsrelevanz.
+**Keine Dublette** zu [[../veranstaltungsschutz/README]].  
+Dies ist die **optionale Zusatzschicht** für die **Sicherheitsklasse / Einstufung** „besondere Sicherheitsrelevanz“ (DIN 77200-2 Kap. 5) — **orthogonal** zum Veranstaltungstyp in `subtypes/`.
 
-Vollständige Ladereihenfolge für Bots: [[../README#SDL-Layer für Dokumentenbots (Veranstaltung)]]
+| Dimension | Beispiel | Ordner |
+|-----------|----------|--------|
+| Veranstaltungstyp | Kampfsport, Konzert, Fußball | `veranstaltungsschutz/subtypes/` — **Schicht 2** |
+| Sicherheitsrelevanz | AG stuft Event als besonders sicherheitsrelevant ein | **dieser Ordner** — **Schicht 3** |
+
+**Regel:** **Kampfsport löst Schicht 3 nicht aus.** Ein Kampfsport-Turnier kann Schicht 1+2 ohne diese Datei nutzen. Nur bei dokumentierter **AG-Einstufung** Schicht 3 zusätzlich laden.
+
+Vollständige Layer-Logik: [[../README#SDL-Layer für Dokumentenbots (Veranstaltung)]]
 
 | Schicht | Modul |
 |---------|--------|
-| 1 | `veranstaltungsschutz/base.md` — allgemeine Basis |
-| 2 | `veranstaltungsschutz/subtypes/{…}.md` — optional (Kampfsport, Konzert, …) |
-| **3** | **`veranstaltung_besondere_sicherheitsrelevanz/base.md`** — wenn Kap. 5 / besondere Relevanz |
+| 1 | `veranstaltungsschutz/base.md` — Veranstaltungsschutz (Basis) |
+| 2 | `veranstaltungsschutz/subtypes/{typ}.md` — **Veranstaltungstyp** (optional) |
+| **3** | **`veranstaltung_besondere_sicherheitsrelevanz/base.md`** — **nur** wenn Einstufung/Kap. 5 zutrifft |
 | 4 | `6_products/{gb\|sk\|ec\|oda}/` — Produktwissen |
 
-## Laden in Blueprints
+### Wann Schicht 3 laden?
 
-| Kontext | Module |
-|---------|--------|
-| **77200-2 Kap. 5** | `veranstaltung_besondere_sicherheitsrelevanz/base.md` |
-| Immer empfohlen bei Events | `veranstaltungsschutz/base.md` |
-| Genre | `veranstaltungsschutz/subtypes/{subtyp}.md` |
+| Ja (laden) | Nein (nicht laden) |
+|------------|-------------------|
+| Input/ Auftrag: besondere Sicherheitsrelevanz, 77200-2 Kap. 5, Anhang C.1 | Nur `event_type: Kampfsport` / Subtyp kampfsport |
+| Profil `77200-2_veranstaltung_besondere_sicherheitsrelevanz` | Norm nur 77200-1 / Anhang A |
+| SK+EK-Pflicht im Projekt dokumentiert | „Großes Event“ ohne AG-Einstufung |
+
+**Kein** eigener Ordner `kampfsport_besonders/` o. Ä. — Kombination nur über **mehrere** `context_modules`-Einträge.
+
+## Laden in Blueprints (`context_modules`)
+
+```yaml
+sdls:
+  - veranstaltungsschutz/base.md
+  - veranstaltungsschutz/subtypes/kampfsport.md          # Veranstaltungstyp — optional
+  - veranstaltung_besondere_sicherheitsrelevanz/base.md  # nur wenn Einstufung zutrifft
+```
+
+| Modul | Wann |
+|-------|------|
+| `veranstaltung_besondere_sicherheitsrelevanz/base.md` | **Nur** bei Kap.-5-Einstufung |
+| `veranstaltungsschutz/base.md` | Bei allen Event-Bots empfohlen |
+| `veranstaltungsschutz/subtypes/{typ}.md` | Wenn Veranstaltungstyp bekannt (unabhängig von Schicht 3) |
 
 Rohmaterial (nicht direkt für Context Builder): `projects/_knowledge_raw/sdls/veranstaltung_besondere_sicherheitsrelevanz/`

@@ -5,31 +5,54 @@
 | Datei | Inhalt |
 |-------|--------|
 | [[base]] | Phasen, typische Aufgaben, Gefährdungs-/Maßnahmen-Raster, Schnittstellenlogik |
-| `subtypes/*.md` | **Schicht 2** — Event-Untertypen (s. unten) |
+| `subtypes/*.md` | **Schicht 2** — **Veranstaltungstypen** (s. unten), keine Sicherheitsklassen |
 
-**Norm-CEKS (nicht Bot-Kontext):** [[../../1_standards/DIN 77200-1/anforderungsprofile/77200-1_veranstaltungsdienst]] · ggf. [[../../1_standards/DIN 77200-2/05_veranstaltungen_besondere_sicherheitsrelevanz]] für Kap. 5
+**Norm-CEKS (nicht Bot-Kontext):** [[../../1_standards/DIN 77200-1/anforderungsprofile/77200-1_veranstaltungsdienst]]  
+Besondere Sicherheitsrelevanz (Kap. 5): separater SDL-Ordner — [[../veranstaltung_besondere_sicherheitsrelevanz/README]]
 
 ---
 
-## Ordner `subtypes/`
+## Ordner `subtypes/` — Veranstaltungstypen
 
-Spezifische **Event-Untertypen** — ergänzen die Basis, ersetzen sie nicht:
+**Veranstaltungstyp** = Genre/Format (Kampfsport, Fußball, Konzert, Festival, Messe, …).  
+Beschreibt **was** für ein Event stattfindet — **nicht**, ob der AG es als besonders sicherheitsrelevant einstuft.
 
-| Subtyp (Beispiel) | Datei | Status |
+| Veranstaltungstyp | Datei | Status |
 |-------------------|------|--------|
 | Kampfsport | [[subtypes/kampfsport]] | vorhanden |
-| Festival, Konzert, Messe, Fußball, … | `subtypes/{name}.md` | bei Bedarf anlegen |
+| Fußball, Konzert, Festival, Messe, … | `subtypes/{name}.md` | bei Bedarf anlegen |
 
-Jeder Subtyp beschreibt genrespezifische Risiken und Maßnahmen (z. B. Ring, Fan-Lager, Crowd bei Sport).
+Jeder Subtyp ergänzt genrespezifische Risiken und Maßnahmen (z. B. Ring, Fan-Lager).  
+**Kampfsport ≠ besondere Sicherheitsrelevanz.** Ein Kampfsport-Event kann 77200-1 **oder** zusätzlich 77200-2 Kap. 5 sein — das steuert **Schicht 3**, nicht dieser Subtyp.
 
 ---
 
-## Keine Dublette zu `veranstaltung_besondere_sicherheitsrelevanz/`
+## Bot-Beispiele (`context_modules.sdls`)
+
+```yaml
+# Kampfsport normal — Schicht 1 + 2
+sdls:
+  - veranstaltungsschutz/base.md
+  - veranstaltungsschutz/subtypes/kampfsport.md
+
+# Kampfsport + besondere Sicherheitsrelevanz — Schicht 1 + 2 + 3
+sdls:
+  - veranstaltungsschutz/base.md
+  - veranstaltungsschutz/subtypes/kampfsport.md
+  - veranstaltung_besondere_sicherheitsrelevanz/base.md   # nur bei AG-Einstufung
+```
+
+Schicht 3 nur laden, wenn die **Einstufung** im Auftrag/Blueprint/Input belegt ist — nicht wegen `kampfsport`.
+
+---
+
+## Abgrenzung zu `veranstaltung_besondere_sicherheitsrelevanz/`
 
 | | `veranstaltungsschutz/` (hier) | `veranstaltung_besondere_sicherheitsrelevanz/` |
 |--|-------------------------------|-----------------------------------------------|
+| Dimension | **Veranstaltungstyp** + allgemeine Event-Logik | **Sicherheitsrelevanz / Einstufung** (Kap. 5) |
 | Norm | 77200-1 Veranstaltungsdienst | **77200-2 Kap. 5** |
-| Inhalt | allgemeine Veranstaltungslogik | AG-Einstufung, SK+EK-Pflicht, Schutzbedarf |
-| Bot | immer bei Event-Blueprints sinnvoll | **zusätzlich**, wenn Kap. 5 / besondere Relevanz |
+| Inhalt | Phasen, Crowd, Genre-Risiken | AG-Einstufung, SK+EK-Pflicht, Schutzbedarf |
+| Bot | Schicht 1 (+ optional 2) | Schicht 3 **optional**, unabhängig vom Typ |
 
-Ladereihenfolge: [[../README#SDL-Layer für Dokumentenbots (Veranstaltung)]]
+Vollständige Layer-Logik: [[../README#SDL-Layer für Dokumentenbots (Veranstaltung)]]
