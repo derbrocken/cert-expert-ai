@@ -2,7 +2,8 @@
 
 **Stand:** 2026-05-30  
 **Branch:** `cursor/din-77200-1-anforderungsprofile`  
-**Letzter bekannter Commit:** `5fd6660` — *Add Tool 2 domain model and agent CURRENT_STATE snapshot*
+**Branch-Tip / letzter Commit:** `856867d` — *Update CURRENT_STATE commit pointer*  
+**Substantieller Arbeitsstand:** `5fd6660` — *Add Tool 2 domain model and agent CURRENT_STATE snapshot*
 
 ---
 
@@ -46,14 +47,36 @@ Einstieg Qualifikation V2+: `DIN 77200-1/qualifications/README.md`
 
 ## Freigabekette (CEKS)
 
+### A) Operative Freigabekette
+
+Entscheidungen vor dem Einsatz — **ohne** `08` als Freigabe-Schicht:
+
 ```
 04 Matrix (Codes)
   → 05 Personalfreigabe
   → 06 SDL-Freigabe
   → 07 Einsatzfreigabe
-  → 08 Tool-2-Domänenmodell (fachlich)
-  → spätere Tool-2-Implementierung (Software/DB/API — bewusst getrennt)
+  → operativer Einsatz
 ```
+
+### B) Tool-2-Domänenableitung (keine operative Freigabe)
+
+`08` **Tool-2-Domain-Data-Model V1** leitet die fachliche Domäne aus `05`–`07` ab (Objekte, Vererbung, Status-Mapping). Es ist **keine** weitere Freigabeentscheidung und **ersetzt** nicht `05`–`07`.
+
+```
+05–07 (CEKS-Logik) → 08 (Domänenmodell, nur fachlich) → spätere Tool-2-Implementierung (Software/DB/API)
+```
+
+---
+
+## Lesereihenfolge Freigabe- und Domänenarbeit
+
+| Aufgabe | Lesen (in dieser Reihenfolge) |
+|---------|-------------------------------|
+| **Operative Freigabe- oder Matrix-Arbeit** | `DIN 77200-1/qualifications/README.md` → `02` → `04` → `05` → `06` → `07` |
+| **Tool-2-Domänenarbeit** (nicht Implementierung) | wie oben bis `07`, **danach** `08` |
+
+Bei Führungsrolle zusätzlich: `05` Abschnitt FK-Freigabe. Bei Audit-Tiefe optional: `qualifikationssystem/05_sdl_freigabelogik` (V1).
 
 ---
 
