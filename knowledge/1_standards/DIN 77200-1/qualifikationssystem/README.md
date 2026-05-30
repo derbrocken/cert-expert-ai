@@ -86,3 +86,15 @@ Detail: [[05_sdl_freigabelogik]]
 - [ ] VA Kap. 7 V9 vollständig gegenstrukturieren
 - [ ] Schulungsdokumente 77200-2 Kap. 5–8 (UE-Inhalte, Teil-2-Schulungen)
 - [ ] Operative Tool-1-Mapping-Slots (Personalakte ↔ Prüfbausteine)
+
+---
+
+## Qualifikationssystem V2
+
+Strukturierter Katalog, Matrix- und Freigabe-Hooks:
+
+**Pfad:** `knowledge/1_standards/DIN 77200-1/qualifications/`
+
+Einstieg: [[../qualifications/README|Qualifikationssystem V2]]
+
+V1 (dieser Ordner) bleibt parallel für Bausteine 01–05.
