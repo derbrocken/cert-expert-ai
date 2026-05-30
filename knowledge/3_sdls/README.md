@@ -91,7 +91,8 @@ Weitere SDL-Ordner (Objekt, ÖPNV, …) folgen **Basis + Subtypes** — nur Vera
 
 | Ordner | Bereich |
 |---|---|
-| `veranstaltungsschutz/` | Veranstaltungen aller Art (77200-1) — Basis + Subtypes (kampfsport, festival, konzert, messe) |
+| `veranstaltungsschutz/` | Veranstaltungen (77200-1) — Basis + Subtypes; Katalog/Gap/Ausbauplan unter diesem Ordner |
+| `4_sources/` (Repo-Root `knowledge/`) | DGUV-/Behörden-/Praxis-Extrakte — siehe [[../4_sources/README]] |
 | `veranstaltung_besondere_sicherheitsrelevanz/` | **77200-2 Kap. 5** — besondere Relevanz, SK+EK-Pflicht — [[veranstaltung_besondere_sicherheitsrelevanz/base]] |
 | `objektschutz/` | Stationärer Objektschutz — Basis + Subtypes (standard, sondergebäude, opv) |
 | `interventionsdienst/` | Alarmreaktion und Intervention — Basis + Subtypes |

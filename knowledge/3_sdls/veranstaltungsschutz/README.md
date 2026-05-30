@@ -2,10 +2,17 @@
 
 **Rolle:** **Schicht 1** der Bot-SDL-Ladereihenfolge für Veranstaltungen (allgemeiner Veranstaltungsdienst).
 
+| Planung / Inventar | Datei |
+|--------------------|--------|
+| **Veranstaltungstypen-Katalog** (16 Typen) | [[VERANSTALTUNGSTYPEN_KATALOG]] |
+| **Gap-Matrix je Typ** (GB/SK/EK/ODA, Priorität) | [[SUBTYPE_GAP_MATRIX]] |
+| **Ausbauplan** (Phasen vor Bot-Welle) | [[AUSBAUPLAN]] |
+| **Praxisquellen** (DGUV, Behörden, Leitfäden) | [[../../4_sources/README]] |
+
 | Datei | Inhalt |
 |-------|--------|
 | [[base]] | Phasen, typische Aufgaben, Gefährdungs-/Maßnahmen-Raster, Schnittstellenlogik |
-| `subtypes/*.md` | **Schicht 2** — **Veranstaltungstypen** (s. unten), keine Sicherheitsklassen |
+| `subtypes/*.md` | **Schicht 2** — **Veranstaltungstypen** (s. Katalog), keine Sicherheitsklassen |
 
 **Norm-CEKS (nicht Bot-Kontext):** [[../../1_standards/DIN 77200-1/anforderungsprofile/77200-1_veranstaltungsdienst]]  
 Besondere Sicherheitsrelevanz (Kap. 5): separater SDL-Ordner — [[../veranstaltung_besondere_sicherheitsrelevanz/README]]
@@ -17,10 +24,12 @@ Besondere Sicherheitsrelevanz (Kap. 5): separater SDL-Ordner — [[../veranstalt
 **Veranstaltungstyp** = Genre/Format (Kampfsport, Fußball, Konzert, Festival, Messe, …).  
 Beschreibt **was** für ein Event stattfindet — **nicht**, ob der AG es als besonders sicherheitsrelevant einstuft.
 
+Vollständige Liste (16 Typen, IDs, Prioritäten): [[VERANSTALTUNGSTYPEN_KATALOG]].
+
 | Veranstaltungstyp | Datei | Status |
 |-------------------|------|--------|
-| Kampfsport | [[subtypes/kampfsport]] | vorhanden |
-| Fußball, Konzert, Festival, Messe, … | `subtypes/{name}.md` | bei Bedarf anlegen |
+| Kampfsport | [[subtypes/kampfsport]] | **ausgearbeitet** |
+| Fußball, Konzert, Festival, Großveranstaltung, … | siehe Katalog | geplant (Gap: [[SUBTYPE_GAP_MATRIX]]) |
 
 Jeder Subtyp ergänzt genrespezifische Risiken und Maßnahmen (z. B. Ring, Fan-Lager).  
 **Kampfsport ≠ besondere Sicherheitsrelevanz.** Ein Kampfsport-Event kann 77200-1 **oder** zusätzlich 77200-2 Kap. 5 sein — das steuert **Schicht 3**, nicht dieser Subtyp.

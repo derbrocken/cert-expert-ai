@@ -30,7 +30,8 @@ knowledge/
 ├── 1_standards/     Normen und Standards (Überblicksebene)
 ├── 2_regulations/   Rechtliche Regelwerke (Überblicksebene)
 ├── 3_sdls/          Fachliches Domänenwissen pro Sicherheitsdienstleistungsbereich
-├── 5_products/      Dokumentprodukt-Wissen (GB, SK, EC, ODA) + Cert-Expert-Terminologie
+├── 4_sources/       Kuratierte DGUV-/Behörden-/Praxis-Extrakte (keine PDF-Ablage)
+├── 6_products/      Dokumentprodukt-Wissen (GB, SK, EC, ODA) + Cert-Expert-Terminologie
 ├── 6_blueprint/     Blueprint-Konfigurationsdateien (JSON) — maschinenlesbar
 ├── 7_guides/        Schreibanleitungen für Inhaltsblöcke und Schreibstil
 ├── 9_rules/         Harte Bot-Verhaltensregeln (base/, products/, blueprints/)
@@ -46,6 +47,7 @@ prompts/             Wiederverwendbare Prompt-Bausteine (Repo-Root, nicht unter 
 | Quelldokument | AI-Ready Modul |
 |---|---|
 | Volltext einer Norm (PDF) | Überblick: Was ist relevant, welche Prinzipien gelten |
+| DGUV-Info / Behördenleitfaden (PDF) | Extrakt unter `4_sources/` nach `EXTRACTION_SCHEMA.md` |
 | Internes Schulungshandbuch | Destillierte Gefährdungen und Maßnahmen für diesen Bereich |
 | Kundenbriefing | Nicht hier — gehört in `projects/` |
 | Beispiel aus echtem Kundenprojekt | Anonymisiert und generalisiert, fiktive Daten |
