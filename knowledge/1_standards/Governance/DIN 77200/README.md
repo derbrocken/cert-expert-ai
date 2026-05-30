@@ -28,11 +28,22 @@ Dieser Ordner dient **ausschließlich** der übergreifenden Steuerung: Architekt
 
 ## Governance-Dokumente
 
+### Agent-Onboarding (zuerst lesen)
+
+| Datei | Zweck |
+|-------|-------|
+| [[AGENT_ONBOARDING]] | **Einstieg** für neue Cursor-Agents |
+| [[AGENT_WORKFLOW]] | Standardablauf vor/nach Änderungen |
+| [[DOCUMENT_TYPES]] | Dokumenttypen, Ablage, Status |
+| [[NAMING_CONVENTIONS]] | Ordner- und Dateinamen |
+
+### Architektur & Stand
+
 | Datei | Zweck |
 |-------|-------|
 | [[CURRENT_STATE]] | Ist-Stand — Module, Vorlagen, Bereinigungen |
 | [[ARCHITECTURE]] | Schichtenmodell, Ablageregeln, Verweise |
-| [[AGENT_RULES]] | Regeln für KI-Agenten, Tool 1, Tool 2 |
+| [[AGENT_RULES]] | Retrieval, Pfade, inhaltliche Grenzen |
 | [[ROADMAP]] | Geplante Erweiterungen (ohne Migration) |
 | [[MIGRATION]] | Historie — **verworfene** Dokumenttyp-Zentralisierung |
 
