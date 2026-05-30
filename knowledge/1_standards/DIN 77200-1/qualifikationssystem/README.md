@@ -95,6 +95,6 @@ Strukturierter Katalog, Matrix- und Freigabe-Hooks:
 
 **Pfad:** `knowledge/1_standards/DIN 77200-1/qualifications/`
 
-Einstieg: [[../qualifications/README|Qualifikationssystem V2]]
+Einstieg: [[../qualifications/README|Qualifikationssystem V2]] · Matrix: [[../qualifications/04_qualifikationsmatrix_logik]]
 
 V1 (dieser Ordner) bleibt parallel für Bausteine 01–05.

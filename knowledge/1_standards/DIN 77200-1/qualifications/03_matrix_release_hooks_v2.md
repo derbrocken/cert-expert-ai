@@ -1,12 +1,14 @@
 # Qualifikationsmatrix, Personalfreigabe & SDL-Freigabe — V2 Hooks
 
-Einstieg: [[README]] · Katalog: [[02_qualification_catalog_v2]] · V1-Modell: [[../qualifikationssystem/05_sdl_freigabelogik]]
+Einstieg: [[README]] · Katalog: [[02_qualification_catalog_v2]] · Matrix: [[04_qualifikationsmatrix_logik]] · V1-Modell: [[../qualifikationssystem/05_sdl_freigabelogik]]
 
 **Status:** CEKS-Vorbereitung — **keine** Tool-2-Implementierung, **keine** Personalnamen im Knowledge-Standard.
 
 ---
 
-## Qualifikationsmatrix (geplant)
+## Qualifikationsmatrix
+
+**Ausgearbeitet:** [[04_qualifikationsmatrix_logik]] (Revierdienst, ÖPNV — Ableitungsalgorithmus + Beispielzeilen).
 
 ### Zweck
 
@@ -145,9 +147,10 @@ Governance später: [[../../Governance/DIN 77200/ROADMAP]]
 
 ## Nächste Schritte (Roadmap)
 
-- [ ] Automatisches Mapping Profil-Zeile → `codes_erforderlich`
+- [x] Ableitungslogik Profil-Zeile → `codes_erforderlich` — [[04_qualifikationsmatrix_logik]]
+- [ ] Vollständiger Tool-1-Export aller Profilzeilen (Generator)
 - [ ] VA Kap. 7 V9 in Katalog einpflegen
-- [ ] Qualifikationsmatrix als eigene Datei oder Tool-1-Export
+- [ ] Weitere SDL in 04 ergänzen (Intervention, Veranstaltung, …)
 - [ ] Personalfreigabe-Vorlage (Tool 2) — **nicht** im Knowledge-Standard
 
 ---
