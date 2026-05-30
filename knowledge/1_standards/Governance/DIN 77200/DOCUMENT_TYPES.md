@@ -14,7 +14,7 @@ Keine Vorlagen in diesem Dokument. Siehe Fachmodule und `anforderungsprofile/`.
 | Qualifikationssystem V1 | Prüfbausteine 01–05 (Legacy DE) | `DIN 77200-1/qualifikationssystem/` | 77200-1 | **vorhanden** (parallel) |
 | Qualifikationssystem V2+ | Katalog, Matrix, Hooks | `DIN 77200-1/qualifications/` | 77200-1 (+ 77200-2) | **vorhanden** (aktueller Stand) |
 | Qualifikationsmatrix | Profil → Qualifikation → Nachweis | `qualifications/04_qualifikationsmatrix_logik.md` | 77200-1 + 77200-2 | **vorhanden** |
-| Personalfreigabe | Freigabe je Verwendung | geplant: `qualifications/` · Schema in `03` · Detail V1: `05` | 77200-1 | **geplant** |
+| Personalfreigabe | Freigabe je Verwendung | `qualifications/05_personnel_release_v1.md` · Schema in `03` | 77200-1 (+ 77200-2) | **vorhanden** (CEKS V1) |
 | Dienstanweisung / ODA | Operative Regeln am Objekt | Wissensmodul + Projektakte | 77200-1 (+ 77200-2 DI) | Modul **vorhanden**, ODA **Projekt** |
 | Gefährdungsbeurteilung | Gefährdungen am Einsatzort | Wissensmodul / Projekt | 77200-1 / 77200-2 | Modul **vorhanden**, GB **Projekt** |
 | Sicherheitskonzept | AG-Planungsgrundlage | Projekt / AG | 77200-2 (Pflicht bei 77200-2) | **Projekt** — Wissen in 77200-2 |

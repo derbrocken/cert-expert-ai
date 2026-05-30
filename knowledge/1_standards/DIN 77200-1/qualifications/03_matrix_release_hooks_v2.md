@@ -1,6 +1,6 @@
 # Qualifikationsmatrix, Personalfreigabe & SDL-Freigabe — V2 Hooks
 
-Einstieg: [[README]] · Katalog: [[02_qualification_catalog_v2]] · Matrix: [[04_qualifikationsmatrix_logik]] · V1-Modell: [[../qualifikationssystem/05_sdl_freigabelogik]]
+Einstieg: [[README]] · Katalog: [[02_qualification_catalog_v2]] · Matrix: [[04_qualifikationsmatrix_logik]] · Personalfreigabe: [[05_personnel_release_v1]] · V1-Modell: [[../qualifikationssystem/05_sdl_freigabelogik]]
 
 **Status:** CEKS-Vorbereitung — **keine** Tool-2-Implementierung, **keine** Personalnamen im Knowledge-Standard.
 
@@ -155,6 +155,7 @@ Governance später: [[../../Governance/DIN 77200/ROADMAP]]
 - [x] Flüchtlings-/Asylunterkünfte in [[04_qualifikationsmatrix_logik#Referenz-SDL: Flüchtlings- und Asylunterkünfte (77200-2)]]
 - [x] Objekte bes. Relevanz (Kap. 7) in [[04_qualifikationsmatrix_logik#Referenz-SDL: Objekte mit besonderer Sicherheitsrelevanz (77200-2)]]
 - [x] 77200-1 Standard-SDL Spalten 1–3, 6 — [[04_qualifikationsmatrix_logik#77200-1 Standard-SDL: Alarmdienst, Empfangsdienst, stationärer Kontrolldienst, mobiler Kontrolldienst]]
+- [x] Personalfreigabe CEKS V1 — [[05_personnel_release_v1]]
 - [ ] Personalfreigabe-Vorlage (Tool 2) — **nicht** im Knowledge-Standard
 
 ---

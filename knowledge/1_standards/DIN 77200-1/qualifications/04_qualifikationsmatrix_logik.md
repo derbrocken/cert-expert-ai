@@ -511,7 +511,7 @@ Verweis Technik-Einweisung Alarm: [[../qualifikationssystem/03_sdl_zusatzqualifi
 
 ### Minimalfelder (CEKS)
 
-Siehe [[03_matrix_release_hooks_v2#Personalfreigabe]] — `freigabe_id`, `person_ref`, `verwendung`, `profil_ref`, `codes_geprueft`, `status`.
+Vollständig: [[05_personnel_release_v1]] — Kurzschema in [[03_matrix_release_hooks_v2#Personalfreigabe]].
 
 ### Typische Blocker (alle Referenz-SDL)
 

@@ -29,6 +29,7 @@ Dokumentation: [[../../Governance/DIN 77200/QUALIFICATION_V1_V2]]
 | 2 | [[02_qualification_catalog_v2]] | Qualifikationscodes (GQ, PQ, SDL, Z772, WB, EW, FK) |
 | 3 | [[03_matrix_release_hooks_v2]] | Personalfreigabe-Schema, SDL-Freigabe-Hooks |
 | 4 | [[04_qualifikationsmatrix_logik]] | Profil → Codes — 77200-1 + 77200-2 Kap. 5–8 |
+| 5 | [[05_personnel_release_v1]] | Personalfreigabe V1 — Schema, Prüfablauf, Status |
 | — | **README.md** | dieser Einstieg |
 
 ---
@@ -38,8 +39,9 @@ Dokumentation: [[../../Governance/DIN 77200/QUALIFICATION_V1_V2]]
 1. [[01_qualification_system_v2]]  
 2. [[02_qualification_catalog_v2]]  
 3. [[04_qualifikationsmatrix_logik]] — bei SDL-/Profil-Freigabe  
-4. [[03_matrix_release_hooks_v2]] — bei Personalfreigabe / Tool-2-Vorbereitung  
-5. Bei Audit-Tiefe: [[../qualifikationssystem/05_sdl_freigabelogik]] (V1)
+4. [[05_personnel_release_v1]] — bei Freigabeentscheid Person + Verwendung  
+5. [[03_matrix_release_hooks_v2]] — Tool-2-Felder, SDL-Freigabe-Hooks  
+6. Bei Audit-Tiefe: [[../qualifikationssystem/05_sdl_freigabelogik]] (V1)
 
 ---
 
@@ -67,9 +69,9 @@ V2 **ersetzt** V1 nicht — beide Ordner bleiben. Inhalte widersprechen sich nic
 
 ---
 
-## Geplant (noch nicht angelegt)
+## Geplant / offen
 
-- [ ] Personalfreigabe V1 CEKS-Dokument — **nur hier**, nicht unter `qualifikationssystem/`  
+- [x] Personalfreigabe V1 CEKS — [[05_personnel_release_v1]]
 - [ ] VA Kap. 7 V9 im Katalog  
 - [ ] Tool 2 — **keine** Implementierung im Knowledge-Standard
 
