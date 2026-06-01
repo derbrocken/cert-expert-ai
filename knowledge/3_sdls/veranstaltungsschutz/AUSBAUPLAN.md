@@ -62,7 +62,7 @@ Die Knowledge-Basis für Veranstaltungen soll **vollständig genug** sein, damit
 
 | # | Quelle (Staging) | Extrakt-Ziel | Priorität |
 |---|------------------|--------------|-----------|
-| C1 | DGUV Crowd/Veranstaltung | `4_sources/dguv/crowd_veranstaltung.md` | P0 |
+| C1 | DGUV Crowd/Veranstaltung | `4_sources/dguv/crowd_veranstaltung.md` | **draft** — PDF-Abgleich offen |
 | C2 | Behörde Großevent | `4_sources/behoerden/grossevent_abstimmung.md` | P1 |
 | C3 | Praxis SK-Veranstaltung | `4_sources/praxisleitfaeden/sk_veranstaltung_geruest.md` | P0 |
 | C4 | VA Kap. 7 DOCX → Extrakt | `4_sources/praxisleitfaeden/va_erstellung_hinweise.md` | P2 (ODA) |
