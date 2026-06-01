@@ -1,4 +1,4 @@
-# knowledge/6_blueprint/
+# knowledge/7_blueprint/
 
 Maschinenlesbare Blueprint-Konfigurationsdateien (JSON).
 Jede Datei beschreibt einen Blueprint als Komposition von Wissensmodulen

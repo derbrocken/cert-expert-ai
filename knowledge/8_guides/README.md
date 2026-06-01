@@ -1,4 +1,4 @@
-# knowledge/7_guides/
+# knowledge/8_guides/
 
 Schreibanleitungen für fachliche Inhaltsblöcke und Cert-Expert-Schreibstil.
 

@@ -16,6 +16,9 @@ outputs/
 # macOS
 .DS_Store
 
+# Obsidian (local UI state — not project knowledge)
+knowledge/.obsidian/
+
 # Python virtual environments
 .venv/
 venv/

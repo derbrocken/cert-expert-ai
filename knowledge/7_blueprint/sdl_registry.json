@@ -423,7 +423,7 @@
     "gb": {
       "id": "gb",
       "display_name": "Gefährdungsbeurteilung",
-      "knowledge_path": "knowledge/5_products/Gefährdungsbeurteilung",
+      "knowledge_path": "knowledge/6_products/Gefährdungsbeurteilung",
       "placeholder_namespace": "GB_*",
       "status": "initial",
       "legal_basis": ["arbschg", "dguv_v1"],
@@ -432,7 +432,7 @@
     "sk": {
       "id": "sk",
       "display_name": "Sicherheitskonzept",
-      "knowledge_path": "knowledge/5_products/sicherheitskonzept",
+      "knowledge_path": "knowledge/6_products/sicherheitskonzept",
       "placeholder_namespace": "SK_*",
       "status": "planned",
       "legal_basis": ["VStättVO", "bewachv"],
@@ -441,7 +441,7 @@
     "ec": {
       "id": "ec",
       "display_name": "Einsatzkonzept",
-      "knowledge_path": "knowledge/5_products/einsatzkonzept",
+      "knowledge_path": "knowledge/6_products/einsatzkonzept",
       "placeholder_namespace": "EC_*",
       "status": "planned",
       "legal_basis": ["din_77200_1", "bewachv"],
@@ -450,7 +450,7 @@
     "oda": {
       "id": "oda",
       "display_name": "Objektdienstanweisung (ODA)",
-      "knowledge_path": "knowledge/5_products/oda",
+      "knowledge_path": "knowledge/6_products/oda",
       "placeholder_namespace": "ODA_*",
       "status": "planned",
       "legal_basis": ["din_77200_1", "bewachv"],
@@ -462,7 +462,7 @@
     "how_to_add_sdl": "Add a new entry to 'sdl_groups' with all required fields. Set status to 'needs_detailing'. Create the knowledge_path folder. Add to relevant normative_standards.sdl_groups array.",
     "how_to_add_subtype": "Add to the parent sdl_group's 'possible_subtypes' array. Create the knowledge file at the specified knowledge_path.",
     "how_to_add_standard": "Add to 'normative_standards'. Reference from relevant sdl_groups via 'related_standards'.",
-    "how_to_add_blueprint": "Create JSON in knowledge/6_blueprint/{id}.json. Reference this registry for SDL and standard relationships. Add to parent sdl_group's 'future_blueprint_examples'.",
+    "how_to_add_blueprint": "Create JSON in knowledge/7_blueprint/{id}.json. Reference this registry for SDL and standard relationships. Add to parent sdl_group's 'future_blueprint_examples'.",
     "status_lifecycle": "needs_detailing → planned → initial → active"
   }
 }

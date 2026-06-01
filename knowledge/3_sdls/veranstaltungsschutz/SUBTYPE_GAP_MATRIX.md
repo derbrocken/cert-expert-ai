@@ -15,9 +15,9 @@
 | ID | Subtyp-MD | Prio | GB | SK | EK | ODA | Kap.5 (optional) |
 |----|-----------|------|----|----|----|-----|------------------|
 | kampfsport | vorhanden | P0 | Hoch | Hoch | Hoch | Mittel | möglich |
-| fussball | fehlt | P0 | Hoch | Hoch | Hoch | Mittel | möglich |
-| konzert | fehlt | P0 | Hoch | Hoch | Hoch | Mittel | möglich |
-| grossveranstaltung | fehlt | P0 | Hoch | Hoch | Hoch | Mittel | häufig möglich |
+| fussball | Entwurf | P0 | Hoch | Hoch | Hoch | Mittel | möglich |
+| konzert | Entwurf | P0 | Hoch | Hoch | Hoch | Mittel | möglich |
+| grossveranstaltung | Entwurf | P0 | Hoch | Hoch | Hoch | Mittel | häufig möglich |
 | festival | fehlt | P1 | Hoch | Hoch | Hoch | Mittel | möglich |
 | demonstration | fehlt | P1 | Hoch | Hoch | Hoch | Hoch | möglich |
 | stadtfest | fehlt | P1 | Hoch | Mittel | Mittel | Niedrig | selten |
@@ -53,8 +53,8 @@
 
 | Feld | Inhalt |
 |------|--------|
-| **Vorhandenes Wissen** | [[base]] generisch; Rohnotizen ggf. `_knowledge_raw/.../fussball/` (Staging) |
-| **Fehlendes Wissen** | `subtypes/fussball.md`; Auswärts-/Heimfankurve; Pyro/Hausrecht; Stadion vs. kleiner Platz |
+| **Vorhandenes Wissen** | [[subtypes/fussball]] (Entwurf); [[base]] generisch; Rohnotizen ggf. `_knowledge_raw/.../fussball/` (Staging) |
+| **Fehlendes Wissen** | Review gegen Gap-Matrix; Auswärts-/Heimfankurve-Tiefe; Pyro/Hausrecht; Stadion vs. kleiner Platz |
 | **Typische Gefährdungen** | Massenreaktion, Pyrotechnik, Blockübergriffe, Auswärtskonflikte |
 | **Typische Schutzmaßnahmen** | Blocktrennung, Einlasskontrolle, Video/Deeskalation, Polizeiabstimmung |
 | **Schnittstellen** | Stadionbetrieb, Polizei, Ordner, Veranstalter |
@@ -67,8 +67,8 @@
 
 | Feld | Inhalt |
 |------|--------|
-| **Vorhandenes Wissen** | [[base]]; VStättVO-Überblick ([[../../2_regulations/VStättVO/overview]]) |
-| **Fehlendes Wissen** | `subtypes/konzert.md`; Moshpit/Front-of-Stage; Akustik/Druck; Indoor vs. Open-Air |
+| **Vorhandenes Wissen** | [[subtypes/konzert]] (Entwurf); [[base]]; VStättVO-Überblick ([[../../2_regulations/VStättVO/overview]]) |
+| **Fehlendes Wissen** | Review gegen Gap-Matrix; Moshpit/Front-of-Stage-Tiefe; Akustik/Druck; Indoor vs. Open-Air |
 | **Typische Gefährdungen** | Gedränge Front, Sturz aus Höhe, Alkohol, Stage-Diving |
 | **Typische Schutzmaßnahmen** | Crowd-Management, Barrieren, Medical-Plan, Einlasswellen |
 | **Schnittstellen** | Veranstalter, Technik, Sanität, Feuerwehr |
@@ -81,8 +81,8 @@
 
 | Feld | Inhalt |
 |------|--------|
-| **Vorhandenes Wissen** | [[base]]; Schicht 3 [[../veranstaltung_besondere_sicherheitsrelevanz/base]] (Einstufung, nicht Typ) |
-| **Fehlendes Wissen** | `subtypes/grossveranstaltung.md` als Meta-Subtyp; generische Crowd-Matrix ohne Genre |
+| **Vorhandenes Wissen** | [[subtypes/grossveranstaltung]] (Entwurf, Meta-Subtyp); [[base]]; Schicht 3 [[../veranstaltung_besondere_sicherheitsrelevanz/base]] (Einstufung, nicht Typ) |
+| **Fehlendes Wissen** | Review gegen Gap-Matrix; generische Crowd-Matrix ohne Genre |
 | **Typische Gefährdungen** | Massenandrang, Engstellen, Kommunikationsausfall, Wetter |
 | **Typische Schutzmaßnahmen** | Einsatzleitung, Sichtachsen, Evakuierungslogik, Kapazitätssteuerung |
 | **Schnittstellen** | Behörden, Polizei, Rettungsdienst, Veranstalter |

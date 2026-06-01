@@ -12,7 +12,7 @@ Die Knowledge-Basis für Veranstaltungen soll **vollständig genug** sein, damit
 | Schicht | Inhalt | Status |
 |---------|--------|--------|
 | 1 | `base.md` | vorhanden |
-| 2 | `subtypes/*.md` | 1/16 (`kampfsport`) |
+| 2 | `subtypes/*.md` | 4/16 (`kampfsport`; `fussball`, `konzert`, `grossveranstaltung` — Entwurf) |
 | 3 | `veranstaltung_besondere_sicherheitsrelevanz/base.md` | vorhanden (orthogonal) |
 | 4 | `6_products/{gb,sk,ek,oda}/` | GB teilweise; SK/EK/ODA fehlen |
 | Quellen | `4_sources/` Extrakte | Struktur angelegt, Inhalte backlog |
@@ -40,6 +40,8 @@ Die Knowledge-Basis für Veranstaltungen soll **vollständig genug** sein, damit
 | A1 | Review `kampfsport.md` gegen Gap-Matrix | aktualisiertes Subtyp-MD | GB (bestehend) |
 | A2 | Neu: `fussball.md`, `konzert.md`, `grossveranstaltung.md` | je ~600 Tokens | GB, SK |
 | A3 | Schnittstellen-Abschnitt in `base.md` erweitern (Sanität, Polizei, …) | base.md Delta | SK, EK |
+
+**Status A2:** Entwürfe erstellt (2026-05-30) — Review gegen Gap-Matrix noch offen.
 
 **Exit-Kriterium Phase A:** Drei neue Subtypen `reviewed`; Katalog-Status auf „ausgearbeitet“.
 

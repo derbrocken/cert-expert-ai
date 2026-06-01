@@ -1,4 +1,4 @@
-# knowledge/5_products/
+# knowledge/6_products/
 
 Wissen über die Cert-Expert-Dokumentprodukte: Zweck, Aufbau, Inhaltsblöcke,
 Platzhalter-Definitionen und Cert-Expert-spezifische Terminologie.

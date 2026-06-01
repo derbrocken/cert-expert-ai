@@ -82,7 +82,7 @@ MICRO_GUIDE_MARKERS = (
     "### [guides/runtime_summaries/kampfsport_sdl_small_event_summary.md]",
 )
 
-# Aus `knowledge/9_rules/blueprints/gb_event_kampfsport.md` — darf im Micro-Prompt nicht vorkommen.
+# Aus `knowledge/10_rules/blueprints/gb_event_kampfsport.md` — darf im Micro-Prompt nicht vorkommen.
 FULL_ONLY_RISIKO_HEADING = "## Risikoschwerpunkte (immer adressieren)"
 
 # Explizite „Annahme von Hochrisiko“-Imperative (keine negierenden VERBOT-Formulierungen testen)

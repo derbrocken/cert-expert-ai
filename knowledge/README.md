@@ -27,18 +27,22 @@ Globales, wiederverwendbares Fachwissen für die Cert-Expert AI Fachbots.
 
 ```
 knowledge/
-├── 1_standards/     Normen und Standards (Überblicksebene)
-├── 2_regulations/   Rechtliche Regelwerke (Überblicksebene)
+├── 1_standards/     Normen und Standards (CEKS, DIN 77200, ISO — nicht Bot-Volltext)
+├── 2_regulations/   Rechtliche Regelwerke (Überblicksebene, Bot: context_modules.standards)
 ├── 3_sdls/          Fachliches Domänenwissen pro Sicherheitsdienstleistungsbereich
 ├── 4_sources/       Kuratierte DGUV-/Behörden-/Praxis-Extrakte (keine PDF-Ablage)
-├── 6_products/      Dokumentprodukt-Wissen (GB, SK, EC, ODA) + Cert-Expert-Terminologie
-├── 6_blueprint/     Blueprint-Konfigurationsdateien (JSON) — maschinenlesbar
-├── 7_guides/        Schreibanleitungen für Inhaltsblöcke und Schreibstil
-├── 9_rules/         Harte Bot-Verhaltensregeln (base/, products/, blueprints/)
-└── 10_examples/     Positiv-Beispiele für fachlichen Inhalt pro Inhaltsblock
+├── 6_products/      Dokumentprodukt-Wissen (GB, SK, EC, ODA)
+├── 7_blueprint/     Blueprint-Konfigurationen (JSON) — maschinenlesbare Bot-Allowlists
+├── 8_guides/        Schreibanleitungen für Inhaltsblöcke und Schreibstil
+├── 10_rules/        Harte Bot-Verhaltensregeln (base/, products/, blueprints/)
+├── 11_examples/     Positiv-Beispiele für fachlichen Inhalt pro Inhaltsblock
+├── BOT_CONTEXT_MAP.md  Übersicht: welcher Blueprint lädt welche Dateien
+└── …                (Platzhalter: 4_document_types, 5_processes, 9_concepts — noch leer)
 
 prompts/             Wiederverwendbare Prompt-Bausteine (Repo-Root, nicht unter knowledge/)
 ```
+
+**Bot-Pfad-Wahrheit (Code):** `shared/knowledge_paths.py` · Policy: `docs/CONTEXT_ASSEMBLY_POLICY.md`
 
 ---
 
@@ -58,4 +62,5 @@ prompts/             Wiederverwendbare Prompt-Bausteine (Repo-Root, nicht unter 
 
 - [`docs/KNOWLEDGE_ARCHITECTURE.md`](../docs/KNOWLEDGE_ARCHITECTURE.md) — Architektur und Lade-Reihenfolge
 - [`docs/KNOWLEDGE_CURATION_GUIDE.md`](../docs/KNOWLEDGE_CURATION_GUIDE.md) — Kuratierungsrichtlinien
-- [`docs/BLUEPRINT_ARCHITECTURE.md`](../docs/BLUEPRINT_ARCHITECTURE.md) — Blueprint-System
+- [`docs/CONTEXT_ASSEMBLY_POLICY.md`](../docs/CONTEXT_ASSEMBLY_POLICY.md) — Bot-Allowlists, kein Full-Vault-Load
+- [`BOT_CONTEXT_MAP.md`](BOT_CONTEXT_MAP.md) — Module je aktivem Blueprint
