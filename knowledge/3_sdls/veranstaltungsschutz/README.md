@@ -28,8 +28,11 @@ Vollständige Liste (16 Typen, IDs, Prioritäten): [[VERANSTALTUNGSTYPEN_KATALOG
 
 | Veranstaltungstyp | Datei | Status |
 |-------------------|------|--------|
-| Kampfsport | [[subtypes/kampfsport]] | **ausgearbeitet** |
-| Fußball, Konzert, Festival, Großveranstaltung, … | siehe Katalog | geplant (Gap: [[SUBTYPE_GAP_MATRIX]]) |
+| Kampfsport | [[subtypes/kampfsport]] | **reviewed** |
+| Fußball | [[subtypes/fussball]] | **reviewed** |
+| Konzert | [[subtypes/konzert]] | **reviewed** |
+| Großveranstaltung (Meta) | [[subtypes/grossveranstaltung]] | **reviewed** |
+| Festival, Demonstration, … | siehe [[VERANSTALTUNGSTYPEN_KATALOG]] | P1+ geplant |
 
 Jeder Subtyp ergänzt genrespezifische Risiken und Maßnahmen (z. B. Ring, Fan-Lager).  
 **Kampfsport ≠ besondere Sicherheitsrelevanz.** Ein Kampfsport-Event kann 77200-1 **oder** zusätzlich 77200-2 Kap. 5 sein — das steuert **Schicht 3**, nicht dieser Subtyp.
