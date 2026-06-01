@@ -1,6 +1,6 @@
 # Ausbauplan — Veranstaltungs-Knowledge (vor SK/GB/EK/ODA-Bots)
 
-**Stand:** 2026-05-30  
+**Stand:** 2026-06-01  
 **Scope:** Knowledge only — **kein** GB-Blueprint, **kein** SK-Bot, **keine** Migration, **keine** Tool-Implementierung
 
 ---
@@ -12,7 +12,7 @@ Die Knowledge-Basis für Veranstaltungen soll **vollständig genug** sein, damit
 | Schicht | Inhalt | Status |
 |---------|--------|--------|
 | 1 | `base.md` | vorhanden |
-| 2 | `subtypes/*.md` | 4/16 (`kampfsport`; `fussball`, `konzert`, `grossveranstaltung` — Entwurf) |
+| 2 | `subtypes/*.md` | 4/16 P0 **reviewed** (`kampfsport`, `fussball`, `konzert`, `grossveranstaltung`) |
 | 3 | `veranstaltung_besondere_sicherheitsrelevanz/base.md` | vorhanden (orthogonal) |
 | 4 | `6_products/{gb,sk,ek,oda}/` | GB teilweise; SK/EK/ODA fehlen |
 | Quellen | `4_sources/` Extrakte | Struktur angelegt, Inhalte backlog |
@@ -41,9 +41,11 @@ Die Knowledge-Basis für Veranstaltungen soll **vollständig genug** sein, damit
 | A2 | Neu: `fussball.md`, `konzert.md`, `grossveranstaltung.md` | je ~600 Tokens | GB, SK |
 | A3 | Schnittstellen-Abschnitt in `base.md` erweitern (Sanität, Polizei, …) | base.md Delta | SK, EK |
 
-**Status A2:** Entwürfe erstellt (2026-05-30) — Review gegen Gap-Matrix noch offen.
+**Status A1–A2:** **reviewed** (2026-06-01) — Schnittstellen-Schwerpunkte, Produktbezug, Gap-Matrix/Katalog aktualisiert.
 
-**Exit-Kriterium Phase A:** Drei neue Subtypen `reviewed`; Katalog-Status auf „ausgearbeitet“.
+**Status A3:** `base.md` enthält Schnittstellenlogik (allgemein) — ausreichend für P0; Feintuning optional.
+
+**Exit-Kriterium Phase A:** ~~Drei neue Subtypen reviewed~~ **erreicht.** Nächster Schritt: Phase B (SK/EK-Gerüst) oder GB-Blueprints für weitere Subtypen.
 
 ### Phase B — Produktwissen SK/EK (vor Bot)
 

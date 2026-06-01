@@ -1,6 +1,6 @@
 # Veranstaltungstypen-Katalog (SDL Schicht 2)
 
-**Stand:** 2026-05-30  
+**Stand:** 2026-06-01  
 **SDL-Basis:** [[base]] · **Gap-Matrix:** [[SUBTYPE_GAP_MATRIX]] · **Ausbauplan:** [[AUSBAUPLAN]]
 
 ---
@@ -20,9 +20,9 @@
 
 | ID | Veranstaltungstyp | Datei (`subtypes/`) | Status | Kurzprofil |
 |----|-------------------|---------------------|--------|------------|
-| `kampfsport` | Kampfsport | [[subtypes/kampfsport]] | **ausgearbeitet** | Ring/MMA/Boxen; Fan-Lager; Athletenrisiko |
-| `fussball` | Fußball | `fussball.md` | geplant | Fan-Kurve, Auswärts, Pyro-Risiko, Stadionlogik |
-| `konzert` | Konzert | `konzert.md` | geplant | Bühnennähe, Moshpit, Akustik/Druck, Einlasswellen |
+| `kampfsport` | Kampfsport | [[subtypes/kampfsport]] | **reviewed** | Ring/MMA/Boxen; Fan-Lager; Athletenrisiko |
+| `fussball` | Fußball | [[subtypes/fussball]] | **reviewed** | Fan-Kurve, Stadion/Amateur, Pyro-Risiko |
+| `konzert` | Konzert | [[subtypes/konzert]] | **reviewed** | Bühnennähe, Moshpit, Indoor/Open-Air |
 | `festival` | Festival | `festival.md` | geplant | Mehrtägig, Camping, mehrere Bühnen, Drogen/Alkohol |
 | `stadtfest` | Stadtfest | `stadtfest.md` | geplant | Offene Flächen, Mischpublikum, temporäre Gastronomie |
 | `messe` | Messe | `messe.md` | geplant | Hallen, Aussteller, Warenwert, Zutrittszonen |
@@ -35,7 +35,7 @@
 | `motorsport` | Motorsport | `motorsport.md` | geplant | Streckenabsicherung, Boxengasse, Lärm/Abstand |
 | `weihnachtsmarkt` | Weihnachtsmarkt | `weihnachtsmarkt.md` | geplant | Saisonale Fläche, Glühwein, Engstellen, Wetter |
 | `karneval` | Karneval / Umzug | `karneval.md` | geplant | Zug / mobile Route, Kostüme, Alkohol, Straßenraum |
-| `grossveranstaltung` | Großveranstaltung (allgemein) | `grossveranstaltung.md` | geplant | Meta-Subtyp wenn Genre unklar; Crowd-Generika |
+| `grossveranstaltung` | Großveranstaltung (allgemein) | [[subtypes/grossveranstaltung]] | **reviewed** | Meta-Subtyp; Fallback; nicht Kap. 5 |
 
 ---
 
@@ -45,10 +45,10 @@ Immer **Schicht 1** (`veranstaltungsschutz/base.md`) + **optional genau ein** Ei
 Schicht 3 (`veranstaltung_besondere_sicherheitsrelevanz/base.md`) **unabhängig** — siehe [[README]].
 
 ```yaml
-# Beispiel: geplanter Subtyp Fußball (noch nicht ausgearbeitet)
+# Beispiel: Fußball-Event (Subtyp reviewed — Blueprint noch anlegen)
 sdls:
   - veranstaltungsschutz/base.md
-  - veranstaltungsschutz/subtypes/fussball.md   # erst laden wenn Datei freigegeben
+  - veranstaltungsschutz/subtypes/fussball.md
 ```
 
 **Regel:** Keine kombinierten Ordner (`kampfsport_besonders/`). Kombinationen nur über mehrere `context_modules`-Einträge.

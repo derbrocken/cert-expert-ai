@@ -14,6 +14,16 @@ stadionspezifische Vorgaben gelten **nur**, wenn sie im Input belegt sind.
 - Übergänge An-/Abreise sind oft sicherheitskritischer als das Spiel selbst.
 - Polizei und Ordnungsbehörde sind regelmäßig beteiligte Schnittstellen.
 
+## Stadion vs. Amateur / kleiner Platz
+
+| Ausprägung | Typische Besonderheit | Bot-Hinweis |
+|------------|----------------------|-------------|
+| **Profistadion / größere Arena** | Blockstruktur, Innenraum, getrennte Fanwege, Video, Polizei im Regelfall relevant | Blocktrennung, An-/Abreise und Innenraum nur mit Input belegen |
+| **Amateur / Sportplatz** | Geringere Infrastruktur, oft offenes Umfeld, weniger technische Trennung | Keine Stadionannahmen; Pyro/Hausrecht nur bei Auflage oder Input |
+| **Neutraler Platz** | Ausgeglichene Lager, andere Dynamik als Heimspiel | Heim/Auswärts-Logik im Input klären |
+
+Ohne Input **keine** Annahme zu Liga, Kapazität oder polizeilicher Begleitung.
+
 ## Risikoschwerpunkte (Themenraster)
 
 ### Publikum
@@ -52,6 +62,24 @@ stadionspezifische Vorgaben gelten **nur**, wenn sie im Input belegt sind.
 - Video-/Beobachtungsunterstützung zur Früherkennung, sofern vorhanden.
 - Spielfeldnaher Schutz von Spielfeld, Schiedsrichter und Innenraum.
 - Klare Funkkanäle: Einsatzleitung, Blockbereiche, Einlass, Innenraum.
+
+## Schnittstellen-Schwerpunkt (typisch)
+
+Querschnitt: [[../base#Schnittstellenlogik (allgemein)]]. Für Fußball besonders häufig:
+
+- **Stadionbetrieb / Objekt** — Zutritt, Innenraum, Hausrechtsteile.
+- **Polizei / Ordnungsbehörde** — Lager, An-/Abreise, Eskalation (nur bei belegter Absprache).
+- **Veranstalter / Veranstaltungsleitung** — Programm, Sperrungen, Kommunikation.
+- **Sanität** — bei Massenreaktionen und Innenraumvorfällen.
+
+## Bezug Dokumentprodukte (Orientierung)
+
+| Produkt | Typischer Fokus aus diesem Subtyp |
+|---------|-----------------------------------|
+| **GB** | Gefährdungen/Maßnahmen Publikum, Innenraum, An-/Abreise |
+| **SK** | Lagebild, Zonen, Behördenabstimmung, Eskalationslogik |
+| **EK** | Kräfte an Blöcken, Einlass, Innenraum, Funk, Phasen An-/Abreise |
+| **ODA** | Hausrecht, Meldewege, Verhalten an Blockgrenzen (wenn Objektbezug) |
 
 ## Was **nicht** ohne Input behauptet werden darf
 

@@ -19,6 +19,16 @@ die Einstufung nach DIN 77200-2 Kap. 5. Eine besondere Sicherheitsrelevanz wird
 - Erhöhte Abhängigkeit von Einsatzführung und Kommunikation.
 - Regelmäßige Einbindung von Behörden und Rettungsdiensten.
 
+## Wann diesen Subtyp laden
+
+| Situation | Laden |
+|-----------|--------|
+| Genre unklar oder gemischt (z. B. „City-Event“, Sport + Show) | **Ja** — dieses Modul |
+| Genre klar (Fußball, Konzert, …) | **Genre-Subtyp** + `base.md`; dieses Modul **nur** bei zusätzlich sehr großer, zonenreicher Lage |
+| Nur hohe Zuschauerzahl, sonst klares Genre | Genre-Subtyp reicht; Größe im Input, nicht als Ersatz für Genre |
+
+**Kombination:** `base.md` + **ein** Genre-Subtyp + optional dieses Modul — **nie** Genre durch „groß“ ersetzen.
+
 ## Risikoschwerpunkte (Themenraster)
 
 ### Publikum / Personenströme
@@ -57,6 +67,24 @@ die Einstufung nach DIN 77200-2 Kap. 5. Eine besondere Sicherheitsrelevanz wird
 - Schicht- und Pausenregelung wegen langer Betriebsdauer.
 - Falls Genre erkennbar: zusätzlich passenden Genre-Subtyp laden, statt nur
   diesen Meta-Subtyp.
+
+## Schnittstellen-Schwerpunkt (typisch)
+
+Querschnitt: [[../base#Schnittstellenlogik (allgemein)]]. Bei Großlagen besonders:
+
+- **Einsatzleitung / Zonenführung** — Koordination über Distanzen.
+- **Behörden / Polizei / Rettungsdienst** — Lagebild, Kapazität (nur belegt).
+- **Veranstalter** — Zonen, Programm, Sperrungen.
+- **Objekt / Arealbetrieb** — Wege, Sammelpunkte, Infrastruktur.
+
+## Bezug Dokumentprodukte (Orientierung)
+
+| Produkt | Typischer Fokus aus diesem Subtyp |
+|---------|-----------------------------------|
+| **GB** | Engstellen, Massenandrang, Kommunikationsausfall |
+| **SK** | Zonenkonzept, Einsatzführung, Behörden, Evakuierungsrahmen |
+| **EK** | Zonen, Meldekette, Kapazitätssteuerung, Schichten |
+| **ODA** | nur bei dauerhaftem Objekt-/Arealbezug |
 
 ## Was **nicht** ohne Input behauptet werden darf
 

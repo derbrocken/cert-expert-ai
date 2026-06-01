@@ -1,6 +1,6 @@
 # Knowledge-Gap-Matrix — Veranstaltungstypen (Schicht 2)
 
-**Stand:** 2026-05-30  
+**Stand:** 2026-06-01  
 **Katalog:** [[VERANSTALTUNGSTYPEN_KATALOG]] · **Quellenplan:** [[../../4_sources/README]] · **Ausbauplan:** [[AUSBAUPLAN]]
 
 **Legende Relevanz SK/GB/EK/ODA:** Hoch = zentral für Dokumentinhalt · Mittel = ergänzend · Niedrig = selten · — = nicht primär  
@@ -14,10 +14,10 @@
 
 | ID | Subtyp-MD | Prio | GB | SK | EK | ODA | Kap.5 (optional) |
 |----|-----------|------|----|----|----|-----|------------------|
-| kampfsport | vorhanden | P0 | Hoch | Hoch | Hoch | Mittel | möglich |
-| fussball | Entwurf | P0 | Hoch | Hoch | Hoch | Mittel | möglich |
-| konzert | Entwurf | P0 | Hoch | Hoch | Hoch | Mittel | möglich |
-| grossveranstaltung | Entwurf | P0 | Hoch | Hoch | Hoch | Mittel | häufig möglich |
+| kampfsport | **reviewed** | P0 | Hoch | Hoch | Hoch | Mittel | möglich |
+| fussball | **reviewed** | P0 | Hoch | Hoch | Hoch | Mittel | möglich |
+| konzert | **reviewed** | P0 | Hoch | Hoch | Hoch | Mittel | möglich |
+| grossveranstaltung | **reviewed** | P0 | Hoch | Hoch | Hoch | Mittel | häufig möglich |
 | festival | fehlt | P1 | Hoch | Hoch | Hoch | Mittel | möglich |
 | demonstration | fehlt | P1 | Hoch | Hoch | Hoch | Hoch | möglich |
 | stadtfest | fehlt | P1 | Hoch | Mittel | Mittel | Niedrig | selten |
@@ -39,8 +39,8 @@
 
 | Feld | Inhalt |
 |------|--------|
-| **Vorhandenes Wissen** | [[subtypes/kampfsport]]; [[base]] Phasen; GB-Examples (Repo); Normprofil 77200-1 |
-| **Fehlendes Wissen** | SK-Kapitelmuster; Crowd-Kapazität aus Praxisquellen; Schnittstellen-Karten Polizei/Sanität; Kap.-5-Felder nur in Schicht 3 |
+| **Vorhandenes Wissen** | [[subtypes/kampfsport]] (reviewed 2026-06-01); [[base]] Phasen; GB-Examples (Repo); Normprofil 77200-1 |
+| **Fehlendes Wissen** | SK-Kapitelmuster (`6_products/sicherheitskonzept/`); Crowd-Extrakt `4_sources/dguv/`; Kap.-5 nur Schicht 3 |
 | **Typische Gefährdungen** | Fan-Lager, Ringeindringen, Athletenverletzung, Eskalation bei Wertung |
 | **Typische Schutzmaßnahmen** | Ring-Sicherheit, Ein-/Auslauf, Eskalationsstufen, Sanitäts-Sichtlinie |
 | **Schnittstellen** | Sanität, Schiedsrichter, Veranstalter, ggf. Polizei |
@@ -53,8 +53,8 @@
 
 | Feld | Inhalt |
 |------|--------|
-| **Vorhandenes Wissen** | [[subtypes/fussball]] (Entwurf); [[base]] generisch; Rohnotizen ggf. `_knowledge_raw/.../fussball/` (Staging) |
-| **Fehlendes Wissen** | Review gegen Gap-Matrix; Auswärts-/Heimfankurve-Tiefe; Pyro/Hausrecht; Stadion vs. kleiner Platz |
+| **Vorhandenes Wissen** | [[subtypes/fussball]] (reviewed: Stadion/Amateur, Schnittstellen, GB/SK/EK/ODA-Bezug); [[base]] |
+| **Fehlendes Wissen** | GB-Example `fussball`; Behörden-Extrakt; Pyro-Detail nur mit Input |
 | **Typische Gefährdungen** | Massenreaktion, Pyrotechnik, Blockübergriffe, Auswärtskonflikte |
 | **Typische Schutzmaßnahmen** | Blocktrennung, Einlasskontrolle, Video/Deeskalation, Polizeiabstimmung |
 | **Schnittstellen** | Stadionbetrieb, Polizei, Ordner, Veranstalter |
@@ -67,8 +67,8 @@
 
 | Feld | Inhalt |
 |------|--------|
-| **Vorhandenes Wissen** | [[subtypes/konzert]] (Entwurf); [[base]]; VStättVO-Überblick ([[../../2_regulations/VStättVO/overview]]) |
-| **Fehlendes Wissen** | Review gegen Gap-Matrix; Moshpit/Front-of-Stage-Tiefe; Akustik/Druck; Indoor vs. Open-Air |
+| **Vorhandenes Wissen** | [[subtypes/konzert]] (reviewed: Indoor/Open-Air, Moshpit, Schnittstellen); [[base]]; VStättVO-Überblick |
+| **Fehlendes Wissen** | GB-Example `konzert`; Praxis-Crowd-Extrakt; konkrete Flächenmaße nur mit Input |
 | **Typische Gefährdungen** | Gedränge Front, Sturz aus Höhe, Alkohol, Stage-Diving |
 | **Typische Schutzmaßnahmen** | Crowd-Management, Barrieren, Medical-Plan, Einlasswellen |
 | **Schnittstellen** | Veranstalter, Technik, Sanität, Feuerwehr |
@@ -81,8 +81,8 @@
 
 | Feld | Inhalt |
 |------|--------|
-| **Vorhandenes Wissen** | [[subtypes/grossveranstaltung]] (Entwurf, Meta-Subtyp); [[base]]; Schicht 3 [[../veranstaltung_besondere_sicherheitsrelevanz/base]] (Einstufung, nicht Typ) |
-| **Fehlendes Wissen** | Review gegen Gap-Matrix; generische Crowd-Matrix ohne Genre |
+| **Vorhandenes Wissen** | [[subtypes/grossveranstaltung]] (reviewed: Meta/Fallback, Kombi mit Genre); [[base]]; Schicht 3 [[../veranstaltung_besondere_sicherheitsrelevanz/base]] |
+| **Fehlendes Wissen** | GB-Example; Zonen-Detail nur mit Objekt-Input |
 | **Typische Gefährdungen** | Massenandrang, Engstellen, Kommunikationsausfall, Wetter |
 | **Typische Schutzmaßnahmen** | Einsatzleitung, Sichtachsen, Evakuierungslogik, Kapazitätssteuerung |
 | **Schnittstellen** | Behörden, Polizei, Rettungsdienst, Veranstalter |
@@ -263,8 +263,8 @@
 
 | Welle | Subtypen | Abhängigkeiten |
 |-------|----------|----------------|
-| **Welle 0** | `kampfsport` (Review) | — |
-| **Welle 1 (P0)** | `fussball`, `konzert`, `grossveranstaltung` | `6_products/sicherheitskonzept/` Grundgerüst; DGUV-Crowd-Extrakte ([[../../4_sources/dguv/README]]) |
+| **Welle 0** | `kampfsport`, `fussball`, `konzert`, `grossveranstaltung` | **reviewed** 2026-06-01 |
+| **Welle 1 (P0)** | — (P0-Subtypen abgeschlossen) | Nächste: `6_products/sicherheitskonzept/`; DGUV-Crowd-Extrakt |
 | **Welle 2 (P1)** | `festival`, `demonstration`, `stadtfest`, `messe` | Behörden-Leitfäden ([[../../4_sources/behoerden/README]]) |
 | **Welle 3 (P2–P3)** | übrige Katalog-Einträge | nach Pilotkundenbedarf |
 
