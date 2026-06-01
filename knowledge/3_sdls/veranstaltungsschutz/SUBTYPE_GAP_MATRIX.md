@@ -40,7 +40,7 @@
 | Feld | Inhalt |
 |------|--------|
 | **Vorhandenes Wissen** | [[subtypes/kampfsport]] (reviewed 2026-06-01); [[base]] Phasen; GB-Examples (Repo); Normprofil 77200-1 |
-| **Fehlendes Wissen** | SK-Kapitelmuster (`6_products/sicherheitskonzept/`); Crowd-Extrakt `4_sources/dguv/`; Kap.-5 nur Schicht 3 |
+| **Fehlendes Wissen** | SK-Beispieltext; Crowd-Extrakt `4_sources/dguv/`; Kap.-5 nur Schicht 3 |
 | **Typische Gefährdungen** | Fan-Lager, Ringeindringen, Athletenverletzung, Eskalation bei Wertung |
 | **Typische Schutzmaßnahmen** | Ring-Sicherheit, Ein-/Auslauf, Eskalationsstufen, Sanitäts-Sichtlinie |
 | **Schnittstellen** | Sanität, Schiedsrichter, Veranstalter, ggf. Polizei |

@@ -14,7 +14,7 @@ Die Knowledge-Basis für Veranstaltungen soll **vollständig genug** sein, damit
 | 1 | `base.md` | vorhanden |
 | 2 | `subtypes/*.md` | 4/16 P0 **reviewed** (`kampfsport`, `fussball`, `konzert`, `grossveranstaltung`) |
 | 3 | `veranstaltung_besondere_sicherheitsrelevanz/base.md` | vorhanden (orthogonal) |
-| 4 | `6_products/{gb,sk,ek,oda}/` | GB teilweise; SK/EK/ODA fehlen |
+| 4 | `6_products/{gb,sk,ek,oda}/` | GB + **SK/EK-Gerüst**; ODA fehlt |
 | Quellen | `4_sources/` Extrakte | Struktur angelegt, Inhalte backlog |
 
 ---
@@ -49,13 +49,14 @@ Die Knowledge-Basis für Veranstaltungen soll **vollständig genug** sein, damit
 
 ### Phase B — Produktwissen SK/EK (vor Bot)
 
-| # | Aufgabe | Output |
-|---|---------|--------|
-| B1 | `6_products/sicherheitskonzept/purpose.md` + `content_blocks.md` | SK-Gerüst |
-| B2 | `6_products/einsatzkonzept/purpose.md` + `content_blocks.md` | EK-Gerüst |
-| B3 | Kette SK→GB→EK in `6_products/README.md` präzisieren | Docs |
+| # | Aufgabe | Output | Status |
+|---|---------|--------|--------|
+| B1 | `6_products/sicherheitskonzept/purpose.md` + `content_blocks.md` | SK-Gerüst | **done** 2026-06-01 |
+| B2 | `6_products/einsatzkonzept/purpose.md` + `content_blocks.md` | EK-Gerüst | **done** 2026-06-01 |
+| B3 | Kette SK→GB→EK in `6_products/README.md` präzisieren | Docs | **done** 2026-06-01 |
+| B4 | `6_products/oda/purpose.md` + `content_blocks.md` | ODA-Gerüst | offen |
 
-**Exit-Kriterium:** SK/EC-Module referenzierbar in Gap-Matrix als „vorhanden“.
+**Exit-Kriterium Phase B (SK/EK):** SK/EC-Module referenzierbar in Gap-Matrix — **erreicht für SK/EK.** ODA optional später.
 
 ### Phase C — Praxisquellen extrahieren
 

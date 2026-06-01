@@ -5,6 +5,31 @@ Platzhalter-Definitionen und Cert-Expert-spezifische Terminologie.
 
 ---
 
+## Dokumentenkette (Veranstaltung)
+
+```
+SK (Sicherheitskonzept)     — Auftraggeber-/Gesamtperspektive, Schutzziel
+        │
+        ├──► GB (Gefährdungsbeurteilung)  — arbeitsschutzliche Vertiefung für SMA
+        │
+        └──► EK (Einsatzkonzept, EC_*)    — operative Umsetzung AN
+                    │
+                    └──► ODA / Einweisungen (noch ohne purpose/content_blocks)
+```
+
+**Bot-Ladung:** Pro Lauf nur das **Produktmodul** des aktiven Blueprints
+(`context_modules.products`) plus SDL/Rules — nie alle Produkte gleichzeitig.
+Siehe [[../BOT_CONTEXT_MAP]] und `docs/CONTEXT_ASSEMBLY_POLICY.md`.
+
+| Produkt | Ordner | `purpose.md` | `content_blocks.md` | Bot-Status |
+|---------|--------|--------------|---------------------|------------|
+| GB | `Gefährdungsbeurteilung/` | ja | ja | **aktiv** (`gb_event_kampfsport`) |
+| SK | `sicherheitskonzept/` | ja | ja | geplant |
+| EK | `einsatzkonzept/` | ja | ja | geplant |
+| ODA | `oda/` | — | — | backlog |
+
+---
+
 ## Regeln
 
 - **Pro Dokumentprodukt ein Unterordner.** `Gefährdungsbeurteilung/`, `sicherheitskonzept/`,
@@ -25,8 +50,8 @@ Platzhalter-Definitionen und Cert-Expert-spezifische Terminologie.
 | Ordner | Inhalt |
 |---|---|
 | `Gefährdungsbeurteilung/` | Zweck, Kapitelstruktur, GB_*-Platzhalter und ihre Anforderungen |
-| `sicherheitskonzept/` | Zweck, Kapitelstruktur, SK_*-Platzhalter |
-| `einsatzkonzept/` | Zweck, Kapitelstruktur, EC_*-Platzhalter |
+| `sicherheitskonzept/` | Zweck, Kapitelstruktur, SK_*-Platzhalter | **Gerüst** (2026-06-01) |
+| `einsatzkonzept/` | Zweck, Kapitelstruktur, EC_*-Platzhalter | **Gerüst** (2026-06-01) |
 | `oda/` | Zweck, Kapitelstruktur, ODA_*-Platzhalter |
 | `cert_expert/` | Terminologie, bevorzugte Formulierungen, verbotene Ausdrücke |
 
