@@ -21,4 +21,5 @@ knowledge/.obsidian/
 
 # Python virtual environments
 .venv/
+.venv-pdf/
 venv/
