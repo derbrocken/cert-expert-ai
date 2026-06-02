@@ -1,0 +1,31 @@
+{
+  "blueprint_id": "sk_event_kampfsport",
+  "input_data": {
+    "event_name": "K1-Kampfturnier Berlin Open 2026",
+    "event_type": "Kampfsportveranstaltung",
+    "combat_sports_type": "K1",
+    "event_date": "2026-06-14",
+    "event_start_time": "17:00",
+    "event_end_time": "23:30",
+    "event_location": "Sporthalle Musterstraße 12, 10115 Berlin",
+    "outdoor_area": false,
+    "expected_attendees": 350,
+    "security_staff_count": 6,
+    "venue_capacity": 500,
+    "venue_exits": 4,
+    "alcohol_served": true,
+    "medical_service": "",
+    "evacuation_plan_available": false,
+    "official_requirements": "",
+    "prior_incidents": "",
+    "special_risks": [
+      "Erhöhtes Aggressionspotenzial bei intensiven Kämpfen",
+      "Alkoholkonsum im Außenbereich des Eingangs möglich"
+    ],
+    "client_name": "Sportclub Musterhausen e.V.",
+    "created_by": "M. Mahra",
+    "approved_by": "",
+    "doc_version": "1.0",
+    "notes": "SK-Pilot — Cert-Expert als planender AN"
+  }
+}

@@ -1,0 +1,158 @@
+{
+  "blueprint_id":   "sk_event_kampfsport",
+  "document_type":  "sk_event_kampfsport",
+  "display_name":   "Sicherheitskonzept — Kampfsportveranstaltung",
+  "version":        "1.0",
+  "status":         "active",
+  "template_file":  "templates/gb_event_kampfsport.docx",
+  "modes":          ["standalone", "flow"],
+
+  "product":           "sk",
+  "sdl_group":         "sdl_veranstaltungsdienst",
+  "sdl_subtype":       "kampfsport",
+  "placeholder_namespace": "SK_*",
+
+  "context_modules": {
+    "standards": [
+      "dguv_v1/overview.md",
+      "VStättVO/overview.md"
+    ],
+    "sdls": [
+      "veranstaltungsschutz/base.md",
+      "veranstaltungsschutz/subtypes/kampfsport.md"
+    ],
+    "practice_sources": [
+      "dguv/crowd_veranstaltung.md",
+      "dguv/veranstaltungen_organisation.md",
+      "praxisleitfaeden/sk_veranstaltung_geruest.md",
+      "behoerden/grossevent_abstimmung.md"
+    ],
+    "products": [
+      "sicherheitskonzept/purpose.md",
+      "sicherheitskonzept/content_blocks.md"
+    ],
+    "rules": [
+      "base/hallucination_boundaries.md",
+      "base/open_points_rules.md",
+      "base/citation_rules.md",
+      "base/output_format_rules.md",
+      "base/reviewer_handoff.md",
+      "products/sk_rules.md",
+      "blueprints/sk_event_kampfsport.md"
+    ],
+    "guides": [
+      "runtime_summaries/ingress_egress_k1_small_event_summary.md",
+      "runtime_summaries/kampfsport_sdl_small_event_summary.md"
+    ],
+    "prompts": [
+      "base/system_base.md",
+      "base/hallucination_guard.md",
+      "base/open_point_instruction.md",
+      "products/sk_user_prompt_template.md"
+    ]
+  },
+
+  "conditional_modules": [],
+
+  "input_schema": {
+    "required": [
+      "event_name",
+      "event_type",
+      "event_date",
+      "event_location",
+      "expected_attendees",
+      "venue_capacity",
+      "venue_exits",
+      "special_risks",
+      "client_name",
+      "created_by",
+      "doc_version"
+    ],
+    "optional": [
+      "approved_by",
+      "notes",
+      "event_start_time",
+      "event_end_time",
+      "security_staff_count",
+      "alcohol_served",
+      "outdoor_area",
+      "prior_incidents",
+      "medical_service",
+      "evacuation_plan_available",
+      "official_requirements",
+      "combat_sports_type"
+    ],
+    "field_labels": {
+      "event_name":            "Veranstaltungsname",
+      "event_type":            "Veranstaltungstyp",
+      "event_date":            "Veranstaltungsdatum",
+      "event_location":        "Veranstaltungsort",
+      "expected_attendees":    "Erwartete Zuschauerzahl",
+      "security_staff_count":  "Geplante Sicherheitskräfte (AN)",
+      "venue_capacity":        "Zulässige Kapazität",
+      "venue_exits":           "Anzahl Notausgänge",
+      "special_risks":         "Besondere Risiken",
+      "client_name":           "Auftraggeber / Veranstalter",
+      "created_by":            "Erstellt von",
+      "doc_version":           "Dokumentversion",
+      "approved_by":           "Freigegeben von",
+      "notes":                 "Hinweise",
+      "event_start_time":      "Beginn",
+      "event_end_time":        "Ende",
+      "alcohol_served":        "Alkoholausschank",
+      "outdoor_area":          "Außenbereich",
+      "prior_incidents":       "Vorangegangene Vorfälle",
+      "medical_service":       "Sanitätsdienst",
+      "evacuation_plan_available": "Fluchtwegplan vorhanden",
+      "official_requirements": "Behördliche Auflagen",
+      "combat_sports_type":    "Kampfsportart"
+    },
+    "critical_triggers": [
+      {
+        "id": "venue_exits_missing_or_zero",
+        "condition": "venue_exits is missing OR venue_exits == 0",
+        "open_point": "Anzahl Notausgänge nicht angegeben — für SK-Fluchtwegeplanung zwingend."
+      },
+      {
+        "id": "overbooking",
+        "condition": "expected_attendees > venue_capacity",
+        "open_point": "Erwartete Zuschauerzahl überschreitet zulässige Kapazität — Überbelegung im SK klären."
+      },
+      {
+        "id": "approval_missing",
+        "condition": "approved_by is empty",
+        "open_point": "Freigabe des Sicherheitskonzepts ausstehend."
+      },
+      {
+        "id": "medical_service_missing",
+        "condition": "medical_service is empty",
+        "open_point": "Sanitätsdienst nicht im Input — Schnittstelle Ring/Sanität im SK nicht belegbar."
+      }
+    ]
+  },
+
+  "ai_blocks": [
+    "SK_SCHUTZZIEL",
+    "SK_GEFAEHRDUNGSANALYSE",
+    "SK_SCHUTZMASSNAHMEN",
+    "SK_VERANTWORTLICHE",
+    "SK_KOMMUNIKATION",
+    "SK_OFFENE_PUNKTE"
+  ],
+
+  "static_blocks": [
+    "Dokumenttitel",
+    "Kapitelüberschriften",
+    "Unterschriftsfeld"
+  ],
+
+  "qa_rules": {
+    "require_approved_by": true,
+    "max_open_points_for_ok": 0,
+    "critical_fields": ["venue_exits", "medical_service"]
+  },
+
+  "upstream":   [],
+  "downstream": ["gb_event_kampfsport_lean", "ec_event_kampfsport"],
+  "exports":    ["measures", "open_points", "responsibilities"]
+}

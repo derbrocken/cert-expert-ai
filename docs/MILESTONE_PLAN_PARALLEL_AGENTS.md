@@ -250,7 +250,8 @@ Arbeit ausschließlich knowledge/1_standards/ und Governance. Keine 7_blueprint,
 - [x] GB Kampfsport Lean: &lt; 80k Budget, DGUV-Crowd geladen (`gb_event_kampfsport_lean`)
 - [ ] GB Kampfsport: 1 erfolgreicher Qwen-Lauf (manuell)
 - [x] 4× P1-Subtypen reviewed
-- [ ] SK + EK: Blueprint + Smoke + Map-Eintrag
+- [x] SK: Blueprint + Smoke + Map-Eintrag (`sk_event_kampfsport`)
+- [ ] EK: Blueprint + Smoke + Map-Eintrag
 - [x] ODA-Gerüst in `6_products/oda/`
 - [x] Praxis-Extrakte (`behoerden/grossevent`, `praxis` SK + VA)
 - [x] M0: `scripts/context_size_report.py`, `practice_sources` in Loader

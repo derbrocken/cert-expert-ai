@@ -16,8 +16,9 @@ Maschinenlesbare Quelle: `knowledge/7_blueprint/{blueprint_id}.json` → `contex
 | `gb_event_kampfsport` | **active** (full) | `bots/01_gefaehrdungsbeurteilung/gb_bot.py` | `templates/gb_event_kampfsport.docx` |
 | `gb_event_kampfsport_lean` | **production default** | gleicher Bot, Blueprint-ID wählen | ~58k Zeichen + DGUV |
 | `gb_event_kampfsport_micro` | LM Studio / klein | — | ~40k Zeichen |
+| `sk_event_kampfsport` | **active (MVP)** | `bots/02_sicherheitskonzept/sk_bot.py` | GB-Template interim (~51k Prompt) |
 
-Geplant (noch **kein** Loader-Lauf): `sk_event_*`, `ec_event_*`, `oda_event_*`
+Geplant: `ec_event_*`, `oda_event_*`
 
 ---
 
@@ -77,6 +78,25 @@ Prüfen: `python -m shared.blueprint_loader gb_event_kampfsport`
 - `base/hallucination_guard.md`
 - `base/open_point_instruction.md`
 - `products/gb_user_prompt_template.md`
+
+---
+
+## `sk_event_kampfsport` — SK-Allowlist (~21 Module)
+
+Prüfen: `python3 scripts/context_size_report.py sk_event_kampfsport`  
+Smoke: `python3 tests/smoke_sk_event_kampfsport.py`  
+Lauf: `python -m bots.02_sicherheitskonzept.sk_bot inputs/sk_event_kampfsport.json`
+
+| Kategorie | Module |
+|-----------|--------|
+| standards | `dguv_v1`, `VStättVO` Überblicke (`2_regulations/`) |
+| sdls | `base.md`, `kampfsport.md` |
+| practice_sources | crowd, veranstaltungen_organisation, sk_veranstaltung_geruest, grossevent_abstimmung |
+| products | `sicherheitskonzept/` |
+| rules | base + `sk_rules` + blueprint rules |
+| guides | 2× runtime_summaries |
+
+**Kein** `1_standards/`. Downstream: `gb_event_kampfsport_lean`, `ec_event_kampfsport`.
 
 ---
 
