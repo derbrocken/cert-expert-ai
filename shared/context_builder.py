@@ -16,11 +16,12 @@ Reihenfolge des System-Prompts (höchste Priorität zuerst):
   5. products/*             (Produktwissen)
   6. standards/*            (Normüberblicke)
   7. sdls/*                 (Domänenwissen base + subtype)
-  8. guides/*               (Schreibanleitungen)
-  9. examples/*             (Stilbeispiele)
- 10. prompts/base/hallucination_guard.md
- 11. prompts/base/open_point_instruction.md
- 12. abschließender JSON-Schema-Block, gerendert aus den ai_blocks des
+  8. practice_sources/*     (DGUV/Behörden/Praxis-Extrakte)
+  9. guides/*               (Schreibanleitungen)
+ 10. examples/*             (Stilbeispiele)
+ 11. prompts/base/hallucination_guard.md
+ 12. prompts/base/open_point_instruction.md
+ 13. abschließender JSON-Schema-Block, gerendert aus den ai_blocks des
      Blueprints (überschreibt jeden generischen Output-Schema-Hinweis)
 """
 
@@ -40,6 +41,7 @@ _SYSTEM_PROMPT_ORDER = (
     ("products", None),
     ("standards", None),
     ("sdls", None),
+    ("practice_sources", None),
     ("guides", None),
     ("examples", None),
     ("prompts", ("base/hallucination_guard.md", "base/open_point_instruction.md")),
@@ -52,6 +54,7 @@ _KNOWLEDGE_MODULE_META_ORDER = (
     "products",
     "standards",
     "sdls",
+    "practice_sources",
     "guides",
     "examples",
 )

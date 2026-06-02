@@ -10,10 +10,10 @@ Schema: [[../EXTRACTION_SCHEMA]]
 
 | source_id | Thema | Status | Extrakt-Datei | Subtypen | Produkte |
 |-----------|-------|--------|---------------|----------|----------|
-| `praxis-sk-veranstaltung` | SK-Aufbau Veranstaltung (generisch) | geplant | `sk_veranstaltung_geruest.md` | alle | SK |
+| `praxis-sk-veranstaltung` | SK-Aufbau Veranstaltung (generisch) | **reviewed** | [[sk_veranstaltung_geruest]] | alle | SK |
 | `praxis-ek-staffelung` | EK Personalstaffelung (Prinzip) | geplant | `ek_staffelung_prinzip.md` | alle | EK |
 | `praxis-kampfsport` | Verbands-/Ringpraxis (ohne Normzitat) | geplant | `kampfsport_praxis.md` | kampfsport | GB, EK |
-| `praxis-va-din77200` | VA-Erstellung (Kap. 7 Stil) | Roh in `inputs/practical_sources/` | `va_erstellung_hinweise.md` | — | ODA |
+| `praxis-va-din77200` | VA-Erstellung (Kap. 7 Stil) | **reviewed** | [[va_erstellung_hinweise]] | alle | ODA |
 
 **Hinweis:** `inputs/practical_sources/DIN77200-2_10_Kap. 7…docx` ist **Best Practice**, keine Norm — Extrakt nach Schema, nicht 1:1.
 

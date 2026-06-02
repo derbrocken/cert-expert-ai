@@ -18,10 +18,10 @@
 | fussball | **reviewed** | P0 | Hoch | Hoch | Hoch | Mittel | möglich |
 | konzert | **reviewed** | P0 | Hoch | Hoch | Hoch | Mittel | möglich |
 | grossveranstaltung | **reviewed** | P0 | Hoch | Hoch | Hoch | Mittel | häufig möglich |
-| festival | fehlt | P1 | Hoch | Hoch | Hoch | Mittel | möglich |
-| demonstration | fehlt | P1 | Hoch | Hoch | Hoch | Hoch | möglich |
-| stadtfest | fehlt | P1 | Hoch | Mittel | Mittel | Niedrig | selten |
-| messe | fehlt | P1 | Hoch | Mittel | Mittel | Mittel | selten |
+| festival | **reviewed** | P1 | Hoch | Hoch | Hoch | Mittel | möglich |
+| demonstration | **reviewed** | P1 | Hoch | Hoch | Hoch | Hoch | möglich |
+| stadtfest | **reviewed** | P1 | Hoch | Mittel | Mittel | Niedrig | selten |
+| messe | **reviewed** | P1 | Hoch | Mittel | Mittel | Mittel | selten |
 | motorsport | fehlt | P2 | Hoch | Hoch | Hoch | Mittel | möglich |
 | karneval | fehlt | P2 | Hoch | Mittel | Hoch | Niedrig | selten |
 | weihnachtsmarkt | fehlt | P2 | Hoch | Mittel | Mittel | Niedrig | selten |
@@ -265,7 +265,7 @@
 |-------|----------|----------------|
 | **Welle 0** | `kampfsport`, `fussball`, `konzert`, `grossveranstaltung` | **reviewed** 2026-06-01 |
 | **Welle 1 (P0)** | — (P0-Subtypen abgeschlossen) | Nächste: `6_products/sicherheitskonzept/`; DGUV-Crowd-Extrakt |
-| **Welle 2 (P1)** | `festival`, `demonstration`, `stadtfest`, `messe` | Behörden-Leitfäden ([[../../4_sources/behoerden/README]]) |
+| **Welle 2 (P1)** | — (P1-Subtypen reviewed 2026-06-02) | Behörden/Praxis-Extrakte; SK/EK-Bots |
 | **Welle 3 (P2–P3)** | übrige Katalog-Einträge | nach Pilotkundenbedarf |
 
 **Produktkette (unverändert):** SK → GB → EK → ODA — Subtyp-Wissen speist vor allem **GB** und **SK**; **EK** braucht Einsatzlogik aus Subtyp + SK; **ODA** nur bei Objekt-/Dauerbezug.

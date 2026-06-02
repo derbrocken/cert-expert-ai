@@ -216,17 +216,36 @@ def _resolve_context_modules(
 if __name__ == "__main__":
     import sys
 
+    from shared.context_builder import build_system_prompt
+
     if len(sys.argv) < 2:
-        print("Usage: python -m shared.blueprint_loader <blueprint_id>")
+        print("Usage: python -m shared.blueprint_loader <blueprint_id> [--size]")
         sys.exit(1)
 
-    bp = load_blueprint(sys.argv[1])
+    blueprint_id = sys.argv[1]
+    show_size = "--size" in sys.argv[2:]
+
+    bp = load_blueprint(blueprint_id)
     print(f"Blueprint: {bp.blueprint_id} ({bp.display_name}) v{bp.version}")
     print(f"Template:  {bp.template_path}")
     print(f"ai_blocks: {list(bp.ai_blocks)}")
     print(f"Pflichtfelder: {list(bp.required_fields)}")
     print("Kontextmodule:")
+    total_chars = 0
     for cat, paths in bp.context_module_paths.items():
         print(f"  {cat}: {len(paths)} Datei(en)")
         for p in paths:
-            print(f"    - {p.relative_to(_PROJECT_ROOT)}")
+            rel = p.relative_to(_PROJECT_ROOT)
+            if show_size:
+                n = len(p.read_text(encoding="utf-8"))
+                total_chars += n
+                print(f"    - {rel} ({n:,} chars)")
+            else:
+                print(f"    - {rel}")
+    if show_size:
+        sys_prompt = build_system_prompt(bp)
+        print(f"\nRaw modules total: {total_chars:,} chars")
+        print(f"System prompt:     {len(sys_prompt):,} chars")
+        budget = 80_000
+        flag = "OK" if len(sys_prompt) <= budget else "OVER"
+        print(f"Budget {budget:,}: {flag}")

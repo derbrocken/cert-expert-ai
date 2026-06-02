@@ -11,7 +11,7 @@ Schema: [[../EXTRACTION_SCHEMA]]
 | source_id | Thema | Status | Extrakt-Datei | Subtypen | Produkte |
 |-----------|-------|--------|---------------|----------|----------|
 | `behoerde-versammlung` | Versammlungen / Demonstrationen | geplant | `versammlungsrecht_praxis.md` | demonstration, politisch | SK, EK |
-| `behoerde-grossevent` | Großveranstaltung, Behördenabstimmung | geplant | `grossevent_abstimmung.md` | grossveranstaltung, festival | SK, EK |
+| `behoerde-grossevent` | Großveranstaltung, Behördenabstimmung | **reviewed** | [[grossevent_abstimmung]] | grossveranstaltung, festival, demonstration, fussball | SK, EK |
 | `behoerde-brand` | Brandschutz / Feuerwehr Schnittstelle | geplant | `brandschutz_schnittstelle.md` | messe, stadtfest, weihnachtsmarkt | SK, GB |
 | `behoerde-vstaettvo` | Versammlungsstätte (Praxis, nicht Volltext) | geplant | `vstaettvo_praxis.md` | konzert, indoor | SK, GB |
 

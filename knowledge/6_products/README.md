@@ -14,7 +14,7 @@ SK (Sicherheitskonzept)     — Auftraggeber-/Gesamtperspektive, Schutzziel
         │
         └──► EK (Einsatzkonzept, EC_*)    — operative Umsetzung AN
                     │
-                    └──► ODA / Einweisungen (noch ohne purpose/content_blocks)
+                    └──► ODA / Einweisungen (Gerüst 2026-06-02)
 ```
 
 **Bot-Ladung:** Pro Lauf nur das **Produktmodul** des aktiven Blueprints
@@ -26,7 +26,7 @@ Siehe [[../BOT_CONTEXT_MAP]] und `docs/CONTEXT_ASSEMBLY_POLICY.md`.
 | GB | `Gefährdungsbeurteilung/` | ja | ja | **aktiv** (`gb_event_kampfsport`) |
 | SK | `sicherheitskonzept/` | ja | ja | geplant |
 | EK | `einsatzkonzept/` | ja | ja | geplant |
-| ODA | `oda/` | — | — | backlog |
+| ODA | `oda/` | ja | ja | geplant (`oda_event_standard`) |
 
 ---
 

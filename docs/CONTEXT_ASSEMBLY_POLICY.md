@@ -46,6 +46,7 @@ Single source of truth: `shared/knowledge_paths.py`
 | `sdls` | `knowledge/3_sdls/` |
 | `products` | `knowledge/6_products/` |
 | `rules` | `knowledge/10_rules/` |
+| `practice_sources` | `knowledge/4_sources/` |
 | `guides` | `knowledge/8_guides/` |
 | `examples` | `knowledge/11_examples/` |
 | `prompts` | `prompts/` (Repo-Root) |

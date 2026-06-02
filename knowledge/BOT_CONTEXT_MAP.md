@@ -13,9 +13,9 @@ Maschinenlesbare Quelle: `knowledge/7_blueprint/{blueprint_id}.json` → `contex
 
 | Blueprint | Status | Bot-Code | Template |
 |-----------|--------|----------|----------|
-| `gb_event_kampfsport` | **active** | `bots/01_gefaehrdungsbeurteilung/gb_bot.py` | `templates/gb_event_kampfsport.docx` |
-| `gb_event_kampfsport_lean` | test/variante | — | — |
-| `gb_event_kampfsport_micro` | test/variante | — | — |
+| `gb_event_kampfsport` | **active** (full) | `bots/01_gefaehrdungsbeurteilung/gb_bot.py` | `templates/gb_event_kampfsport.docx` |
+| `gb_event_kampfsport_lean` | **production default** | gleicher Bot, Blueprint-ID wählen | ~58k Zeichen + DGUV |
+| `gb_event_kampfsport_micro` | LM Studio / klein | — | ~40k Zeichen |
 
 Geplant (noch **kein** Loader-Lauf): `sk_event_*`, `ec_event_*`, `oda_event_*`
 
@@ -80,23 +80,45 @@ Prüfen: `python -m shared.blueprint_loader gb_event_kampfsport`
 
 ---
 
-## Bewusst **nicht** geladen (GB)
+## `gb_event_kampfsport_lean` — Production-Allowlist (~22 Module)
+
+Prüfen: `python3 scripts/context_size_report.py gb_event_kampfsport_lean`  
+Smoke: `python3 tests/smoke_gb_event_kampfsport_lean.py`
+
+| Kategorie | Module |
+|-----------|--------|
+| sdls | `base.md`, `subtypes/kampfsport.md` |
+| practice_sources | `dguv/crowd_veranstaltung.md` |
+| products | GB purpose + content_blocks |
+| rules | base + `gb_rules` + `gb_event_kampfsport_lean` |
+| guides | content_blocks + **runtime_summaries** (keine Voll-risk_patterns) |
+| prompts | system_base, guards, gb_user_template |
+
+**Zielgröße:** ≤ 80 000 Zeichen System-Prompt (Stand 2026-06-02: ~58k).
+
+---
+
+## Bewusst **nicht** geladen (GB full)
 
 | Bereich | Grund |
 |---------|--------|
 | `knowledge/1_standards/` (CEKS, DIN 77200, ISO) | Normzentriert — nicht Bot-Volltext |
-| `knowledge/4_sources/` | Noch keine freigegebenen Extrakte |
+| `knowledge/4_sources/` (full) | Nur explizit in Blueprint (`practice_sources`) |
 | `knowledge/7_blueprint/*.json` | Steuerung, kein Prompt-Inhalt |
-| Andere SDL-Subtypen | Nur `kampfsport` für diesen Blueprint |
+| Andere SDL-Subtypen | Nur `kampfsport` für Kampfsport-Blueprint |
 | `veranstaltung_besondere_sicherheitsrelevanz/` | Kap.-5-Overlay — eigener Blueprint geplant |
 
 ---
 
-## Größen-Hinweis (Sprint-Backlog)
+## Größen-Hinweis
 
-Stand 2026-06-01: Vollständiger GB-System-Prompt ~**146k Zeichen** (~36k Tokens) — über dem Design-Ziel in `KNOWLEDGE_ARCHITECTURE.md` (~8k Tokens).  
-Ursache: große `8_guides/risk_patterns/*`-Module.  
-Kurzfristig: `gb_event_kampfsport_micro` für Tests; mittelfristig: Guides kürzen oder Token-Cap im `context_builder`.
+| Blueprint | System-Prompt (ca.) |
+|-----------|---------------------|
+| `gb_event_kampfsport` | ~147k — **OVER** (Voll-guides + examples) |
+| `gb_event_kampfsport_lean` | ~58k — **OK** + DGUV |
+| `gb_event_kampfsport_micro` | ~40k — **OK**, ohne SDL |
+
+Report: `python3 scripts/context_size_report.py`
 
 ---
 

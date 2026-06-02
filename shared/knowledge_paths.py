@@ -18,6 +18,7 @@ PROMPTS_DIR = PROJECT_ROOT / "prompts"
 KNOWLEDGE_CATEGORY_DIRS: dict[str, Path] = {
     "standards": KNOWLEDGE_ROOT / "2_regulations",
     "sdls": KNOWLEDGE_ROOT / "3_sdls",
+    "practice_sources": KNOWLEDGE_ROOT / "4_sources",
     "products": KNOWLEDGE_ROOT / "6_products",
     "rules": KNOWLEDGE_ROOT / "10_rules",
     "guides": KNOWLEDGE_ROOT / "8_guides",

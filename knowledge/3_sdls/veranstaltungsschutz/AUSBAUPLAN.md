@@ -15,7 +15,7 @@ Die Knowledge-Basis für Veranstaltungen soll **vollständig genug** sein, damit
 | 2 | `subtypes/*.md` | 4/16 P0 **reviewed** (`kampfsport`, `fussball`, `konzert`, `grossveranstaltung`) |
 | 3 | `veranstaltung_besondere_sicherheitsrelevanz/base.md` | vorhanden (orthogonal) |
 | 4 | `6_products/{gb,sk,ek,oda}/` | GB + **SK/EK-Gerüst**; ODA fehlt |
-| Quellen | `4_sources/` Extrakte | Struktur angelegt, Inhalte backlog |
+| Quellen | `4_sources/` Extrakte | DGUV P0 **reviewed**; Behörden/Praxis backlog |
 
 ---
 
@@ -54,7 +54,7 @@ Die Knowledge-Basis für Veranstaltungen soll **vollständig genug** sein, damit
 | B1 | `6_products/sicherheitskonzept/purpose.md` + `content_blocks.md` | SK-Gerüst | **done** 2026-06-01 |
 | B2 | `6_products/einsatzkonzept/purpose.md` + `content_blocks.md` | EK-Gerüst | **done** 2026-06-01 |
 | B3 | Kette SK→GB→EK in `6_products/README.md` präzisieren | Docs | **done** 2026-06-01 |
-| B4 | `6_products/oda/purpose.md` + `content_blocks.md` | ODA-Gerüst | offen |
+| B4 | `6_products/oda/purpose.md` + `content_blocks.md` | ODA-Gerüst | **done** 2026-06-02 |
 
 **Exit-Kriterium Phase B (SK/EK):** SK/EC-Module referenzierbar in Gap-Matrix — **erreicht für SK/EK.** ODA optional später.
 
@@ -62,7 +62,7 @@ Die Knowledge-Basis für Veranstaltungen soll **vollständig genug** sein, damit
 
 | # | Quelle (Staging) | Extrakt-Ziel | Priorität |
 |---|------------------|--------------|-----------|
-| C1 | DGUV Crowd/Veranstaltung | `4_sources/dguv/crowd_veranstaltung.md` | **draft** — PDF-Abgleich offen |
+| C1 | DGUV 215-310 Crowd/Org/Unterweisung | `4_sources/dguv/*.md` | **reviewed** — Blueprint-Einbindung siehe `docs/MILESTONE_PLAN_PARALLEL_AGENTS.md` M1 |
 | C2 | Behörde Großevent | `4_sources/behoerden/grossevent_abstimmung.md` | P1 |
 | C3 | Praxis SK-Veranstaltung | `4_sources/praxisleitfaeden/sk_veranstaltung_geruest.md` | P0 |
 | C4 | VA Kap. 7 DOCX → Extrakt | `4_sources/praxisleitfaeden/va_erstellung_hinweise.md` | P2 (ODA) |
@@ -117,6 +117,8 @@ sdls:
 
 ## Nächster konkreter Schritt (empfohlen)
 
-1. `subtypes/fussball.md` als P0-Entwurf (nach `kampfsport.md`-Vorlage)  
+Siehe **`docs/MILESTONE_PLAN_PARALLEL_AGENTS.md`** (M0 Infra → M1 GB+DGUV; parallel K1 P1-Subtypen).
+
+1. ~~`subtypes/fussball.md`~~ — erledigt  
 2. Parallel: `4_sources/dguv/crowd_veranstaltung.md` als **draft** aus erster DGUV-Quelle in `inputs/`  
 3. `6_products/sicherheitskonzept/purpose.md` — SK-Gerüst (Phase B1)
