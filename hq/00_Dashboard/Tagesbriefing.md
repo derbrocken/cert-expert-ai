@@ -1,6 +1,6 @@
 # Tagesbriefing — Cert-Expert HQ
 
-**Generiert:** 2026-06-03 19:50 (lokal)  
+**Generiert:** 2026-06-03 20:04 (lokal)  
 **Heute:** 03.06.2026 · **Morgen:** 04.06.2026  
 **Obsidian:** Leseansicht (siehe `WIE_NUTZEN.md`) — Buch-Symbol oder **Cmd+E**.
 
