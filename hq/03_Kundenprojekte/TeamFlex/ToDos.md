@@ -127,7 +127,7 @@
 - **Wartet auf:** TBD
 - **Due date:** 2026-06-11
 - **Audit impact:** Leistungsorte / Scope-Dokumentation für Audit offen
-- **S0 relation:** S0-07
+- **S0 relation:** S0-02, S0-07
 - **Evidence ID:** EV-TF-006
 
 ## TODO-20260603-tf09
@@ -147,7 +147,7 @@
 - **Wartet auf:** TBD
 - **Due date:** 2026-06-11
 - **Audit impact:** Personalakten / Schulungsnachweise — Stichprobe Audit-Checkliste
-- **S0 relation:** S0-07
+- **S0 relation:** S0-07, S0-08
 - **Evidence ID:** EV-TF-007
 
 ## TODO-20260603-tf10
