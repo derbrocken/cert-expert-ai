@@ -25,3 +25,8 @@ knowledge/*.canvas
 .venv/
 .venv-pdf/
 venv/
+
+__pycache__/
+*.pyc
+
+.obsidian/
