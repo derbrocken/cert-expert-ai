@@ -46,10 +46,11 @@
     },
     {
       "slug": "LC_Security",
-      "display_name": "LC Security",
-      "aliases": ["lc security", "lc"],
+      "display_name": "ELC Security and Service",
+      "aliases": ["elc security and service", "elc", "el-c", "lc security", "lc"],
       "active": true,
-      "bot_project_slug": "lc_security"
+      "bot_project_slug": "lc_security",
+      "note": "Ordner LC_Security — Kundenname ELC, nicht LC"
     }
   ],
   "internal_events": [

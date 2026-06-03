@@ -12,7 +12,7 @@ Visuelle Einstiegsseite — springe in Status (1 Seite) statt in Roh-To-dos.
 | **Schutzritter** | 🔴 | — | 8 | [Status](../03_Kundenprojekte/Schutzritter/Status.md) · [Audit](../03_Kundenprojekte/Schutzritter/Audit_2026.md) |
 | **Checkpoint Regional** | 🟡 | — | 4 | [Status](../03_Kundenprojekte/Checkpoint_Regional/Status.md) · [Audit](../03_Kundenprojekte/Checkpoint_Regional/Audit_2026.md) |
 | **ZT Security** | 🟡 | 08.07.2026 | 1 | [Status](../03_Kundenprojekte/ZT_Security/Status.md) · [Audit](../03_Kundenprojekte/ZT_Security/Audit_2026.md) |
-| **LC Security** | 🟡 | — | 4 | [Status](../03_Kundenprojekte/LC_Security/Status.md) · [Audit](../03_Kundenprojekte/LC_Security/Audit_2026.md) |
+| **ELC Security and Service** | 🟡 | — | 2 | [Status](../03_Kundenprojekte/LC_Security/Status.md) · [Audit](../03_Kundenprojekte/LC_Security/Audit_2026.md) |
 
 ---
 

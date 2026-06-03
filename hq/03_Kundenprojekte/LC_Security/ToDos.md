@@ -1,68 +1,41 @@
-# ToDos — LC Security
+# ToDos — ELC Security and Service
 
 **Projekt-Slug:** `LC_Security`  
+**Kunde:** **ELC Security and Service** (nicht „LC Security“)  
 **Letzte Aktualisierung:** 2026-06-03  
-**Audit:** 07.–08.07.2026 **verschoben** — Neutermin ausstehend
+**Phase:** Abweichungen eingereicht — warten Zahlung + Auditor-Bestätigung
 
 ---
 
 ## Offen
 
-## TODO-20260603-lc04
+## TODO-20260603-lc05
 
-- **Aufgabe:** Neuen Audittermin mit Auditor abstimmen (07.–08.07. entfällt)
+- **Aufgabe:** Letzte offene Zahlung von ELC Security and Service einfordern / Zahlungseingang prüfen
 - **Projekt:** LC_Security
-- **Kategorie:** Audit / Zertifizierung
-- **Verantwortlich:** (unassigned)
-- **Frist:** 
-- **Status:** open
-- **Priorität:** urgent
-- **Quelle:** manual
-- **Nächster Schritt:** Vorschlag Auditor entgegennehmen, in Status/Audit eintragen, Kunde/DEKRA informieren
-- **Erstellt:** 2026-06-03T18:00:00+02:00
-- **Rohinput:** Anruf Auditor — kann 7./8.7. nicht
-
-## TODO-20260603-lc01
-
-- **Aufgabe:** Hauptabweichung schließen
-- **Projekt:** LC_Security
-- **Kategorie:** Audit / Zertifizierung
-- **Verantwortlich:** (unassigned)
-- **Frist:** 
-- **Status:** open
-- **Priorität:** urgent
-- **Quelle:** manual
-- **Nächster Schritt:** NC-Maßnahmenplan mit Kunde
-- **Erstellt:** 2026-06-03T12:00:00+02:00
-- **Rohinput:** Operations Board Welle 2
-
-## TODO-20260603-lc02
-
-- **Aufgabe:** AZAV und Betreuungsgespräch durchführen / dokumentieren
-- **Projekt:** LC_Security
-- **Kategorie:** Kundenkommunikation
+- **Kategorie:** Forderung / Finance
 - **Verantwortlich:** (unassigned)
 - **Frist:** 
 - **Status:** open
 - **Priorität:** high
 - **Quelle:** manual
-- **Nächster Schritt:** AZAV-Angebot siehe Vertrieb; Gesprächsprotokoll
-- **Erstellt:** 2026-06-03T12:00:00+02:00
-- **Rohinput:** Operations Board + Master Dump — long-term support
+- **Nächster Schritt:** Abgleich mit ford03; Rechnung/Mahnung falls nötig
+- **Erstellt:** 2026-06-03T19:00:00+02:00
+- **Rohinput:** Kundenupdate — warte auf letzte Zahlung
 
-## TODO-20260603-lc03
+## TODO-20260603-lc06
 
-- **Aufgabe:** Sicherheitskonzepte (ggf. mehrere Objekte) — Stand aus Dump klären
+- **Aufgabe:** Bestätigung vom Auditor einholen, dass alle Unterlagen/Abweichungen vollständig eingereicht sind
 - **Projekt:** LC_Security
-- **Kategorie:** Einsatz / Operativ
+- **Kategorie:** Audit / Zertifizierung
 - **Verantwortlich:** (unassigned)
 - **Frist:** 
 - **Status:** open
-- **Priorität:** normal
+- **Priorität:** high
 - **Quelle:** manual
-- **Nächster Schritt:** Liste Konzepte + Lücken
-- **Erstellt:** 2026-06-03T12:00:00+02:00
-- **Rohinput:** Master Dump — security concepts
+- **Nächster Schritt:** Auditor schriftlich kontaktieren; Bestätigung in Dokumente_und_Nachweise ablegen
+- **Erstellt:** 2026-06-03T19:00:00+02:00
+- **Rohinput:** Kundenupdate — Bestätigung ausstehend
 
 ---
 
@@ -71,5 +44,29 @@
 ---
 
 ## Erledigt
+
+## TODO-20260603-lc04
+
+- **Aufgabe:** Neuen Audittermin mit Auditor abstimmen (07.–08.07. entfällt)
+- **Status:** cancelled
+- **Erledigt:** 2026-06-03 — Termin entfällt; Abschluss über eingereichte Abweichungen, kein Neutermin nötig
+
+## TODO-20260603-lc01
+
+- **Aufgabe:** Hauptabweichung schließen
+- **Status:** done
+- **Erledigt:** 2026-06-03 — geschlossen (alle Abweichungen erledigt)
+
+## TODO-20260603-lc02
+
+- **Aufgabe:** AZAV und Betreuungsgespräch durchführen / dokumentieren
+- **Status:** done
+- **Erledigt:** 2026-06-03 — im Kontext Service/Zusatzauftrag abgeschlossen (Details nach Bedarf nachdokumentieren)
+
+## TODO-20260603-lc03
+
+- **Aufgabe:** Sicherheitskonzepte (ggf. mehrere Objekte) — Stand aus Dump klären
+- **Status:** done
+- **Erledigt:** 2026-06-03 — nicht mehr blockierend; Fokus Abschluss Abweichungen
 
 ---

@@ -1,6 +1,6 @@
 # Tagesbriefing — Cert-Expert HQ
 
-**Generiert:** 2026-06-03 17:39 (lokal)  
+**Generiert:** 2026-06-03 17:41 (lokal)  
 **Obsidian:** Leseansicht (siehe `WIE_NUTZEN.md` § Leseansicht) — nicht Bearbeiten-Modus.
 
 > **Dein Einstieg:** Nur diese Datei morgens öffnen.
@@ -21,8 +21,6 @@
 
 - **Checkpoint_Regional** — Vollständigen Upload der Unternehmensunterlagen (Portal/DEKRA) — wartet auf vollständige Unterlagen _(Frist: —)_
 - **Checkpoint_Regional** — DEKRA-Angebot prüfen und **vom Kunden unterschreiben lassen** _(Frist: —)_
-- **LC_Security** — Neuen Audittermin mit Auditor abstimmen (07.–08.07. entfällt) _(Frist: —)_
-- **LC_Security** — Hauptabweichung schließen _(Frist: —)_
 - **Schutzritter** — VK-Datei uploaden — überfällig, Voraussetzung für nächsten Prozessschritt _(Frist: 2026-06-04)_
 - **Schutzritter** — Eingang erste Unternehmensformulare prüfen (Kunde-Upload morgen) _(Frist: 2026-06-05)_
 - **Schutzritter** — Mitarbeiterformulare an Schutzritter senden (nach Eingang Unternehmensunterlagen) _(Frist: 2026-06-07)_
@@ -85,7 +83,7 @@
 | 🔴 | **Schutzritter** | — | 8 | [Status](../03_Kundenprojekte/Schutzritter/Status.md) |
 | 🟡 | **Checkpoint Regional** | — | 4 | [Status](../03_Kundenprojekte/Checkpoint_Regional/Status.md) |
 | 🟡 | **ZT Security** | 08.07.2026 | 1 | [Status](../03_Kundenprojekte/ZT_Security/Status.md) |
-| 🟡 | **LC Security** | — | 4 | [Status](../03_Kundenprojekte/LC_Security/Status.md) |
+| 🟡 | **ELC Security and Service** | — | 2 | [Status](../03_Kundenprojekte/LC_Security/Status.md) |
 
 ---
 
@@ -94,7 +92,7 @@
 ### Forderungen (3 offen)
 - AFAS — offene Rechnung ISO 14001 Projekt nachverfolgen und begleichen
 - Faust Security — 1.500 € offen einfordern
-- LC Security — offenen Betrag beim nächsten Treffen klären
+- ELC Security and Service — **letzte offene Zahlung** einfordern / Zahlungseingang prüfen
 
 ### Vertrieb (5 offen)
 - TeamFlex — Folgeangebot erstellen und versenden

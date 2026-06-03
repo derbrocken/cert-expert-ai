@@ -32,14 +32,14 @@
 
 ## TODO-20260603-ford03
 
-- **Aufgabe:** LC Security — offenen Betrag beim nächsten Treffen klären
+- **Aufgabe:** ELC Security and Service — **letzte offene Zahlung** einfordern / Zahlungseingang prüfen
 - **Projekt:** LC_Security
 - **Kategorie:** Forderung / Finance
 - **Verantwortlich:** (unassigned)
 - **Frist:** 
 - **Status:** open
-- **Priorität:** normal
+- **Priorität:** high
 - **Quelle:** manual
-- **Nächster Schritt:** Betrag und Termin im Kundengespräch festhalten
+- **Nächster Schritt:** Mit lc05 abstimmen; nach Zahlung Projekt ggf. auf 🟢 setzen
 - **Erstellt:** 2026-06-03T12:00:00+02:00
 - **Rohinput:** Operations Board Juni 2026

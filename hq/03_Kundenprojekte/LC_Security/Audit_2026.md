@@ -1,20 +1,27 @@
-# Audit 2026 — LC Security
+# Audit 2026 — ELC Security and Service
 
 ## Termin
 
 | Feld | Wert |
 |------|------|
 | **Geplant** | 07.07.2026 – 08.07.2026 |
-| **Status** | **verschoben** — Auditor kann Termin nicht halten |
-| **Neutermin** | *(ausstehend — Vorschlag Auditor)* |
+| **Status** | **abgesagt** durch Auditor |
+| **Ersatztermin** | nicht erforderlich (Abweichungen bearbeitet und eingereicht) |
 
-## Vorbereitung (unabhängig vom Termin)
+## Abweichungen / Nachweise
 
-| Thema | Status | To-do |
-|--------|--------|-------|
-| Hauptabweichung schließen | offen | lc01 |
-| AZAV / Betreuung | offen | lc02 |
-| Sicherheitskonzepte | offen | lc03 |
-| Neutermin mit Auditor / DEKRA | offen | lc04 |
+| Thema | Status |
+|--------|--------|
+| Hauptabweichung | ✅ geschlossen |
+| Weitere Abweichungen | ✅ **alle geschlossen** |
+| Letzte Abweichung (Service / Zusatzauftrag) | ✅ **versendet** |
+| Bestätigung Auditor „alles eingereicht“ | ⏳ **ausstehend** |
 
-*Detail-Checkliste nach Festlegung neuem Termin.*
+## Offen (Abschluss)
+
+- [ ] Letzte Zahlung (siehe Forderungen ford03)
+- [ ] Schriftliche Bestätigung Auditor
+
+## Verknüpfung
+
+- [`Status.md`](Status.md) · [`ToDos.md`](ToDos.md) · [`Kommunikation.md`](Kommunikation.md)
