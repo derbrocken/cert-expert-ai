@@ -23,6 +23,12 @@
 - **Nächster Schritt:** Upload durchführen und im System/Portal bestätigen; Datum dokumentieren
 - **Erstellt:** 2026-06-03T18:00:00+02:00
 - **Rohinput:** Kundengespräch 03.06.2026 — war vor ~2 Wochen fällig
+- **Owner:** TBD
+- **Wartet auf:** Intern (Cert-Expert)
+- **Due date:** 2026-06-04
+- **Audit impact:** VK-Datei fehlt — Blocker für Folgeschritte im kritischen Pfad
+- **S0 relation:** S0-03, S0-05
+- **Evidence ID:** EV-SR-001
 
 ## TODO-20260603-sr07
 
@@ -37,6 +43,12 @@
 - **Nächster Schritt:** Upload des Kunden kontrollieren, Vollständigkeit Unternehmensunterlagen
 - **Erstellt:** 2026-06-03T18:00:00+02:00
 - **Rohinput:** Kundengespräch 03.06.2026 — Upload morgen vereinbart
+- **Owner:** TBD
+- **Wartet auf:** Kunde
+- **Due date:** 2026-06-05
+- **Audit impact:** Unternehmensformulare — Basisnachweis vor MA-Formularversand
+- **S0 relation:** S0-03, S0-06
+- **Evidence ID:** EV-SR-002
 
 ## TODO-20260603-sr08
 
@@ -51,6 +63,12 @@
 - **Nächster Schritt:** Formularpaket versenden, Frist und Rücklaufdatum kommunizieren
 - **Erstellt:** 2026-06-03T18:00:00+02:00
 - **Rohinput:** Kundengespräch 03.06.2026 — nächster Schritt laut Gespräch
+- **Owner:** TBD
+- **Wartet auf:** Intern (Cert-Expert) — nach Eingang Unternehmensunterlagen (sr07)
+- **Due date:** 2026-06-07
+- **Audit impact:** Mitarbeiterformulare — Voraussetzung Personalnachweis vor Audit
+- **S0 relation:** S0-03, S0-06
+- **Evidence ID:** EV-SR-003
 
 ## TODO-20260603-sr04
 
@@ -65,6 +83,12 @@
 - **Nächster Schritt:** Nach sr08 Rücklauf; Checkliste DIN 77200-1 Personal
 - **Erstellt:** 2026-06-03T12:00:00+02:00
 - **Rohinput:** Operations Board + Kundengespräch 03.06.2026
+- **Owner:** TBD
+- **Wartet auf:** Kunde — nach Rücklauf MA-Formulare (sr08)
+- **Due date:** 2026-06-20
+- **Audit impact:** Personalakten / Unterlagen — Stichprobe Audit-Checkliste
+- **S0 relation:** S0-07, S0-08
+- **Evidence ID:** EV-SR-004
 
 ## TODO-20260603-sr05
 
@@ -79,6 +103,12 @@
 - **Nächster Schritt:** Checkliste an kritischen Pfad (VK, Formulare, Personal) koppeln
 - **Erstellt:** 2026-06-03T12:00:00+02:00
 - **Rohinput:** Master Dump — Audit 26.06.2026
+- **Owner:** TBD
+- **Wartet auf:** TBD
+- **Due date:** 2026-06-24
+- **Audit impact:** Audit-Checkliste ISO 9001 + DIN 77200-1/2 — Gesamtabdeckung vor 26.06.
+- **S0 relation:** S0-01
+- **Evidence ID:** EV-SR-005
 
 ## TODO-20260603-sr01
 

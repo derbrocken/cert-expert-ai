@@ -21,6 +21,12 @@
 - **Nächster Schritt:** NC-Liste in Audit-Datei eintragen; mit Kunde Maßnahmenplan je Punkt
 - **Erstellt:** 2026-06-03T12:00:00+02:00
 - **Rohinput:** Master Dump — 5 major NCs
+- **Owner:** TBD
+- **Wartet auf:** Kunde
+- **Due date:** 2026-06-28
+- **Audit impact:** 5 Hauptabweichungen ISO 45001 — Schließung bis Frist 30.06.2026
+- **S0 relation:** S0-03, S0-05
+- **Evidence ID:** EV-SG-001
 
 ## TODO-20260603-sg02
 
@@ -35,6 +41,12 @@
 - **Nächster Schritt:** Nach Haupt-NCs priorisieren
 - **Erstellt:** 2026-06-03T12:00:00+02:00
 - **Rohinput:** Master Dump — 2 minor NCs
+- **Owner:** TBD
+- **Wartet auf:** Kunde
+- **Due date:** 2026-06-28
+- **Audit impact:** 2 Nebenabweichungen (ISO 45001 7.2; ISO 14001 10.3) — Schließung bis 30.06.2026
+- **S0 relation:** S0-03
+- **Evidence ID:** EV-SG-002
 
 ## TODO-20260603-sg03
 
@@ -49,6 +61,12 @@
 - **Nächster Schritt:** Themen aus Master Dump in Maßnahmenplan mappen
 - **Erstellt:** 2026-06-03T12:00:00+02:00
 - **Rohinput:** Master Dump — maternity, worker participation, FASI, physician, supervisor
+- **Owner:** TBD
+- **Wartet auf:** Kunde — Koordination mit M. Marquardt (laut To-do)
+- **Due date:** 2026-06-25
+- **Audit impact:** Ü1-Formulare je NC — Nachweisdokumentation für Verifizierung
+- **S0 relation:** S0-03, S0-08
+- **Evidence ID:** EV-SG-003
 
 ---
 

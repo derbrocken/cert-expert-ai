@@ -21,6 +21,12 @@
 - **Nächster Schritt:** legal register aus Dump — Stand prüfen
 - **Erstellt:** 2026-06-03T12:00:00+02:00
 - **Rohinput:** Operations Board + Master Dump
+- **Owner:** TBD
+- **Wartet auf:** TBD
+- **Due date:** 2026-06-14
+- **Audit impact:** Rechtskataster — Prüfpunkt Phase 1 ISO 9001 / ISO 14001
+- **S0 relation:** S0-03, S0-05
+- **Evidence ID:** EV-WS-001
 
 ## TODO-20260603-ws04
 
@@ -35,6 +41,12 @@
 - **Nächster Schritt:** KPI-Liste mit ws05 abstimmen
 - **Erstellt:** 2026-06-03T12:00:00+02:00
 - **Rohinput:** Operations Board
+- **Owner:** TBD
+- **Wartet auf:** TBD
+- **Due date:** 2026-06-14
+- **Audit impact:** Umweltkennzahlen ISO 14001 — Nachweis vor Audit 16.06.
+- **S0 relation:** S0-03
+- **Evidence ID:** EV-WS-002
 
 ## TODO-20260603-ws05
 
@@ -49,6 +61,12 @@
 - **Nächster Schritt:** Managementbewertung (ws06) vorbereiten
 - **Erstellt:** 2026-06-03T12:00:00+02:00
 - **Rohinput:** Operations Board
+- **Owner:** TBD
+- **Wartet auf:** TBD
+- **Due date:** 2026-06-14
+- **Audit impact:** KPI-Liste ISO 14001 — Voraussetzung Managementbewertung / Audit
+- **S0 relation:** S0-03
+- **Evidence ID:** EV-WS-003
 
 ## TODO-20260603-ws06
 
@@ -63,6 +81,12 @@
 - **Nächster Schritt:** Termin mit Kunde, Protokoll
 - **Erstellt:** 2026-06-03T12:00:00+02:00
 - **Rohinput:** Operations Board + Master Dump
+- **Owner:** TBD
+- **Wartet auf:** TBD
+- **Due date:** 2026-06-15
+- **Audit impact:** Managementbewertung — Pflichtnachweis Phase 1 Audit
+- **S0 relation:** S0-03, S0-08
+- **Evidence ID:** EV-WS-004
 
 ## TODO-20260603-ws07
 
@@ -77,6 +101,12 @@
 - **Nächster Schritt:** Checkliste alle Normen
 - **Erstellt:** 2026-06-03T12:00:00+02:00
 - **Rohinput:** Master Dump — ISO 9001, ISO 14001, DIN 77200
+- **Owner:** TBD
+- **Wartet auf:** TBD
+- **Due date:** 2026-06-15
+- **Audit impact:** Gesamt-Auditvorbereitung Phase 1 (16.06.) und Phase 2 (17.07.)
+- **S0 relation:** S0-01, S0-05
+- **Evidence ID:** EV-WS-005
 
 ## TODO-20260603-ws08
 

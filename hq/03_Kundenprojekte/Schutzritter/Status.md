@@ -27,6 +27,24 @@
 4. Personalakten / Unterlagen vervollständigen  
 5. SK/EK Referenzprojekt (parallel nach Bedarf)
 
+## DFSS / Pilot Measurement
+
+<!-- P-ID provisional: no formal P01–P05 registry in HQ yet -->
+
+DFSS Project ID: P01  
+DFSS Relevance: Pilot / Baseline  
+Project type: Audit-Vorbereitung (ISO 9001, DIN 77200-1/2)  
+Norms: ISO 9001, DIN 77200-1, DIN 77200-2  
+SDLs: TBD  
+Service model: TBD  
+Project start: TBD  
+Audit date: 2026-06-26  
+Readiness: NOT READY — VK-Upload überfällig; Formular-/Personalnachweis-Kette offen (see `Audit_2026.md`)  
+Main blocker: VK-Datei noch nicht hochgeladen; Mitarbeiterformulare noch nicht versendet  
+S0 blocker present: Yes (inferred from open audit-critical items — see ToDos EV-SR-*)  
+Next critical action: VK-Datei uploaden (ASAP; Frist To-do 04.06.2026)  
+Evidence IDs: EV-SR-001, EV-SR-002, EV-SR-003, EV-SR-004, EV-SR-005
+
 ## Verknüpfung
 
 - To-dos: [`ToDos.md`](ToDos.md)

@@ -29,6 +29,24 @@
 | **25.06.2026** | Querschnittsthemen dokumentiert (sg03) |
 | **30.06.2026** | **Frist** — Nachweis Schließung / Freigabe |
 
+## DFSS / Pilot Measurement
+
+<!-- P-ID provisional: no formal P01–P05 registry in HQ yet -->
+
+DFSS Project ID: P05  
+DFSS Relevance: Pilot / Baseline (NC closure)  
+Project type: Schließung Haupt- und Nebenabweichungen / NC closure  
+Norms: ISO 45001, ISO 14001  
+SDLs: TBD  
+Service model: TBD  
+Project start: TBD  
+Audit date: 2026-05-28 (Feststellung); Schließfrist 2026-06-30  
+Readiness: NOT READY — 5 Haupt- + 2 Nebenabweichungen offen (see `Audit_2026.md`)  
+Main blocker: NC-Schließung bis 30.06.; Querschnittsthemen (Mutterschutz, Beteiligung, FASI, Arzt, Führungskräfte) in Bearbeitung  
+S0 blocker present: Yes (inferred from open audit-critical items — see ToDos EV-SG-*)  
+Next critical action: Hauptabweichungen M1–M5 schließen — Maßnahmenplan je Punkt (Frist To-do 28.06.2026)  
+Evidence IDs: EV-SG-001, EV-SG-002, EV-SG-003
+
 ## Verknüpfung
 
 - To-dos: [`ToDos.md`](ToDos.md)
