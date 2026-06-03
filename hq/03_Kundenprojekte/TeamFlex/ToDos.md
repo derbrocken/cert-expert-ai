@@ -1,7 +1,7 @@
 # ToDos — TeamFlex
 
 **Projekt-Slug:** `TeamFlex`  
-**Letzte Aktualisierung:** 2026-06-03 (nach Kundengespräch)  
+**Letzte Aktualisierung:** 2026-06-03 (Duplikate tf11/tf12/tf13 konsolidiert)
 **Audit:** **12.06.2026** DIN 77200 (Dr. Teubart) — offiziell in Unterlagen **06.06.** — **Welle 1 kritisch**
 
 ---
@@ -18,9 +18,10 @@
 - **Status:** open
 - **Priorität:** urgent
 - **Quelle:** manual
-- **Nächster Schritt:** Schriftliche Bestätigung / Vertragsnachtrag
+- **Nächster Schritt:** Kunde anrufen, schriftliche Bestätigung / Vertragsnachtrag (konsolidiert aus tf13)
 - **Erstellt:** 2026-06-03T12:00:00+02:00
-- **Rohinput:** Operations Board Welle 1
+- **Rohinput:** Operations Board Welle 1; merged: tf13 „heute anrufen“
+- **Hinweis:** Haupt-To-do für DIN-Zusatzbeauftragung — Duplikat tf13 → Erledigt
 
 ## TODO-20260603-tf04
 
@@ -46,9 +47,10 @@
 - **Status:** open
 - **Priorität:** urgent
 - **Quelle:** manual
-- **Nächster Schritt:** Schriftlich / Portal nachfassen
+- **Nächster Schritt:** Schriftlich / Portal nachfassen (Frist 11.06.)
 - **Erstellt:** 2026-06-03T12:00:00+02:00
 - **Rohinput:** Operations Board — Wachbuchauszug
+- **Hinweis:** Haupt-To-do Wachbuch — Duplikate tf11, tf12 → Erledigt
 
 ## TODO-20260603-tf06
 
@@ -139,5 +141,35 @@
 - **Aufgabe:** Subunternehmer-Thematik klären (Nachweise, Verträge)
 - **Status:** done
 - **Erledigt:** 2026-06-03 — Freigabe / Zusage Subunternehmer vom Kunden erhalten
+
+## TODO-20260603-tf11
+
+- **Aufgabe:** Wachbuchauszug nachfassen bis 11.06.
+- **Projekt:** TeamFlex
+- **Status:** cancelled
+- **Merged in:** TODO-20260603-tf05
+- **Grund:** Duplikat (HQ Assistant 2026-06-03) — Inhalt in tf05
+- **Rohinput:** todo TeamFlex: Wachbuchauszug nachfassen bis 11.06. dringend
+- **Erstellt:** 2026-06-03T18:11:04+02:00
+
+## TODO-20260603-tf12
+
+- **Aufgabe:** Wachbuchauszug nachfassen
+- **Projekt:** TeamFlex
+- **Status:** cancelled
+- **Merged in:** TODO-20260603-tf05
+- **Grund:** Duplikat (HQ Assistant 2026-06-03) — Inhalt in tf05
+- **Rohinput:** Wachbuchauszug nachfassen
+- **Erstellt:** 2026-06-03T18:14:22+02:00
+
+## TODO-20260603-tf13
+
+- **Aufgabe:** Kunde wegen Zusatzbeauftragung DIN 77200 heute anrufen
+- **Projekt:** TeamFlex
+- **Status:** cancelled
+- **Merged in:** TODO-20260603-tf02
+- **Grund:** Duplikat (HQ Assistant 2026-06-03) — Inhalt in tf02
+- **Rohinput:** todo TeamFlex: Kunde wegen Zusatzbeauftragung DIN 77200 heute anrufen urgent
+- **Erstellt:** 2026-06-03T18:22:05+02:00
 
 ---
