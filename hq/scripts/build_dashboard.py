@@ -6,7 +6,7 @@ from __future__ import annotations
 import json
 import re
 from dataclasses import dataclass
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
 from pathlib import Path
 
 HQ = Path(__file__).resolve().parents[1]
@@ -357,6 +357,8 @@ def _build_operations_snapshot(
         "## Meta",
         "",
         f"- snapshot_at: `{ts}`",
+        f"- reference_date_heute: `{today.isoformat()}` ({today.strftime('%d.%m.%Y')})",
+        f"- reference_date_morgen: `{(today + timedelta(days=1)).isoformat()}`",
         f"- active_customers: {len(rows)}",
         f"- red_ampel: {len(red)}",
         f"- audits_next_{SNAPSHOT_AUDIT_DAYS}d: {len(audits_unique)}",
@@ -552,19 +554,21 @@ def _audit_horizon(
 
 
 def _briefing_header(today: date, *, variant: str) -> list[str]:
+    tomorrow = today + timedelta(days=1)
     lines = [
         f"# Tagesbriefing{' — Vollständig' if variant == 'full' else ''} — Cert-Expert HQ",
         "",
         f"**Generiert:** {today.isoformat()} {datetime.now().strftime('%H:%M')} (lokal)  ",
+        f"**Heute:** {today.strftime('%d.%m.%Y')} · **Morgen:** {tomorrow.strftime('%d.%m.%Y')}  ",
         "**Obsidian:** Leseansicht (siehe `WIE_NUTZEN.md`) — Buch-Symbol oder **Cmd+E**.",
         "",
     ]
     if variant == "compact":
         lines.extend(
             [
-                "> **Morgens:** Nur diese Seite. Welle-1-Details → Status/ToDos.",
+                "> **Morgens:** Nur diese Seite. Portfolio: [operations_snapshot.md](operations_snapshot.md)",
                 "> **Wöchentlich / Planung:** [Tagesbriefing_VOLL.md](Tagesbriefing_VOLL.md)",
-                "> **Master Dump:** Referenz & Restliste — [MIGRATION_STATUS.md](../01_Master_Dump/MIGRATION_STATUS.md)",
+                "> **Master Dump:** [MIGRATION_STATUS.md](../01_Master_Dump/MIGRATION_STATUS.md)",
                 "",
             ]
         )
