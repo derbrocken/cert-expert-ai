@@ -4,8 +4,9 @@ DIN 77200 / Cert-Expert — **Dokument-Bots** (GB, SK, EK) und **Knowledge-Layer
 
 ## Neuer Chat?
 
-1. [`docs/CHAT_HANDOFF.md`](docs/CHAT_HANDOFF.md)
-2. [`hq/README.md`](hq/README.md) — Organisation & To-dos
+1. **[`docs/CHAT_HANDOFF.md`](docs/CHAT_HANDOFF.md)** — Übergabe (Copy-Paste Block in §0)
+2. [`docs/ARCHITECTURE_INDEX.md`](docs/ARCHITECTURE_INDEX.md)
+3. [`hq/README.md`](hq/README.md) — Organisation & To-dos
 
 ## Organisation (HQ)
 
