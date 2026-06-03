@@ -1,31 +1,32 @@
 {
   "blueprint_id": "sk_event_kampfsport",
   "input_data": {
-    "event_name": "K1-Kampfturnier Berlin Open 2026",
+    "event_name": "K1 Amateur Kampfsport Event",
     "event_type": "Kampfsportveranstaltung",
     "combat_sports_type": "K1",
     "event_date": "2026-06-14",
     "event_start_time": "17:00",
     "event_end_time": "23:30",
-    "event_location": "Sporthalle Musterstraße 12, 10115 Berlin",
+    "event_location": "Sporthalle Reinickendorf, Eichborndamm 72, 13403 Berlin-Reinickendorf",
     "outdoor_area": false,
-    "expected_attendees": 350,
-    "security_staff_count": 6,
-    "venue_capacity": 500,
+    "expected_attendees": 100,
+    "security_staff_count": 4,
+    "venue_capacity": 150,
     "venue_exits": 4,
-    "alcohol_served": true,
-    "medical_service": "",
+    "alcohol_served": false,
+    "medical_service": "Sanitätsdienst Veranstalter (noch zu beauftragen); Ringarzt nach Kampfsportordnung",
     "evacuation_plan_available": false,
     "official_requirements": "",
     "prior_incidents": "",
     "special_risks": [
-      "Erhöhtes Aggressionspotenzial bei intensiven Kämpfen",
-      "Alkoholkonsum im Außenbereich des Eingangs möglich"
+      "Amateur-Turnier mit begrenzter Infrastruktur",
+      "Emotionale Reaktionen bei K.o. oder strittigen Wertungen",
+      "Engpassrisiko bei Einlass bei ca. 100 Zuschauern"
     ],
     "client_name": "Sportclub Musterhausen e.V.",
     "created_by": "M. Mahra",
     "approved_by": "",
     "doc_version": "1.0",
-    "notes": "SK-Pilot — Cert-Expert als planender AN"
+    "notes": "K1 Amateur-Event, ca. 100 Zuschauer, Berlin-Reinickendorf. Konkrete Halle/Adresse und Sanitätsdienst noch zu klären."
   }
 }

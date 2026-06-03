@@ -1,0 +1,63 @@
+{
+  "version": "1.0",
+  "updated": "2026-06-02",
+  "projects": [
+    {
+      "slug": "TeamFlex",
+      "display_name": "TeamFlex",
+      "aliases": ["teamflex", "team flex"],
+      "active": true,
+      "bot_project_slug": "teamflex"
+    },
+    {
+      "slug": "Wolf_Street",
+      "display_name": "Wolf Street",
+      "aliases": ["wolf street", "wolfstreet"],
+      "active": true,
+      "bot_project_slug": "wolf_street"
+    },
+    {
+      "slug": "SecuGuard",
+      "display_name": "SecuGuard",
+      "aliases": ["secuguard"],
+      "active": true,
+      "bot_project_slug": "secuguard"
+    },
+    {
+      "slug": "Schutzritter",
+      "display_name": "Schutzritter",
+      "aliases": ["schutzritter"],
+      "active": true,
+      "bot_project_slug": "schutzritter"
+    },
+    {
+      "slug": "Checkpoint_Regional",
+      "display_name": "Checkpoint Regional",
+      "aliases": ["checkpoint regional", "checkpoint"],
+      "active": true,
+      "bot_project_slug": "checkpoint_regional"
+    },
+    {
+      "slug": "ZT_Security",
+      "display_name": "ZT Security",
+      "aliases": ["zt security", "zt"],
+      "active": true,
+      "bot_project_slug": "zt_security"
+    },
+    {
+      "slug": "LC_Security",
+      "display_name": "LC Security",
+      "aliases": ["lc security", "lc"],
+      "active": true,
+      "bot_project_slug": "lc_security"
+    }
+  ],
+  "internal_events": [
+    {
+      "slug": "k1_berlin_2026",
+      "display_name": "K1 Amateur Kampfsport Event Berlin",
+      "hq_customer": null,
+      "note": "Referenz-Event für SK/EK-Bots — siehe projects/k1_berlin_2026/"
+    }
+  ]
+}

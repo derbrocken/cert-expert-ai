@@ -1,7 +1,7 @@
 # Bot Context Map — Allowlists je Blueprint
 
 **Stand:** 2026-06-01  
-**Policy:** [`docs/CONTEXT_ASSEMBLY_POLICY.md`](../docs/CONTEXT_ASSEMBLY_POLICY.md)  
+**Policy:** [`docs/CONTEXT_ASSEMBLY_POLICY.md`](../docs/CONTEXT_ASSEMBLY_POLICY.md) · **Pflichten:** [`docs/BOT_PFLICHTREGELN.md`](../docs/BOT_PFLICHTREGELN.md)  
 **Pfad-Wahrheit (Code):** `shared/knowledge_paths.py`
 
 Diese Datei ist die **menschliche Übersicht**, welche Dateien Qwen pro Blueprint sieht.  
@@ -16,9 +16,11 @@ Maschinenlesbare Quelle: `knowledge/7_blueprint/{blueprint_id}.json` → `contex
 | `gb_event_kampfsport` | **active** (full) | `bots/01_gefaehrdungsbeurteilung/gb_bot.py` | `templates/gb_event_kampfsport.docx` |
 | `gb_event_kampfsport_lean` | **production default** | gleicher Bot, Blueprint-ID wählen | ~58k Zeichen + DGUV |
 | `gb_event_kampfsport_micro` | LM Studio / klein | — | ~40k Zeichen |
-| `sk_event_kampfsport` | **active (MVP)** | `bots/02_sicherheitskonzept/sk_bot.py` | GB-Template interim (~51k Prompt) |
+| `sk_event_kampfsport` | **active (MVP)** | `bots/02_sicherheitskonzept/sk_bot.py` | `templates/sk_event_kampfsport.docx` (~51k Prompt) |
 
-Geplant: `ec_event_*`, `oda_event_*`
+| `ec_event_kampfsport` | **active (MVP)** | `bots/03_einsatzkonzept/ek_bot.py` | `templates/ec_event_kampfsport.docx` |
+
+Geplant: `oda_event_*`
 
 ---
 
@@ -81,9 +83,12 @@ Prüfen: `python -m shared.blueprint_loader gb_event_kampfsport`
 
 ---
 
-## `sk_event_kampfsport` — SK-Allowlist (~21 Module)
+## `sk_event_kampfsport` — SK-Allowlist (~23 Module)
 
-Prüfen: `python3 scripts/context_size_report.py sk_event_kampfsport`  
+**Pflichten:** Angaben → [`inputs/PFLICHTANGABEN_SK.md`](../inputs/PFLICHTANGABEN_SK.md) · Form → `templates/sk_event_kampfsport.docx` · Lektüre → Blueprint `pflichten.lektuere`
+
+Prüfen: `python3 -m shared.pflichten_validator sk_event_kampfsport`  
+Größe: `python3 scripts/context_size_report.py sk_event_kampfsport`  
 Smoke: `python3 tests/smoke_sk_event_kampfsport.py`  
 Lauf: `python -m bots.02_sicherheitskonzept.sk_bot inputs/sk_event_kampfsport.json`
 
@@ -97,6 +102,28 @@ Lauf: `python -m bots.02_sicherheitskonzept.sk_bot inputs/sk_event_kampfsport.js
 | guides | 2× runtime_summaries |
 
 **Kein** `1_standards/`. Downstream: `gb_event_kampfsport_lean`, `ec_event_kampfsport`.
+
+---
+
+## `ec_event_kampfsport` — EK-Allowlist (MVP)
+
+**Pflichten:** Angaben → [`inputs/PFLICHTANGABEN_EC.md`](../inputs/PFLICHTANGABEN_EC.md) · Form → `templates/ec_event_kampfsport.docx` · Lektüre → Blueprint `pflichten.lektuere`
+
+Prüfen: `python3 -m shared.pflichten_validator ec_event_kampfsport`  
+Smoke: `python3 tests/smoke_ec_event_kampfsport.py`  
+Lauf: `python -m bots.03_einsatzkonzept.ek_bot inputs/ec_event_kampfsport.json`
+
+| Kategorie | Module |
+|-----------|--------|
+| standards | `dguv_v1`, `VStättVO` Überblicke (`2_regulations/`) |
+| sdls | `base.md`, `kampfsport.md` |
+| practice_sources | crowd, veranstaltungen_organisation, grossevent_abstimmung, kampfsport_small_hall_event, din77200-operativ-extrakt |
+| products | `einsatzkonzept/` |
+| rules | base + `ec_rules` + blueprint rules |
+| guides | `kampfsport_sdl_small_event_summary`, `ek_kraefteplanung_small_event` |
+| prompts | system_base, guards, ec_user_template |
+
+**Kein** `1_standards/`. Upstream: `sk_event_kampfsport`. Downstream: `oda_event_standard` (geplant).
 
 ---
 

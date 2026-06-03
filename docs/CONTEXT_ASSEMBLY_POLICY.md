@@ -60,10 +60,11 @@ Blueprint-JSON: `knowledge/7_blueprint/{blueprint_id}.json`
 Ein neuer Bot oder Blueprint ist nur zulässig, wenn:
 
 1. `context_modules` vollständig definiert und alle Pfade existieren (`python -m shared.blueprint_loader <id>`).
-2. Produktwissen unter `6_products/{produkt}/` mindestens `purpose.md` + `content_blocks.md` hat (SK/EK/ODA).
-3. SDL-`base.md` + relevanter `subtypes/*.md` reviewed (siehe Gap-Matrix).
-4. Smoke-Test für den Blueprint grün (ohne LLM).
-5. Eintrag in `knowledge/BOT_CONTEXT_MAP.md`.
+2. Block **`pflichten`** (Angaben, Form, Lektüre) gesetzt und grün: `python3 -m shared.pflichten_validator <id>`.
+3. Produktwissen unter `6_products/{produkt}/` mindestens `purpose.md` + `content_blocks.md` hat (SK/EK/ODA).
+4. SDL-`base.md` + relevanter `subtypes/*.md` reviewed (siehe Gap-Matrix).
+5. Smoke-Test für den Blueprint grün (ohne LLM).
+6. Eintrag in `knowledge/BOT_CONTEXT_MAP.md`.
 
 **Kein** paralleles Bauen von vier Bots mit leerem Wissen.
 
@@ -83,6 +84,7 @@ Empfohlen:
 
 ## Verwandte Dokumente
 
+- `docs/BOT_PFLICHTREGELN.md` — Pflichtangaben, Pflichtform, Pflichtlektüre je Blueprint
 - `docs/KNOWLEDGE_ARCHITECTURE.md` — Token-Budgets, Modulkategorien
 - `knowledge/BOT_CONTEXT_MAP.md` — Allowlist je aktivem Blueprint
 - `docs/BOT_KNOWLEDGE_GAP_REPORT.md` — SK/EK/ODA-Lücken

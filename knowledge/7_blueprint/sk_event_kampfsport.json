@@ -4,7 +4,7 @@
   "display_name":   "Sicherheitskonzept — Kampfsportveranstaltung",
   "version":        "1.0",
   "status":         "active",
-  "template_file":  "templates/gb_event_kampfsport.docx",
+  "template_file":  "templates/sk_event_kampfsport.docx",
   "modes":          ["standalone", "flow"],
 
   "product":           "sk",
@@ -54,15 +54,89 @@
 
   "conditional_modules": [],
 
+  "pflichten": {
+    "lektuere": {
+      "standards": [
+        "dguv_v1/overview.md",
+        "VStättVO/overview.md"
+      ],
+      "sdls": [
+        "veranstaltungsschutz/base.md",
+        "veranstaltungsschutz/subtypes/kampfsport.md"
+      ],
+      "practice_sources": [
+        "dguv/crowd_veranstaltung.md",
+        "dguv/veranstaltungen_organisation.md",
+        "praxisleitfaeden/sk_veranstaltung_geruest.md",
+        "behoerden/grossevent_abstimmung.md"
+      ],
+      "products": [
+        "sicherheitskonzept/purpose.md",
+        "sicherheitskonzept/content_blocks.md"
+      ],
+      "rules": [
+        "base/hallucination_boundaries.md",
+        "base/open_points_rules.md",
+        "base/citation_rules.md",
+        "base/output_format_rules.md",
+        "base/reviewer_handoff.md",
+        "products/sk_rules.md",
+        "blueprints/sk_event_kampfsport.md"
+      ],
+      "guides": [
+        "runtime_summaries/ingress_egress_k1_small_event_summary.md",
+        "runtime_summaries/kampfsport_sdl_small_event_summary.md"
+      ],
+      "prompts": [
+        "base/system_base.md",
+        "base/hallucination_guard.md",
+        "base/open_point_instruction.md",
+        "products/sk_user_prompt_template.md"
+      ]
+    },
+    "form": {
+      "template_file": "templates/sk_event_kampfsport.docx",
+      "ai_blocks": [
+        "SK_SCHUTZZIEL",
+        "SK_GEFAEHRDUNGSANALYSE",
+        "SK_SCHUTZMASSNAHMEN",
+        "SK_VERANTWORTLICHE",
+        "SK_KOMMUNIKATION",
+        "SK_OFFENE_PUNKTE"
+      ],
+      "input_checklist": "inputs/PFLICHTANGABEN_SK.md"
+    },
+    "angaben": {
+      "required": [
+        "event_name",
+        "event_type",
+        "combat_sports_type",
+        "event_date",
+        "event_location",
+        "expected_attendees",
+        "venue_capacity",
+        "venue_exits",
+        "medical_service",
+        "special_risks",
+        "client_name",
+        "created_by",
+        "doc_version"
+      ],
+      "checklist": "inputs/PFLICHTANGABEN_SK.md"
+    }
+  },
+
   "input_schema": {
     "required": [
       "event_name",
       "event_type",
+      "combat_sports_type",
       "event_date",
       "event_location",
       "expected_attendees",
       "venue_capacity",
       "venue_exits",
+      "medical_service",
       "special_risks",
       "client_name",
       "created_by",
@@ -77,10 +151,8 @@
       "alcohol_served",
       "outdoor_area",
       "prior_incidents",
-      "medical_service",
       "evacuation_plan_available",
-      "official_requirements",
-      "combat_sports_type"
+      "official_requirements"
     ],
     "field_labels": {
       "event_name":            "Veranstaltungsname",
