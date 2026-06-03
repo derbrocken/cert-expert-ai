@@ -11,6 +11,7 @@ parent_standard: DIN 77200-1
 knowledge_path: knowledge/1_standards/DIN 77200-1/Qualifikationsanforderungen.md
 source_documents:
   - inputs/raw_standards/din/DIN_77200_1_2022
+  - inputs/raw_standards/din/DIN_77200_2_2020
 norm_references:
   - "3.10"
   - "3.11"
@@ -24,6 +25,7 @@ norm_references:
   - "Anhang A"
 related_modules:
   - leadership_requirements
+  - requirements_profile
   - further_training
   - site_instruction
   - audit_evidence
@@ -137,7 +139,7 @@ Diese Ebene entspricht **Stufe A** (Grundanforderungen) und gilt **immer** — a
 - Stufen **B/C** werden **nur** relevant, wenn das Anforderungsprofil Tätigkeiten vorsieht, die **über einfache Ausführung nach schriftlicher Anweisung** hinausgehen — z. B. erweiterte Verantwortung, besondere Technik, besondere Kontrollaufgaben, eigenständige Entscheidungen oder **AG-Sonderanforderungen**.
 - Mindestqualifikation wird **auftragsspezifisch** auf Basis des Anforderungsprofils nach **Tabelle A.1** festgelegt.
 - AG und AN stimmen Tätigkeiten und Stufen ab; Profil ist Vertragsbestandteil und **jährlich** zu überprüfen (4.11).
-- Qualifikationsanforderungen können im Profil/Einsatzkonzept **individuell erhöht** werden (Anhang A) — nie stillschweigend unterhalb der vereinbarten Stufe.
+- Qualifikationsanforderungen können im Profil *(ggf. Einsatzkonzept bei Angebots-/komplexem Kontext)* **individuell erhöht** werden (Anhang A) — nie stillschweigend unterhalb der vereinbarten Stufe.
 
 **Qualifikationsstufen Anhang A (Tabelle A.1)**
 
@@ -264,14 +266,23 @@ Auditor-Traces: **Anforderungsprofil** → Tätigkeit → (nur bei Bedarf) Tabel
 
 ## Erforderliche Dokumente
 
+Dokumentenkette SK/EK: [[Erforderliche Dokumente]] — Profil bleibt zentrale **vertragliche** Qualifikationsgrundlage.
+
+| Kontext | SK | EK | Qualifikationsbezug |
+|---------|----|----|---------------------|
+| **77200-1 einfach** | normalerweise nicht | normalerweise nicht | Profil + Anhang A (77200-1) |
+| **77200-1 Veranstaltung** | kontextabhängig | kontextabhängig | Profil; SK/EK nur bei Projekt/AG-Vorgabe |
+| **77200-2 Kap. 5–8** | **erforderlich** (AG) | **erforderlich** (AN) | Anhang C 77200-2 **plus** ggf. Zusatzschulungen Kap. 5–8 |
+
 | Dokument | Zweck | Verknüpftes Modul |
 |----------|-------|-------------------|
-| Anforderungsprofil | Vertragliche Qualifikationsfestlegung | [[Erforderliche Dokumente]] |
+| Anforderungsprofil | Vertragliche Qualifikationsfestlegung (77200-1, 4.11; 77200-2 Anhang C) | [[Erforderliche Dokumente]] |
+| Sicherheitskonzept (SK) | **77200-2:** AG **muss** — Grundlage EK/Qualifikationsplanung | [[Erforderliche Dokumente]] |
 | Qualifikationsmatrix / Kompetenzregister | Operativer Abgleich Profil ↔ Personal | — |
 | Personalakte SMA | §34a, Stufen B/C, Ersthelfer, Intervention | [[Auditnachweise]] |
 | Einsatzplan / Schichtplan | Tätigkeitszuordnung am Prüftag | [[Führungsanforderungen]] |
 | Dienstanweisung | Tätigkeitsumfang je Objekt/SDL | [[Dienstanweisungen]] |
-| Einsatzkonzept | Qualifikationsplanung, ggf. Erhöhung | [[Erforderliche Dokumente]] |
+| Einsatzkonzept (EK) | **77200-2:** AN **muss** — Qualifikation/Kräfte (Kap. 4); Schulungen „auf Grundlage EK“ (z. B. ÖPV 6.4) | [[Erforderliche Dokumente]] |
 | Angebotsdokumentation | Qualifikationszusage an AG | [[Erforderliche Dokumente]] |
 | Weiterbildungsplan | Fortführung nach Erstqualifikation | [[Weiterbildung]] |
 | Subunternehmer-Qualifikationsliste | AG-benannte SMA inkl. Nachweise | [[Subunternehmer]] |
@@ -293,6 +304,7 @@ Auditor-Traces: **Anforderungsprofil** → Tätigkeit → (nur bei Bedarf) Tabel
 11. **Führungskraft** auf Schicht: Qualifikation nach 4.19.1 — getrennt von Einsatzkraft-Profil?
 12. Stimmen **Einsatzplan**, Profil und Qualifikationsmatrix am Stichprobentag überein?
 13. Wie stellen Sie Qualifikationsparität bei **Subunternehmer**-Personal sicher?
+14. Liegt **DIN 77200-2** vor — SK/EK des AG/AN und Anhang-C-Profile nachgewiesen?
 
 ---
 
@@ -300,13 +312,15 @@ Auditor-Traces: **Anforderungsprofil** → Tätigkeit → (nur bei Bedarf) Tabel
 
 | NC | Typischer Befund |
 |----|------------------|
-| NC-01 | SMA ohne §34a-Unterrichtung und ohne Sachkundeprüfung im Einsatz |
-| NC-02 | Sachkundeprüfung fehlt nach **6 Monaten** Beschäftigung |
-| NC-03 | Übergangsregelung 2020-10-13 ohne lückenlosen 3-Jahres-SDL-Nachweis |
-| NC-04 | Anforderungsprofil fehlt, veraltet oder nicht jährlich geprüft |
-| NC-05 | Profil fordert Stufe B/C — Personal nur Grundqualifikation (§34a/Stufe A) |
-| NC-06 | B/C-Zeugnis verlangt, obwohl Profil nur einfache Tätigkeiten (Stufe A) vorsieht — umgekehrt prüfen |
-| NC-07 | GSSK-/Fachkraft-Zeugnis abgelaufen, falscher Träger oder nicht zum Profil zuordenbar |
+| NC-01 | SMA ohne §34a-Unterrichtung| Modul                           | Beziehung                                        |
+| ------------------------------- | ------------------------------------------------ |
+| [[overview]]                    | Master-Index, Tabelle A.1-Index, CEKS-Governance |
+| [[Qualifikationsanforderungen]] | Stufen A/B/C, §34a — **nach** Profil             |
+| [[Dienstanweisungen]]           | DI aus Profil; Abstimmung/Freigabe getrennt      |
+| [[Weiterbildung]]               | 4.19.2 Bedarf aus Profil-Verwendung              |
+| [[Erforderliche Dokumente]]     | Dokumentenkette, SK/EK, Bot-Hub                  |
+| [[Auditnachweise]]              | Spur B, Personal-Stichprobe                      |
+| [[Führungsanforderungen]]       | Führung ≠ Profil — ergänzend 4.19.1              | falscher Träger oder nicht zum Profil zuordenbar |
 | NC-08 | 3-Jahres-Alternative mit Lücken oder ohne Sicherheitsgewerbezusammenhang |
 | NC-09 | Ersthelfer abgelaufen (> 2 Jahre) |
 | NC-10 | Interventionskraft ohne 24-h-Schulung oder < 5 dokumentierte Interventionen |
@@ -333,7 +347,7 @@ Auditor-Traces: **Anforderungsprofil** → Tätigkeit → (nur bei Bedarf) Tabel
 
 ## Cert-Expert-Anwendung
 
-**Routing:** Modul laden bei Blueprints/Audits zu **Anforderungsprofil, Personalqualifikation, §34a, Anhang A** — nach [[overview]] für Kontext. **Immer zuerst** das Profil klären.
+**Routing:** Modul laden bei Blueprints/Audits zu **Anforderungsprofil, Personalqualifikation, §34a, Anhang A** — **zuerst** [[Anforderungsprofile]] bei unklarem Profil, dann dieses Modul für Stufen/Nachweise.
 
 **Bot- / RAG-Pathway (Entscheidungslogik)**
 
@@ -367,7 +381,8 @@ Auditor-Traces: **Anforderungsprofil** → Tätigkeit → (nur bei Bedarf) Tabel
 | Produkt | Nutzung dieses Moduls |
 |---------|----------------------|
 | Anforderungsprofil | Kernreferenz Tabelle A.1; Stufen A/B/C je Tätigkeit |
-| Einsatzkonzept (EC) | Qualifikationsplanung, Ersthelfer, Interventionsbezug |
+| Sicherheitskonzept (SK) | **77200-2:** AG **muss** (Kap. 4) — Qualifikations-/Kräfteplanung | [[Erforderliche Dokumente]] |
+| Einsatzkonzept (EK) | **77200-2:** AN **muss** (Kap. 4); **77200-1:** kontextabhängig | [[Erforderliche Dokumente]] |
 | Dienstanweisung (ODA) | Tätigkeitsumfang — nicht Qualifikationsersatz |
 | Angebotsdokumentation | Qualifikationszusage und Profilreferenz |
 | Gefährdungsbeurteilung (GB) | Ergänzt AGS — ersetzt keine Qualifikationsmatrix |
@@ -375,6 +390,7 @@ Auditor-Traces: **Anforderungsprofil** → Tätigkeit → (nur bei Bedarf) Tabel
 **Bot- / RAG-Regeln**
 
 - **Nie** Stufe B/C aus SDL-Typ allein ableiten — nur aus Profil-Tätigkeit oder Projektinput.
+- **77200-1 vs. 77200-2:** Bei **77200-2** Anhang-C-Profile und Kap.-5–8-Sonderqualifikationen prüfen — **nicht** nur 77200-1-Matrix.
 - Keine erfundenen Prüfungsdaten, Zeugnistitel oder Stufen — Projektinput oder `[OFFENER PUNKT]`.
 - **Grundqualifikation** (§34a/Stufe A) und **Tätigkeitsqualifikation** (B/C) getrennt behandeln.
 - **§34a**, **Unterrichtung**, **Sachkundeprüfung**, **GSSK**, **Servicekraft**, **Fachkraft**, **Werkschutzfachkraft** terminologisch korrekt halten.
@@ -392,6 +408,8 @@ Auditor-Traces: **Anforderungsprofil** → Tätigkeit → (nur bei Bedarf) Tabel
 | Modul | Beziehung |
 |-------|-----------|
 | [[overview]] | Master-Index, Tabelle A.1-Index, CEKS-Governance |
+| [[Anforderungsprofile]] | 4.11, Anhang A/C — **Kernmodul** Profil-first |
+| Qualifikationssystem (`knowledge/1_standards/DIN 77200-1/qualifikationssystem/`) | Prüfbausteine + SDL-Freigabelogik — **nach** Profil, **vor** Personalakte/Einsatz |
 | [[Führungsanforderungen]] | 4.19.1 Führungsqualifikation und Führungs-Übergang 2020-10-13 |
 | [[Weiterbildung]] | 4.19.2 — nach Erstqualifikation, nicht §34a/Ersthelfer |
 | [[Dienstanweisungen]] | 4.12 — Tätigkeitsumfang; DI-Einweisung 4.14.5 |
@@ -424,7 +442,8 @@ SDL liefert den **Spaltenkontext** in Tabelle A.1 — die Stufe kommt aus dem **
 | [[stationärer_kontrolldienst]] | Kontrolltätigkeiten profilbezogen |
 | [[revierdienst]] / [[mobiler_kontrolldienst]] | Je Objekt/Tätigkeit im Profil |
 | [[interventionsdienst]] | Profil-Stufe + Interventions-Sondernachweis (4.19.1) |
-| [[veranstaltungsdienst]] | Veranstaltungstätigkeiten profilbezogen |
+| [[veranstaltungsdienst]] | **77200-1:** Profil-Stufe · **77200-2 Kap. 5:** nur bei besonderer Sicherheitsrelevanz (5.1); SK+EK dann **erforderlich** |
+| *77200-2: ÖPV / Objekt / Unterkunft* | Anhang C Tab. C.2–C.4; Zusatzschulungen Kap. 6–8 (z. B. ÖPV 40 UE, Unterkunft Anhang A) — **nicht** durch 4.19.2-UE ersetzen |
 
 SDL-Pfade: `knowledge/3_sdls/<sdl_slug>/`
 
@@ -441,6 +460,7 @@ SDL-Pfade: `knowledge/3_sdls/<sdl_slug>/`
 | Unterweisung | 4.14.5 |
 | Qualifikation | 4.19.1 — Ersthelfer, Intervention, Führung |
 | Qualifikationsstufen | Anhang A — A/B/C |
+| DIN 77200-2:2020-07 | Kap. 4 (SK/EK); Kap. 5–8 Zusatzqualifikationen (`source_documents`) |
 | Cert-Expert | [[overview]] — CEKS v1, Modultaxonomie |
 | Führungsqualifikation | [[Führungsanforderungen]] — 4.19.1 Absatz Führungskräfte |
 

@@ -1,6 +1,6 @@
 """
 shared/blueprint_loader.py — Lädt und validiert eine Blueprint-Konfiguration
-aus `knowledge/6_blueprint/{blueprint_id}.json`.
+aus `knowledge/7_blueprint/{blueprint_id}.json`.
 
 Verantwortlichkeit:
 - Blueprint-JSON laden
@@ -19,10 +19,14 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 
-_PROJECT_ROOT = Path(__file__).resolve().parent.parent
-_KNOWLEDGE_ROOT = _PROJECT_ROOT / "knowledge"
-_BLUEPRINTS_DIR = _KNOWLEDGE_ROOT / "6_blueprint"
-_PROMPTS_DIR = _PROJECT_ROOT / "prompts"
+from shared.knowledge_paths import (
+    BLUEPRINTS_DIR,
+    KNOWLEDGE_CATEGORY_DIRS,
+    PROJECT_ROOT,
+)
+
+_PROJECT_ROOT = PROJECT_ROOT
+_BLUEPRINTS_DIR = BLUEPRINTS_DIR
 
 REQUIRED_BLUEPRINT_FIELDS = (
     "blueprint_id",
@@ -97,7 +101,7 @@ def load_blueprint(blueprint_id: str) -> Blueprint:
     if not config_path.exists():
         raise BlueprintError(
             f"Blueprint-Config nicht gefunden: {config_path}\n"
-            f"Verfügbare Blueprints siehe knowledge/6_blueprint/."
+            f"Verfügbare Blueprints siehe knowledge/7_blueprint/."
         )
 
     try:
@@ -161,18 +165,6 @@ def _validate_required_fields(raw: dict, config_path: Path) -> None:
         raise BlueprintError("input_schema.required (Liste) ist Pflicht.")
 
 
-# Logische Blueprint-Kategorie → physischer Ordner (relativ zu repo root).
-_KNOWLEDGE_CATEGORY_DIRS = {
-    "standards": _KNOWLEDGE_ROOT / "2_regulations",
-    "sdls":      _KNOWLEDGE_ROOT / "3_sdls",
-    "products":  _KNOWLEDGE_ROOT / "5_products",
-    "rules":     _KNOWLEDGE_ROOT / "9_rules",
-    "guides":    _KNOWLEDGE_ROOT / "7_guides",
-    "examples":  _KNOWLEDGE_ROOT / "10_examples",
-    "prompts":   _PROMPTS_DIR,
-}
-
-
 def _resolve_context_modules(
     context_modules: dict[str, list[str]],
     blueprint_id: str,
@@ -184,11 +176,11 @@ def _resolve_context_modules(
     resolved: dict[str, tuple[Path, ...]] = {}
 
     for category, entries in context_modules.items():
-        if category not in _KNOWLEDGE_CATEGORY_DIRS:
+        if category not in KNOWLEDGE_CATEGORY_DIRS:
             raise BlueprintError(
                 f"Blueprint {blueprint_id} referenziert unbekannte "
                 f"Wissenskategorie '{category}'. Erlaubt: "
-                f"{sorted(_KNOWLEDGE_CATEGORY_DIRS)}"
+                f"{sorted(KNOWLEDGE_CATEGORY_DIRS)}"
             )
 
         if not isinstance(entries, list):
@@ -197,7 +189,7 @@ def _resolve_context_modules(
                 f"(Blueprint {blueprint_id})."
             )
 
-        category_dir = _KNOWLEDGE_CATEGORY_DIRS[category]
+        category_dir = KNOWLEDGE_CATEGORY_DIRS[category]
         paths: list[Path] = []
         missing: list[str] = []
         for rel in entries:
@@ -224,17 +216,36 @@ def _resolve_context_modules(
 if __name__ == "__main__":
     import sys
 
+    from shared.context_builder import build_system_prompt
+
     if len(sys.argv) < 2:
-        print("Usage: python -m shared.blueprint_loader <blueprint_id>")
+        print("Usage: python -m shared.blueprint_loader <blueprint_id> [--size]")
         sys.exit(1)
 
-    bp = load_blueprint(sys.argv[1])
+    blueprint_id = sys.argv[1]
+    show_size = "--size" in sys.argv[2:]
+
+    bp = load_blueprint(blueprint_id)
     print(f"Blueprint: {bp.blueprint_id} ({bp.display_name}) v{bp.version}")
     print(f"Template:  {bp.template_path}")
     print(f"ai_blocks: {list(bp.ai_blocks)}")
     print(f"Pflichtfelder: {list(bp.required_fields)}")
     print("Kontextmodule:")
+    total_chars = 0
     for cat, paths in bp.context_module_paths.items():
         print(f"  {cat}: {len(paths)} Datei(en)")
         for p in paths:
-            print(f"    - {p.relative_to(_PROJECT_ROOT)}")
+            rel = p.relative_to(_PROJECT_ROOT)
+            if show_size:
+                n = len(p.read_text(encoding="utf-8"))
+                total_chars += n
+                print(f"    - {rel} ({n:,} chars)")
+            else:
+                print(f"    - {rel}")
+    if show_size:
+        sys_prompt = build_system_prompt(bp)
+        print(f"\nRaw modules total: {total_chars:,} chars")
+        print(f"System prompt:     {len(sys_prompt):,} chars")
+        budget = 80_000
+        flag = "OK" if len(sys_prompt) <= budget else "OVER"
+        print(f"Budget {budget:,}: {flag}")

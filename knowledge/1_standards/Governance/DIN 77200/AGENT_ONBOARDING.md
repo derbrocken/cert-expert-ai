@@ -1,0 +1,116 @@
+# Agent Onboarding — Cert-Expert AI / DIN 77200
+
+**Zweck:** Ein neuer Cursor-Agent (oder ein Agent nach Kontext-Reset) soll sich **innerhalb weniger Minuten** im Projekt orientieren — ohne Fachnorm neu zu erfinden und ohne die Vault-Struktur umzubauen.
+
+**Das ist:** Governance und Orientierung.  
+**Das ist nicht:** Tool-2-Implementierung, DIN-Facherweiterung, Migration.
+
+---
+
+## Lesereihenfolge (Pflicht)
+
+| Nr | Datei | Warum |
+|----|-------|-------|
+| 1 | [[CURRENT_STATE]] | **Ist-Stand zuerst** — Branch, Commit, abgeschlossen/offen |
+| 2 | **AGENT_ONBOARDING.md** (diese Datei) | Regeln, Stopps, Routing |
+| 3 | [[ARCHITECTURE]] | Wo gehört welcher Inhalt hin |
+| 4 | [[AGENT_RULES]] | Retrieval, Pfade, inhaltliche Grenzen |
+| 5 | [[ROADMAP]] | Geplant — nicht vorausimplementieren |
+
+**Abschlussregel:** Nach abgeschlossenem Schritt [[CURRENT_STATE]] aktualisieren + Commit-Empfehlung (siehe dort).
+
+**Ergänzend bei Arbeit:**
+
+- [[DOCUMENT_TYPES]] — Dokumenttypen und Ablage
+- [[NAMING_CONVENTIONS]] — Namens- und Ordnerregeln
+- [[AGENT_WORKFLOW]] — Standardablauf vor/nach Änderungen
+
+---
+
+## Hauptstruktur (stabil — nicht umbauen)
+
+```
+knowledge/1_standards/
+├── DIN 77200-1/          ← Fachlich: CEKS, Anhang A, Qualifikationssystem
+├── DIN 77200-2/          ← Fachlich: besondere SDL Kap. 5–8, Anhang C
+└── Governance/
+    └── DIN 77200/        ← Meta: Architektur, Agenten, Roadmap (dieser Ordner)
+```
+
+| Ordner | Rolle |
+|--------|-------|
+| `DIN 77200-1/` | **Grundsystem** — Qualifikation, Profil (Anhang A), CEKS-Module, Qualifikationssystem V1 |
+| `DIN 77200-2/` | **Besondere SDL** — Zusatzanforderungen, Anhang C, **kein** eigenes Qualifikationssystem |
+| `Governance/DIN 77200/` | **Steuerung** — keine Fachvorlagen, keine Normtexte |
+
+**Klare Regel:** Fachinhalte bleiben in `DIN 77200-1/` und `DIN 77200-2/`. Governance liegt **nur** unter `Governance/DIN 77200/`. **Keine neue Parallelstruktur** (z. B. `knowledge/standards/`, `din_77200/` als Inhaltsablage).
+
+Weitere Schichten (nur lesen, nicht verschieben):
+
+- `knowledge/3_sdls/` — SDL-Kontext
+- `knowledge/10_examples/` — ausgefüllte Projektbeispiele
+- `inputs/raw_standards/` — Primärquellen (PDF)
+
+---
+
+## Was bereits fertig ist (nicht neu erfinden)
+
+| Bereich | Status | Pfad |
+|---------|--------|------|
+| Anforderungsprofile V1 | **fertig** | `DIN 77200-1/anforderungsprofile/`, `DIN 77200-2/anforderungsprofile/` |
+| Generator Anforderungsprofile | **fertig** | `scripts/generate_anforderungsprofile.py` |
+| DIN 77200-1 Wissensmodule | **fertig** | `DIN 77200-1/*.md`, `overview.md` |
+| DIN 77200-2 Wissensmodule | **fertig** | `DIN 77200-2/README.md`, `01_`–`08_*.md` |
+| Qualifikationssystem V1 (Legacy) | **fertig** | `DIN 77200-1/qualifikationssystem/` (01–05) — parallel, nicht migrieren |
+| Qualifikationssystem V2+ | **fertig** | `DIN 77200-1/qualifications/` — **aktueller Arbeitsstand** |
+| Governance-Grundstruktur | **fertig** | `Governance/DIN 77200/` |
+
+Details: [[CURRENT_STATE]]
+
+---
+
+## Was nicht mehr umgebaut werden soll
+
+Ohne **explizite Freigabe** des Nutzers:
+
+- Ordnerstruktur `DIN 77200-1` / `DIN 77200-2` / `Governance/DIN 77200`
+- Anforderungsprofile V1 (Dateinamen `77200-1_*`, `77200-2_*`)
+- Generator-Ausgabepfade
+- Verschieben von Fachmodulen in Governance
+- Dokumenttyp-first-Zentralisierung unter Governance (verworfen — [[MIGRATION]])
+
+---
+
+## Was als Nächstes kommt
+
+**Offen / nicht anfangen ohne Auftrag:** siehe [[CURRENT_STATE#Offene nächste Schritte]].
+
+| Thema | Status |
+|-------|--------|
+| Freigabekette + Tool-2-Domäne (`04`–`08`) | **abgeschlossen** (CEKS) |
+| Tool-2-Implementierung | **offen** — **nicht** ohne Freigabe weiterarbeiten |
+| VA Kap. 7, Tool-1-Profil-Export | **offen** |
+
+Siehe [[ROADMAP]] für Details.
+
+---
+
+## Schnell-Routing (Fachfrage)
+
+| Frage | Erst laden |
+|-------|------------|
+| Profil, Anhang A, 4.11 | `DIN 77200-1/Anforderungsprofile.md` |
+| A/B/C, §34a, Ersthelfer | `DIN 77200-1/Qualifikationsanforderungen.md` |
+| Besondere SDL, SK/EK | `DIN 77200-2/README.md` → Modul 05–08 |
+| Profil-Vorlage | `DIN 77200-*/anforderungsprofile/77200-*_*.md` |
+| Freigabeentscheid | `05` → `06` → `07` · Domäne Tool 2: `08` · Matrix: `04` · Detail DE: `qualifikationssystem/05` |
+
+---
+
+## Erste Aktion bei Unklarheit
+
+1. [[CURRENT_STATE]] lesen (Pflicht vor Änderungen)  
+2. Diese Datei + [[AGENT_RULES]] prüfen  
+3. Nutzer fragen — **nicht** strukturell improvisieren  
+
+Verifikation gegen Norm: `inputs/raw_standards/` — nur vor produktiven Entscheidungen, nicht als Ersatz für CEKS-Module.

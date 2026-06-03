@@ -1,0 +1,51 @@
+# Cert-Expert HQ — Unternehmensgedächtnis
+
+**Stand:** 2026-06-02  
+**Ort im Repo:** `cert-expert-ai/hq/` (gleicher Git-Stand wie Bots & Doku)
+
+Dieser Ordner ist **System A** (Organisation). Die Bot-Pipeline lebt in `bots/`, `knowledge/`, `projects/`.
+
+---
+
+## Struktur
+
+| Ordner | Zweck |
+|--------|--------|
+| `00_Dashboard/` | Übersicht, KPIs, Links |
+| `01_Master_Dump/` | Unsortiertes, zu klären |
+| `02_Operations_Board/` | Tagesgeschäft, Ingest-Log (später) |
+| `03_Kundenprojekte/` | **Kunden** — Status, ToDos, Kommunikation, … |
+| `04_Vertrieb/` | Angebote, Pipeline |
+| `05_Forderungen/` | Mahnungen, offene Posten |
+| `06_Software/` | cert-expert-ai, Portal, DFSS |
+| `07_DFSS/` | DFSS-Themen |
+| `08_Vorlagen/` | Templates (ToDos, neues Kundenprojekt) |
+| `09_Archiv/` | Abgeschlossenes |
+
+---
+
+## Kundenprojekte
+
+Siehe `03_Kundenprojekte/_registry.json` und je Kunde:
+
+- `Status.md`
+- `ToDos.md` — **maschinenlesbar** (Telegram-Ziel)
+- `Kommunikation.md`
+- `Audit_2026.md`
+- `Dokumente_und_Nachweise.md`
+- `Lessons_Learned.md`
+
+**Nächster Schritt von dir:** Alle offenen To-dos in die jeweiligen `ToDos.md` eintragen (Schema in `08_Vorlagen/ToDos_template.md`).
+
+---
+
+## Verknüpfung Bots
+
+| HQ | Bot-Repo |
+|----|----------|
+| `03_Kundenprojekte/TeamFlex/` | `projects/teamflex/` (wenn Event angelegt) |
+| Dokumente in `Dokumente_und_Nachweise.md` | `outputs/` + `projects/.../documents/` |
+
+Handoff für Chat-Wechsel: [`docs/CHAT_HANDOFF.md`](../docs/CHAT_HANDOFF.md)
+
+Architektur: [`docs/TARGET_ARCHITECTURE_PROPOSAL.md`](../docs/TARGET_ARCHITECTURE_PROPOSAL.md)

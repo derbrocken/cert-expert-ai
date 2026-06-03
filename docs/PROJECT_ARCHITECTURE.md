@@ -2,6 +2,9 @@
 
 Version: 1.0 | Erstellt: 2026-05-18 | Status: Konzept (nicht implementiert)
 
+**Produktvision (Gesamtsystem):** `docs/CERTIFICATION_OS_ARCHITECTURE.md` — Certification OS, Module, Audit-Readiness, Tool 1/2, Bots.  
+**Dieses Dokument:** Integrationsgrenze Bot-Engine ↔ Portal (schmal).
+
 ---
 
 ## Kontext

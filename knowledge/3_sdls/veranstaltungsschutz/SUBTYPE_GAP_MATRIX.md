@@ -1,0 +1,271 @@
+# Knowledge-Gap-Matrix — Veranstaltungstypen (Schicht 2)
+
+**Stand:** 2026-06-01  
+**Katalog:** [[VERANSTALTUNGSTYPEN_KATALOG]] · **Quellenplan:** [[../../4_sources/README]] · **Ausbauplan:** [[AUSBAUPLAN]]
+
+**Legende Relevanz SK/GB/EK/ODA:** Hoch = zentral für Dokumentinhalt · Mittel = ergänzend · Niedrig = selten · — = nicht primär  
+**Priorität:** P0 = vor SK-Bot-Welle · P1 = nächste SDL-Welle · P2/P3 = später
+
+**Hinweis Kap. 5:** Spalte „77200-2 Kap. 5“ = kann **zusätzlich** zur Schicht 3 geladen werden — **nie** aus dem Typ allein ableiten.
+
+---
+
+## Übersicht
+
+| ID | Subtyp-MD | Prio | GB | SK | EK | ODA | Kap.5 (optional) |
+|----|-----------|------|----|----|----|-----|------------------|
+| kampfsport | **reviewed** | P0 | Hoch | Hoch | Hoch | Mittel | möglich |
+| fussball | **reviewed** | P0 | Hoch | Hoch | Hoch | Mittel | möglich |
+| konzert | **reviewed** | P0 | Hoch | Hoch | Hoch | Mittel | möglich |
+| grossveranstaltung | **reviewed** | P0 | Hoch | Hoch | Hoch | Mittel | häufig möglich |
+| festival | **reviewed** | P1 | Hoch | Hoch | Hoch | Mittel | möglich |
+| demonstration | **reviewed** | P1 | Hoch | Hoch | Hoch | Hoch | möglich |
+| stadtfest | **reviewed** | P1 | Hoch | Mittel | Mittel | Niedrig | selten |
+| messe | **reviewed** | P1 | Hoch | Mittel | Mittel | Mittel | selten |
+| motorsport | fehlt | P2 | Hoch | Hoch | Hoch | Mittel | möglich |
+| karneval | fehlt | P2 | Hoch | Mittel | Hoch | Niedrig | selten |
+| weihnachtsmarkt | fehlt | P2 | Hoch | Mittel | Mittel | Niedrig | selten |
+| nachtclub | fehlt | P2 | Hoch | Mittel | Hoch | Mittel | selten |
+| sport_allgemein | fehlt | P2 | Hoch | Mittel | Mittel | Niedrig | selten |
+| politisch | fehlt | P3 | Hoch | Hoch | Hoch | Hoch | möglich |
+| vip_promi | fehlt | P3 | Mittel | Hoch | Hoch | Mittel | möglich |
+| religioes | fehlt | P3 | Mittel | Mittel | Mittel | Niedrig | selten |
+
+---
+
+## Detail je Veranstaltungstyp
+
+### `kampfsport` — Priorität P0
+
+| Feld | Inhalt |
+|------|--------|
+| **Vorhandenes Wissen** | [[subtypes/kampfsport]] (reviewed 2026-06-01); [[base]] Phasen; GB-Examples (Repo); Normprofil 77200-1 |
+| **Fehlendes Wissen** | SK-Beispieltext; Crowd-Extrakt `4_sources/dguv/`; Kap.-5 nur Schicht 3 |
+| **Typische Gefährdungen** | Fan-Lager, Ringeindringen, Athletenverletzung, Eskalation bei Wertung |
+| **Typische Schutzmaßnahmen** | Ring-Sicherheit, Ein-/Auslauf, Eskalationsstufen, Sanitäts-Sichtlinie |
+| **Schnittstellen** | Sanität, Schiedsrichter, Veranstalter, ggf. Polizei |
+| **GB / SK / EK / ODA** | Hoch / Hoch / Hoch / Mittel |
+| **Priorität** | P0 — Pflege + SK-Vorbereitung |
+
+---
+
+### `fussball` — Priorität P0
+
+| Feld | Inhalt |
+|------|--------|
+| **Vorhandenes Wissen** | [[subtypes/fussball]] (reviewed: Stadion/Amateur, Schnittstellen, GB/SK/EK/ODA-Bezug); [[base]] |
+| **Fehlendes Wissen** | GB-Example `fussball`; Behörden-Extrakt; Pyro-Detail nur mit Input |
+| **Typische Gefährdungen** | Massenreaktion, Pyrotechnik, Blockübergriffe, Auswärtskonflikte |
+| **Typische Schutzmaßnahmen** | Blocktrennung, Einlasskontrolle, Video/Deeskalation, Polizeiabstimmung |
+| **Schnittstellen** | Stadionbetrieb, Polizei, Ordner, Veranstalter |
+| **GB / SK / EK / ODA** | Hoch / Hoch / Hoch / Mittel |
+| **Priorität** | P0 |
+
+---
+
+### `konzert` — Priorität P0
+
+| Feld | Inhalt |
+|------|--------|
+| **Vorhandenes Wissen** | [[subtypes/konzert]] (reviewed: Indoor/Open-Air, Moshpit, Schnittstellen); [[base]]; VStättVO-Überblick |
+| **Fehlendes Wissen** | GB-Example `konzert`; Praxis-Crowd-Extrakt; konkrete Flächenmaße nur mit Input |
+| **Typische Gefährdungen** | Gedränge Front, Sturz aus Höhe, Alkohol, Stage-Diving |
+| **Typische Schutzmaßnahmen** | Crowd-Management, Barrieren, Medical-Plan, Einlasswellen |
+| **Schnittstellen** | Veranstalter, Technik, Sanität, Feuerwehr |
+| **GB / SK / EK / ODA** | Hoch / Hoch / Hoch / Mittel |
+| **Priorität** | P0 |
+
+---
+
+### `grossveranstaltung` — Priorität P0
+
+| Feld | Inhalt |
+|------|--------|
+| **Vorhandenes Wissen** | [[subtypes/grossveranstaltung]] (reviewed: Meta/Fallback, Kombi mit Genre); [[base]]; Schicht 3 [[../veranstaltung_besondere_sicherheitsrelevanz/base]] |
+| **Fehlendes Wissen** | GB-Example; Zonen-Detail nur mit Objekt-Input |
+| **Typische Gefährdungen** | Massenandrang, Engstellen, Kommunikationsausfall, Wetter |
+| **Typische Schutzmaßnahmen** | Einsatzleitung, Sichtachsen, Evakuierungslogik, Kapazitätssteuerung |
+| **Schnittstellen** | Behörden, Polizei, Rettungsdienst, Veranstalter |
+| **GB / SK / EK / ODA** | Hoch / Hoch / Hoch / Mittel |
+| **Priorität** | P0 — Fallback wenn kein Genre-Subtyp |
+
+---
+
+### `festival` — Priorität P1
+
+| Feld | Inhalt |
+|------|--------|
+| **Vorhandenes Wissen** | [[base]] |
+| **Fehlendes Wissen** | `subtypes/festival.md`; Camping, Mehrtageslogistik, Drogenprävention |
+| **Typische Gefährdungen** | Übernachtungskonflikte, Drogen/Alkohol, mehrere Bühnen, Diebstahl |
+| **Typische Schutzmaßnahmen** | Zonenkonzept, Nachtdienst, Sanitätsnetz, Briefing-Staffelung |
+| **Schnittstellen** | Veranstalter, Sanität, Polizei, Technik |
+| **GB / SK / EK / ODA** | Hoch / Hoch / Hoch / Mittel |
+| **Priorität** | P1 |
+
+---
+
+### `demonstration` — Priorität P1
+
+| Feld | Inhalt |
+|------|--------|
+| **Vorhandenes Wissen** | [[base]]; Versammlungsrecht nur in `2_regulations` (ausbaubar) |
+| **Fehlendes Wissen** | `subtypes/demonstration.md`; Marschroute, Gegenprotest, Deeskalation |
+| **Typische Gefährdungen** | Gewaltspirale, Blockade, Medienlage, unklare Verantwortung |
+| **Typische Schutzmaßnahmen** | Abstimmung Polizei/Ordnungsamt, Kommunikationsplan, Trennung |
+| **Schnittstellen** | Polizei, Ordnungsamt, Veranstalter/Initiative, Presse |
+| **GB / SK / EK / ODA** | Hoch / Hoch / Hoch / Hoch |
+| **Priorität** | P1 |
+
+---
+
+### `stadtfest` — Priorität P1
+
+| Feld | Inhalt |
+|------|--------|
+| **Vorhandenes Wissen** | [[base]] |
+| **Fehlendes Wissen** | `subtypes/stadtfest.md`; Mischpublikum, temporäre GASTRONOMIE, offene Flächen |
+| **Typische Gefährdungen** | Alkohol, Kinder/Familien, Engstellen Budenstraße |
+| **Typische Schutzmaßnahmen** | Streifenkonzept, Einweisung Helfer, Kooperation Kommune |
+| **Schnittstellen** | Stadt, Feuerwehr, Polizei, Veranstalter |
+| **GB / SK / EK / ODA** | Hoch / Mittel / Mittel / Niedrig |
+| **Priorität** | P1 |
+
+---
+
+### `messe` — Priorität P1
+
+| Feld | Inhalt |
+|------|--------|
+| **Vorhandenes Wissen** | [[base]] |
+| **Fehlendes Wissen** | `subtypes/messe.md`; Hallenzonen, Ausstellerzugang, Warenwert |
+| **Typische Gefährdungen** | Diebstahl, Brandlasten Standbau, Gedränge Eingang |
+| **Typische Schutzmaßnahmen** | Zonen- und Ausweiskonzept, Brandwache Koordination |
+| **Schnittstellen** | Messeveranstalter, Hallenbetrieb, Feuerwehr |
+| **GB / SK / EK / ODA** | Hoch / Mittel / Mittel / Mittel |
+| **Priorität** | P1 |
+
+---
+
+### `motorsport` — Priorität P2
+
+| Feld | Inhalt |
+|------|--------|
+| **Vorhandenes Wissen** | [[base]] |
+| **Fehlendes Wissen** | `subtypes/motorsport.md`; Strecken, Paddock, Lärm |
+| **Typische Gefährdungen** | Zuschauernähe Strecke, Fahrzeugverkehr, Hitze/Lärm |
+| **Typische Schutzmaßnahmen** | Absperrkonzept, Marshall, Notfallfahrzeugwege |
+| **Schnittstellen** | Streckenposten, Sanität, Veranstalter |
+| **GB / SK / EK / ODA** | Hoch / Hoch / Hoch / Mittel |
+| **Priorität** | P2 |
+
+---
+
+### `karneval` — Priorität P2
+
+| Feld | Inhalt |
+|------|--------|
+| **Vorhandenes Wissen** | [[base]] |
+| **Fehlendes Wissen** | `subtypes/karneval.md`; Umzugsroute, mobile Absperrung |
+| **Typische Gefährdungen** | Alkohol, Wurfgegenstände, Straßenbahn/Kreuzungen |
+| **Typische Schutzmaßnahmen** | Routenabsicherung, Staffelung, Deeskalation |
+| **Schnittstellen** | Kommune, Polizei, Veranstalter |
+| **GB / SK / EK / ODA** | Hoch / Mittel / Hoch / Niedrig |
+| **Priorität** | P2 |
+
+---
+
+### `weihnachtsmarkt` — Priorität P2
+
+| Feld | Inhalt |
+|------|--------|
+| **Vorhandenes Wissen** | [[base]] |
+| **Fehlendes Wissen** | `subtypes/weihnachtsmarkt.md`; saisonal, Glühwein, Wetter |
+| **Typische Gefährdungen** | Engstellen, Brandlasten, Rutschgefahr |
+| **Typische Schutzmaßnahmen** | Besucherlenkung, Brandvorsorge, Beleuchtung |
+| **Schnittstellen** | Stadt, Feuerwehr, Marktbetreiber |
+| **GB / SK / EK / ODA** | Hoch / Mittel / Mittel / Niedrig |
+| **Priorität** | P2 |
+
+---
+
+### `nachtclub` — Priorität P2
+
+| Feld | Inhalt |
+|------|--------|
+| **Vorhandenes Wissen** | [[base]] |
+| **Fehlendes Wissen** | `subtypes/nachtclub.md`; Türsteher, Kapazität, Nachtrecht |
+| **Typische Gefährdungen** | Überfüllung, Gewalt im Innenbereich, Drogen |
+| **Typische Schutzmaßnahmen** | Einlasssteuerung, interne Deeskalation, Notausgänge |
+| **Schnittstellen** | Betreiber, Polizei (extern), Sanität |
+| **GB / SK / EK / ODA** | Hoch / Mittel / Hoch / Mittel |
+| **Priorität** | P2 |
+
+---
+
+### `sport_allgemein` — Priorität P2
+
+| Feld | Inhalt |
+|------|--------|
+| **Vorhandenes Wissen** | [[base]]; Spezifik in `fussball` / `kampfsport` geplant |
+| **Fehlendes Wissen** | `subtypes/sport_allgemein.md` als generischer Sport ohne Liga |
+| **Typische Gefährdungen** | Publikumsreaktion, Sportflächenzugang |
+| **Typische Schutzmaßnahmen** | Absperrung Spielfeld, Einlass |
+| **Schnittstellen** | Veranstalter, Sanität |
+| **GB / SK / EK / ODA** | Hoch / Mittel / Mittel / Niedrig |
+| **Priorität** | P2 — nach `fussball`/`kampfsport` |
+
+---
+
+### `politisch` — Priorität P3
+
+| Feld | Inhalt |
+|------|--------|
+| **Vorhandenes Wissen** | [[base]]; Überschneidung `demonstration` |
+| **Fehlendes Wissen** | `subtypes/politisch.md`; Redner-/VIP-Schutz, Störer |
+| **Typische Gefährdungen** | Störaktionen, Medien, Bedrohung |
+| **Typische Schutzmaßnahmen** | Zonen, Zugangskontrolle, Abstimmung Ordnungskräfte |
+| **Schnittstellen** | Polizei, Veranstalter, Personenschutz |
+| **GB / SK / EK / ODA** | Hoch / Hoch / Hoch / Hoch |
+| **Priorität** | P3 |
+
+---
+
+### `vip_promi` — Priorität P3
+
+| Feld | Inhalt |
+|------|--------|
+| **Vorhandenes Wissen** | [[base]] |
+| **Fehlendes Wissen** | `subtypes/vip_promi.md`; Personenschutz vs. Veranstaltungsschutz |
+| **Typische Gefährdungen** | Übergriffe, Paparazzi, ungeplante Zugänge |
+| **Typische Schutzmaßnahmen** | Backstage, Begleitung, Zugangsstufen |
+| **Schnittstellen** | Personenschutz, Veranstalter |
+| **GB / SK / EK / ODA** | Mittel / Hoch / Hoch / Mittel |
+| **Priorität** | P3 |
+
+---
+
+### `religioes` — Priorität P3
+
+| Feld | Inhalt |
+|------|--------|
+| **Vorhandenes Wissen** | [[base]] |
+| **Fehlendes Wissen** | `subtypes/religioes.md`; Prozession, große Gruppen |
+| **Typische Gefährdungen** | Gedränge, Konflikte mit Gegengruppen, Wegstrecken |
+| **Typische Schutzmaßnahmen** | Routenbegleitung, Deeskalation |
+| **Schnittstellen** | Gemeinden, Polizei |
+| **GB / SK / EK / ODA** | Mittel / Mittel / Mittel / Niedrig |
+| **Priorität** | P3 |
+
+---
+
+## Prioritäten-Roadmap (Ausarbeitung `subtypes/*.md`)
+
+| Welle | Subtypen | Abhängigkeiten |
+|-------|----------|----------------|
+| **Welle 0** | `kampfsport`, `fussball`, `konzert`, `grossveranstaltung` | **reviewed** 2026-06-01 |
+| **Welle 1 (P0)** | — (P0-Subtypen abgeschlossen) | Nächste: `6_products/sicherheitskonzept/`; DGUV-Crowd-Extrakt |
+| **Welle 2 (P1)** | — (P1-Subtypen reviewed 2026-06-02) | Behörden/Praxis-Extrakte; SK/EK-Bots |
+| **Welle 3 (P2–P3)** | übrige Katalog-Einträge | nach Pilotkundenbedarf |
+
+**Produktkette (unverändert):** SK → GB → EK → ODA — Subtyp-Wissen speist vor allem **GB** und **SK**; **EK** braucht Einsatzlogik aus Subtyp + SK; **ODA** nur bei Objekt-/Dauerbezug.

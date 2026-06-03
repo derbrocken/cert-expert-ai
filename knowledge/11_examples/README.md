@@ -1,4 +1,4 @@
-# knowledge/10_examples/
+# knowledge/11_examples/
 
 Positiv-Beispiele für gut formulierten fachlichen Inhalt pro Inhaltsblock.
 Dienen als Stil-Kalibrierung — nicht als Inhaltsvorgabe.

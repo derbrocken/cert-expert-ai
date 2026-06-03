@@ -82,10 +82,17 @@ def _parse_with_retry(
     system_prompt: str,
     user_prompt: str,
     output_dir: Path,
+    *,
+    debug_meta: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     last_raw = ""
     for attempt in range(1, MAX_RETRIES + 1):
-        raw = ask_qwen(system_prompt, user_prompt, temperature=0.3)
+        raw = ask_qwen(
+            system_prompt,
+            user_prompt,
+            temperature=0.3,
+            debug_meta=debug_meta,
+        )
         last_raw = raw
 
         cleaned = _strip_codefence(raw)
@@ -173,8 +180,29 @@ def run(
     print(f"[GB-Bot]   System-Prompt: {len(system_prompt):>6} Zeichen | "
           f"User-Prompt: {len(user_prompt)} Zeichen")
 
+    kmods = knowledge_modules_considered(blueprint)
+    loaded_paths = [
+        str(p) for paths in blueprint.context_module_paths.values() for p in paths
+    ]
+    debug_meta = {
+        "blueprint_id": blueprint.blueprint_id,
+        "input_path": str(input_path),
+        "knowledge_modules_considered": kmods,
+        "knowledge_files_absolute": loaded_paths,
+        "loads_knowledge_1_standards": any(
+            "/1_standards/" in p.replace("\\", "/") for p in loaded_paths
+        ),
+    }
+    print(f"[GB-Bot]   Wissensmodule: {len(kmods)} | "
+          f"1_standards geladen: {debug_meta['loads_knowledge_1_standards']}")
     print("[GB-Bot] Sende Anfrage an LM Studio (1 LLM-Call) ...")
-    bot_output = _parse_with_retry(system_prompt, user_prompt, output_dir)
+    print("[GB-Bot]   Debug-Prompt: outputs/debug_last_prompt.json (vor Request)")
+    bot_output = _parse_with_retry(
+        system_prompt,
+        user_prompt,
+        output_dir,
+        debug_meta=debug_meta,
+    )
 
     print("[GB-Bot] QA-Prüfung ...")
     reviewer_output = qa_check(bot_output, pre_open_points, blueprint=blueprint)

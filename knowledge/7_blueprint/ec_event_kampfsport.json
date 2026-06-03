@@ -1,0 +1,359 @@
+{
+  "blueprint_id": "ec_event_kampfsport",
+  "document_type": "ec_event_kampfsport",
+  "display_name": "Einsatzkonzept — Kampfsportveranstaltung",
+  "version": "1.0",
+  "status": "active",
+  "template_file": "templates/ec_event_kampfsport.docx",
+  "modes": ["standalone", "flow"],
+
+  "product": "ec",
+  "sdl_group": "sdl_veranstaltungsdienst",
+  "sdl_subtype": "kampfsport",
+  "placeholder_namespace": "EC_*",
+
+  "context_modules": {
+    "standards": [
+      "dguv_v1/overview.md",
+      "VStättVO/overview.md"
+    ],
+    "sdls": [
+      "veranstaltungsschutz/base.md",
+      "veranstaltungsschutz/subtypes/kampfsport.md"
+    ],
+    "practice_sources": [
+      "dguv/crowd_veranstaltung.md",
+      "dguv/veranstaltungen_organisation.md",
+      "behoerden/grossevent_abstimmung.md",
+      "praxisleitfaeden/kampfsport_small_hall_event.md",
+      "din77200/extracts/security_service_operational_requirements.md"
+    ],
+    "products": [
+      "einsatzkonzept/purpose.md",
+      "einsatzkonzept/content_blocks.md"
+    ],
+    "rules": [
+      "base/hallucination_boundaries.md",
+      "base/open_points_rules.md",
+      "base/citation_rules.md",
+      "base/output_format_rules.md",
+      "base/reviewer_handoff.md",
+      "products/ec_rules.md",
+      "blueprints/ec_event_kampfsport.md"
+    ],
+    "guides": [
+      "runtime_summaries/kampfsport_sdl_small_event_summary.md",
+      "runtime_summaries/ek_kraefteplanung_small_event.md"
+    ],
+    "prompts": [
+      "base/system_base.md",
+      "base/hallucination_guard.md",
+      "base/open_point_instruction.md",
+      "products/ec_user_prompt_template.md"
+    ]
+  },
+
+  "conditional_modules": [],
+
+  "pflichten": {
+    "lektuere": {
+      "standards": [
+        "dguv_v1/overview.md",
+        "VStättVO/overview.md"
+      ],
+      "sdls": [
+        "veranstaltungsschutz/base.md",
+        "veranstaltungsschutz/subtypes/kampfsport.md"
+      ],
+      "practice_sources": [
+        "dguv/crowd_veranstaltung.md",
+        "dguv/veranstaltungen_organisation.md",
+        "behoerden/grossevent_abstimmung.md",
+        "praxisleitfaeden/kampfsport_small_hall_event.md",
+        "din77200/extracts/security_service_operational_requirements.md"
+      ],
+      "products": [
+        "einsatzkonzept/purpose.md",
+        "einsatzkonzept/content_blocks.md"
+      ],
+      "rules": [
+        "base/hallucination_boundaries.md",
+        "base/open_points_rules.md",
+        "base/citation_rules.md",
+        "base/output_format_rules.md",
+        "base/reviewer_handoff.md",
+        "products/ec_rules.md",
+        "blueprints/ec_event_kampfsport.md"
+      ],
+      "guides": [
+        "runtime_summaries/kampfsport_sdl_small_event_summary.md",
+        "runtime_summaries/ek_kraefteplanung_small_event.md"
+      ],
+      "prompts": [
+        "base/system_base.md",
+        "base/hallucination_guard.md",
+        "base/open_point_instruction.md",
+        "products/ec_user_prompt_template.md"
+      ]
+    },
+    "form": {
+      "template_file": "templates/ec_event_kampfsport.docx",
+      "ai_blocks": [
+        "EC_EINSATZBESCHREIBUNG",
+        "EC_KRAEFTE_UND_ROLLEN",
+        "EC_POSITIONIERUNG_UND_ABSCHNITTE",
+        "EC_ABLAUF_UND_BRIEFING",
+        "EC_KOMMUNIKATION_UND_MELDEWEGE",
+        "EC_LOGISTIK_AUSRUESTUNG",
+        "EC_NOTFALLPLAN",
+        "EC_DOKUMENTATION_NACHBEREITUNG",
+        "EC_OFFENE_PUNKTE"
+      ],
+      "input_checklist": "inputs/PFLICHTANGABEN_EC.md"
+    },
+    "angaben": {
+      "required": [
+        "event_name",
+        "event_type",
+        "event_date",
+        "event_location_name",
+        "event_location_address",
+        "event_start_time",
+        "event_end_time",
+        "client_name",
+        "security_service_provider",
+        "expected_attendance",
+        "security_staff_count",
+        "security_roles",
+        "sections",
+        "admission_start_time",
+        "contact_client",
+        "contact_security_lead",
+        "medical_service",
+        "evacuation_route",
+        "assembly_point",
+        "radio_communication",
+        "emergency_contacts",
+        "briefing_time",
+        "created_by",
+        "doc_version"
+      ],
+      "checklist": "inputs/PFLICHTANGABEN_EC.md"
+    }
+  },
+
+  "input_schema": {
+    "required": [
+      "event_name",
+      "event_type",
+      "event_date",
+      "event_location_name",
+      "event_location_address",
+      "event_start_time",
+      "event_end_time",
+      "client_name",
+      "security_service_provider",
+      "expected_attendance",
+      "security_staff_count",
+      "security_roles",
+      "sections",
+      "admission_start_time",
+      "contact_client",
+      "contact_security_lead",
+      "medical_service",
+      "evacuation_route",
+      "assembly_point",
+      "radio_communication",
+      "emergency_contacts",
+      "briefing_time",
+      "created_by",
+      "doc_version"
+    ],
+    "optional": [
+      "contract_reference",
+      "upstream_sk_available",
+      "upstream_sk_path",
+      "sk_protection_goals",
+      "sk_key_measures",
+      "audience_profile",
+      "fighter_area_rules",
+      "ring_area_security",
+      "entry_policy",
+      "weapons_policy",
+      "alcohol_served",
+      "vip_expected",
+      "police_coordination",
+      "authority_coordination",
+      "venue_coordination",
+      "parking_loading",
+      "material_equipment",
+      "patrol_schedule",
+      "handover_to_client",
+      "incident_documentation",
+      "special_instructions",
+      "approved_by",
+      "approval_date",
+      "revision_note",
+      "notes"
+    ],
+    "field_labels": {
+      "event_name": "Veranstaltungsname",
+      "event_type": "Veranstaltungstyp",
+      "event_date": "Veranstaltungsdatum",
+      "event_location_name": "Einsatzort (Objekt/Halle)",
+      "event_location_address": "Einsatzadresse",
+      "event_start_time": "Beginn (Veranstaltung)",
+      "event_end_time": "Ende (Veranstaltung)",
+      "admission_start_time": "Einlassbeginn",
+      "client_name": "Auftraggeber / Veranstalter",
+      "security_service_provider": "Sicherheitsdienstleister (AN)",
+      "contract_reference": "Vertrag / LV-Referenz",
+      "expected_attendance": "Erwartete Zuschauerzahl",
+      "security_staff_count": "Geplante Sicherheitsmitarbeiter (AN) gesamt",
+      "security_roles": "Rollen / Funktionen",
+      "sections": "Einsatzabschnitte",
+      "contact_client": "Ansprechpartner Veranstalter",
+      "contact_security_lead": "Ansprechpartner Einsatzleitung SD",
+      "medical_service": "Sanitätsdienst / Ersthelferregelung",
+      "evacuation_route": "Räumung / Fluchtwegregelung",
+      "assembly_point": "Sammelpunkt",
+      "radio_communication": "Kommunikation / Funkprinzip",
+      "emergency_contacts": "Notfallkontakte",
+      "briefing_time": "Zeitpunkt Einsatzbesprechung",
+      "incident_documentation": "Dokumentation von Ereignissen",
+      "upstream_sk_available": "SK vorhanden (Upstream)",
+      "upstream_sk_path": "SK-Referenz (Pfad/ID)",
+      "sk_protection_goals": "Schutzziele (aus SK)",
+      "sk_key_measures": "Maßnahmenrahmen (aus SK)",
+      "approved_by": "Freigegeben von",
+      "approval_date": "Freigabedatum",
+      "created_by": "Erstellt von",
+      "doc_version": "Dokumentversion",
+      "notes": "Hinweise"
+    },
+    "critical_triggers": [
+      {
+        "id": "no_security_staff",
+        "condition": "security_staff_count is missing OR security_staff_count <= 0",
+        "open_point": "Kräftezahl fehlt oder ist <= 0 — EK nicht einsatzfähig."
+      },
+      {
+        "id": "missing:security_roles",
+        "condition": "security_roles is missing or empty",
+        "open_point": "Rollen-/Kräfteverteilung fehlt oder ist leer."
+      },
+      {
+        "id": "missing:sections",
+        "condition": "sections is missing or empty",
+        "open_point": "Einsatzabschnitte fehlen (z. B. Einlass, Zuschauerbereich, Ringbereich)."
+      },
+      {
+        "id": "missing:event_location_address",
+        "condition": "event_location_address is missing or empty",
+        "open_point": "Vollständige Einsatzadresse fehlt."
+      },
+      {
+        "id": "missing:admission_start_time",
+        "condition": "admission_start_time is missing or empty",
+        "open_point": "Einlassbeginn fehlt."
+      },
+      {
+        "id": "missing:event_start_time",
+        "condition": "event_start_time is missing or empty",
+        "open_point": "Beginn der Veranstaltung fehlt."
+      },
+      {
+        "id": "missing:event_end_time",
+        "condition": "event_end_time is missing or empty",
+        "open_point": "Ende der Veranstaltung fehlt."
+      },
+      {
+        "id": "missing:contact_client",
+        "condition": "contact_client is missing or empty",
+        "open_point": "Ansprechpartner Veranstalter fehlt."
+      },
+      {
+        "id": "missing:contact_security_lead",
+        "condition": "contact_security_lead is missing or empty",
+        "open_point": "Ansprechpartner Einsatzleitung Sicherheitsdienst fehlt."
+      },
+      {
+        "id": "missing:radio_communication",
+        "condition": "radio_communication is missing or empty",
+        "open_point": "Kommunikations-/Funkprinzip fehlt (keine Frequenzen erfinden)."
+      },
+      {
+        "id": "missing:medical_service",
+        "condition": "medical_service is missing or empty",
+        "open_point": "Sanitäts-/Ersthelferregelung fehlt."
+      },
+      {
+        "id": "missing:evacuation_route",
+        "condition": "evacuation_route is missing or empty",
+        "open_point": "Räumungs-/Fluchtwegregelung fehlt."
+      },
+      {
+        "id": "missing:assembly_point",
+        "condition": "assembly_point is missing or empty",
+        "open_point": "Sammelpunkt fehlt."
+      },
+      {
+        "id": "missing:emergency_contacts",
+        "condition": "emergency_contacts is missing or empty",
+        "open_point": "Notfallkontakte fehlen (keine Rufnummern erfinden)."
+      },
+      {
+        "id": "missing:briefing_time",
+        "condition": "briefing_time is missing or empty",
+        "open_point": "Briefingzeit fehlt."
+      },
+      {
+        "id": "approval_missing",
+        "condition": "approved_by is empty",
+        "open_point": "Fachliche Freigabe des Einsatzkonzepts ausstehend."
+      },
+      {
+        "id": "requires:upstream_sk_available:upstream_sk_path",
+        "condition": "if upstream_sk_available == true then upstream_sk_path must be provided",
+        "open_point": "SK-Referenz fehlt, obwohl SK-Upstream aktiviert ist."
+      }
+    ]
+  },
+
+  "ai_blocks": [
+    "EC_EINSATZBESCHREIBUNG",
+    "EC_KRAEFTE_UND_ROLLEN",
+    "EC_POSITIONIERUNG_UND_ABSCHNITTE",
+    "EC_ABLAUF_UND_BRIEFING",
+    "EC_KOMMUNIKATION_UND_MELDEWEGE",
+    "EC_LOGISTIK_AUSRUESTUNG",
+    "EC_NOTFALLPLAN",
+    "EC_DOKUMENTATION_NACHBEREITUNG",
+    "EC_OFFENE_PUNKTE"
+  ],
+
+  "static_blocks": [
+    "Dokumenttitel",
+    "Kapitelüberschriften",
+    "Unterschriftsfeld"
+  ],
+
+  "qa_rules": {
+    "require_approved_by": true,
+    "max_open_points_for_ok": 0,
+    "critical_fields": [
+      "security_staff_count",
+      "security_roles",
+      "sections",
+      "radio_communication",
+      "medical_service",
+      "evacuation_route",
+      "assembly_point",
+      "emergency_contacts"
+    ]
+  },
+
+  "upstream": ["sk_event_kampfsport"],
+  "downstream": ["oda_event_standard"],
+  "exports": ["roles", "sections", "open_points", "measures"]
+}

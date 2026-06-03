@@ -54,6 +54,24 @@ Behandelt typische Anwendungsfälle: K1, MMA, Boxen, Kickboxen, Karate-Vollkonta
   (nur erwähnen, wenn als Aufgabe im Input).
 - Klare Funkkanäle: Einsatzleitung, Ringbereich, Einlass, Sanität.
 
+## Schnittstellen-Schwerpunkt (typisch)
+
+Querschnitt: [[../base#Schnittstellenlogik (allgemein)]]. Für Kampfsport besonders häufig:
+
+- **Sanität / Ringarzt** — Übergabe bei K. o. und Verletzungen im Ring.
+- **Schiedsrichter / Wettkampfleitung** — Unterbrechungen, Sicherheit auf der Fläche.
+- **Veranstalter** — Programm, Pausen, Fan-Lager.
+- **Polizei** — nur bei belegter Eskalation oder Auflage.
+
+## Bezug Dokumentprodukte (Orientierung)
+
+| Produkt | Typischer Fokus aus diesem Subtyp |
+|---------|-----------------------------------|
+| **GB** | Ring, Fan-Lager, Athleten, Publikumseskalation |
+| **SK** | Ring-Sicherheitskonzept, Sanitätsschnittstelle, Eskalation |
+| **EK** | Ringbereich, Ein-/Auslauf, Funk, Sanitäts-Sichtlinie |
+| **ODA** | Ringnähe, Verhalten bei K. o. (wenn Aufgabe im Auftrag) |
+
 ## Was **nicht** ohne Input behauptet werden darf
 
 - Konkrete Anforderungen aus Regelwerken einzelner Verbände

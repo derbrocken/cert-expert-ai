@@ -1,0 +1,98 @@
+{
+  "blueprint_id": "ec_event_kampfsport",
+  "input_data": {
+    "event_name": "K1 Amateur Kampfsport Event",
+    "event_type": "Kampfsport / K1 Amateurveranstaltung",
+    "event_date": "2026-06-14",
+
+    "event_location_name": "Sporthalle Reinickendorf",
+    "event_location_address": "Eichborndamm 72, 13403 Berlin-Reinickendorf",
+
+    "admission_start_time": "16:00",
+    "event_start_time": "17:00",
+    "event_end_time": "23:30",
+
+    "client_name": "Sportclub Musterhausen e.V.",
+    "security_service_provider": "Cert-Expert Sicherheitsdienst (Beispiel)",
+    "contract_reference": "",
+
+    "expected_attendance": 100,
+    "security_staff_count": 2,
+    "security_roles": [
+      {
+        "role": "Einsatzleitung / Koordination",
+        "count": 1,
+        "tasks": [
+          "Ansprechpartner für Veranstalter",
+          "Lagebeurteilung während der Veranstaltung",
+          "Koordination der Sicherheitsmitarbeiter",
+          "Dokumentation besonderer Vorkommnisse"
+        ]
+      },
+      {
+        "role": "Einlass / Innenbereich / Streife",
+        "count": 1,
+        "tasks": [
+          "Unterstützung Einlassbereich",
+          "Kontrolle des Zuschauerbereichs",
+          "Beobachtung Ring-/Kampfbereich aus Sicherheitsabstand",
+          "Meldung und Erstreaktion bei Störungen"
+        ]
+      }
+    ],
+    "sections": [
+      {
+        "section_name": "Einlassbereich",
+        "main_tasks": [
+          "geordneter Einlass",
+          "Ansprechpartnerfunktion",
+          "frühzeitiges Erkennen auffälliger Personen"
+        ]
+      },
+      {
+        "section_name": "Zuschauerbereich",
+        "main_tasks": [
+          "Präsenz zeigen",
+          "Deeskalation bei Streitigkeiten",
+          "Freihalten von Lauf- und Rettungswegen"
+        ]
+      },
+      {
+        "section_name": "Ring-/Kampfbereich",
+        "main_tasks": [
+          "Trennung Zuschauer und Sportbereich beachten",
+          "Zutritt nur für berechtigte Personen nach Vorgabe Veranstalter",
+          "Meldung bei Gefährdungslagen"
+        ]
+      }
+    ],
+
+    "radio_communication": "Kommunikationsprinzip festlegen (z. B. Funk oder Mobil). Keine Frequenzen erfinden. [OFFENER PUNKT] Funk-/Kommunikationsprinzip konkretisieren.",
+    "contact_client": "[OFFENER PUNKT] Ansprechpartner Veranstalter benennen (Name/Funktion, Erreichbarkeit).",
+    "contact_security_lead": "[OFFENER PUNKT] Einsatzleitung Sicherheitsdienst benennen (Name/Funktion, Erreichbarkeit).",
+    "medical_service": "[OFFENER PUNKT] Sanitäts-/Ersthelferregelung bestätigen (Veranstalter/Ringarzt).",
+    "evacuation_route": "[OFFENER PUNKT] Räumungs-/Fluchtwegregelung und Verantwortliche ergänzen.",
+    "assembly_point": "[OFFENER PUNKT] Sammelpunkt ergänzen.",
+    "emergency_contacts": [
+      "[OFFENER PUNKT] Notfallkontakte ergänzen (ohne erfundene Rufnummern)."
+    ],
+    "briefing_time": "[OFFENER PUNKT] Briefingzeit festlegen.",
+
+    "upstream_sk_available": false,
+    "upstream_sk_path": "",
+    "sk_protection_goals": [
+      "[OFFENER PUNKT] Schutzziele aus SK übernehmen oder manuell ergänzen."
+    ],
+    "sk_key_measures": [
+      "[OFFENER PUNKT] Maßnahmenrahmen aus SK übernehmen oder manuell ergänzen."
+    ],
+
+    "incident_documentation": "Besondere Vorkommnisse werden durch die Einsatzleitung dokumentiert und nach Einsatzende an den Auftraggeber gemeldet.",
+    "special_instructions": "Keine automatische Kräfteoptimierung. Fehlende Angaben als offene Punkte ausweisen.",
+
+    "created_by": "M. Mahra",
+    "approved_by": "",
+    "doc_version": "0.1",
+    "notes": "MVP-EK Datensatz. Offene Punkte bewusst enthalten, um OP-Logik zu testen."
+  }
+}

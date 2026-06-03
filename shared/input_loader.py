@@ -55,6 +55,26 @@ def _evaluate_trigger(trigger: dict[str, Any], data: dict[str, Any]) -> bool:
     """
     trigger_id = trigger.get("id", "")
 
+    # Generic: "missing:<field>" → fire when the field is empty/missing.
+    if isinstance(trigger_id, str) and trigger_id.startswith("missing:"):
+        field = trigger_id.split("missing:", 1)[1].strip()
+        if not field:
+            return False
+        return _is_empty(data.get(field))
+
+    # Generic: "requires:<flag_field>:<required_field>" → if flag is truthy,
+    # required_field must be non-empty.
+    if isinstance(trigger_id, str) and trigger_id.startswith("requires:"):
+        rest = trigger_id.split("requires:", 1)[1]
+        parts = [p.strip() for p in rest.split(":", 1)]
+        if len(parts) != 2:
+            return False
+        flag_field, required_field = parts
+        flag_val = data.get(flag_field)
+        if bool(flag_val):
+            return _is_empty(data.get(required_field))
+        return False
+
     if trigger_id == "venue_exits_missing_or_zero":
         ve = data.get("venue_exits")
         return ve is None or (isinstance(ve, (int, float)) and ve == 0)

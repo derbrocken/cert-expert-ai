@@ -1,0 +1,9 @@
+{
+  "project_id": "k1_berlin_2026",
+  "display_name": "K1 Amateur Kampfsport Event — Berlin-Reinickendorf",
+  "hq_customer_slug": null,
+  "event_date": "2026-06-14",
+  "blueprints": ["sk_event_kampfsport", "ec_event_kampfsport"],
+  "status": "active",
+  "notes": "Referenz-Event für Bot-Tests. Inputs: inputs/sk_event_kampfsport.json, inputs/ec_event_kampfsport.json"
+}

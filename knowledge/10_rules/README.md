@@ -1,4 +1,4 @@
-# knowledge/9_rules/
+# knowledge/10_rules/
 
 Harte Verhaltensregeln für die Fachbots.
 Die wichtigste Kategorie für Halluzinationsschutz und OFFENER PUNKT-Logik.

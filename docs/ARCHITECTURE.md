@@ -1,5 +1,8 @@
 # Cert-Expert AI — System Architecture
 
+**Produktvision (Certification OS):** `docs/CERTIFICATION_OS_ARCHITECTURE.md`  
+**Dieses Dokument:** Dokumentenbot-Pipeline und Repo-Struktur.
+
 ## Overview
 
 This system builds closed, rule-bound specialist bots for Cert-Expert document generation.

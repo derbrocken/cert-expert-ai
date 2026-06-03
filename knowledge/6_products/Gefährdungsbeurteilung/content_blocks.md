@@ -1,7 +1,7 @@
 # Produkt: GB — Inhaltsblöcke (`GB_*`-Platzhalter)
 
 Welcher GB-Blueprint welche Blöcke verwendet, steht im jeweiligen Blueprint
-(`knowledge/6_blueprint/*.json` → `ai_blocks`). Hier ist beschrieben, was
+(`knowledge/7_blueprint/*.json` → `ai_blocks`). Hier ist beschrieben, was
 **jeder** dieser Blöcke enthalten muss, wenn er aktiv ist.
 
 ---
