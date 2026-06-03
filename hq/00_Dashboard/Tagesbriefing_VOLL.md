@@ -1,6 +1,7 @@
 # Tagesbriefing — Vollständig — Cert-Expert HQ
 
-**Generiert:** 2026-06-03 18:31 (lokal)  
+**Generiert:** 2026-06-03 18:53 (lokal)  
+**Heute:** 03.06.2026 · **Morgen:** 04.06.2026  
 **Obsidian:** Leseansicht (siehe `WIE_NUTZEN.md`) — Buch-Symbol oder **Cmd+E**.
 
 > Alle urgent-To-dos und Welle-1-Aufzählungen — für Wochenplanung, nicht jeden Morgen.
@@ -20,7 +21,6 @@
 - **Schutzritter** — VK-Datei uploaden — überfällig, Voraussetzung für nächsten Prozessschritt _(Frist: 2026-06-04)_
 - **Schutzritter** — Eingang erste Unternehmensformulare prüfen (Kunde-Upload morgen) _(Frist: 2026-06-05)_
 - **Schutzritter** — Mitarbeiterformulare an Schutzritter senden (nach Eingang Unternehmensunterlagen) _(Frist: 2026-06-07)_
-- **TeamFlex** — Wachbuchauszug nachfassen bis 11.06. _(Frist: 2026-06-11)_
 - **TeamFlex** — Zusatzbeauftragung DIN 77200 mit Kunde abstimmen und dokumentieren _(Frist: 2026-06-11)_
 - **TeamFlex** — Wachbuchauszug vom Kunden einfordern (im Gespräch angesprochen — noch nicht geliefert) _(Frist: 2026-06-11)_
 - **TeamFlex** — Neuen Monatsplan vom Kunden einholen und dokumentieren _(Frist: 2026-06-11)_
@@ -30,8 +30,6 @@
 - **SecuGuard** — Hauptabweichungen M1–M5 schließen (Ü1-Dokument — siehe Audit_2026.md) _(Frist: 2026-06-28)_
 - **Checkpoint_Regional** — Vollständigen Upload der Unternehmensunterlagen (Portal/DEKRA) — wartet auf vollständige Unterlagen _(Frist: —)_
 - **Checkpoint_Regional** — DEKRA-Angebot prüfen und **vom Kunden unterschreiben lassen** _(Frist: —)_
-- **TeamFlex** — Kunde wegen Zusatzbeauftragung DIN 77200 heute anrufen _(Frist: —)_
-- **TeamFlex** — Wachbuchauszug nachfassen _(Frist: —)_
 
 ---
 
@@ -43,9 +41,6 @@
 **Termine:** 12.06.2026
 
 - [Status](../03_Kundenprojekte/TeamFlex/Status.md) · [To-dos](../03_Kundenprojekte/TeamFlex/ToDos.md)
-  - [urgent] Kunde wegen Zusatzbeauftragung DIN 77200 heute anrufen
-  - [urgent] Wachbuchauszug nachfassen
-  - [urgent] Wachbuchauszug nachfassen bis 11.06.
   - [urgent] Zusatzbeauftragung DIN 77200 mit Kunde abstimmen und dokumentieren
   - [urgent] Wachbuchauszug vom Kunden einfordern (im Gespräch angesprochen — noch nicht geliefert)
   - [urgent] Neuen Monatsplan vom Kunden einholen und dokumentieren
@@ -83,7 +78,7 @@
 
 | Ampel | Kunde | Termine | Offen |
 |-------|-------|---------|-------|
-| 🔴 | **[TeamFlex](../03_Kundenprojekte/TeamFlex/Status.md)** | 12.06.2026 | 11 |
+| 🔴 | **[TeamFlex](../03_Kundenprojekte/TeamFlex/Status.md)** | 12.06.2026 | 8 |
 | 🔴 | **[Wolf Street](../03_Kundenprojekte/Wolf_Street/Status.md)** | 16.06.2026, 17.07.2026 | 6 |
 | 🔴 | **[SecuGuard](../03_Kundenprojekte/SecuGuard/Status.md)** | — | 3 |
 | 🔴 | **[Schutzritter](../03_Kundenprojekte/Schutzritter/Status.md)** | 26.06.2026 | 8 |

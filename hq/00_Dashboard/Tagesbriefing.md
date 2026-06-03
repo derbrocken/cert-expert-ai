@@ -1,11 +1,12 @@
 # Tagesbriefing — Cert-Expert HQ
 
-**Generiert:** 2026-06-03 18:31 (lokal)  
+**Generiert:** 2026-06-03 18:53 (lokal)  
+**Heute:** 03.06.2026 · **Morgen:** 04.06.2026  
 **Obsidian:** Leseansicht (siehe `WIE_NUTZEN.md`) — Buch-Symbol oder **Cmd+E**.
 
-> **Morgens:** Nur diese Seite. Welle-1-Details → Status/ToDos.
+> **Morgens:** Nur diese Seite. Portfolio: [operations_snapshot.md](operations_snapshot.md)
 > **Wöchentlich / Planung:** [Tagesbriefing_VOLL.md](Tagesbriefing_VOLL.md)
-> **Master Dump:** Referenz & Restliste — [MIGRATION_STATUS.md](../01_Master_Dump/MIGRATION_STATUS.md)
+> **Master Dump:** [MIGRATION_STATUS.md](../01_Master_Dump/MIGRATION_STATUS.md)
 
 ---
 
@@ -32,7 +33,7 @@
 
 | Kunde | Blocker (Kurz) | Termin | Offen |
 |-------|------------------|--------|-------|
-| 🔴 **[TeamFlex](../03_Kundenprojekte/TeamFlex/Status.md)** | Wachbuchauszug fehlt (noch anfordern); neuer Monatsplan + Monatsberich | 12.06.2026 | 11 (8 urgent) · [ToDos](../03_Kundenprojekte/TeamFlex/ToDos.md) |
+| 🔴 **[TeamFlex](../03_Kundenprojekte/TeamFlex/Status.md)** | Wachbuchauszug fehlt (noch anfordern); neuer Monatsplan + Monatsberich | 12.06.2026 | 8 (5 urgent) · [ToDos](../03_Kundenprojekte/TeamFlex/ToDos.md) |
 | 🔴 **[Wolf Street](../03_Kundenprojekte/Wolf_Street/Status.md)** | Rechtskataster / Umweltkennzahlen / KPI ISO 14001; Managementbewertung | 16.06.2026, 17.07.2026 | 6 (1 urgent) · [ToDos](../03_Kundenprojekte/Wolf_Street/ToDos.md) |
 | 🔴 **[SecuGuard](../03_Kundenprojekte/SecuGuard/Status.md)** | NC-Schließung bis 30.06.; Querschnittsthemen (Mutterschutz, Beteiligun | — | 3 (1 urgent) · [ToDos](../03_Kundenprojekte/SecuGuard/ToDos.md) |
 
@@ -42,7 +43,7 @@
 
 | Ampel | Kunde | Termine | Offen |
 |-------|-------|---------|-------|
-| 🔴 | **[TeamFlex](../03_Kundenprojekte/TeamFlex/Status.md)** | 12.06.2026 | 11 |
+| 🔴 | **[TeamFlex](../03_Kundenprojekte/TeamFlex/Status.md)** | 12.06.2026 | 8 |
 | 🔴 | **[Wolf Street](../03_Kundenprojekte/Wolf_Street/Status.md)** | 16.06.2026, 17.07.2026 | 6 |
 | 🔴 | **[SecuGuard](../03_Kundenprojekte/SecuGuard/Status.md)** | — | 3 |
 | 🔴 | **[Schutzritter](../03_Kundenprojekte/Schutzritter/Status.md)** | 26.06.2026 | 8 |

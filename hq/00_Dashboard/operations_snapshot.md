@@ -1,6 +1,6 @@
 # Operations Snapshot — Cert-Expert HQ
 
-**Generiert:** 2026-06-03 18:31 (lokal)  
+**Generiert:** 2026-06-03 18:53 (lokal)  
 **Basis:** `hq/03_Kundenprojekte/`, Querschnitt-ToDos, Status/Audit  
 **Nutzen:** Portfolio-Fragen für HQ Assistant — vor Kunden-Detailkontext laden.
 
@@ -8,12 +8,14 @@
 
 ## Meta
 
-- snapshot_at: `2026-06-03 18:31`
+- snapshot_at: `2026-06-03 18:53`
+- reference_date_heute: `2026-06-03` (03.06.2026)
+- reference_date_morgen: `2026-06-04`
 - active_customers: 7
 - red_ampel: 4
 - audits_next_30d: 3
 - overdue_todos: 0
-- urgent_todos: 15
+- urgent_todos: 12
 - open_receivables: 3
 
 ---
@@ -27,8 +29,8 @@
 | Ampel | 🔴 |
 | Audit / Frist | 12.06.2026 / 12.06.2026 |
 | Projekttyp | Überwachungsaudit DIN 77200 |
-| Offene To-dos | 11 |
-| urgent | 8 |
+| Offene To-dos | 8 |
+| urgent | 5 |
 | überfällig | 0 |
 | Hauptblocker | Wachbuchauszug fehlt (noch anfordern); neuer Monatsplan + Monatsbericht vom Kunden ausstehend; **beide Projektordner** i |
 | Wartet auf | Kunde (inferred) |
@@ -195,9 +197,6 @@ _Quelle: `07_DFSS/Pilot_Measurement_Juni_2026.md`_
 
 ### Urgent Aufgaben
 
-- **TeamFlex** · [urgent] Kunde wegen Zusatzbeauftragung DIN 77200 heute anrufen _(Frist: —, ID: TODO-20260603-tf13)_
-- **TeamFlex** · [urgent] Wachbuchauszug nachfassen _(Frist: —, ID: TODO-20260603-tf12)_
-- **TeamFlex** · [urgent] Wachbuchauszug nachfassen bis 11.06. _(Frist: 2026-06-11, ID: TODO-20260603-tf11)_
 - **TeamFlex** · [urgent] Zusatzbeauftragung DIN 77200 mit Kunde abstimmen und dokumentieren _(Frist: 2026-06-11, ID: TODO-20260603-tf02)_
 - **TeamFlex** · [urgent] Wachbuchauszug vom Kunden einfordern (im Gespräch angesprochen — noch nicht geliefert) _(Frist: 2026-06-11, ID: TODO-20260603-tf05)_
 - **TeamFlex** · [urgent] Neuen Monatsplan vom Kunden einholen und dokumentieren _(Frist: 2026-06-11, ID: TODO-20260603-tf06)_
