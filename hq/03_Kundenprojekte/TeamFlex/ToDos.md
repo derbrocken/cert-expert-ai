@@ -22,6 +22,12 @@
 - **Erstellt:** 2026-06-03T12:00:00+02:00
 - **Rohinput:** Operations Board Welle 1; merged: tf13 „heute anrufen“
 - **Hinweis:** Haupt-To-do für DIN-Zusatzbeauftragung — Duplikat tf13 → Erledigt
+- **Owner:** TBD
+- **Wartet auf:** Kunde
+- **Due date:** 2026-06-11
+- **Audit impact:** Scope-/Vertragsnachweis DIN 77200 für Überwachungsaudit unvollständig
+- **S0 relation:** S0-03, S0-05
+- **Evidence ID:** EV-TF-001
 
 ## TODO-20260603-tf04
 
@@ -36,6 +42,12 @@
 - **Nächster Schritt:** Abgleich DIN 77200 Anforderungen
 - **Erstellt:** 2026-06-03T12:00:00+02:00
 - **Rohinput:** Operations Board
+- **Owner:** TBD
+- **Wartet auf:** TBD
+- **Due date:** 2026-06-11
+- **Audit impact:** Dienstanweisung (ADA) — Prüfpunkt Audit-Checkliste DIN 77200
+- **S0 relation:** S0-08
+- **Evidence ID:** EV-TF-002
 
 ## TODO-20260603-tf05
 
@@ -51,6 +63,12 @@
 - **Erstellt:** 2026-06-03T12:00:00+02:00
 - **Rohinput:** Operations Board — Wachbuchauszug
 - **Hinweis:** Haupt-To-do Wachbuch — Duplikate tf11, tf12 → Erledigt
+- **Owner:** TBD
+- **Wartet auf:** Kunde
+- **Due date:** 2026-06-11
+- **Audit impact:** Betriebsdokumentation (Wachbuch) fehlt — kritischer Pfad Audit
+- **S0 relation:** S0-03
+- **Evidence ID:** EV-TF-003
 
 ## TODO-20260603-tf06
 
@@ -65,6 +83,12 @@
 - **Nächster Schritt:** Im Gespräch vereinbart — Lieferung durch Kunden sichern
 - **Erstellt:** 2026-06-03T12:00:00+02:00
 - **Rohinput:** Operations Board
+- **Owner:** TBD
+- **Wartet auf:** Kunde
+- **Due date:** 2026-06-11
+- **Audit impact:** Monatsplan als Betriebs-/Planungsnachweis für Audit offen
+- **S0 relation:** S0-03
+- **Evidence ID:** EV-TF-004
 
 ## TODO-20260603-tf07
 
@@ -79,6 +103,12 @@
 - **Nächster Schritt:** Beide Ordner vervollständigen, dann Checkliste vs. Norm
 - **Erstellt:** 2026-06-03T12:00:00+02:00
 - **Rohinput:** Operations Board — DEKRA-Ordner, Auditfähigkeit
+- **Owner:** TBD
+- **Wartet auf:** Intern (Cert-Expert)
+- **Due date:** 2026-06-11
+- **Audit impact:** DEKRA-/Auditmappe nicht auditfähig — Mindestnachweise unvollständig
+- **S0 relation:** S0-07
+- **Evidence ID:** EV-TF-005
 
 ## TODO-20260603-tf08
 
@@ -93,6 +123,12 @@
 - **Nächster Schritt:** Liste Leistungsorte + Zuordnung SMA
 - **Erstellt:** 2026-06-03T12:00:00+02:00
 - **Rohinput:** Operations Board + Master Dump — service locations
+- **Owner:** TBD
+- **Wartet auf:** TBD
+- **Due date:** 2026-06-11
+- **Audit impact:** Leistungsorte / Scope-Dokumentation für Audit offen
+- **S0 relation:** S0-07
+- **Evidence ID:** EV-TF-006
 
 ## TODO-20260603-tf09
 
@@ -107,6 +143,12 @@
 - **Nächster Schritt:** Aus Master Dump: personnel files, training records
 - **Erstellt:** 2026-06-03T12:00:00+02:00
 - **Rohinput:** Master Dump
+- **Owner:** TBD
+- **Wartet auf:** TBD
+- **Due date:** 2026-06-11
+- **Audit impact:** Personalakten / Schulungsnachweise — Stichprobe Audit-Checkliste
+- **S0 relation:** S0-07
+- **Evidence ID:** EV-TF-007
 
 ## TODO-20260603-tf10
 
@@ -121,6 +163,12 @@
 - **Nächster Schritt:** Mit Monatsplan (tf06) beim Kunden nachfassen
 - **Erstellt:** 2026-06-03T18:00:00+02:00
 - **Rohinput:** Kundengespräch — neuer Monatsbericht gefordert
+- **Owner:** TBD
+- **Wartet auf:** Kunde
+- **Due date:** 2026-06-11
+- **Audit impact:** Monatsbericht als Betriebsnachweis für Audit offen
+- **S0 relation:** S0-03
+- **Evidence ID:** EV-TF-008
 
 ---
 

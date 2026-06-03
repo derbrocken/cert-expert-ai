@@ -41,6 +41,24 @@
 4. Leistungsorte und Monatsplan dokumentieren  
 5. Personalakten und Schulungsnachweise (Stichprobe)
 
+## DFSS / Pilot Measurement
+
+<!-- P-ID provisional: first DFSS reference container; no formal P01–P05 registry in HQ yet -->
+
+DFSS Project ID: P03  
+DFSS Relevance: Pilot / Baseline  
+Project type: Überwachungsaudit / Surveillance audit  
+Norms: DIN 77200  
+SDLs: TBD  
+Service model: TBD  
+Project start: TBD  
+Audit date: 2026-06-12  
+Readiness: NOT READY — audit-critical gaps open (see `Audit_2026.md`)  
+Main blocker: Wachbuchauszug fehlt (noch anfordern); neuer Monatsplan + Monatsbericht vom Kunden ausstehend; beide Projektordner intern noch nicht fertig; Zusatzbeauftragung DIN 77200 ggf. noch schriftlich fixieren  
+S0 blocker present: Yes (inferred from open audit-critical items — see ToDos EV-TF-*)  
+Next critical action: Wachbuchauszug vom Kunden einfordern (ASAP; Frist To-do 11.06.2026)  
+Evidence IDs: EV-TF-001, EV-TF-002, EV-TF-003, EV-TF-004, EV-TF-005, EV-TF-006, EV-TF-007, EV-TF-008
+
 ## Verknüpfung
 
 - To-dos: [`ToDos.md`](ToDos.md)
