@@ -35,7 +35,9 @@ Siehe `03_Kundenprojekte/_registry.json` und je Kunde:
 - `Dokumente_und_Nachweise.md`
 - `Lessons_Learned.md`
 
-**Nächster Schritt von dir:** Alle offenen To-dos in die jeweiligen `ToDos.md` eintragen (Schema in `08_Vorlagen/ToDos_template.md`).
+**Obsidian (lokal):** Morgens [`00_Dashboard/Tagesbriefing.md`](00_Dashboard/Tagesbriefing.md) öffnen — erzeugen mit `python3 hq/scripts/build_dashboard.py` (siehe [`00_Dashboard/WIE_NUTZEN.md`](00_Dashboard/WIE_NUTZEN.md)).
+
+**Nächster Schritt von dir:** Updates per Chat/Cursor (später Telegram) — Schema in `08_Vorlagen/ToDos_template.md`.
 
 ---
 
