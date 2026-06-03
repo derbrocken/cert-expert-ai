@@ -6,6 +6,7 @@ import json
 import re
 import subprocess
 import sys
+from datetime import date, timedelta
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
@@ -28,9 +29,35 @@ PORTFOLIO_INTENT_RE = re.compile(
     r"forderung|forderungen|rechnung|"
     r"rote ampel|rote kunden|🔴|"
     r"wartet auf (kunde|dekra|auditor)|"
-    r"wichtigste aufgaben|heute fokus|"
-    r"was blockiert|geschäft|geschaeft"
+    r"wichtigste aufgaben|heute fokus|heute dringend|"
+    r"morgen früh|morgen frueh|erstes machen|"
+    r"was blockiert|geschäft|geschaeft|was ist heute"
     r")\b",
+    re.I,
+)
+
+CROSS_INTENT_RE = re.compile(
+    r"\b(forderung|forderungen|rechnung|mahnung|angebot|vertrieb|software|dfss|afas)\b",
+    re.I,
+)
+
+TERMINAL_CMD_RE = re.compile(
+    r"^(?:"
+    r"git\s+"
+    r"|source\s+"
+    r"|\.venv/"
+    r"|/usr/"
+    r"|/bin/"
+    r"|export\s+"
+    r"|cd\s+"
+    r"|pip3?\s+"
+    r"|npm\s+"
+    r"|yarn\s+"
+    r"|make\s+"
+    r"|sudo\s+"
+    r"|python3?\s+(-m\s+)?"
+    r"|\.venv/bin/python"
+    r")",
     re.I,
 )
 
@@ -40,6 +67,47 @@ CROSS_FILES = [
     ("Software", HQ / "06_Software" / "Software_Backlog_Juni_2026.md"),
     ("DFSS", HQ / "07_DFSS" / "Pilot_Measurement_Juni_2026.md"),
 ]
+
+TERMINAL_HINT = (
+    "Das sieht nach einem Terminalbefehl aus. Ich führe ihn nicht als HQ-Abfrage aus. "
+    "Bitte im Terminal ausführen."
+)
+
+
+def is_terminal_command(text: str) -> bool:
+    t = text.strip()
+    if not t:
+        return False
+    if TERMINAL_CMD_RE.match(t):
+        return True
+    if re.match(r"^(git|source|pip3?|npm|cd|export|sudo)\s+\S", t, re.I):
+        return True
+    if re.match(r"^\.venv/bin/", t, re.I):
+        return True
+    if re.match(r"^\./", t):
+        return True
+    if re.match(r"^python3?\s+\S+\.py\b", t, re.I):
+        return True
+    if re.match(r"^python3?\s+-m\s+", t, re.I):
+        return True
+    if "build_dashboard.py" in t and "?" not in t:
+        return True
+    return False
+
+
+def _date_context_block(today: date | None = None) -> str:
+    today = today or date.today()
+    tomorrow = today + timedelta(days=1)
+    return (
+        "### Datumskontext (für Antworten)\n\n"
+        f"- **Heute:** {today.isoformat()} ({today.strftime('%d.%m.%Y')})\n"
+        f"- **Morgen:** {tomorrow.isoformat()} ({tomorrow.strftime('%d.%m.%Y')})\n"
+        "- Relative Begriffe in Antworten: „heute“ = Heute oben; „morgen“ = Morgen oben.\n"
+        "- Abschnitt **„Morgen früh“** im Operations Board = historische Import-Überschrift "
+        "(Stand Juni 2026), **nicht** automatisch der Kalendertag „Morgen“.\n"
+        "- To-dos mit Wort „heute“ im Aufgabentext = Formulierung beim Anlegen; "
+        "nur als **heute fällig** werten, wenn Frist = Heute oder explizit so vermerkt."
+    )
 
 
 def refresh_briefing() -> None:
@@ -104,7 +172,7 @@ def build_context_pack(
     slugs = list(dict.fromkeys((extra_slugs or []) + detect_customer_slugs(question, registry)))
     portfolio = force_portfolio or is_portfolio_question(question, slugs)
 
-    blocks: list[str] = []
+    blocks: list[str] = [_date_context_block()]
     sources: list[str] = []
 
     def add(label: str, path: Path) -> None:
@@ -122,14 +190,24 @@ def build_context_pack(
         add("Tagesbriefing VOLL", DASH / "Tagesbriefing_VOLL.md")
 
     if portfolio:
-        if include_cross or PORTFOLIO_INTENT_RE.search(question or ""):
+        if include_cross or CROSS_INTENT_RE.search(question or ""):
             for label, path in CROSS_FILES:
                 add(f"Querschnitt {label}", path)
-        blocks.append(
-            "### Modus\n"
+        modus_hint = (
             "**Portfolio-Frage** — antworte primär aus Operations Snapshot "
             "(Abschnitt Portfolio-Auswertungen). Keine vollständigen Kundenordner nötig."
         )
+        if re.search(r"morgen früh|morgen frueh|erstes machen", question, re.I):
+            modus_hint += (
+                " Bei „morgen früh“: Kalendertag **Morgen** aus Datumskontext — "
+                "nicht den Operations-Board-Abschnitt „Morgen früh“. "
+                "Priorität: Snapshot § Urgent, § Audits (≤7 Tage), Tagesbriefing Top-Aktionen."
+            )
+        if re.search(r"heute dringend|was ist heute", question, re.I):
+            modus_hint += (
+                " Priorität: Snapshot § Urgent + § Überfällige Aufgaben + Audits ≤7 Tage."
+            )
+        blocks.append(f"### Modus\n{modus_hint}")
     else:
         for slug in slugs:
             base = KP / slug
@@ -163,6 +241,11 @@ SYSTEM_PROMPT = """Du bist der **Cert-Expert HQ Assistant** — Organisation, St
 - Antworte **nur** aus **HQ-KONTEXT** (primär `operations_snapshot.md`).
 - Felder mit `(inferred)` oder `TBD`/`unbekannt` nicht als harte Fakten darstellen.
 - Nichts erfinden. Fehlende Daten benennen.
+
+## Datum
+- Nutze **Datumskontext** am Anfang des HQ-KONTEXT (Heute/Morgen).
+- Nenne in Antworten das konkrete Datum (DD.MM.YYYY), nicht nur „heute“, wenn es Missverständnisse vermeidet.
+- „Morgen früh“ im Operations Board ≠ Kalender-Morgen.
 
 ## Antwortschablone — Portfolio-Fragen
 1. **Kurzantwort** (1–3 Sätze)

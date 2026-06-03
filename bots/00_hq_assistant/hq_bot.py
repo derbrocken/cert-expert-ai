@@ -21,10 +21,21 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 
-from .hq_context import REPO_ROOT, SYSTEM_PROMPT, build_context_pack, refresh_briefing
+from .hq_context import (
+    REPO_ROOT,
+    SYSTEM_PROMPT,
+    TERMINAL_HINT,
+    build_context_pack,
+    is_terminal_command,
+    refresh_briefing,
+)
 from .hq_todos import CATEGORIES, ingest_todo_text, is_todo_intent
 
 LOG = "[HQ-Assistant]"
+
+
+def _reject_terminal_command() -> None:
+    print(TERMINAL_HINT)
 
 
 def _answer(question: str, context: str, sources: list[str], mode: str, *, temperature: float) -> str:
@@ -118,6 +129,11 @@ def main() -> None:
         t = text.strip()
         if not t:
             return
+
+        if is_terminal_command(t):
+            _reject_terminal_command()
+            return
+
         is_add = args.add or is_todo_intent(t) or (args.task and slug)
         if is_add and not args.task:
             _run_add(
