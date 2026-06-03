@@ -1,7 +1,9 @@
 # ToDos — ZT Security
 
 **Projekt-Slug:** `ZT_Security`  
-**Letzte Aktualisierung:** 2026-06-03
+**Letzte Aktualisierung:** 2026-06-03  
+**Audit:** **08.07.2026** — Überwachungsaudit (bestätigt)  
+**Scope:** ISO 9001 + DIN 77200-1 · **ohne** DIN 77200-2 Flüchtlingsunterkünfte
 
 ---
 
@@ -9,7 +11,7 @@
 
 ## TODO-20260603-zt01
 
-- **Aufgabe:** Scope-Anpassung auf ISO 9001 + DIN 77200-1 dokumentieren und umsetzen
+- **Aufgabe:** Scope auf ISO 9001 + DIN 77200-1 reduzieren; DIN 77200-2 Flüchtlingsunterkünfte aus Scope/Vertrag/Unterlagen entfernen
 - **Projekt:** ZT_Security
 - **Kategorie:** Audit / Zertifizierung
 - **Verantwortlich:** (unassigned)

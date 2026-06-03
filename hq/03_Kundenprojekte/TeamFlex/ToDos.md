@@ -1,26 +1,12 @@
 # ToDos — TeamFlex
 
 **Projekt-Slug:** `TeamFlex`  
-**Letzte Aktualisierung:** 2026-06-03  
-**Audit:** 12.06.2026 — **Welle 1 kritisch**
+**Letzte Aktualisierung:** 2026-06-03 (nach Kundengespräch)  
+**Audit:** **12.06.2026** (verschoben von **06.06.**) — **Welle 1 kritisch**
 
 ---
 
 ## Offen
-
-## TODO-20260603-tf01
-
-- **Aufgabe:** Kunden anrufen — offene Punkte vor Audit klären
-- **Projekt:** TeamFlex
-- **Kategorie:** Kundenkommunikation
-- **Verantwortlich:** (unassigned)
-- **Frist:** 2026-06-04
-- **Status:** open
-- **Priorität:** urgent
-- **Quelle:** manual
-- **Nächster Schritt:** Gesprächsagenda: Wachbuch, Zusatzbeauftragung, DEKRA
-- **Erstellt:** 2026-06-03T12:00:00+02:00
-- **Rohinput:** Operations Board — MORGEN FRÜH / Audit 12.06.
 
 ## TODO-20260603-tf02
 
@@ -35,20 +21,6 @@
 - **Nächster Schritt:** Schriftliche Bestätigung / Vertragsnachtrag
 - **Erstellt:** 2026-06-03T12:00:00+02:00
 - **Rohinput:** Operations Board Welle 1
-
-## TODO-20260603-tf03
-
-- **Aufgabe:** Subunternehmer-Thematik klären (Nachweise, Verträge)
-- **Projekt:** TeamFlex
-- **Kategorie:** Audit / Zertifizierung
-- **Verantwortlich:** (unassigned)
-- **Frist:** 2026-06-11
-- **Status:** open
-- **Priorität:** high
-- **Quelle:** manual
-- **Nächster Schritt:** Liste Subunternehmer + Kontrollen
-- **Erstellt:** 2026-06-03T12:00:00+02:00
-- **Rohinput:** Operations Board + Master Dump
 
 ## TODO-20260603-tf04
 
@@ -66,35 +38,35 @@
 
 ## TODO-20260603-tf05
 
-- **Aufgabe:** Wachbuchauszug vom Kunden einfordern
+- **Aufgabe:** Wachbuchauszug vom Kunden einfordern (im Gespräch angesprochen — noch nicht geliefert)
 - **Projekt:** TeamFlex
 - **Kategorie:** Nachweis / Dokumentation
 - **Verantwortlich:** (unassigned)
-- **Frist:** 2026-06-05
+- **Frist:** 2026-06-11
 - **Status:** open
 - **Priorität:** urgent
 - **Quelle:** manual
-- **Nächster Schritt:** Frist „morgen“ mit Kunde kommunizieren
+- **Nächster Schritt:** Schriftlich / Portal nachfassen
 - **Erstellt:** 2026-06-03T12:00:00+02:00
 - **Rohinput:** Operations Board — Wachbuchauszug
 
 ## TODO-20260603-tf06
 
-- **Aufgabe:** Monatsplan-Thematik klären und dokumentieren
+- **Aufgabe:** Neuen Monatsplan vom Kunden einholen und dokumentieren
 - **Projekt:** TeamFlex
 - **Kategorie:** Audit / Zertifizierung
 - **Verantwortlich:** (unassigned)
 - **Frist:** 2026-06-11
 - **Status:** open
-- **Priorität:** high
+- **Priorität:** urgent
 - **Quelle:** manual
-- **Nächster Schritt:** Anforderungen Auditor/DEKRA abgleichen
+- **Nächster Schritt:** Im Gespräch vereinbart — Lieferung durch Kunden sichern
 - **Erstellt:** 2026-06-03T12:00:00+02:00
 - **Rohinput:** Operations Board
 
 ## TODO-20260603-tf07
 
-- **Aufgabe:** DEKRA-Ordner / Auditmappe auf Auditfähigkeit prüfen
+- **Aufgabe:** Beide Projektordner (DEKRA-/Auditmappe) fertigstellen und auf Auditfähigkeit prüfen
 - **Projekt:** TeamFlex
 - **Kategorie:** Nachweis / Dokumentation
 - **Verantwortlich:** (unassigned)
@@ -102,7 +74,7 @@
 - **Status:** open
 - **Priorität:** urgent
 - **Quelle:** manual
-- **Nächster Schritt:** Checkliste Ordner vs. Norm
+- **Nächster Schritt:** Beide Ordner vervollständigen, dann Checkliste vs. Norm
 - **Erstellt:** 2026-06-03T12:00:00+02:00
 - **Rohinput:** Operations Board — DEKRA-Ordner, Auditfähigkeit
 
@@ -134,6 +106,20 @@
 - **Erstellt:** 2026-06-03T12:00:00+02:00
 - **Rohinput:** Master Dump
 
+## TODO-20260603-tf10
+
+- **Aufgabe:** Neuen Monatsbericht vom Kunden einholen und dokumentieren
+- **Projekt:** TeamFlex
+- **Kategorie:** Nachweis / Dokumentation
+- **Verantwortlich:** (unassigned)
+- **Frist:** 2026-06-11
+- **Status:** open
+- **Priorität:** urgent
+- **Quelle:** manual
+- **Nächster Schritt:** Mit Monatsplan (tf06) beim Kunden nachfassen
+- **Erstellt:** 2026-06-03T18:00:00+02:00
+- **Rohinput:** Kundengespräch — neuer Monatsbericht gefordert
+
 ---
 
 ## In Bearbeitung
@@ -141,5 +127,17 @@
 ---
 
 ## Erledigt
+
+## TODO-20260603-tf01
+
+- **Aufgabe:** Kunden anrufen — offene Punkte vor Audit klären
+- **Status:** done
+- **Erledigt:** 2026-06-03 — Audit 12.06. bestätigt, Subunternehmer-Freigabe, Monatsplan/-bericht und Wachbuch besprochen
+
+## TODO-20260603-tf03
+
+- **Aufgabe:** Subunternehmer-Thematik klären (Nachweise, Verträge)
+- **Status:** done
+- **Erledigt:** 2026-06-03 — Freigabe / Zusage Subunternehmer vom Kunden erhalten
 
 ---

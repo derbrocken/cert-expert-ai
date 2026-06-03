@@ -4,7 +4,7 @@
 
 ## TODO-20260603-ford01
 
-- **Aufgabe:** AVAS — offene Rechnung ISO 14001 nachverfolgen und begleichen
+- **Aufgabe:** AFAS — offene Rechnung ISO 14001 Projekt nachverfolgen und begleichen
 - **Projekt:** (Querschnitt)
 - **Kategorie:** Forderung / Finance
 - **Verantwortlich:** (unassigned)

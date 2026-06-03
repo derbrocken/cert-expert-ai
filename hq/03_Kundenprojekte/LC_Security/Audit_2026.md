@@ -1,15 +1,20 @@
 # Audit 2026 — LC Security
 
-## Audit-Ziel / Norm
+## Termin
 
-- (z. B. DIN 77200, Kunde, Datum)
+| Feld | Wert |
+|------|------|
+| **Geplant** | 07.07.2026 – 08.07.2026 |
+| **Status** | **verschoben** — Auditor kann Termin nicht halten |
+| **Neutermin** | *(ausstehend — Vorschlag Auditor)* |
 
-## Checkliste
+## Vorbereitung (unabhängig vom Termin)
 
-| Thema | Status | Nachweis |
-|-------|--------|----------|
-| | offen | |
+| Thema | Status | To-do |
+|--------|--------|-------|
+| Hauptabweichung schließen | offen | lc01 |
+| AZAV / Betreuung | offen | lc02 |
+| Sicherheitskonzepte | offen | lc03 |
+| Neutermin mit Auditor / DEKRA | offen | lc04 |
 
-## Offene Audit-Punkte
-
-*(noch leer)*
+*Detail-Checkliste nach Festlegung neuem Termin.*

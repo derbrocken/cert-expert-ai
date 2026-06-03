@@ -22,7 +22,7 @@
 
 ## Receivables → `05_Forderungen/`
 
-AVAS, Faust Security 1.500 €, LC offener Betrag.
+AFAS (offene Forderung ISO 14001 Projekt), Faust Security 1.500 €, LC offener Betrag.
 
 ---
 

@@ -18,7 +18,7 @@
 - **Status:** open
 - **Priorität:** urgent
 - **Quelle:** manual
-- **Nächster Schritt:** NC-Liste mit Kunde, Maßnahmenplan je Punkt
+- **Nächster Schritt:** NC-Liste in Audit-Datei eintragen; mit Kunde Maßnahmenplan je Punkt
 - **Erstellt:** 2026-06-03T12:00:00+02:00
 - **Rohinput:** Master Dump — 5 major NCs
 

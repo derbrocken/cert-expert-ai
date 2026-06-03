@@ -1,15 +1,25 @@
 # Audit 2026 — Checkpoint Regional
 
-## Audit-Ziel / Norm
+## Projektart
 
-- (z. B. DIN 77200, Kunde, Datum)
+**Erstzertifizierung** — Audittermin **noch nicht festgelegt**.
 
-## Checkliste
+## Voraussetzungen vor Terminvergabe
 
-| Thema | Status | Nachweis |
-|-------|--------|----------|
-| | offen | |
+| Voraussetzung | Status |
+|---------------|--------|
+| Unbedenklichkeitsbescheinigung | offen |
+| Unternehmensunterlagen — vollständiger Upload | 🔴 wartet |
+| DEKRA-Angebot unterschrieben | offen |
+| Audittermin mit DEKRA/Kunde | offen |
 
-## Offene Audit-Punkte
+## Checkliste Erstzert
 
-*(noch leer)*
+| Thema | Status | To-do |
+|--------|--------|-------|
+| Unbedenklichkeit | offen | cr01 |
+| Portal/DEKRA Upload | offen | cr02 |
+| DEKRA-Angebot | offen | cr03 |
+| Terminplanung Audit | offen | cr04 |
+
+*Normen-Scope und Datum — nach Festlegung Termin eintragen.*

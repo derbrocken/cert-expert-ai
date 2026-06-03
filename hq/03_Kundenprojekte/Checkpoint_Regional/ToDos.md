@@ -1,7 +1,8 @@
 # ToDos — Checkpoint Regional
 
 **Projekt-Slug:** `Checkpoint_Regional`  
-**Letzte Aktualisierung:** 2026-06-03
+**Letzte Aktualisierung:** 2026-06-03  
+**Projekt:** Erstzertifizierung · **Audittermin:** noch offen
 
 ---
 
@@ -23,29 +24,29 @@
 
 ## TODO-20260603-cr02
 
-- **Aufgabe:** Upload der Nachweise (Portal/DEKRA) durchführen
+- **Aufgabe:** Vollständigen Upload der Unternehmensunterlagen (Portal/DEKRA) — wartet auf vollständige Unterlagen
 - **Projekt:** Checkpoint_Regional
 - **Kategorie:** Nachweis / Dokumentation
 - **Verantwortlich:** (unassigned)
 - **Frist:** 
 - **Status:** open
-- **Priorität:** high
+- **Priorität:** urgent
 - **Quelle:** manual
-- **Nächster Schritt:** Nach cr01 Dokumente hochladen
+- **Nächster Schritt:** Kunde an Upload erinnern; Vollständigkeit prüfen nach Eingang
 - **Erstellt:** 2026-06-03T12:00:00+02:00
 - **Rohinput:** Operations Board
 
 ## TODO-20260603-cr03
 
-- **Aufgabe:** DEKRA-Angebot prüfen und freigeben
+- **Aufgabe:** DEKRA-Angebot prüfen und **vom Kunden unterschreiben lassen**
 - **Projekt:** Checkpoint_Regional
 - **Kategorie:** Vertrieb / Angebot
 - **Verantwortlich:** (unassigned)
 - **Frist:** 
 - **Status:** open
-- **Priorität:** normal
+- **Priorität:** urgent
 - **Quelle:** manual
-- **Nächster Schritt:** Kosten/Scope mit Kunde
+- **Nächster Schritt:** Unterschrift einholen vor Audittermin-Festlegung
 - **Erstellt:** 2026-06-03T12:00:00+02:00
 - **Rohinput:** Operations Board + Master Dump
 

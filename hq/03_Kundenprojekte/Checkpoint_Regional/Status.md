@@ -1,19 +1,28 @@
 # Status — Checkpoint Regional
 
 **Slug:** `Checkpoint_Regional`  
-**Stand:** 2026-06-02  
-**Phase:** (eintragen: Akquise | Aktiv | Audit | Pausiert)
+**Stand:** 2026-06-03  
+**Phase:** Aktiv — **Erstzertifizierung**  
+**Projekttyp:** Erstzertifizierung (Audittermin noch offen)
 
 ## Kurzstatus
 
-- **Ampel:** 🟡 (gelb — eintragen)
-- **Letzte Aktivität:** —
-- **Blocker:** —
+- **Ampel:** 🟡
+- **Audittermin:** **offen** (noch nicht festgelegt)
+- **Blocker:** Vollständiger Upload Unternehmensunterlagen ausstehend; DEKRA-Angebot muss unterschrieben werden
 
-## Nächste Meilensteine
+## Erstzert — kritischer Pfad
 
-1. (eintragen)
+| Schritt | Status |
+|---------|--------|
+| Unbedenklichkeitsbescheinigung | offen |
+| Upload Unternehmensunterlagen (vollständig) | **wartet auf Kunde / Upload** |
+| DEKRA-Angebot unterschrieben | offen |
+| Audittermin festlegen | offen |
 
-## Verknüpfung Bot-Projekte
+## Verknüpfung
 
-- `projects/` im Repo: (noch nicht angelegt oder Pfad eintragen)
+- To-dos: [`ToDos.md`](ToDos.md)
+- Audit: [`Audit_2026.md`](Audit_2026.md)
+
+*Vollständige Befüllung nach Welle 1.*

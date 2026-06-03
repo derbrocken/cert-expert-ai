@@ -13,11 +13,14 @@ Siehe detaillierte To-dos: [`../03_Kundenprojekte/TeamFlex/ToDos.md`](../03_Kund
 
 Themen: Kundengespräch, DIN 77200 Zusatzbeauftragung, Subunternehmer, ADA, Wachbuchauszug, Monatsplan, DEKRA-Ordner, Leistungsorte, Auditfähigkeit.
 
-### Wolf Street — Audit 16.06.2026
+### Wolf Street — Audits 16.06. + 17.07.2026
 
-Siehe: [`../03_Kundenprojekte/Wolf_Street/ToDos.md`](../03_Kundenprojekte/Wolf_Street/ToDos.md)
+Siehe: [`../03_Kundenprojekte/Wolf_Street/ToDos.md`](../03_Kundenprojekte/Wolf_Street/ToDos.md) · [`Audit_2026.md`](../03_Kundenprojekte/Wolf_Street/Audit_2026.md)
 
-Themen: Auditorwechsel, DEKRA, Rechtskataster, Umweltkennzahlen, KPI ISO 14001, Managementbewertung, Auditvorbereitung, Folgeangebot.
+- **16.06.2026:** Überwachungsaudit **ISO 9001 + ISO 14001**
+- **17.07.2026:** Überwachungsaudit **DIN 77200**
+
+Themen Phase 1: Auditorwechsel, DEKRA, Rechtskataster, Umweltkennzahlen, KPI ISO 14001, Managementbewertung, Auditvorbereitung, Folgeangebot.
 
 ### SecuGuard — Frist 30.06.2026
 

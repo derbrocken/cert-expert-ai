@@ -1,40 +1,12 @@
 # ToDos — Wolf Street
 
 **Projekt-Slug:** `Wolf_Street`  
-**Letzte Aktualisierung:** 2026-06-03  
-**Audit:** 16.06.2026 — **Welle 1 kritisch**
+**Letzte Aktualisierung:** 2026-06-03 (Auditorwechsel + DEKRA bestätigt)  
+**Audits:** **16.06.2026** ISO 9001 + ISO 14001 (Überwachung) · **17.07.2026** DIN 77200 (Überwachung) — **Welle 1 kritisch**
 
 ---
 
 ## Offen
-
-## TODO-20260603-ws01
-
-- **Aufgabe:** Auditorwechsel intern und mit DEKRA abstimmen
-- **Projekt:** Wolf_Street
-- **Kategorie:** Audit / Zertifizierung
-- **Verantwortlich:** (unassigned)
-- **Frist:** 2026-06-10
-- **Status:** open
-- **Priorität:** urgent
-- **Quelle:** manual
-- **Nächster Schritt:** DEKRA informieren (ws02)
-- **Erstellt:** 2026-06-03T12:00:00+02:00
-- **Rohinput:** Operations Board Welle 1
-
-## TODO-20260603-ws02
-
-- **Aufgabe:** DEKRA über Auditorwechsel informieren
-- **Projekt:** Wolf_Street
-- **Kategorie:** Kundenkommunikation
-- **Verantwortlich:** (unassigned)
-- **Frist:** 2026-06-10
-- **Status:** open
-- **Priorität:** urgent
-- **Quelle:** manual
-- **Nächster Schritt:** Schriftliche Mitteilung, Termin 16.06. bestätigen
-- **Erstellt:** 2026-06-03T12:00:00+02:00
-- **Rohinput:** Operations Board
 
 ## TODO-20260603-ws03
 
@@ -127,5 +99,17 @@
 ---
 
 ## Erledigt
+
+## TODO-20260603-ws01
+
+- **Aufgabe:** Auditorwechsel intern und mit DEKRA abstimmen
+- **Status:** done
+- **Erledigt:** 2026-06-03 — Wechsel funktioniert / läuft
+
+## TODO-20260603-ws02
+
+- **Aufgabe:** DEKRA über Auditorwechsel informieren
+- **Status:** done
+- **Erledigt:** 2026-06-03 — DEKRA hat 16.06. und 17.07. bestätigt
 
 ---

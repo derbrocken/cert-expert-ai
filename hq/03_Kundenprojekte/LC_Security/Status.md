@@ -1,19 +1,25 @@
 # Status — LC Security
 
 **Slug:** `LC_Security`  
-**Stand:** 2026-06-02  
-**Phase:** (eintragen: Akquise | Aktiv | Audit | Pausiert)
+**Stand:** 2026-06-03  
+**Phase:** Aktiv — NC / AZAV / Betreuung  
+**Projekttyp:** Überwachung / Nacharbeit (Audittermin verschoben)
 
 ## Kurzstatus
 
-- **Ampel:** 🟡 (gelb — eintragen)
-- **Letzte Aktivität:** —
-- **Blocker:** —
+- **Ampel:** 🟡
+- **Audittermin:** **offen** — ursprünglich **07.–08.07.2026** vom Auditor **abgesagt**; Neutermin ausstehend
+- **Blocker:** Hauptabweichung; AZAV/Betreuung; Auditor-Termin neu koordinieren
 
-## Nächste Meilensteine
+## Audit / Termin
 
-1. (eintragen)
+| Geplant | Status |
+|---------|--------|
+| 07.07.2026 – 08.07.2026 | ❌ Auditor kann nicht — **Neutermin folgt** |
+| Neu | ⏳ warten auf Vorschlag Auditor |
 
-## Verknüpfung Bot-Projekte
+## Verknüpfung
 
-- `projects/` im Repo: (noch nicht angelegt oder Pfad eintragen)
+- To-dos: [`ToDos.md`](ToDos.md)
+- Kommunikation: [`Kommunikation.md`](Kommunikation.md)
+- Forderung: [`../../05_Forderungen/Offene_Juni_2026.md`](../../05_Forderungen/Offene_Juni_2026.md)

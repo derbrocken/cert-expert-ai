@@ -1,22 +1,57 @@
 # Status — TeamFlex
 
 **Slug:** `TeamFlex`  
-**Stand:** 2026-06-03  
-**Phase:** Aktiv — Audit-Vorbereitung
+**Stand:** 2026-06-03 (nach Kundengespräch)  
+**Phase:** Aktiv — Überwachungsaudit-Vorbereitung  
+**Projekttyp:** Überwachungsaudit DIN 77200
 
 ## Kurzstatus
 
-- **Ampel:** 🔴 (Audit 12.06.2026)
-- **Letzte Aktualisierung:** 2026-06-03 — Import Operations Board
-- **Blocker:** Wachbuchauszug, DEKRA-Ordner, Kundengespräch
+- **Ampel:** 🔴 (Audit **12.06.2026**)
+- **Zertifizierungsstelle:** DEKRA
+- **Letzte Aktualisierung HQ:** 2026-06-03 — Operations Board Import + Befüllung Welle 1
+- **Blocker:** Wachbuchauszug fehlt (noch anfordern); neuer Monatsplan + Monatsbericht vom Kunden ausstehend; **beide Projektordner** intern noch nicht fertig; Zusatzbeauftragung DIN 77200 ggf. noch schriftlich fixieren
 
-## Nächste Meilensteine
+## Audit-Termin
 
-1. 04.06. — Kunde anrufen (Fokus morgen früh)
-2. 11.06. — Auditfähigkeit DEKRA-Ordner
-3. 12.06. — Surveillance Audit
+| Datum | Art | Norm / Scope | Hinweis |
+|-------|-----|----------------|--------|
+| ~~06.06.2026~~ | — | — | ursprünglich geplant, **verschoben** |
+| **12.06.2026** | Überwachungsaudit | **DIN 77200** (Sicherheitsdienstleistungen) | **aktueller Termin** (mit Kunde abgestimmt) |
+
+## Erledigt / Fortschritt (Kundengespräch)
+
+- **Subunternehmer:** Freigabe durch Kunden **erhalten**
+
+## Zeitplan (kritischer Pfad)
+
+| Bis | Meilenstein |
+|-----|----------------|
+| erledigt | Kundengespräch — Termin 12.06., Subunternehmer-Freigabe |
+| ASAP | Wachbuchauszug anfordern |
+| bis 11.06. | Monatsplan + Monatsbericht vom Kunden |
+| bis 11.06. | Beide Projektordner (DEKRA) fertigstellen |
+| **11.06.2026** | Subunternehmer, ADA, Monatsplan, Leistungsorte, DEKRA-Ordner, Personal stichprobenartig |
+| **12.06.2026** | **Überwachungsaudit** |
+
+## Schwerpunkte vor Audit
+
+1. Zusatzbeauftragung DIN 77200 schriftlich mit Kunde klären  
+2. Subunternehmer — Nachweise und Verträge  
+3. Allgemeine Dienstanweisung (ADA) — Stand / Erstellung  
+4. Leistungsorte und Monatsplan dokumentieren  
+5. Personalakten und Schulungsnachweise (Stichprobe)
 
 ## Verknüpfung
 
 - To-dos: [`ToDos.md`](ToDos.md)
+- Kommunikation: [`Kommunikation.md`](Kommunikation.md)
+- Audit: [`Audit_2026.md`](Audit_2026.md)
 - Operations: [`../../02_Operations_Board/Operations_Board_Juni_2026.md`](../../02_Operations_Board/Operations_Board_Juni_2026.md)
+- Dokumente: [`Dokumente_und_Nachweise.md`](Dokumente_und_Nachweise.md)
+
+## Offene HQ-Felder (von dir nachzutragen)
+
+- Ansprechpartner Name / Rolle / Kontakt  
+- Stand Portal / DEKRA-Ordner (Link oder Pfad)  
+- Erledigte Punkte nach Kundengespräch in `Kommunikation.md` + `ToDos.md` → Erledigt
