@@ -14,7 +14,7 @@
 
 | Kunde | P-ID | DFSS Relevance | Readiness | S0 blocker present | Main blocker | Next critical action |
 |---|---|---|---|---|---|---|
-| TeamFlex | P03 provisional | Pilot / Baseline | NOT READY — audit-critical gaps open | Yes | Wachbuchauszug fehlt; Monatsplan/-bericht ausstehend; Projektordner offen; Zusatzbeauftragung DIN 77200 | Wachbuchauszug vom Kunden einfordern (ASAP; Frist 11.06.2026) |
+| TeamFlex | P03 provisional | Pilot / Baseline | NOT READY — audit-critical gaps open | Yes | Wachbuchauszug fehlt; Monatsplan/-bericht ausstehend; Projektordner offen; Zusatzbeauftragung DIN 77200 | EV-TF-003 Wachbuchauszug nachfassen (Prio 1; siehe Evidence action priority) |
 | Schutzritter | P01 provisional | Pilot / Baseline | NOT READY — VK-Upload überfällig; Formular-/Personalnachweis-Kette offen | Yes | VK-Datei noch nicht hochgeladen; Mitarbeiterformulare noch nicht versendet | VK-Datei uploaden (ASAP; Frist 04.06.2026) |
 | Wolf Street | P04 provisional | Pilot / Baseline | NOT READY — Phase 1 audit-critical gaps open | Yes | Rechtskataster / Umweltkennzahlen / KPI ISO 14001; Managementbewertung vor 16.06. | Rechtskataster aktualisieren / vervollständigen (Frist 14.06.2026) |
 | SecuGuard | P05 provisional (NC closure) | Pilot / Baseline (NC closure) | NOT READY — 5 Haupt- + 2 Nebenabweichungen offen | Yes | NC-Schließung bis 30.06.; Querschnittsthemen in Bearbeitung | Hauptabweichungen M1–M5 schließen — Maßnahmenplan je Punkt (Frist 28.06.2026) |
@@ -67,7 +67,7 @@
 | EV-SG-003 | SecuGuard | Ü1-Formulare je NC (sg03) | S0-03, S0-08 | TBD | TBD | TBD | Kunde (M. Marquardt) | 2026-06-25 | Ü1-Formulare — Nachweisdokumentation Verifizierung | open |
 
 **Evidence IDs gesamt:** 21 (auditkritische To-dos in Rollout-Kunden).  
-**TeamFlex Detailregister:** [`Dokumente_und_Nachweise.md`](../03_Kundenprojekte/TeamFlex/Dokumente_und_Nachweise.md) § DFSS Evidence Register.
+**TeamFlex Detailregister:** [`Dokumente_und_Nachweise.md`](../03_Kundenprojekte/TeamFlex/Dokumente_und_Nachweise.md) § DFSS Evidence Register + **Evidence action priority** (EV-TF-003 … EV-TF-007).
 
 ---
 

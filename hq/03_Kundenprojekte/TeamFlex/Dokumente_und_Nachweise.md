@@ -31,3 +31,16 @@ Pfade typisch: `outputs/` oder `projects/{event_id}/documents/`
 | EV-TF-008 | Monatsbericht (tf10) | S0-03 | missing | TBD | TBD | TBD | Kunde | No | Neuer Monatsbericht vom Kunden ausstehend (Kundengespräch 03.06., `Kommunikation.md`) |
 
 **Hinweis:** Subunternehmer-Freigabe (tf03, erledigt) ist kein EV-TF-Eintrag — dokumentiert in `Audit_2026.md` / `ToDos.md` Erledigt.
+
+## Evidence action priority
+
+| Prio | Evidence ID | Nächste Aktion | Evidence status |
+|------|-------------|----------------|-----------------|
+| 1 | EV-TF-003 | Wachbuchauszug nachfassen | requested |
+| 2 | EV-TF-002 | ADA intern erstellen | internal to create |
+| 3 | EV-TF-005 | DEKRA-Ordner intern erstellen | internal to create |
+| 4 | EV-TF-001 | Zusatzbeauftragung DIN 77200 klären | missing |
+| 5 | EV-TF-008 | Monatsbericht anfordern | missing |
+| 6 | EV-TF-004 | Monatsplan anfordern | missing |
+| 7 | EV-TF-006 | Leistungsorte klären | missing |
+| 8 | EV-TF-007 | Personalakten/Schulung prüfen | missing |

@@ -56,7 +56,7 @@ Audit date: 2026-06-12
 Readiness: NOT READY — audit-critical gaps open (see `Audit_2026.md`)  
 Main blocker: Wachbuchauszug fehlt (noch anfordern); neuer Monatsplan + Monatsbericht vom Kunden ausstehend; beide Projektordner intern noch nicht fertig; Zusatzbeauftragung DIN 77200 ggf. noch schriftlich fixieren  
 S0 blocker present: Yes (inferred from open audit-critical items — see ToDos EV-TF-*)  
-Next critical action: Wachbuchauszug vom Kunden einfordern (ASAP; Frist To-do 11.06.2026)  
+Next critical action: EV-TF-003 — Wachbuchauszug nachfassen (siehe Evidence action priority in `Dokumente_und_Nachweise.md`)  
 Evidence IDs: EV-TF-001, EV-TF-002, EV-TF-003, EV-TF-004, EV-TF-005, EV-TF-006, EV-TF-007, EV-TF-008
 
 ## Verknüpfung
