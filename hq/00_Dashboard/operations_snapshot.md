@@ -1,6 +1,6 @@
 # Operations Snapshot — Cert-Expert HQ
 
-**Generiert:** 2026-06-03 20:43 (lokal)  
+**Generiert:** 2026-06-03 21:15 (lokal)  
 **Basis:** `hq/03_Kundenprojekte/`, Querschnitt-ToDos, Status/Audit  
 **Nutzen:** Portfolio-Fragen für HQ Assistant — vor Kunden-Detailkontext laden.
 
@@ -8,7 +8,7 @@
 
 ## Meta
 
-- snapshot_at: `2026-06-03 20:43`
+- snapshot_at: `2026-06-03 21:15`
 - reference_date_heute: `2026-06-03` (03.06.2026)
 - reference_date_morgen: `2026-06-04`
 - active_customers: 7
