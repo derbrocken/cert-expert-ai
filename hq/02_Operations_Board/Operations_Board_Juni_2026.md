@@ -37,7 +37,7 @@ Thema: Haupt- und Nebenabweichungen schließen.
 | Schutzritter | SK, EK, Referenz Veranstaltung, MA-Unterlagen, Audit-Check | [`Schutzritter/ToDos.md`](../03_Kundenprojekte/Schutzritter/ToDos.md) |
 | Checkpoint Regional | Unbedenklichkeit, Upload, DEKRA, Termin | [`Checkpoint_Regional/ToDos.md`](../03_Kundenprojekte/Checkpoint_Regional/ToDos.md) |
 | ZT Security | Scope ISO 9001 + DIN 77200-1 | [`ZT_Security/ToDos.md`](../03_Kundenprojekte/ZT_Security/ToDos.md) |
-| LC Security | Hauptabweichung, AZAV, Betreuung | [`LC_Security/ToDos.md`](../03_Kundenprojekte/LC_Security/ToDos.md) |
+| ELC Security and Service | Abweichungen geschlossen — Zahlung + Auditor-Bestätigung offen | [`LC_Security/ToDos.md`](../03_Kundenprojekte/LC_Security/ToDos.md) |
 
 ---
 
