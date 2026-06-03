@@ -16,9 +16,9 @@
 
 | Kategorie | Anzahl | Status |
 |-----------|--------|--------|
-| Hauptabweichungen (major NC) | 5 | offen — **NC-Liste liegt vor** (Details in Audit-Datei nachpflegen) |
-| Nebenabweichungen (minor NC) | 2 | offen — **NC-Liste liegt vor** |
-| Querschnitt (Mutterschutz, Beteiligung, FASI, Arzt, Führungskräfte) | 1 Sammelblock | in Bearbeitung / Dokumentation |
+| Hauptabweichungen (major NC) | 5 | offen — importiert aus Ü1-Dokument (Audit 28.05.2026) |
+| Nebenabweichungen (minor NC) | 2 | offen — ISO 45001 7.2 + ISO 14001 10.3 |
+| Quelle | Ü1 `abweichungsdokumentation_14_45_.docx` | siehe [`Dokumente_und_Nachweise.md`](Dokumente_und_Nachweise.md) |
 
 ## Zeitplan
 

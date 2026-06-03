@@ -1,7 +1,7 @@
 # ToDos — SecuGuard
 
 **Projekt-Slug:** `SecuGuard`  
-**Letzte Aktualisierung:** 2026-06-03  
+**Letzte Aktualisierung:** 2026-06-03 (Ü1 aus OneDrive importiert)  
 **Frist:** 30.06.2026 — **Welle 1**
 
 ---
@@ -10,7 +10,7 @@
 
 ## TODO-20260603-sg01
 
-- **Aufgabe:** Hauptabweichungen schließen (5 major NCs laut Dump)
+- **Aufgabe:** Hauptabweichungen M1–M5 schließen (Ü1-Dokument — siehe Audit_2026.md)
 - **Projekt:** SecuGuard
 - **Kategorie:** Audit / Zertifizierung
 - **Verantwortlich:** (unassigned)
@@ -24,7 +24,7 @@
 
 ## TODO-20260603-sg02
 
-- **Aufgabe:** Nebenabweichungen schließen (2 minor NCs)
+- **Aufgabe:** Nebenabweichungen m1–m2 schließen (Prokuristin 7.2; ISO 14001 10.3 Umwelt)
 - **Projekt:** SecuGuard
 - **Kategorie:** Audit / Zertifizierung
 - **Verantwortlich:** (unassigned)
@@ -38,7 +38,7 @@
 
 ## TODO-20260603-sg03
 
-- **Aufgabe:** Mutterschutz, Beteiligung, FASI, Betriebsarzt, Führungskräfte-Kontrollen — Stand dokumentieren
+- **Aufgabe:** Ü1-Formulare je NC vervollständigen (Korrektur, Ursache, Maßnahme, Anlagen) — Koordination mit M. Marquardt
 - **Projekt:** SecuGuard
 - **Kategorie:** Nachweis / Dokumentation
 - **Verantwortlich:** (unassigned)
