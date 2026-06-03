@@ -8,4 +8,6 @@ Tagesgeschäft, wiederkehrende Tasks, später: Telegram-Ingest-Log.
 
 ## Heute
 
-*(manuell)*
+**Board:** [`Operations_Board_Juni_2026.md`](Operations_Board_Juni_2026.md) (import 03.06.2026)
+
+**Fokus:** TeamFlex — Audit 12.06.

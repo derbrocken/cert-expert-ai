@@ -11,17 +11,19 @@
 | Software / Bots | [`../06_Software/`](../06_Software/) |
 | Bot-Repo Doku | [`../../docs/CHAT_HANDOFF.md`](../../docs/CHAT_HANDOFF.md) |
 
-## Offene To-dos (manuell pflegen)
+## Offene To-dos (Import 03.06.2026)
 
 | Projekt | Offene To-dos | Blocker |
 |---------|---------------|---------|
-| TeamFlex | (zählen in ToDos.md) | |
-| Wolf_Street | | |
-| SecuGuard | | |
-| Schutzritter | | |
-| Checkpoint_Regional | | |
-| ZT_Security | | |
-| LC_Security | | |
+| TeamFlex | 9 | Audit 12.06., Wachbuch |
+| Wolf_Street | 8 | Audit 16.06. |
+| SecuGuard | 3 | Frist 30.06. |
+| Schutzritter | 5 | SK/EK |
+| Checkpoint_Regional | 4 | Unbedenklichkeit |
+| ZT_Security | 1 | Scope |
+| LC_Security | 3 | Haupt-NA |
+
+Querschnitt: Forderungen (3), Angebote (5), Software, DFSS — siehe `02_Operations_Board/Operations_Board_Juni_2026.md`
 
 ## Internes Referenz-Event (Bots)
 

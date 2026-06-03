@@ -44,12 +44,16 @@ hq/
 
 **Registry:** `hq/03_Kundenprojekte/_registry.json`
 
-### Dein nächster Schritt (explizit)
+### To-dos aus Master-DOCX (2026-06-03)
 
-1. Alle To-dos, die du hast, als Blöcke in die passenden  
-   `hq/03_Kundenprojekte/{Kunde}/ToDos.md` unter **## Offen** einfügen.
-2. Schema: `hq/08_Vorlagen/ToDos_template.md`
-3. Unklare Zuordnung → `hq/01_Master_Dump/`
+Importiert aus:
+
+- `Cert-Expert_Master_Operations_Board_Juni_2026.docx` → `hq/02_Operations_Board/Operations_Board_Juni_2026.md` + Kunden-`ToDos.md`
+- `Cert-Expert_Master_Dump_V1_June_2026.docx` → `hq/01_Master_Dump/Master_Dump_V1_June_2026.md`
+
+**Fokus morgen:** TeamFlex (`TODO-20260603-tf01` … `tf05`).
+
+Weitere Punkte / Korrekturen: einfach ergänzen oder als neue `TODO-…` Blöcke.
 
 **Telegram-Ingest:** noch nicht implementiert — nur Schema (`docs/MOBILE_INPUT_TODO_ARCHITECTURE.md`).
 

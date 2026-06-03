@@ -1,19 +1,10 @@
 # Status — SecuGuard
 
 **Slug:** `SecuGuard`  
-**Stand:** 2026-06-02  
-**Phase:** (eintragen: Akquise | Aktiv | Audit | Pausiert)
+**Stand:** 2026-06-03  
+**Phase:** Aktiv — Abweichungen schließen
 
 ## Kurzstatus
 
-- **Ampel:** 🟡 (gelb — eintragen)
-- **Letzte Aktivität:** —
-- **Blocker:** —
-
-## Nächste Meilensteine
-
-1. (eintragen)
-
-## Verknüpfung Bot-Projekte
-
-- `projects/` im Repo: (noch nicht angelegt oder Pfad eintragen)
+- **Ampel:** 🔴 (Frist 30.06.2026)
+- **Blocker:** 5 Haupt- + 2 Nebenabweichungen offen

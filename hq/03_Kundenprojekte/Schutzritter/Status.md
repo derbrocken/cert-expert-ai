@@ -1,19 +1,14 @@
 # Status — Schutzritter
 
 **Slug:** `Schutzritter`  
-**Stand:** 2026-06-02  
-**Phase:** (eintragen: Akquise | Aktiv | Audit | Pausiert)
+**Stand:** 2026-06-03  
+**Phase:** Aktiv — Zertifizierung + SK/EK Referenz
 
 ## Kurzstatus
 
-- **Ampel:** 🟡 (gelb — eintragen)
-- **Letzte Aktivität:** —
-- **Blocker:** —
+- **Ampel:** 🟠 (Welle 2)
+- **Fokus:** Sicherheitskonzept + Einsatzkonzept, Veranstaltungsreferenz
 
-## Nächste Meilensteine
+## Bot-Bezug
 
-1. (eintragen)
-
-## Verknüpfung Bot-Projekte
-
-- `projects/` im Repo: (noch nicht angelegt oder Pfad eintragen)
+- SK/EK über `cert-expert-ai` — siehe `06_Software/Software_Backlog_Juni_2026.md`
