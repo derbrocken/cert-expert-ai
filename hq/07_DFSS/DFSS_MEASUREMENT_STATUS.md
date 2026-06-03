@@ -5,7 +5,7 @@
 
 **Status:** Pilot Measurement Activation  
 **Gate:** NOT READY FOR PILOT VALIDATION REPORT — DATA COLLECTION REQUIRED  
-**Stand:** 2026-06-03 (HQ-Referenzstand Kundencontainer)  
+**Stand:** 2026-06-03 (HQ-Referenzstand Kundencontainer; TeamFlex Evidence Hygiene Phase 2A)  
 **Source of Truth:** Kundencontainer in `hq/03_Kundenprojekte/`
 
 ---
@@ -42,31 +42,32 @@
 
 ## 3. Evidence Lookup
 
-| Evidence ID | Kunde | To-do / Thema | S0 relation | Owner | Wartet auf | Due date | Audit impact | Status |
-|---|---|---|---|---|---|---|---|---|
-| EV-TF-001 | TeamFlex | Zusatzbeauftragung DIN 77200 (tf02) | S0-03, S0-05 | TBD | Kunde | 2026-06-11 | Scope-/Vertragsnachweis DIN 77200 unvollständig | open |
-| EV-TF-002 | TeamFlex | ADA Stand prüfen / erstellen (tf04) | S0-08 | TBD | TBD | 2026-06-11 | Dienstanweisung — Prüfpunkt Audit-Checkliste | open |
-| EV-TF-003 | TeamFlex | Wachbuchauszug einfordern (tf05) | S0-03 | TBD | Kunde | 2026-06-11 | Betriebsdokumentation (Wachbuch) fehlt | open |
-| EV-TF-004 | TeamFlex | Monatsplan einholen (tf06) | S0-03 | TBD | Kunde | 2026-06-11 | Monatsplan als Betriebs-/Planungsnachweis offen | open |
-| EV-TF-005 | TeamFlex | Projektordner DEKRA fertigstellen (tf07) | S0-07 | TBD | Intern (Cert-Expert) | 2026-06-11 | DEKRA-/Auditmappe nicht auditfähig | open |
-| EV-TF-006 | TeamFlex | Leistungsorte dokumentieren (tf08) | S0-02, S0-07 | TBD | TBD | 2026-06-11 | Leistungsorte / Scope-Dokumentation offen | open |
-| EV-TF-007 | TeamFlex | Personalakten / Schulung Stichprobe (tf09) | S0-07, S0-08 | TBD | TBD | 2026-06-11 | Personalakten / Schulungsnachweise — Stichprobe | open |
-| EV-TF-008 | TeamFlex | Monatsbericht einholen (tf10) | S0-03 | TBD | Kunde | 2026-06-11 | Monatsbericht als Betriebsnachweis offen | open |
-| EV-WS-001 | Wolf Street | Rechtskataster (ws03) | S0-03, S0-05 | TBD | TBD | 2026-06-14 | Rechtskataster — Phase 1 ISO 9001 / 14001 | open |
-| EV-WS-002 | Wolf Street | Umweltkennzahlen ISO 14001 (ws04) | S0-03 | TBD | TBD | 2026-06-14 | Umweltkennzahlen — Nachweis vor Audit 16.06. | open |
-| EV-WS-003 | Wolf Street | KPI-Liste ISO 14001 (ws05) | S0-03 | TBD | TBD | 2026-06-14 | KPI-Liste — Voraussetzung Managementbewertung | open |
-| EV-WS-004 | Wolf Street | Managementbewertung (ws06) | S0-03, S0-08 | TBD | TBD | 2026-06-15 | Managementbewertung — Pflichtnachweis Phase 1 | open |
-| EV-WS-005 | Wolf Street | Auditvorbereitung gesamt (ws07) | S0-01, S0-05 | TBD | TBD | 2026-06-15 | Gesamt-Auditvorbereitung Phase 1 + Phase 2 | open |
-| EV-SR-001 | Schutzritter | VK-Datei uploaden (sr06) | S0-03, S0-05 | TBD | Intern (Cert-Expert) | 2026-06-04 | VK-Datei fehlt — Blocker kritischer Pfad | open |
-| EV-SR-002 | Schutzritter | Unternehmensformulare prüfen (sr07) | S0-03, S0-06 | TBD | Kunde | 2026-06-05 | Unternehmensformulare — Basisnachweis | open |
-| EV-SR-003 | Schutzritter | Mitarbeiterformulare senden (sr08) | S0-03, S0-06 | TBD | Intern (Cert-Expert) | 2026-06-07 | MA-Formulare — Voraussetzung Personalnachweis | open |
-| EV-SR-004 | Schutzritter | Personalakten prüfen (sr04) | S0-07, S0-08 | TBD | Kunde | 2026-06-20 | Personalakten — Stichprobe Audit-Checkliste | open |
-| EV-SR-005 | Schutzritter | Audit-Checkliste abarbeiten (sr05) | S0-01 | TBD | TBD | 2026-06-24 | Audit-Checkliste ISO 9001 + DIN 77200-1/2 | open |
-| EV-SG-001 | SecuGuard | Hauptabweichungen M1–M5 (sg01) | S0-03, S0-05 | TBD | Kunde | 2026-06-28 | 5 Hauptabweichungen ISO 45001 — Schließung bis 30.06. | open |
-| EV-SG-002 | SecuGuard | Nebenabweichungen m1–m2 (sg02) | S0-03 | TBD | Kunde | 2026-06-28 | 2 Nebenabweichungen — Schließung bis 30.06. | open |
-| EV-SG-003 | SecuGuard | Ü1-Formulare je NC (sg03) | S0-03, S0-08 | TBD | Kunde (M. Marquardt) | 2026-06-25 | Ü1-Formulare — Nachweisdokumentation Verifizierung | open |
+| Evidence ID | Kunde | To-do / Thema | S0 relation | Evidence status | DFSS usable | Owner | Wartet auf | Due date | Audit impact | Status |
+|---|---|---|---|---|---|---|---|---|---|---|
+| EV-TF-001 | TeamFlex | Zusatzbeauftragung DIN 77200 (tf02) | S0-03, S0-05 | missing | No | TBD | Kunde | 2026-06-11 | Scope-/Vertragsnachweis DIN 77200 unvollständig | open |
+| EV-TF-002 | TeamFlex | ADA Stand prüfen / erstellen (tf04) | S0-08 | internal to create | No | TBD | TBD | 2026-06-11 | Dienstanweisung — Prüfpunkt Audit-Checkliste | open |
+| EV-TF-003 | TeamFlex | Wachbuchauszug einfordern (tf05) | S0-03 | requested | No | TBD | Kunde | 2026-06-11 | Betriebsdokumentation (Wachbuch) fehlt | open |
+| EV-TF-004 | TeamFlex | Monatsplan einholen (tf06) | S0-03 | missing | No | TBD | Kunde | 2026-06-11 | Monatsplan als Betriebs-/Planungsnachweis offen | open |
+| EV-TF-005 | TeamFlex | Projektordner DEKRA fertigstellen (tf07) | S0-07 | internal to create | No | TBD | Intern (Cert-Expert) | 2026-06-11 | DEKRA-/Auditmappe nicht auditfähig | open |
+| EV-TF-006 | TeamFlex | Leistungsorte dokumentieren (tf08) | S0-02, S0-07 | missing | No | TBD | TBD | 2026-06-11 | Leistungsorte / Scope-Dokumentation offen | open |
+| EV-TF-007 | TeamFlex | Personalakten / Schulung Stichprobe (tf09) | S0-07, S0-08 | missing | No | TBD | TBD | 2026-06-11 | Personalakten / Schulungsnachweise — Stichprobe | open |
+| EV-TF-008 | TeamFlex | Monatsbericht einholen (tf10) | S0-03 | missing | No | TBD | Kunde | 2026-06-11 | Monatsbericht als Betriebsnachweis offen | open |
+| EV-WS-001 | Wolf Street | Rechtskataster (ws03) | S0-03, S0-05 | TBD | TBD | TBD | TBD | 2026-06-14 | Rechtskataster — Phase 1 ISO 9001 / 14001 | open |
+| EV-WS-002 | Wolf Street | Umweltkennzahlen ISO 14001 (ws04) | S0-03 | TBD | TBD | TBD | TBD | 2026-06-14 | Umweltkennzahlen — Nachweis vor Audit 16.06. | open |
+| EV-WS-003 | Wolf Street | KPI-Liste ISO 14001 (ws05) | S0-03 | TBD | TBD | TBD | TBD | 2026-06-14 | KPI-Liste — Voraussetzung Managementbewertung | open |
+| EV-WS-004 | Wolf Street | Managementbewertung (ws06) | S0-03, S0-08 | TBD | TBD | TBD | TBD | 2026-06-15 | Managementbewertung — Pflichtnachweis Phase 1 | open |
+| EV-WS-005 | Wolf Street | Auditvorbereitung gesamt (ws07) | S0-01, S0-05 | TBD | TBD | TBD | TBD | 2026-06-15 | Gesamt-Auditvorbereitung Phase 1 + Phase 2 | open |
+| EV-SR-001 | Schutzritter | VK-Datei uploaden (sr06) | S0-03, S0-05 | TBD | TBD | TBD | Intern (Cert-Expert) | 2026-06-04 | VK-Datei fehlt — Blocker kritischer Pfad | open |
+| EV-SR-002 | Schutzritter | Unternehmensformulare prüfen (sr07) | S0-03, S0-06 | TBD | TBD | TBD | Kunde | 2026-06-05 | Unternehmensformulare — Basisnachweis | open |
+| EV-SR-003 | Schutzritter | Mitarbeiterformulare senden (sr08) | S0-03, S0-06 | TBD | TBD | TBD | Intern (Cert-Expert) | 2026-06-07 | MA-Formulare — Voraussetzung Personalnachweis | open |
+| EV-SR-004 | Schutzritter | Personalakten prüfen (sr04) | S0-07, S0-08 | TBD | TBD | TBD | Kunde | 2026-06-20 | Personalakten — Stichprobe Audit-Checkliste | open |
+| EV-SR-005 | Schutzritter | Audit-Checkliste abarbeiten (sr05) | S0-01 | TBD | TBD | TBD | TBD | 2026-06-24 | Audit-Checkliste ISO 9001 + DIN 77200-1/2 | open |
+| EV-SG-001 | SecuGuard | Hauptabweichungen M1–M5 (sg01) | S0-03, S0-05 | TBD | TBD | TBD | Kunde | 2026-06-28 | 5 Hauptabweichungen ISO 45001 — Schließung bis 30.06. | open |
+| EV-SG-002 | SecuGuard | Nebenabweichungen m1–m2 (sg02) | S0-03 | TBD | TBD | TBD | Kunde | 2026-06-28 | 2 Nebenabweichungen — Schließung bis 30.06. | open |
+| EV-SG-003 | SecuGuard | Ü1-Formulare je NC (sg03) | S0-03, S0-08 | TBD | TBD | TBD | Kunde (M. Marquardt) | 2026-06-25 | Ü1-Formulare — Nachweisdokumentation Verifizierung | open |
 
-**Evidence IDs gesamt:** 21 (auditkritische To-dos in Rollout-Kunden).
+**Evidence IDs gesamt:** 21 (auditkritische To-dos in Rollout-Kunden).  
+**TeamFlex Detailregister:** [`Dokumente_und_Nachweise.md`](../03_Kundenprojekte/TeamFlex/Dokumente_und_Nachweise.md) § DFSS Evidence Register.
 
 ---
 
@@ -90,6 +91,7 @@
 
 ### Operational evidence still needed
 
+- **TeamFlex (Phase 2A):** 8 EV-IDs mit Nachweisstatus gepflegt — **0× present**, **0× DFSS usable: Yes** (siehe Evidence Register).
 - Nachweise hinter EV-IDs müssen sukzessive gesammelt werden (Wachbuch, VK, NC-Schließung, KPI 14001, …).
 - Wolf Street Phase 2 / DIN 77200 **17.07.2026** — in `Audit_2026.md` noch nicht detailliert befüllt.
 - Schutzritter **sr01–sr03** (SK/EK/Referenzprojekt) — ohne Evidence IDs (nicht als auditkritisch markiert).
@@ -103,7 +105,7 @@
 |---|---|---|---|
 | dfss01 | KPI/Metriken pro Kunde definieren (siehe `Pilot_Measurement_Juni_2026.md`) | TBD | Open |
 | dfss02 | Formale P01–P05 Registry anlegen | TBD | Open |
-| dfss03 | Evidence-Nachweise hinter EV-IDs sammeln | TBD | Open |
+| dfss03 | Evidence-Nachweise hinter EV-IDs sammeln | TBD | Open — TeamFlex Register angelegt (8 EV-IDs, alle No) |
 | dfss04 | Pilot/Baseline-Messwerte erfassen (nur echte Werte, keine Schätzungen) | TBD | Open |
 
 ---

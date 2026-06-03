@@ -28,6 +28,9 @@
 - **Audit impact:** Scope-/Vertragsnachweis DIN 77200 für Überwachungsaudit unvollständig
 - **S0 relation:** S0-03, S0-05
 - **Evidence ID:** EV-TF-001
+- **Evidence status:** missing
+- **Evidence source:** TBD
+- **DFSS usable:** No — evidence missing
 
 ## TODO-20260603-tf04
 
@@ -48,6 +51,9 @@
 - **Audit impact:** Dienstanweisung (ADA) — Prüfpunkt Audit-Checkliste DIN 77200
 - **S0 relation:** S0-08
 - **Evidence ID:** EV-TF-002
+- **Evidence status:** internal to create
+- **Evidence source:** TBD
+- **DFSS usable:** No — evidence missing
 
 ## TODO-20260603-tf05
 
@@ -69,6 +75,9 @@
 - **Audit impact:** Betriebsdokumentation (Wachbuch) fehlt — kritischer Pfad Audit
 - **S0 relation:** S0-03
 - **Evidence ID:** EV-TF-003
+- **Evidence status:** requested
+- **Evidence source:** TBD
+- **DFSS usable:** No — evidence missing
 
 ## TODO-20260603-tf06
 
@@ -89,6 +98,9 @@
 - **Audit impact:** Monatsplan als Betriebs-/Planungsnachweis für Audit offen
 - **S0 relation:** S0-03
 - **Evidence ID:** EV-TF-004
+- **Evidence status:** missing
+- **Evidence source:** TBD
+- **DFSS usable:** No — evidence missing
 
 ## TODO-20260603-tf07
 
@@ -109,6 +121,9 @@
 - **Audit impact:** DEKRA-/Auditmappe nicht auditfähig — Mindestnachweise unvollständig
 - **S0 relation:** S0-07
 - **Evidence ID:** EV-TF-005
+- **Evidence status:** internal to create
+- **Evidence source:** TBD
+- **DFSS usable:** No — evidence missing
 
 ## TODO-20260603-tf08
 
@@ -129,6 +144,9 @@
 - **Audit impact:** Leistungsorte / Scope-Dokumentation für Audit offen
 - **S0 relation:** S0-02, S0-07
 - **Evidence ID:** EV-TF-006
+- **Evidence status:** missing
+- **Evidence source:** TBD
+- **DFSS usable:** No — evidence missing
 
 ## TODO-20260603-tf09
 
@@ -149,6 +167,9 @@
 - **Audit impact:** Personalakten / Schulungsnachweise — Stichprobe Audit-Checkliste
 - **S0 relation:** S0-07, S0-08
 - **Evidence ID:** EV-TF-007
+- **Evidence status:** missing
+- **Evidence source:** TBD
+- **DFSS usable:** No — evidence missing
 
 ## TODO-20260603-tf10
 
@@ -169,6 +190,9 @@
 - **Audit impact:** Monatsbericht als Betriebsnachweis für Audit offen
 - **S0 relation:** S0-03
 - **Evidence ID:** EV-TF-008
+- **Evidence status:** missing
+- **Evidence source:** TBD
+- **DFSS usable:** No — evidence missing
 
 ---
 
