@@ -1,7 +1,10 @@
 # Master Dump V1 — June 2026
 
+> **Nicht täglich öffnen.** Tagesarbeit: `00_Dashboard/Tagesbriefing.md`.  
+> Fortschritt der Ablage: [MIGRATION_STATUS.md](MIGRATION_STATUS.md)
+
 **Quelle:** `Cert-Expert_Master_Dump_V1_June_2026.docx` (importiert 2026-06-03)  
-**Zweck:** Portfolio-Inventar / Brain Dump — Einzelpunkte nach Kundenprojekt oder Querschnitt sortieren.
+**Zweck:** Einmal-Inventar / Brain Dump — Referenz, bis alles in Kundenordner & Querschnitt liegt.
 
 ---
 
@@ -70,6 +73,4 @@ Geparkt — nicht in Kunden-ToDos aufgesplittet.
 
 ## Nächste Bereinigung
 
-- [ ] Miras Protect: Kundenordner anlegen oder unter Vertrieb führen
-- [ ] Dump-Punkte vs. Operations Board deduplizieren
-- [ ] Erledigtes nach `09_Archiv/` verschieben
+Siehe Checkliste in [MIGRATION_STATUS.md](MIGRATION_STATUS.md) (wöchentlich, nicht morgens).
