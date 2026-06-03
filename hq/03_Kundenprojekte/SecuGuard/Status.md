@@ -44,7 +44,7 @@ Audit date: 2026-05-28 (Feststellung); Schließfrist 2026-06-30
 Readiness: NOT READY — 5 Haupt- + 2 Nebenabweichungen offen (see `Audit_2026.md`)  
 Main blocker: NC-Schließung bis 30.06.; Querschnittsthemen (Mutterschutz, Beteiligung, FASI, Arzt, Führungskräfte) in Bearbeitung  
 S0 blocker present: Yes (inferred from open audit-critical items — see ToDos EV-SG-*)  
-Next critical action: Hauptabweichungen M1–M5 schließen — Maßnahmenplan je Punkt (Frist To-do 28.06.2026)  
+Next critical action: EV-SG-001 — Hauptabweichungen M1–M5 schließen (Prio 1; siehe Evidence action priority in `Dokumente_und_Nachweise.md`)  
 Evidence IDs: EV-SG-001, EV-SG-002, EV-SG-003
 
 ## Verknüpfung

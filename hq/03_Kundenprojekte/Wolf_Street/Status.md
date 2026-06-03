@@ -55,7 +55,7 @@ Audit date: 2026-06-16 (Phase 1); 2026-07-17 (Phase 2 DIN 77200)
 Readiness: NOT READY — Phase 1 audit-critical gaps open (see `Audit_2026.md`)  
 Main blocker: Rechtskataster / Umweltkennzahlen / KPI ISO 14001; Managementbewertung vor 16.06.  
 S0 blocker present: Yes (inferred from open audit-critical items — see ToDos EV-WS-*)  
-Next critical action: Rechtskataster aktualisieren / vervollständigen (Frist To-do 14.06.2026)  
+Next critical action: EV-WS-001 — Rechtskataster aktualisieren (Prio 1; siehe Evidence action priority in `Dokumente_und_Nachweise.md`)  
 Evidence IDs: EV-WS-001, EV-WS-002, EV-WS-003, EV-WS-004, EV-WS-005
 
 ## Verknüpfung

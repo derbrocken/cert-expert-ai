@@ -27,6 +27,9 @@
 - **Audit impact:** Rechtskataster — Prüfpunkt Phase 1 ISO 9001 / ISO 14001
 - **S0 relation:** S0-03, S0-05
 - **Evidence ID:** EV-WS-001
+- **Evidence status:** missing
+- **Evidence source:** TBD
+- **DFSS usable:** No — evidence missing
 
 ## TODO-20260603-ws04
 
@@ -47,6 +50,9 @@
 - **Audit impact:** Umweltkennzahlen ISO 14001 — Nachweis vor Audit 16.06.
 - **S0 relation:** S0-03
 - **Evidence ID:** EV-WS-002
+- **Evidence status:** missing
+- **Evidence source:** TBD
+- **DFSS usable:** No — evidence missing
 
 ## TODO-20260603-ws05
 
@@ -67,6 +73,9 @@
 - **Audit impact:** KPI-Liste ISO 14001 — Voraussetzung Managementbewertung / Audit
 - **S0 relation:** S0-03
 - **Evidence ID:** EV-WS-003
+- **Evidence status:** missing
+- **Evidence source:** TBD
+- **DFSS usable:** No — evidence missing
 
 ## TODO-20260603-ws06
 
@@ -87,6 +96,9 @@
 - **Audit impact:** Managementbewertung — Pflichtnachweis Phase 1 Audit
 - **S0 relation:** S0-03, S0-08
 - **Evidence ID:** EV-WS-004
+- **Evidence status:** missing
+- **Evidence source:** TBD
+- **DFSS usable:** No — evidence missing
 
 ## TODO-20260603-ws07
 
@@ -107,6 +119,9 @@
 - **Audit impact:** Gesamt-Auditvorbereitung Phase 1 (16.06.) und Phase 2 (17.07.)
 - **S0 relation:** S0-01, S0-05
 - **Evidence ID:** EV-WS-005
+- **Evidence status:** internal to create
+- **Evidence source:** TBD
+- **DFSS usable:** No — evidence missing
 
 ## TODO-20260603-ws08
 

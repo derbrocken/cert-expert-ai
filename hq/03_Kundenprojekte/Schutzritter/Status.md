@@ -42,7 +42,7 @@ Audit date: 2026-06-26
 Readiness: NOT READY — VK-Upload überfällig; Formular-/Personalnachweis-Kette offen (see `Audit_2026.md`)  
 Main blocker: VK-Datei noch nicht hochgeladen; Mitarbeiterformulare noch nicht versendet  
 S0 blocker present: Yes (inferred from open audit-critical items — see ToDos EV-SR-*)  
-Next critical action: VK-Datei uploaden (ASAP; Frist To-do 04.06.2026)  
+Next critical action: EV-SR-001 — VK-Datei uploaden (Prio 1; siehe Evidence action priority in `Dokumente_und_Nachweise.md`)  
 Evidence IDs: EV-SR-001, EV-SR-002, EV-SR-003, EV-SR-004, EV-SR-005
 
 ## Verknüpfung

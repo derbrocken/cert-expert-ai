@@ -27,6 +27,9 @@
 - **Audit impact:** 5 Hauptabweichungen ISO 45001 — Schließung bis Frist 30.06.2026
 - **S0 relation:** S0-03, S0-05
 - **Evidence ID:** EV-SG-001
+- **Evidence status:** in review
+- **Evidence source:** OneDrive Ü1-Dokument (siehe `Dokumente_und_Nachweise.md`)
+- **DFSS usable:** No — evidence missing
 
 ## TODO-20260603-sg02
 
@@ -47,6 +50,9 @@
 - **Audit impact:** 2 Nebenabweichungen (ISO 45001 7.2; ISO 14001 10.3) — Schließung bis 30.06.2026
 - **S0 relation:** S0-03
 - **Evidence ID:** EV-SG-002
+- **Evidence status:** in review
+- **Evidence source:** OneDrive Ü1-Dokument (siehe `Dokumente_und_Nachweise.md`)
+- **DFSS usable:** No — evidence missing
 
 ## TODO-20260603-sg03
 
@@ -67,6 +73,9 @@
 - **Audit impact:** Ü1-Formulare je NC — Nachweisdokumentation für Verifizierung
 - **S0 relation:** S0-03, S0-08
 - **Evidence ID:** EV-SG-003
+- **Evidence status:** in review
+- **Evidence source:** OneDrive Ü1-Dokument (siehe `Dokumente_und_Nachweise.md`)
+- **DFSS usable:** No — evidence missing
 
 ---
 

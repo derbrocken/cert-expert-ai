@@ -29,6 +29,9 @@
 - **Audit impact:** VK-Datei fehlt — Blocker für Folgeschritte im kritischen Pfad
 - **S0 relation:** S0-03, S0-05
 - **Evidence ID:** EV-SR-001
+- **Evidence status:** missing
+- **Evidence source:** TBD
+- **DFSS usable:** No — evidence missing
 
 ## TODO-20260603-sr07
 
@@ -49,6 +52,9 @@
 - **Audit impact:** Unternehmensformulare — Basisnachweis vor MA-Formularversand
 - **S0 relation:** S0-03, S0-06
 - **Evidence ID:** EV-SR-002
+- **Evidence status:** missing
+- **Evidence source:** TBD
+- **DFSS usable:** No — evidence missing
 
 ## TODO-20260603-sr08
 
@@ -69,6 +75,9 @@
 - **Audit impact:** Mitarbeiterformulare — Voraussetzung Personalnachweis vor Audit
 - **S0 relation:** S0-03, S0-06
 - **Evidence ID:** EV-SR-003
+- **Evidence status:** missing
+- **Evidence source:** TBD
+- **DFSS usable:** No — evidence missing
 
 ## TODO-20260603-sr04
 
@@ -89,6 +98,9 @@
 - **Audit impact:** Personalakten / Unterlagen — Stichprobe Audit-Checkliste
 - **S0 relation:** S0-07, S0-08
 - **Evidence ID:** EV-SR-004
+- **Evidence status:** missing
+- **Evidence source:** TBD
+- **DFSS usable:** No — evidence missing
 
 ## TODO-20260603-sr05
 
@@ -109,6 +121,9 @@
 - **Audit impact:** Audit-Checkliste ISO 9001 + DIN 77200-1/2 — Gesamtabdeckung vor 26.06.
 - **S0 relation:** S0-01
 - **Evidence ID:** EV-SR-005
+- **Evidence status:** internal to create
+- **Evidence source:** TBD
+- **DFSS usable:** No — evidence missing
 
 ## TODO-20260603-sr01
 
