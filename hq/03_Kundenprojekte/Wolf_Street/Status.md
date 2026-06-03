@@ -1,7 +1,7 @@
 # Status — Wolf Street
 
 **Slug:** `Wolf_Street`  
-**Stand:** 2026-06-03  
+**Stand:** 2026-06-03 (Auditoren ergänzt)  
 **Phase:** Aktiv — Überwachungsaudits (zweistufig)  
 **Projekttyp:** Überwachungsaudit ISO 9001 / ISO 14001 + Überwachungsaudit DIN 77200
 
@@ -19,21 +19,20 @@
 
 ## Audit-Termine (bestätigt)
 
-| Datum | Art | Norm / Scope |
-|-------|-----|----------------|
-| **16.06.2026** | Überwachungsaudit | **ISO 9001** + **ISO 14001** |
-| **17.07.2026** | Überwachungsaudit | **DIN 77200** |
+| Datum | Art | Norm / Scope | Auditor/in |
+|-------|-----|----------------|------------|
+| **16.06.2026** | Überwachungsaudit | **ISO 9001** + **ISO 14001** | **Herr / Dr. Düvel** |
+| **17.07.2026** | Überwachungsaudit | **DIN 77200** | **Dr. Teubart** |
 
-## Zeitplan
+## Vorbereitung (keine zusätzlichen Audit-Termine)
 
 | Bis | Meilenstein |
 |-----|----------------|
-| **10.06.2026** | Auditorwechsel intern + DEKRA informiert |
-| **14.–15.06.2026** | Rechtskataster, Umweltkennzahlen, KPI 14001, Managementbewertung, Auditvorbereitung QMS/UMS |
-| **16.06.2026** | **Überwachungsaudit ISO 9001 + ISO 14001** |
-| **11.07.2026** (Ziel) | DIN 77200-Vorbereitung abgeschlossen |
-| **17.07.2026** | **Überwachungsaudit DIN 77200** |
-| nach 16.06. | Folgeangebot (Vertrieb) |
+| erledigt | Auditorwechsel + DEKRA-Termine bestätigt |
+| vor 16.06. | Rechtskataster, Umweltkennzahlen, KPI 14001, Managementbewertung (ws03–ws06) |
+| **16.06.2026** | **Audit ISO 9001 + ISO 14001** (Dr. Düvel) |
+| vor 17.07. | Vorbereitung DIN 77200 |
+| **17.07.2026** | **Audit DIN 77200** (Dr. Teubart) |
 
 ## Schwerpunkte
 
@@ -51,5 +50,4 @@
 ## Offene HQ-Felder
 
 - Ansprechpartner / Kontakt  
-- Status Auditorwechsel (Name alter/neuer Auditor)  
 - Ergebnis 16.06. und Vorbereitungsstand DIN 77200 für 17.07.

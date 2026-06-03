@@ -2,12 +2,13 @@
 
 ## Audit-Übersicht
 
-| Phase | Termin | Art | Norm |
-|-------|--------|-----|------|
-| **1** | **16.06.2026** | Überwachungsaudit | **ISO 9001** + **ISO 14001** |
-| **2** | **17.07.2026** | Überwachungsaudit | **DIN 77200** |
+| Phase | Termin | Art | Norm | Auditor/in |
+|-------|--------|-----|------|------------|
+| **1** | **16.06.2026** | Überwachungsaudit | **ISO 9001** + **ISO 14001** | **Herr / Dr. Düvel** |
+| **2** | **17.07.2026** | Überwachungsaudit | **DIN 77200** | **Dr. Teubart** |
 
 **Zertifizierungsstelle:** DEKRA  
+**Hinweis:** Daten in „Vorbereitung“ (z. B. 10.06., 14.06., 15.06.) sind **interne Fristen**, keine Audit-Termine.  
 **Stand Vorbereitung Phase 1:** 🔴  
 **Stand Vorbereitung Phase 2:** 🟡 (nach 16.06. detaillieren)
 
@@ -25,11 +26,11 @@
 |--------|--------|----------|-------|
 | Auditorwechsel intern | ✅ erledigt | — | ws01 |
 | DEKRA informiert + Termine bestätigt | ✅ erledigt | 16.06. + 17.07. | ws02 |
-| Rechtskataster | offen | 14.06. | ws03 |
-| Umweltkennzahlen ISO 14001 | offen | 14.06. | ws04 |
-| KPI-Liste ISO 14001 | offen | 14.06. | ws05 |
-| Managementbewertung | offen | 15.06. | ws06 |
-| Auditvorbereitung 9001/14001/77200 (Gesamtcheck) | offen | 15.06. | ws07 |
+| Rechtskataster | offen | Vorbereitung (vor 16.06.) | ws03 |
+| Umweltkennzahlen ISO 14001 | offen | Vorbereitung (vor 16.06.) | ws04 |
+| KPI-Liste ISO 14001 | offen | Vorbereitung (vor 16.06.) | ws05 |
+| Managementbewertung | offen | Vorbereitung (vor 16.06.) | ws06 |
+| Auditvorbereitung Phase 1 | offen | Vorbereitung (vor 16.06.) | ws07 |
 
 ### Checkliste Phase 1
 

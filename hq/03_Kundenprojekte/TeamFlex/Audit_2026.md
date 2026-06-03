@@ -6,8 +6,10 @@
 |------|------|
 | **Kunde** | TeamFlex |
 | **Art** | Überwachungsaudit |
-| **Termin** | **12.06.2026** (verschoben von ~~06.06.2026~~) |
+| **Audit-Termin** | **12.06.2026** |
+| **Offiziell in Unterlagen** | 06.06.2026 (nur Schriftverkehr/DEKRA — **nicht** der durchgeführte Termin) |
 | **Norm** | DIN 77200 (Sicherheitsdienstleistungen) |
+| **Auditor/in** | **Dr. Teubart** |
 | **Zertifizierungsstelle** | DEKRA |
 | **Stand Vorbereitung** | 🔴 — kritische Punkte offen (siehe unten) |
 

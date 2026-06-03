@@ -2,7 +2,7 @@
 
 **Projekt-Slug:** `Wolf_Street`  
 **Letzte Aktualisierung:** 2026-06-03 (Auditorwechsel + DEKRA bestätigt)  
-**Audits:** **16.06.2026** ISO 9001 + ISO 14001 (Überwachung) · **17.07.2026** DIN 77200 (Überwachung) — **Welle 1 kritisch**
+**Audits:** **16.06.** ISO 9001+14001 (Dr. Düvel) · **17.07.** DIN 77200 (Dr. Teubart) — **Welle 1 kritisch**
 
 ---
 

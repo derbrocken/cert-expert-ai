@@ -22,6 +22,11 @@ Chronologisches Log (neueste Einträge oben).
 - **Inhalt:** Überwachungsaudit **ISO 9001 + ISO 14001** am **16.06.2026**; separates Überwachungsaudit **DIN 77200** am **17.07.2026**. Themen Operations Board: Auditorwechsel, DEKRA, Rechtskataster, Umweltkennzahlen, Managementbewertung, Folgeangebot.
 - **Follow-up:** DEKRA-Termine bestätigen lassen; ws01/ws02 priorisieren.
 
+### 2026-06-03 — HQ — Auditoren ergänzt
+
+- **Inhalt:** **16.06.** ISO 9001 + ISO 14001 → **Dr. Düvel**; **17.07.** DIN 77200 → **Dr. Teubart**. 10./14./15.06. = nur Vorbereitung, keine Audits.
+- **Follow-up:** [`Status.md`](Status.md), [`Audit_2026.md`](Audit_2026.md)
+
 ### 2026-06-03 — Telefon / Schrift — Auditorwechsel & DEKRA
 
 - **Von/An:** Cert-Expert ↔ DEKRA / Wolf Street

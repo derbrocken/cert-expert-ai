@@ -1,6 +1,6 @@
 # Tagesbriefing — Cert-Expert HQ
 
-**Generiert:** 2026-06-03 17:36 (lokal)  
+**Generiert:** 2026-06-03 17:39 (lokal)  
 **Obsidian:** Leseansicht (siehe `WIE_NUTZEN.md` § Leseansicht) — nicht Bearbeiten-Modus.
 
 > **Dein Einstieg:** Nur diese Datei morgens öffnen.
@@ -14,11 +14,7 @@
 
 | Datum | Kunde | Hinweis | Status |
 |-------|-------|---------|--------|
-| **06.06.2026** | [TeamFlex](../03_Kundenprojekte/TeamFlex/Status.md) | Audit/Termin | 🔴 |
-| **10.06.2026** | [Wolf Street](../03_Kundenprojekte/Wolf_Street/Status.md) | Audit/Termin | 🔴 |
-| **11.06.2026** | [TeamFlex](../03_Kundenprojekte/TeamFlex/Status.md) | Audit/Termin | 🔴 |
 | **12.06.2026** | [TeamFlex](../03_Kundenprojekte/TeamFlex/Status.md) | Audit/Termin | 🔴 |
-| **15.06.2026** | [Wolf Street](../03_Kundenprojekte/Wolf_Street/Status.md) | Audit/Termin | 🔴 |
 | **16.06.2026** | [Wolf Street](../03_Kundenprojekte/Wolf_Street/Status.md) | Audit/Termin | 🔴 |
 
 ### Dringend (Priorität urgent)
@@ -45,7 +41,7 @@
 ### TeamFlex 🔴
 
 **Blocker:** Wachbuchauszug fehlt (noch anfordern); neuer Monatsplan + Monatsbericht vom Kunden ausstehend; **beide Projektordner** i
-**Termine:** 12.06.2026, 06.06.2026, 11.06.2026
+**Termine:** 12.06.2026
 
 - [Status](../03_Kundenprojekte/TeamFlex/Status.md) · [To-dos](../03_Kundenprojekte/TeamFlex/ToDos.md)
   - [urgent] Zusatzbeauftragung DIN 77200 mit Kunde abstimmen und dokumentieren
@@ -58,7 +54,7 @@
 ### Wolf Street 🔴
 
 **Blocker:** Rechtskataster / Umweltkennzahlen / KPI ISO 14001; Managementbewertung vor 16.06. (Auditorwechsel erledigt, DEKRA-Termin
-**Termine:** 16.06.2026, 17.07.2026, 10.06.2026, 15.06.2026
+**Termine:** 16.06.2026, 17.07.2026
 
 - [Status](../03_Kundenprojekte/Wolf_Street/Status.md) · [To-dos](../03_Kundenprojekte/Wolf_Street/ToDos.md)
   - [urgent] Auditvorbereitung (ISO 9001, ISO 14001, DIN 77200) abschließen
@@ -71,7 +67,6 @@
 ### SecuGuard 🔴
 
 **Blocker:** NC-Schließung bis 30.06.; Querschnittsthemen (Mutterschutz, Beteiligung, FASI, Arzt, Führungskräfte) in Bearbeitung
-**Termine:** 30.06.2026, 28.05.2026
 
 - [Status](../03_Kundenprojekte/SecuGuard/Status.md) · [To-dos](../03_Kundenprojekte/SecuGuard/ToDos.md)
   - [urgent] Hauptabweichungen M1–M5 schließen (Ü1-Dokument — siehe Audit_2026.md)
@@ -84,13 +79,13 @@
 
 | Ampel | Kunde | Termine | Offene To-dos | Link |
 |-------|-------|---------|---------------|------|
-| 🔴 | **TeamFlex** | 12.06.2026, 06.06.2026, 11.06.2026 | 8 | [Status](../03_Kundenprojekte/TeamFlex/Status.md) |
-| 🔴 | **Wolf Street** | 16.06.2026, 17.07.2026, 10.06.2026 | 6 | [Status](../03_Kundenprojekte/Wolf_Street/Status.md) |
-| 🔴 | **SecuGuard** | 30.06.2026, 28.05.2026 | 3 | [Status](../03_Kundenprojekte/SecuGuard/Status.md) |
-| 🔴 | **Schutzritter** | 26.06.2026 | 8 | [Status](../03_Kundenprojekte/Schutzritter/Status.md) |
+| 🔴 | **TeamFlex** | 12.06.2026 | 8 | [Status](../03_Kundenprojekte/TeamFlex/Status.md) |
+| 🔴 | **Wolf Street** | 16.06.2026, 17.07.2026 | 6 | [Status](../03_Kundenprojekte/Wolf_Street/Status.md) |
+| 🔴 | **SecuGuard** | — | 3 | [Status](../03_Kundenprojekte/SecuGuard/Status.md) |
+| 🔴 | **Schutzritter** | — | 8 | [Status](../03_Kundenprojekte/Schutzritter/Status.md) |
 | 🟡 | **Checkpoint Regional** | — | 4 | [Status](../03_Kundenprojekte/Checkpoint_Regional/Status.md) |
 | 🟡 | **ZT Security** | 08.07.2026 | 1 | [Status](../03_Kundenprojekte/ZT_Security/Status.md) |
-| 🟡 | **LC Security** | 08.07.2026, 07.07.2026 | 4 | [Status](../03_Kundenprojekte/LC_Security/Status.md) |
+| 🟡 | **LC Security** | — | 4 | [Status](../03_Kundenprojekte/LC_Security/Status.md) |
 
 ---
 

@@ -2,7 +2,7 @@
 
 **Projekt-Slug:** `TeamFlex`  
 **Letzte Aktualisierung:** 2026-06-03 (nach Kundengespräch)  
-**Audit:** **12.06.2026** (verschoben von **06.06.**) — **Welle 1 kritisch**
+**Audit:** **12.06.2026** DIN 77200 (Dr. Teubart) — offiziell in Unterlagen **06.06.** — **Welle 1 kritisch**
 
 ---
 

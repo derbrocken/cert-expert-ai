@@ -16,6 +16,11 @@ Chronologisches Log (neueste Einträge oben).
 
 ## Log
 
+### 2026-06-03 — HQ — Termine & Auditoren korrigiert
+
+- **Inhalt:** Audit **12.06.2026** (Dr. **Teubart**); **06.06.** nur offizielle Schreibweise. Wolf Street separat aktualisiert.
+- **Follow-up:** [`Status.md`](Status.md), [`Audit_2026.md`](Audit_2026.md)
+
 ### 2026-06-03 — Telefon — Kundengespräch TeamFlex
 
 - **Von/An:** Cert-Expert ↔ TeamFlex

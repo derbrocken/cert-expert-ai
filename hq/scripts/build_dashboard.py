@@ -114,24 +114,40 @@ def _customer_meta(slug: str) -> dict:
         bm = re.search(r"\*\*Blocker:\*\*\s*([^\n]+)", t)
         if bm:
             meta["blocker"] = bm.group(1).strip()[:120]
-        for line in t.splitlines():
-            low = line.lower()
-            if any(
-                k in low
-                for k in ("audit", "überwachung", "frist", "termin", "verschoben")
-            ) and DATE_PAT.search(line):
-                for d in DATE_PAT.findall(line):
-                    if "stand" in low and "audit" not in low:
+        # Only dates under "## Audit-Termin" / "## Audit-Termine" (not Vorbereitung/Zeitplan)
+        sec = re.search(
+            r"## Audit-Termin[^\n]*\n(.*?)(?=\n## |\Z)",
+            t,
+            re.S | re.I,
+        )
+        if sec:
+            for line in sec.group(1).splitlines():
+                if "schriftverkehr" in line.lower() or "offiziell" in line.lower():
+                    continue
+                if "**" not in line and "Überwachung" not in line:
+                    # prefer bold audit rows
+                    if not re.search(r"\*\*\d{1,2}\.\d{1,2}", line):
                         continue
+                for d in DATE_PAT.findall(line):
                     ds = f"{d[0]}.{d[1]}.{d[2]}"
                     if ds not in meta["audit_dates"]:
                         meta["audit_dates"].append(ds)
-    if audit_path.exists():
+    if audit_path.exists() and not meta["audit_dates"]:
         t = audit_path.read_text(encoding="utf-8")
-        for line in t.splitlines()[:40]:
-            if DATE_PAT.search(line) and any(
-                k in line.lower() for k in ("termin", "audit", "frist", "phase")
-            ):
+        overview = re.search(r"## Audit-Übersicht(.*?)(?=\n## |\Z)", t, re.S | re.I)
+        if overview:
+            for line in overview.group(1).splitlines():
+                if re.search(r"\*\*Audit-Termin\*\*|\*\*Termin\*\*", line) or (
+                    "**" in line and "Phase" in line
+                ):
+                    for d in DATE_PAT.findall(line):
+                        if "offiziell" in line.lower() or "unterlagen" in line.lower():
+                            continue
+                        ds = f"{d[0]}.{d[1]}.{d[2]}"
+                        if ds not in meta["audit_dates"]:
+                            meta["audit_dates"].append(ds)
+        for line in t.splitlines()[:20]:
+            if "| **" in line and DATE_PAT.search(line) and "Phase" in line:
                 for d in DATE_PAT.findall(line):
                     ds = f"{d[0]}.{d[1]}.{d[2]}"
                     if ds not in meta["audit_dates"]:

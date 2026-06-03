@@ -1,7 +1,7 @@
 # Status — TeamFlex
 
 **Slug:** `TeamFlex`  
-**Stand:** 2026-06-03 (nach Kundengespräch)  
+**Stand:** 2026-06-03 (Termine/Auditoren korrigiert)  
 **Phase:** Aktiv — Überwachungsaudit-Vorbereitung  
 **Projekttyp:** Überwachungsaudit DIN 77200
 
@@ -14,25 +14,24 @@
 
 ## Audit-Termin
 
-| Datum | Art | Norm / Scope | Hinweis |
-|-------|-----|----------------|--------|
-| ~~06.06.2026~~ | — | — | ursprünglich geplant, **verschoben** |
-| **12.06.2026** | Überwachungsaudit | **DIN 77200** (Sicherheitsdienstleistungen) | **aktueller Termin** (mit Kunde abgestimmt) |
+| Datum | Art | Norm / Scope | Auditor/in | Hinweis |
+|-------|-----|----------------|------------|--------|
+| **12.06.2026** | Überwachungsaudit | **DIN 77200** | **Dr. Teubart** | **maßgeblicher Audit-Termin** |
+| 06.06.2026 | (Schriftverkehr) | DIN 77200 | Dr. Teubart | nur **offiziell** in Unterlagen/DEKRA so ausgewiesen — Audit findet am **12.06.** statt |
 
 ## Erledigt / Fortschritt (Kundengespräch)
 
 - **Subunternehmer:** Freigabe durch Kunden **erhalten**
 
-## Zeitplan (kritischer Pfad)
+## Vorbereitung (keine Audit-Termine)
 
 | Bis | Meilenstein |
 |-----|----------------|
-| erledigt | Kundengespräch — Termin 12.06., Subunternehmer-Freigabe |
+| erledigt | Kundengespräch — Audit **12.06.**, Subunternehmer-Freigabe |
 | ASAP | Wachbuchauszug anfordern |
 | bis 11.06. | Monatsplan + Monatsbericht vom Kunden |
 | bis 11.06. | Beide Projektordner (DEKRA) fertigstellen |
-| **11.06.2026** | Subunternehmer, ADA, Monatsplan, Leistungsorte, DEKRA-Ordner, Personal stichprobenartig |
-| **12.06.2026** | **Überwachungsaudit** |
+| **12.06.2026** | **Überwachungsaudit DIN 77200** (Dr. Teubart) |
 
 ## Schwerpunkte vor Audit
 
