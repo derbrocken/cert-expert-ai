@@ -1,14 +1,34 @@
 # Status — Schutzritter
 
 **Slug:** `Schutzritter`  
-**Stand:** 2026-06-03  
-**Phase:** Aktiv — Zertifizierung + SK/EK Referenz
+**Stand:** 2026-06-03 (nach Kundengespräch)  
+**Phase:** Aktiv — Audit-Vorbereitung
 
 ## Kurzstatus
 
-- **Ampel:** 🟠 (Welle 2)
-- **Fokus:** Sicherheitskonzept + Einsatzkonzept, Veranstaltungsreferenz
+- **Ampel:** 🔴 (Audit **26.06.2026** — VK-Upload überfällig)
+- **Letzte Kommunikation:** 2026-06-03 — Formulare Unternehmen / Mitarbeiter, VK-Datei
+- **Blocker:** VK-Datei noch nicht hochgeladen; Mitarbeiterformulare noch nicht versendet
 
-## Bot-Bezug
+## Zeitplan
 
-- SK/EK über `cert-expert-ai` — siehe `06_Software/Software_Backlog_Juni_2026.md`
+| Datum | Meilenstein |
+|-------|-------------|
+| **ASAP** | VK-Datei uploaden (überfällig seit ~2 Wochen) |
+| **+1 Tag** | Kunde lädt erste **Unternehmensformulare** hoch (vereinbart nach Gespräch 03.06.) |
+| **Danach** | **Mitarbeiterformulare** an Kunden senden |
+| **26.06.2026** | Audit |
+
+## Nächste Schritte (Reihenfolge)
+
+1. VK-Datei — Upload abschließen  
+2. Eingang Unternehmensformulare prüfen  
+3. Mitarbeiterformulare versenden  
+4. Personalakten / Unterlagen vervollständigen  
+5. SK/EK Referenzprojekt (parallel nach Bedarf)
+
+## Verknüpfung
+
+- To-dos: [`ToDos.md`](ToDos.md)
+- Kommunikation: [`Kommunikation.md`](Kommunikation.md)
+- Audit: [`Audit_2026.md`](Audit_2026.md)

@@ -18,7 +18,7 @@
 | TeamFlex | 9 | Audit 12.06., Wachbuch |
 | Wolf_Street | 8 | Audit 16.06. |
 | SecuGuard | 3 | Frist 30.06. |
-| Schutzritter | 5 | SK/EK |
+| Schutzritter | 8 | Audit **26.06.**, VK-Upload ASAP |
 | Checkpoint_Regional | 4 | Unbedenklichkeit |
 | ZT_Security | 1 | Scope |
 | LC_Security | 3 | Haupt-NA |
