@@ -1,10 +1,10 @@
 # Tagesbriefing — Cert-Expert HQ
 
-**Generiert:** 2026-06-03 17:15 (lokal)  
-**Lesen in Obsidian:** Reading View (Cmd+Shift+R) · Pin diese Note oben.
+**Generiert:** 2026-06-03 17:36 (lokal)  
+**Obsidian:** Leseansicht (siehe `WIE_NUTZEN.md` § Leseansicht) — nicht Bearbeiten-Modus.
 
-> [!tip] Dein Einstieg
-> Nur diese Datei morgens öffnen. Details pro Kunde über Links — nicht alle ToDos.md durchsuchen.
+> **Dein Einstieg:** Nur diese Datei morgens öffnen.
+> Details pro Kunde über die Links — nicht alle ToDos.md durchsuchen.
 
 ---
 
