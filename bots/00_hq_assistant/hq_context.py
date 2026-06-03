@@ -16,6 +16,9 @@ KP = HQ / "03_Kundenprojekte"
 REGISTRY = KP / "_registry.json"
 BOARD = HQ / "02_Operations_Board" / "Operations_Board_Juni_2026.md"
 SNAPSHOT = DASH / "operations_snapshot.md"
+DFSS_DIR = HQ / "07_DFSS"
+DFSS_MEASUREMENT_STATUS = DFSS_DIR / "DFSS_MEASUREMENT_STATUS.md"
+DFSS_README = DFSS_DIR / "README.md"
 
 MAX_FILE_CHARS = 12_000
 MAX_TOTAL_CHARS = 90_000
@@ -37,7 +40,21 @@ PORTFOLIO_INTENT_RE = re.compile(
 )
 
 CROSS_INTENT_RE = re.compile(
-    r"\b(forderung|forderungen|rechnung|mahnung|angebot|vertrieb|software|dfss|afas)\b",
+    r"\b(forderung|forderungen|rechnung|mahnung|angebot|vertrieb|software|afas)\b",
+    re.I,
+)
+
+DFSS_INTENT_RE = re.compile(
+    r"\b("
+    r"dfss|"
+    r"s0[\s-]?blocker|"
+    r"evidence[\s-]?ids?|"
+    r"ev-(tf|ws|sr|sg)-|"
+    r"pilot[\s-]?(measurement|daten|data|status)|"
+    r"measurement[\s-]?activation|"
+    r"missing[\s-]?pilot|"
+    r"p-id|p0[1-5]"
+    r")\b",
     re.I,
 )
 
@@ -148,6 +165,54 @@ def _read_block(label: str, path: Path) -> str | None:
     return f"### {label}\nPfad: `{path.relative_to(REPO_ROOT)}`\n\n{body}"
 
 
+def is_dfss_question(question: str) -> bool:
+    q = question.strip()
+    if not q:
+        return False
+    if DFSS_INTENT_RE.search(q):
+        return True
+    return bool(
+        re.search(
+            r"dfss\s+status|pilot\s+daten|measurement\s+activation|pilot\s+measurement\s+status",
+            q,
+            re.I,
+        )
+    )
+
+
+def build_dfss_context_pack() -> tuple[str, list[str], str]:
+    """DFSS status / evidence / S0 — primary source: DFSS_MEASUREMENT_STATUS.md."""
+    blocks: list[str] = [_date_context_block()]
+    sources: list[str] = []
+
+    def add(label: str, path: Path) -> None:
+        chunk = _read_block(label, path)
+        if chunk:
+            blocks.append(chunk)
+            sources.append(str(path.relative_to(REPO_ROOT)))
+
+    add("DFSS Measurement Status", DFSS_MEASUREMENT_STATUS)
+    if DFSS_README.exists():
+        add("DFSS README", DFSS_README)
+
+    blocks.append(
+        "### Modus\n"
+        "**DFSS-Frage** — antworte primär aus `DFSS_MEASUREMENT_STATUS.md`.\n"
+        "- §1 Portfolio Quick Status\n"
+        "- §2 S0 Blocker Overview\n"
+        "- §3 Evidence Lookup (**EV-TF/WS/SR/SG-…**, nicht TODO-*-IDs)\n"
+        "- §4 Missing Pilot Data\n"
+        "- §5 Next DFSS Actions\n"
+        "Gate: NOT READY FOR PILOT VALIDATION REPORT — DATA COLLECTION REQUIRED.\n"
+        "Keine Pilotdaten oder Zielwerte erfinden; fehlende Werte: **TBD / nicht gepflegt**."
+    )
+
+    text = "\n\n---\n\n".join(blocks)
+    if len(text) > MAX_TOTAL_CHARS:
+        text = text[: MAX_TOTAL_CHARS - 120] + "\n\n… [Gesamtkontext gekürzt]\n"
+    return text, sources, "dfss"
+
+
 def is_portfolio_question(question: str, slugs: list[str]) -> bool:
     """Portfolio = keine Kundenerkennung oder explizite Übersichtsfrage."""
     if not question.strip():
@@ -167,7 +232,10 @@ def build_context_pack(
     include_cross: bool = False,
     force_portfolio: bool = False,
 ) -> tuple[str, list[str], str]:
-    """Return (context_text, source_paths, mode) where mode is portfolio|customer."""
+    """Return (context_text, source_paths, mode) where mode is dfss|portfolio|customer."""
+    if is_dfss_question(question):
+        return build_dfss_context_pack()
+
     registry = load_registry()
     slugs = list(dict.fromkeys((extra_slugs or []) + detect_customer_slugs(question, registry)))
     portfolio = force_portfolio or is_portfolio_question(question, slugs)
@@ -264,6 +332,15 @@ SYSTEM_PROMPT = """Du bist der **Cert-Expert HQ Assistant** — Organisation, St
 ## To-dos schreiben
 Terminal: `python -m bots.00_hq_assistant.hq_bot "todo TeamFlex: …"` — im Chat nur auf explizite Bitte in `ToDos.md` schreiben.
 
+## Antwortschablone — DFSS-Fragen
+1. **Kurzantwort** (Gate + Stand aus Measurement Status)
+2. **Portfolio Quick Status** (Tabelle/Kurzliste der vier Rollout-Kunden)
+3. **S0 Blocker Overview** (S0-01 … S0-08 mit EV-*-Bezug)
+4. **Evidence Lookup** — IDs als **EV-TF-001**, **EV-WS-001**, **EV-SR-001**, **EV-SG-001** (nicht TODO-*)
+5. **Missing Pilot Data** — explizit als fehlend / TBD
+6. **Next DFSS Actions** (dfss01–dfss04)
+
 ## Verboten
 Keine GB/SK/EK-Dokumente, kein `knowledge/` für Normen, nichts als erledigt markieren ohne Beleg.
+Keine Pilot Validation Reports behaupten; keine Zielwerte erfinden.
 """
