@@ -53,7 +53,8 @@ Im **Dateiexplorer** (links):
 cert-expert-ai
   └── hq
         └── 00_Dashboard
-              ├── Tagesbriefing.md    ← diese Datei
+              ├── Tagesbriefing.md    ← morgens
+              ├── operations_snapshot.md  ← Portfolio / HQ Assistant
               ├── Kunden_Uebersicht.md
               └── WIE_NUTZEN.md       ← diese Anleitung
 ```
@@ -90,6 +91,29 @@ python3 hq/scripts/build_dashboard.py
 3. **Leseansicht** (Buch-Symbol / Cmd+E)
 4. Fertig — nicht den ganzen `hq/`-Baum durchklicken
 
+**Nicht** morgens öffnen: `01_Master_Dump/Master_Dump_V1_June_2026.md` (zu lang, doppelt mit HQ).
+
+---
+
+## Zwei Briefing-Dateien
+
+| Datei | Wann |
+|-------|------|
+| `Tagesbriefing.md` | **Jeden Morgen** — kurz: Woche, Top 7 außerhalb Welle 1, Radar |
+| `Tagesbriefing_VOLL.md` | **1× pro Woche** — alle urgent, Welle-1-Listen, Querschnitt im Detail |
+
+Welle 1 (TeamFlex, Wolf Street, SecuGuard): im Kurzbriefing nur **eine Tabellenzeile** — Details in `ToDos.md`.
+
+---
+
+## Master Dump
+
+| Datei | Rolle |
+|-------|--------|
+| `01_Master_Dump/README.md` | Eingang für **neue** unklare Punkte (eine Zeile) |
+| `MIGRATION_STATUS.md` | Wöchentliche Checkliste: was aus dem Juni-Dump fehlt noch? |
+| `Master_Dump_V1_June_2026.md` | Archiv-Inventar — Referenz, nicht Tagesliste |
+
 ---
 
 ## Was du wo liest
@@ -97,7 +121,11 @@ python3 hq/scripts/build_dashboard.py
 | Frage | Datei |
 |-------|--------|
 | Was ist heute dran? | `Tagesbriefing.md` |
+| Portfolio / blockiert / Audits / überfällig? | `operations_snapshot.md` + HQ Assistant |
+| Alles urgent / Planung? | `Tagesbriefing_VOLL.md` |
 | Wie steht Kunde X? | `03_Kundenprojekte/{Kunde}/Status.md` |
 | NC / Audit-Details? | `Audit_2026.md` |
+| Haben wir Dump-Punkte vergessen? | `01_Master_Dump/MIGRATION_STATUS.md` |
 | Kurznotiz (jetzt) | Cursor-Chat → schreibt in HQ |
+| To-do aufnehmen | `python3 -m bots.00_hq_assistant.hq_bot "todo TeamFlex: …"` oder HQ-Chat (Regel **HQ Assistant**) |
 | Kurznotiz (später) | Telegram → HQ |

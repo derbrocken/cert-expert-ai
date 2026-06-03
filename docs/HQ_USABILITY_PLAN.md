@@ -13,7 +13,8 @@
 
 ## Phase 1 — Lokal (umgesetzt)
 
-- `hq/scripts/build_dashboard.py` → `Tagesbriefing.md`, `Kunden_Uebersicht.md`
+- `hq/scripts/build_dashboard.py` → `Tagesbriefing.md`, `Tagesbriefing_VOLL.md`, `Kunden_Uebersicht.md`, **`operations_snapshot.md`**
+- HQ Assistant lädt Snapshot für Portfolio-Fragen (siehe `bots/00_hq_assistant/README.md`)
 - `hq/00_Dashboard/WIE_NUTZEN.md` — Obsidian-Setup
 - `.obsidian/snippets/hq-briefing.css` — Lesbarkeit (optional aktivieren)
 

@@ -11,7 +11,7 @@ Dieser Ordner ist **System A** (Organisation). Die Bot-Pipeline lebt in `bots/`,
 
 | Ordner | Zweck |
 |--------|--------|
-| `00_Dashboard/` | Übersicht, KPIs, Links |
+| `00_Dashboard/` | Übersicht, KPIs, Links, **operations_snapshot.md** |
 | `01_Master_Dump/` | Unsortiertes, zu klären |
 | `02_Operations_Board/` | Tagesgeschäft, Ingest-Log (später) |
 | `03_Kundenprojekte/` | **Kunden** — Status, ToDos, Kommunikation, … |
@@ -35,7 +35,9 @@ Siehe `03_Kundenprojekte/_registry.json` und je Kunde:
 - `Dokumente_und_Nachweise.md`
 - `Lessons_Learned.md`
 
-**Obsidian (lokal):** Morgens [`00_Dashboard/Tagesbriefing.md`](00_Dashboard/Tagesbriefing.md) öffnen — erzeugen mit `python3 hq/scripts/build_dashboard.py` (siehe [`00_Dashboard/WIE_NUTZEN.md`](00_Dashboard/WIE_NUTZEN.md)).
+**Obsidian (lokal):** Morgens [`00_Dashboard/Tagesbriefing.md`](00_Dashboard/Tagesbriefing.md) — erzeugen mit `python3 hq/scripts/build_dashboard.py` (legt auch [`operations_snapshot.md`](00_Dashboard/operations_snapshot.md) an).
+
+**Fragen-Bot (nur HQ):** [`bots/00_hq_assistant/README.md`](../bots/00_hq_assistant/README.md) — Terminal oder Cursor-Regel **HQ Assistant** (getrennt von GB/SK/EK).
 
 **Nächster Schritt von dir:** Updates per Chat/Cursor (später Telegram) — Schema in `08_Vorlagen/ToDos_template.md`.
 

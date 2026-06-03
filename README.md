@@ -27,7 +27,7 @@ Architektur: [`docs/ARCHITECTURE_INDEX.md`](docs/ARCHITECTURE_INDEX.md)
 |--------|--------|
 | `hq/` | Unternehmensgedächtnis |
 | `knowledge/` | Fachwissen (Bots: Allowlist only) |
-| `bots/` | GB, SK, EK |
+| `bots/` | HQ Assistant, GB, SK, EK |
 | `inputs/` | Projekt-JSON + Checklisten |
 | `projects/` | Event-Akten |
 | `docs/` | Architektur & Handoff |

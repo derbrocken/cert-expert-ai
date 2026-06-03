@@ -18,7 +18,7 @@ Lies vollständig:
 3) hq/README.md
 
 Kontext:
-- Zwei Systeme: (A) hq/ Organisation/To-dos — (B) Bots GB/SK/EK in bots/ + knowledge/
+- Drei Einstiege: (A) hq/ Organisation — (B) **HQ Assistant** `bots/00_hq_assistant/` oder Cursor-Regel `hq-assistant` — (C) Dokument-Bots GB/SK/EK in `bots/01–03` + `knowledge/`
 - Architektur-Audit ist dokumentiert; Section-basierte Generierung und Flow-Orchestrator sind NOCH NICHT implementiert.
 - Kein neuer Bot-Code ohne Abgleich mit DOCUMENT_DEPENDENCY_MAP und SECTION_BASED_DOCUMENT_GENERATION_CONCEPT.
 
