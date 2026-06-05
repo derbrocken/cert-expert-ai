@@ -1,7 +1,7 @@
 # B5.7 Employee File MVP Slice 1 — Implementation Report
 
 **Gate:** B5.7 — Workspace shell around existing generator queue  
-**Status:** **CLOSED**  
+**Status:** **CLOSED** (implementation + EC-09 control verification)  
 **Date:** 2026-06-05  
 **Branch:** `b3-tool2-migration`  
 **Prerequisite:** B5.6 PASS FOR LIMITED IMPLEMENTATION SLICE 1  
@@ -63,10 +63,10 @@ Added a minimal **Employee File Workspace** framing layer on `/employee-automati
 | Generator files diff empty | **PASS** — no changes to `generate-employee-docs` or action re-export |
 | `handleGenerate` → `generateEmployeeDocs` call preserved | **PASS** — same arguments and download flow |
 | `/employee-automation` in build output | **PASS** — static route present |
-| Manual ZIP with Hetzner | **Not run in CI** — requires configured `.env.local`; regression protected by zero generator diff + unchanged server action import |
-| EC-09 baseline ZIP re-compare | **Not required** per B5.6 — generator untouched |
+| Manual ZIP with Hetzner | **PASS** — see Control Verification Addendum (2026-06-05) |
+| EC-09 baseline ZIP re-compare | **Not required** per B5.6 — generator untouched; smoke ZIP generated successfully post-B5.7 |
 
-**Assessment:** **No EC-09 regression from B5.7 scope** (UI-only slice).
+**Assessment:** **No EC-09 regression from B5.7 scope** (UI-only slice). **Open control closed** after manual verification (addendum below).
 
 ---
 
@@ -127,3 +127,57 @@ Added a minimal **Employee File Workspace** framing layer on `/employee-automati
 ## Commit
 
 See git log after commit: `feat: add employee file workspace shell around Tool 2 generator (B5.7)`
+
+---
+
+## Control Verification Addendum
+
+| Field | Value |
+|-------|-------|
+| **Date** | 2026-06-05 |
+| **Environment** | Local macOS (darwin 25.4.0); `npm run dev -- -p 3001` from `apps/certification-os/`; configured `.env.local` present (not read or modified) |
+| **Branch / commit under test** | `b3-tool2-migration` @ `52ca548` (B5.7 implementation) |
+
+### EC-09 ZIP regression result
+
+**PASS — B5.7 control closed.**
+
+| Step | Result |
+|------|--------|
+| `/employee-automation` loads (HTTP 200) | **PASS** |
+| EmployeeForm: fill name, birthday, start date, role | **PASS** |
+| Core document selection (`01_Jahresweiterbildung_DIN_77200-1_24UE`) | **PASS** |
+| Add employee to generator queue | **PASS** — row + summary panel visible |
+| B5.7 row selection / summary shell during flow | **PASS** — does not block add or generate |
+| UI **Generate & Download ZIP** (server action via page) | **PASS** — completed without error toast; button returned to idle |
+| Generator smoke (unchanged `generateEmployeeDocs` + Hetzner templates) | **PASS** — `success: true`, ZIP **52 190 bytes**, role `din-77200-1-allgemeine`, doc `01_Jahresweiterbildung_DIN_77200-1_24UE.docx` |
+| B5.7 notice / summary forbidden claims | **PASS** — transitional wording only; explicitly denies automatic release, DIN compliance, certification readiness |
+
+No baseline ZIP byte-for-byte re-compare required per B5.6 (generator untouched). Smoke confirms EC-09 path still produces a real Hetzner-backed ZIP after B5.7 UI shell.
+
+### Template loading result
+
+**PASS** — `GET /api/templates` → HTTP **200**; roles and appointment overlays returned from Hetzner (e.g. `din-77200-1-allgemeine` with DOCX core documents). EmployeeForm role picker and core-document chips populated in browser.
+
+### Build result
+
+**PASS** — `npm run build` (Next.js 16.1.1, Turbopack); exit 0; `/employee-automation` static route present.
+
+### Scope checks
+
+| Check | Result |
+|-------|--------|
+| `.env.local` modified | **No** |
+| Tool 1 touched | **No** |
+| Generator / storage / templates changed for this verification | **No** |
+| Unrelated files changed in addendum commit | **No** — report only |
+
+### Files changed in addendum
+
+| File | Change |
+|------|--------|
+| `docs/03-controls/B5_7_EMPLOYEE_FILE_MVP_SLICE_1_IMPLEMENTATION_REPORT.md` | This addendum |
+
+### Remaining carry-forwards
+
+Unchanged from implementation report §Remaining carry-forwards: `logoFile` persistence (B4.2), T2-BUG-09 en-US dates, T2-BUG-10 appointment duplication, evidence/readiness/ampel (B5.8+), full Employee File persistence, output history (B5.10). No new blockers for B5.8 gate entry from B5.7 controls.
