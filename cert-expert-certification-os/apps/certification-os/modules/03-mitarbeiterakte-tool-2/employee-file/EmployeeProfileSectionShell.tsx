@@ -381,6 +381,118 @@ function SdlProjectAssignmentStaticOverview({
   );
 }
 
+function GeneratorOutputStaticOverview({
+  employee,
+  roleName,
+  overlayNames,
+  totalSelectedDocs,
+}: {
+  employee: Employee;
+  roleName: string;
+  overlayNames: string[];
+  totalSelectedDocs: number;
+}) {
+  const hasRoleDocs = employee.selectedRoleDocIds.length > 0;
+  const hasTrainingSelection = employee.selectedAppointmentDocIds.length > 0;
+
+  const categories: CategoryRow[] = [
+    {
+      id: "standardpersonalakte",
+      labelDe: "Standardpersonalakte",
+      labelEn: "Employee file package",
+      status: totalSelectedDocs === 0 ? "Not selected" : "Prepared",
+      hint: `${roleName}: ${employee.selectedRoleDocIds.length} role + ${employee.selectedAppointmentDocIds.length} overlay doc(s) in selection — employee file package draft only.`,
+    },
+    {
+      id: "datenschutz",
+      labelDe: "Datenschutzerklärung",
+      labelEn: "Data protection declaration",
+      status: hasRoleDocs ? "Output placeholder" : "Not selected",
+      hint: "Role template may include Datenschutz output — prepared draft requires review later.",
+    },
+    {
+      id: "verschwiegenheit",
+      labelDe: "Verschwiegenheitserklärung",
+      labelEn: "Confidentiality declaration",
+      status: hasRoleDocs ? "Output placeholder" : "Not selected",
+      hint: "Vertraulichkeit-related template output — static placeholder; not uploaded proof.",
+    },
+    {
+      id: "allgemeine-unterweisung",
+      labelDe: "Allgemeine Mitarbeiterunterweisung",
+      labelEn: "General employee instruction",
+      status: "Open",
+      hint: "General instruction output category — no separate output tracking in this slice.",
+    },
+    {
+      id: "objekt-unterweisung",
+      labelDe: "Objektbezogene Unterweisung",
+      labelEn: "Object-specific instruction",
+      status: "Not applicable",
+      hint: "No object ID on queue record — object-specific instruction output not evaluated.",
+    },
+    {
+      id: "schulungsnachweis",
+      labelDe: "Schulungsnachweis",
+      labelEn: "Training evidence output",
+      status: hasTrainingSelection ? "Requires review" : "Open",
+      hint: hasTrainingSelection
+        ? `${employee.selectedAppointmentDocIds.length} overlay doc(s) selected — training output relevance only.`
+        : "No overlay documents selected for training-related output.",
+    },
+    {
+      id: "zertifikat",
+      labelDe: "Zertifikat",
+      labelEn: "Certificate output",
+      status: "Not implemented",
+      hint: "Certificate output category — no certificate generator branch in this slice.",
+    },
+    {
+      id: "sammelunterweisung",
+      labelDe: "Sammelunterweisung",
+      labelEn: "Combined instruction package",
+      status: "Not implemented",
+      hint: "Combined instruction package — static placeholder only.",
+    },
+    {
+      id: "sammeldokument",
+      labelDe: "Sammeldokument (Mehrfachmitarbeiter)",
+      labelEn: "Multi-employee document package",
+      status: "Not implemented",
+      hint: "Batch queue supports per-employee ZIP only — multi-employee Sammeldokument not in this slice.",
+    },
+    {
+      id: "zip-ausgabe",
+      labelDe: "ZIP-Ausgabe",
+      labelEn: "ZIP export package",
+      status:
+        totalSelectedDocs === 0 ? "Not selected" : "ZIP available",
+      hint: `Use batch generate strip below. No output history in this slice. Overlays: ${overlayNames.length > 0 ? overlayNames.join(", ") : "none"}.`,
+    },
+  ];
+
+  return (
+    <div className="space-y-4">
+      <div className="flex flex-wrap gap-2">
+        {greyBadge("Static placeholder")}
+        {greyBadge("Readiness: not evaluated")}
+        {greyBadge("No output history")}
+      </div>
+
+      <p className="flex items-start gap-2 rounded-lg border border-orange-100 bg-orange-50/60 px-3 py-2 text-xs text-gray-600">
+        <Info className="mt-0.5 h-3.5 w-3.5 shrink-0 text-orange-500" />
+        Generator output overview (static — B7.8). Generated outputs are prepared
+        documents, not uploaded Nachweise. Review required later. Generated outputs
+        do not create Freigabe or readiness. ZIP success does not change evidence,
+        role/SDL assignment or readiness status. No generator change in this slice.
+        This overview is not output history and not a DIN decision matrix.
+      </p>
+
+      <AssignmentCategoryList categories={categories} />
+    </div>
+  );
+}
+
 interface EvidenceCategoryRow {
   id: string;
   labelDe: string;
@@ -534,11 +646,6 @@ export const EmployeeProfileSectionShell: React.FC<
     employee.selectedRoleDocIds.length +
     employee.selectedAppointmentDocIds.length;
 
-  const outputStatus =
-    totalSelectedDocs === 0
-      ? "Not selected"
-      : "Prepared — requires review";
-
   const activeDef = SECTIONS.find((s) => s.id === activeSection)!;
 
   function renderSectionContent() {
@@ -615,28 +722,12 @@ export const EmployeeProfileSectionShell: React.FC<
 
       case "output":
         return (
-          <div className="space-y-4">
-            <dl className="grid gap-4 sm:grid-cols-2">
-              <FieldRow
-                label="Selected role documents"
-                value={employee.selectedRoleDocIds.length}
-              />
-              <FieldRow
-                label="Selected overlay documents"
-                value={employee.selectedAppointmentDocIds.length}
-              />
-              <FieldRow label="Package draft status" value={outputStatus} />
-              <FieldRow
-                label="Last generated"
-                value="Not generated (no output history in this slice)"
-              />
-            </dl>
-            <p className="flex items-start gap-2 rounded-lg border border-orange-100 bg-orange-50/60 px-3 py-2 text-xs text-gray-600">
-              <Info className="mt-0.5 h-3.5 w-3.5 shrink-0 text-orange-500" />
-              Batch ZIP generation uses the queue strip below. Generated documents
-              are prepared drafts and require review — not uploaded Nachweise.
-            </p>
-          </div>
+          <GeneratorOutputStaticOverview
+            employee={employee}
+            roleName={role?.name ?? employee.roleId}
+            overlayNames={overlayNames}
+            totalSelectedDocs={totalSelectedDocs}
+          />
         );
 
       case "review":
