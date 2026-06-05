@@ -1,0 +1,65 @@
+{
+  "compilerOptions": {
+    "target": "ES2017",
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "react-jsx",
+    "incremental": true,
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
+    "paths": {
+      "@/*": [
+        "./*"
+      ],
+      "@shared/*": [
+        "../../shared/*"
+      ],
+      "@/lib/types/employee": [
+        "./modules/03-mitarbeiterakte-tool-2/employee-file/types/employee.ts"
+      ],
+      "@/lib/validations/employee-form": [
+        "./modules/03-mitarbeiterakte-tool-2/employee-file/validations/employee-form.ts"
+      ],
+      "@/lib/employee-queue-storage": [
+        "./modules/03-mitarbeiterakte-tool-2/employee-file/employee-queue-storage.ts"
+      ],
+      "@/lib/utils/date": [
+        "./modules/03-mitarbeiterakte-tool-2/employee-file/utils/date.ts"
+      ],
+      "@/lib/data/employee-config": [
+        "./modules/03-mitarbeiterakte-tool-2/roles/employee-config.ts"
+      ],
+      "@/components/employee": [
+        "./modules/03-mitarbeiterakte-tool-2/employee-file/index.ts"
+      ],
+      "@/components/employee/*": [
+        "./modules/03-mitarbeiterakte-tool-2/employee-file/*"
+      ]
+    }
+  },
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    ".next/dev/types/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}
