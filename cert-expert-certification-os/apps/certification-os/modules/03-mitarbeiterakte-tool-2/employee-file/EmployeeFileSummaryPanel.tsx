@@ -3,6 +3,7 @@
 import React from "react";
 import { Badge } from "@/components/ui";
 import { FileText, User, Info } from "lucide-react";
+import { formatIsoToInput } from "@/lib/utils/date";
 import type { Employee, Role, Appointment } from "@/lib/types/employee";
 
 export interface EmployeeFileSummaryPanelProps {
@@ -13,13 +14,8 @@ export interface EmployeeFileSummaryPanelProps {
 
 function formatDate(dateStr: string): string {
   if (!dateStr) return "—";
-  const d = new Date(dateStr);
-  if (isNaN(d.getTime())) return dateStr;
-  return d.toLocaleDateString("en-US", {
-    month: "short",
-    day: "numeric",
-    year: "numeric",
-  });
+  const formatted = formatIsoToInput(dateStr);
+  return formatted || dateStr;
 }
 
 export const EmployeeFileSummaryPanel: React.FC<EmployeeFileSummaryPanelProps> = ({

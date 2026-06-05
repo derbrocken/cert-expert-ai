@@ -8,6 +8,7 @@ import {
   GlobalSidebar,
 } from "@/components/employee";
 import { EmployeeFileSummaryPanel } from "./EmployeeFileSummaryPanel";
+import { EmployeeProfileSectionShell } from "./EmployeeProfileSectionShell";
 import { EmployeeFileWorkspaceNotice } from "./EmployeeFileWorkspaceNotice";
 import { Button } from "@/components/ui";
 import { Toast } from "@/components/ui/Toast";
@@ -224,11 +225,18 @@ export default function EmployeeAutomationPage() {
           <EmployeeFileWorkspaceNotice />
 
           {focusEmployee && templatesLoaded && (
-            <EmployeeFileSummaryPanel
-              employee={focusEmployee}
-              roles={roles}
-              appointments={appointments}
-            />
+            <>
+              <EmployeeFileSummaryPanel
+                employee={focusEmployee}
+                roles={roles}
+                appointments={appointments}
+              />
+              <EmployeeProfileSectionShell
+                employee={focusEmployee}
+                roles={roles}
+                appointments={appointments}
+              />
+            </>
           )}
 
           {/* Main Content: Sidebar + Form */}
