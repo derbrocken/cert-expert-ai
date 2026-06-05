@@ -72,7 +72,7 @@ const SECTIONS: SectionDef[] = [
     labelDe: "Nachweise",
     labelEn: "Evidence",
     icon: <FileCheck className="h-4 w-4" />,
-    state: "placeholder",
+    state: "read-only",
   },
   {
     id: "training",
@@ -149,6 +149,145 @@ function FieldRow({ label, value }: { label: string; value: React.ReactNode }) {
     <div>
       <dt className="text-xs font-medium text-gray-500">{label}</dt>
       <dd className="mt-0.5 text-sm text-gray-900">{value}</dd>
+    </div>
+  );
+}
+
+interface EvidenceCategoryRow {
+  id: string;
+  labelDe: string;
+  labelEn: string;
+  status: string;
+  hint: string;
+}
+
+function EvidenceStaticOverview({
+  employee,
+  roleName,
+  overlayNames,
+  totalSelectedDocs,
+}: {
+  employee: Employee;
+  roleName: string;
+  overlayNames: string[];
+  totalSelectedDocs: number;
+}) {
+  const hasGuardId = Boolean(employee.guardIDNumber?.trim());
+  const hasTrainingSelection = employee.selectedAppointmentDocIds.length > 0;
+
+  const categories: EvidenceCategoryRow[] = [
+    {
+      id: "identity",
+      labelDe: "Identität / Stammdaten",
+      labelEn: "Identity / personal master data",
+      status: employee.fullName && employee.birthday ? "Not provided" : "Open",
+      hint: `Queue fields: ${employee.fullName || "—"}, birthday ${displayDate(employee.birthday)} — field presence is not proof.`,
+    },
+    {
+      id: "employment",
+      labelDe: "Beschäftigung / Vertrag",
+      labelEn: "Employment / contract-related documents",
+      status: "Open",
+      hint: `Start date ${displayDate(employee.startDate)} — no contract upload in this slice.`,
+    },
+    {
+      id: "register",
+      labelDe: "Bewacherregister",
+      labelEn: "Register evidence",
+      status: hasGuardId ? "Requires review" : "Not provided",
+      hint: hasGuardId
+        ? `Bewacher-ID ${employee.guardIDNumber} on file — register copy not uploaded.`
+        : "No Bewacher-ID on queue record.",
+    },
+    {
+      id: "qualification",
+      labelDe: "§34a / Sachkunde",
+      labelEn: "Qualification evidence",
+      status: "Not evaluated",
+      hint: `Role context: ${roleName} — certificate upload not implemented.`,
+    },
+    {
+      id: "dataprotection",
+      labelDe: "Datenschutz / Vertraulichkeit",
+      labelEn: "Data protection / confidentiality",
+      status: "Open",
+      hint: "Generator may produce related drafts — prepared output requires review.",
+    },
+    {
+      id: "firstaid",
+      labelDe: "Erste Hilfe / Zusatzqualifikation",
+      labelEn: "First aid / additional qualification",
+      status: "Not implemented",
+      hint: "Placeholder category — no checklist persistence.",
+    },
+    {
+      id: "training",
+      labelDe: "Schulung / Unterweisung",
+      labelEn: "Training / instruction evidence",
+      status: hasTrainingSelection ? "Requires review" : "Open",
+      hint: hasTrainingSelection
+        ? `${employee.selectedAppointmentDocIds.length} overlay doc(s) selected for generation — not uploaded proof.`
+        : "No overlay documents selected.",
+    },
+    {
+      id: "role",
+      labelDe: "Rolle / Zusatzrolle",
+      labelEn: "Role / overlay evidence",
+      status: "Requires review",
+      hint: `Grundrolle ${roleName}; overlays: ${overlayNames.length > 0 ? overlayNames.join(", ") : "none"}.`,
+    },
+    {
+      id: "sdl",
+      labelDe: "SDL / projektspezifisch",
+      labelEn: "SDL / project-specific evidence",
+      status: "Not implemented",
+      hint: "SDL and project links not persisted in this slice.",
+    },
+    {
+      id: "generated",
+      labelDe: "Erzeugte Mitarbeiterakte-Dokumente",
+      labelEn: "Generated employee file documents",
+      status:
+        totalSelectedDocs === 0
+          ? "Not selected"
+          : "Prepared — requires review",
+      hint: `${employee.selectedRoleDocIds.length} role + ${employee.selectedAppointmentDocIds.length} overlay doc(s) in generator selection — not uploaded Nachweise.`,
+    },
+  ];
+
+  return (
+    <div className="space-y-4">
+      <div className="flex flex-wrap gap-2">
+        {greyBadge("Section: read-only placeholders")}
+        {greyBadge("Readiness: not evaluated")}
+      </div>
+
+      <p className="flex items-start gap-2 rounded-lg border border-blue-100 bg-blue-50/60 px-3 py-2 text-xs text-gray-600">
+        <Info className="mt-0.5 h-3.5 w-3.5 shrink-0 text-blue-500" />
+        Evidence requirement overview (static — B7.4). Entries are placeholders
+        only. Evidence is not accepted automatically. Review is required before
+        any evidence can affect readiness. ZIP generation does not change
+        evidence or readiness status. This overview is not a final data model
+        and not a DIN decision matrix.
+      </p>
+
+      <ul className="divide-y divide-gray-100 rounded-xl border border-gray-200 bg-gray-50/40">
+        {categories.map((cat) => (
+          <li
+            key={cat.id}
+            className="flex flex-col gap-2 px-4 py-3 sm:flex-row sm:items-start sm:justify-between"
+          >
+            <div className="min-w-0 flex-1">
+              <p className="text-sm font-medium text-gray-900">
+                {cat.labelDe}{" "}
+                <span className="font-normal text-gray-500">/ {cat.labelEn}</span>
+              </p>
+              <p className="mt-1 text-xs text-gray-500">{cat.hint}</p>
+            </div>
+            <div className="shrink-0">{greyBadge(cat.status)}</div>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }
@@ -237,7 +376,14 @@ export const EmployeeProfileSectionShell: React.FC<
         );
 
       case "evidence":
-        return <PlaceholderPanel title="Nachweise / Evidence" />;
+        return (
+          <EvidenceStaticOverview
+            employee={employee}
+            roleName={role?.name ?? employee.roleId}
+            overlayNames={overlayNames}
+            totalSelectedDocs={totalSelectedDocs}
+          />
+        );
 
       case "training":
         return <PlaceholderPanel title="Schulung / Unterweisung" />;
