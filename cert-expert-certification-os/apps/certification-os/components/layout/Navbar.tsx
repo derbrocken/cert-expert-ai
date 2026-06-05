@@ -1,7 +1,7 @@
 import React from "react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
-import { Users, Upload } from "lucide-react";
+import { FileText, Users, Upload } from "lucide-react";
 
 interface NavbarProps {
   className?: string;
@@ -35,6 +35,14 @@ export const Navbar: React.FC<NavbarProps> = ({ className }) => {
               className="hidden text-sm font-medium text-gray-600 transition-colors hover:text-blue-600 lg:block"
             >
               Dashboard
+            </Link>
+            <Link
+              href="/model-creator"
+              className="flex items-center gap-1.5 rounded-lg bg-linear-to-r from-blue-600 to-indigo-600 px-3 py-1.5 text-xs font-medium text-white shadow-lg shadow-blue-500/25 transition-all hover:shadow-blue-500/40 hover:scale-105 sm:gap-2 sm:rounded-xl sm:px-4 sm:py-2 sm:text-sm"
+            >
+              <FileText className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+              <span className="hidden sm:inline">Document Generator</span>
+              <span className="sm:hidden">Docs</span>
             </Link>
             <Link
               href="/employee-automation"

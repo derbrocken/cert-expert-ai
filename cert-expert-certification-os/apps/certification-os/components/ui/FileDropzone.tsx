@@ -10,6 +10,7 @@ export interface FileDropzoneProps {
   accept?: Accept;
   maxSize?: number;
   onFileSelect: (file: File | null) => void;
+  onReject?: (message: string) => void;
   value?: File | null;
   hasError?: boolean;
   disabled?: boolean;
@@ -22,6 +23,7 @@ export const FileDropzone: React.FC<FileDropzoneProps> = ({
   accept = { "image/*": [".png", ".jpg", ".jpeg", ".gif", ".svg"] },
   maxSize,
   onFileSelect,
+  onReject,
   value,
   hasError,
   disabled,
@@ -59,6 +61,19 @@ export const FileDropzone: React.FC<FileDropzoneProps> = ({
   const { getRootProps, getInputProps, isDragActive, isDragReject } =
     useDropzone({
       onDrop,
+      onDropRejected: (rejections) => {
+        const tooLarge = rejections.some((r) =>
+          r.errors.some((e) => e.code === "file-too-large"),
+        );
+        if (tooLarge) {
+          const file = rejections[0]?.file;
+          onReject?.(
+            maxSize && file
+              ? `File must be ${(maxSize / (1024 * 1024)).toFixed(0)} MB or smaller (selected: ${(file.size / (1024 * 1024)).toFixed(1)} MB).`
+              : "File is too large.",
+          );
+        }
+      },
       accept,
       maxSize,
       disabled,

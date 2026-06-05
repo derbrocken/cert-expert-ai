@@ -1,12 +1,12 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
   experimental: {
-    serverActions:{
-    //   bodySizeLimit:'10mb'
-    }
-  }
+    serverActions: {
+      // B4.5a — logo + form fields via generateDocument Server Action (default is 1mb)
+      bodySizeLimit: "5mb",
+    },
+  },
 };
 
 export default nextConfig;

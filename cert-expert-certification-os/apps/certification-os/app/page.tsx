@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Navbar, Footer } from "@/components/layout";
-import { Users, Upload, ArrowRight } from "lucide-react";
+import { Users, Upload, ArrowRight, FileText } from "lucide-react";
 
 export default function Home() {
   return (
@@ -14,12 +14,20 @@ export default function Home() {
               Cert-Expert Certification OS
             </h1>
             <p className="mx-auto mb-8 max-w-2xl text-base text-gray-600 sm:text-xl">
-              Tool 2 — Employee document automation (Mitarbeiterakte). Register
-              employees, assign roles and appointments, generate document
+              Document generator and Tool 2 employee automation. Create standard
+              model packages or register employees and generate document
               packages.
             </p>
 
             <div className="flex flex-col items-center justify-center gap-3 sm:flex-row sm:gap-4">
+              <Link
+                href="/model-creator"
+                className="group inline-flex w-full items-center justify-center gap-2 rounded-xl bg-linear-to-r from-blue-600 to-indigo-600 px-6 py-3 text-base font-semibold text-white shadow-xl shadow-blue-500/30 transition-all hover:scale-105 sm:w-auto sm:px-8 sm:py-4 sm:text-lg"
+              >
+                <FileText className="h-5 w-5" />
+                Document Creator
+                <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+              </Link>
               <Link
                 href="/employee-automation"
                 className="group inline-flex w-full items-center justify-center gap-2 rounded-xl bg-linear-to-r from-orange-500 to-orange-600 px-6 py-3 text-base font-semibold text-white shadow-xl shadow-orange-500/30 transition-all hover:scale-105 sm:w-auto sm:px-8 sm:py-4 sm:text-lg"
@@ -36,11 +44,6 @@ export default function Home() {
                 Upload Manager
               </Link>
             </div>
-
-            <p className="mt-10 text-sm text-gray-500">
-              Tool 1 (Document Generator) remains in the legacy path and was not
-              migrated in B3.
-            </p>
           </div>
         </div>
       </main>
