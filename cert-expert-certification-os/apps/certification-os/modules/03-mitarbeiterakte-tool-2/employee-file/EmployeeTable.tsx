@@ -19,6 +19,8 @@ export interface EmployeeTableProps {
   onDelete: (employeeId: string) => void;
   roles: Role[];
   appointments: Appointment[];
+  selectedEmployeeId?: string | null;
+  onSelectEmployee?: (employeeId: string) => void;
 }
 
 const ROWS_PER_PAGE = 5;
@@ -29,6 +31,8 @@ export const EmployeeTable: React.FC<EmployeeTableProps> = ({
   onDelete,
   roles,
   appointments,
+  selectedEmployeeId,
+  onSelectEmployee,
 }) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
@@ -80,10 +84,11 @@ export const EmployeeTable: React.FC<EmployeeTableProps> = ({
       <div className="rounded-2xl border border-dashed border-gray-300 bg-white p-12 text-center">
         <Users className="mx-auto h-12 w-12 text-gray-300" />
         <h3 className="mt-4 text-lg font-semibold text-gray-700">
-          No employees added yet
+          No employee files in queue yet
         </h3>
         <p className="mt-1 text-sm text-gray-500">
-          Add employees using the form above to get started.
+          Add an employee using the form above to start a transitional employee
+          file entry.
         </p>
       </div>
     );
@@ -93,12 +98,19 @@ export const EmployeeTable: React.FC<EmployeeTableProps> = ({
     <div className="rounded-2xl border border-gray-200 bg-white shadow-xl shadow-gray-200/50 overflow-hidden">
       {/* Table Header */}
       <div className="flex flex-col gap-3 border-b border-gray-100 px-6 py-4 sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex items-center gap-3">
-          <h3 className="text-lg font-bold text-gray-900">Employee Queue</h3>
-          <Badge variant="info" size="md">
-            {filteredEmployees.length}{" "}
-            {filteredEmployees.length === 1 ? "employee" : "employees"}
-          </Badge>
+        <div>
+          <div className="flex items-center gap-3">
+            <h3 className="text-lg font-bold text-gray-900">
+              Employee files (generator queue)
+            </h3>
+            <Badge variant="info" size="md">
+              {filteredEmployees.length}{" "}
+              {filteredEmployees.length === 1 ? "file" : "files"}
+            </Badge>
+          </div>
+          <p className="mt-1 text-xs text-gray-500">
+            Click a row to view the employee file summary.
+          </p>
         </div>
         <div className="w-full sm:w-72">
           <Input
@@ -137,7 +149,13 @@ export const EmployeeTable: React.FC<EmployeeTableProps> = ({
             {paginatedEmployees.map((employee) => (
               <tr
                 key={employee.id}
-                className="transition-colors hover:bg-blue-50/30"
+                onClick={() => onSelectEmployee?.(employee.id)}
+                className={cn(
+                  "transition-colors cursor-pointer",
+                  selectedEmployeeId === employee.id
+                    ? "bg-blue-50/70 ring-1 ring-inset ring-blue-200"
+                    : "hover:bg-blue-50/30",
+                )}
               >
                 <td className="px-6 py-4">
                   <p className="text-sm font-semibold text-gray-900">
@@ -174,7 +192,10 @@ export const EmployeeTable: React.FC<EmployeeTableProps> = ({
                   <div className="flex items-center justify-end gap-2">
                     <button
                       type="button"
-                      onClick={() => onEdit(employee)}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onEdit(employee);
+                      }}
                       className="rounded-lg p-2 text-gray-400 hover:bg-blue-50 hover:text-blue-600 transition-colors cursor-pointer"
                       title="Edit employee"
                     >
@@ -182,7 +203,10 @@ export const EmployeeTable: React.FC<EmployeeTableProps> = ({
                     </button>
                     <button
                       type="button"
-                      onClick={() => handleDelete(employee.id)}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleDelete(employee.id);
+                      }}
                       className={cn(
                         "rounded-lg p-2 transition-colors cursor-pointer",
                         deleteConfirmId === employee.id

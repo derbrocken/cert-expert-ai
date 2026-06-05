@@ -1,12 +1,14 @@
 "use client";
 
-import React, { useState, useCallback, useEffect } from "react";
+import React, { useState, useCallback, useEffect, useMemo } from "react";
 import { Navbar, Footer } from "@/components/layout";
 import {
   EmployeeForm,
   EmployeeTable,
   GlobalSidebar,
 } from "@/components/employee";
+import { EmployeeFileSummaryPanel } from "./EmployeeFileSummaryPanel";
+import { EmployeeFileWorkspaceNotice } from "./EmployeeFileWorkspaceNotice";
 import { Button } from "@/components/ui";
 import { Toast } from "@/components/ui/Toast";
 import { generateEmployeeDocs } from "@/app/actions/generate-employee-docs";
@@ -27,6 +29,9 @@ export default function EmployeeAutomationPage() {
   const [employees, setEmployees] = useState<Employee[]>([]);
   const [queueHydrated, setQueueHydrated] = useState(false);
   const [editingEmployee, setEditingEmployee] = useState<Employee | null>(null);
+  const [selectedEmployeeId, setSelectedEmployeeId] = useState<string | null>(
+    null,
+  );
   const [isGenerating, setIsGenerating] = useState(false);
   const [toast, setToast] = useState<{
     message: string;
@@ -54,6 +59,12 @@ export default function EmployeeAutomationPage() {
     setQueueHydrated(true);
   }, []);
 
+  const focusEmployee = useMemo(() => {
+    if (editingEmployee) return editingEmployee;
+    if (!selectedEmployeeId) return null;
+    return employees.find((e) => e.id === selectedEmployeeId) ?? null;
+  }, [editingEmployee, selectedEmployeeId, employees]);
+
   useEffect(() => {
     if (!queueHydrated) return;
     saveEmployeeQueue({ employees, globalProps });
@@ -76,8 +87,9 @@ export default function EmployeeAutomationPage() {
 
   const handleAddEmployee = useCallback((employee: Employee) => {
     setEmployees((prev) => [...prev, employee]);
+    setSelectedEmployeeId(employee.id);
     setToast({
-      message: "Employee successfully added to the queue!",
+      message: "Employee file entry added to the generator queue.",
       type: "success",
     });
   }, []);
@@ -96,14 +108,17 @@ export default function EmployeeAutomationPage() {
 
   const handleEditEmployee = useCallback((employee: Employee) => {
     setEditingEmployee(employee);
+    setSelectedEmployeeId(employee.id);
     setFormKey((k) => k + 1);
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, []);
 
   const handleDeleteEmployee = useCallback((employeeId: string) => {
     setEmployees((prev) => prev.filter((e) => e.id !== employeeId));
+    setSelectedEmployeeId((id) => (id === employeeId ? null : id));
+    setEditingEmployee((e) => (e?.id === employeeId ? null : e));
     setToast({
-      message: "Employee removed from the queue.",
+      message: "Employee file entry removed from the queue.",
       type: "success",
     });
   }, []);
@@ -195,15 +210,26 @@ export default function EmployeeAutomationPage() {
               <CEBadge />
               <div>
                 <h1 className="text-2xl font-bold text-gray-900 sm:text-3xl lg:text-4xl">
-                  Employee Document Automation
+                  Employee File Workspace
                 </h1>
                 <p className="mt-1 text-sm text-gray-600 sm:text-base">
-                  Register employees, assign roles & appointments, and generate
-                  all required documents in one click.
+                  Transitional Mitarbeiterakte workspace — maintain employee file
+                  entries, assign roles and overlays, and generate standard
+                  document packages (ZIP).
                 </p>
               </div>
             </div>
           </div>
+
+          <EmployeeFileWorkspaceNotice />
+
+          {focusEmployee && templatesLoaded && (
+            <EmployeeFileSummaryPanel
+              employee={focusEmployee}
+              roles={roles}
+              appointments={appointments}
+            />
+          )}
 
           {/* Main Content: Sidebar + Form */}
           <div className="flex gap-6 mb-8">
@@ -247,11 +273,12 @@ export default function EmployeeAutomationPage() {
                 </div>
                 <div>
                   <p className="text-sm font-semibold text-gray-900">
-                    Ready to generate
+                    Ready to generate output
                   </p>
                   <p className="text-xs text-gray-500">
-                    {employees.length} employee
-                    {employees.length !== 1 ? "s" : ""} in queue
+                    {employees.length} employee file
+                    {employees.length !== 1 ? "s" : ""} in generator queue —
+                    ZIP export only; not release or accepted evidence.
                   </p>
                 </div>
               </div>
@@ -278,6 +305,8 @@ export default function EmployeeAutomationPage() {
             onDelete={handleDeleteEmployee}
             roles={roles}
             appointments={appointments}
+            selectedEmployeeId={selectedEmployeeId}
+            onSelectEmployee={setSelectedEmployeeId}
           />
         </div>
       </main>
