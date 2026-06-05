@@ -493,6 +493,96 @@ function GeneratorOutputStaticOverview({
   );
 }
 
+function ReadinessAmpelStaticOverview({
+  employee,
+  roleName,
+  overlayNames,
+  totalSelectedDocs,
+}: {
+  employee: Employee;
+  roleName: string;
+  overlayNames: string[];
+  totalSelectedDocs: number;
+}) {
+  const categories: CategoryRow[] = [
+    {
+      id: "mitarbeiterakte",
+      labelDe: "Mitarbeiterakte / Employee file",
+      labelEn: "Employee file",
+      status: "Not evaluated",
+      hint: `Queue record ${employee.fullName || "—"} — no file completeness evaluation in this slice.`,
+    },
+    {
+      id: "evidence",
+      labelDe: "Nachweise / Evidence",
+      labelEn: "Evidence",
+      status: "Not evaluated",
+      hint: "Cross-ref B7.4 static overview — no automatic evaluation. Evidence upload not implemented.",
+    },
+    {
+      id: "role",
+      labelDe: "Rollenbezug / Role assignment",
+      labelEn: "Role assignment",
+      status: "Not evaluated",
+      hint: `Grundrolle ${roleName}; overlays: ${overlayNames.length > 0 ? overlayNames.join(", ") : "none"} — assignment ≠ readiness.`,
+    },
+    {
+      id: "sdl-project",
+      labelDe: "SDL / Projektzuordnung",
+      labelEn: "SDL / project assignment",
+      status: "Not evaluated",
+      hint: "Cross-ref B7.6 SDL/project rows — no SDL readiness engine in this slice.",
+    },
+    {
+      id: "generated",
+      labelDe: "Generierte Dokumente",
+      labelEn: "Generated documents",
+      status: "Not evaluated",
+      hint: `${totalSelectedDocs} doc(s) in generator selection — prepared output does not imply readiness.`,
+    },
+    {
+      id: "manual-review",
+      labelDe: "Fachliche Prüfung",
+      labelEn: "Manual review",
+      status: "Manual review required",
+      hint: "No readiness decision in this slice. Human review required before any future readiness gate.",
+    },
+  ];
+
+  return (
+    <div className="space-y-4">
+      <div className="flex flex-wrap gap-2">
+        {greyBadge("Static placeholder")}
+        {greyBadge("Readiness: not evaluated")}
+        {greyBadge("No automatic evaluation")}
+      </div>
+
+      <p className="flex items-start gap-2 rounded-lg border border-gray-200 bg-gray-50/80 px-3 py-2 text-xs text-gray-600">
+        <Info className="mt-0.5 h-3.5 w-3.5 shrink-0 text-gray-500" />
+        Readiness / Ampel display boundary (static — B7.10). Grey display only — no live
+        traffic-light evaluation. No readiness calculation in this slice. No Freigabe
+        decision in this slice. ZIP success does not change readiness, evidence,
+        assignment or generated-output status. This is not a DIN decision matrix.
+      </p>
+
+      <AssignmentCategoryList categories={categories} />
+
+      <div className="rounded-xl border border-dashed border-gray-300 bg-gray-50/60 p-4 text-center">
+        <p className="text-xs font-medium text-gray-600">
+          Ampel boundary (display only — B7.10)
+        </p>
+        <p className="mt-1 text-xs text-gray-500">
+          Neutral grey state only. No automatic evaluation. No readiness decision.
+        </p>
+        <div className="mt-3 flex justify-center gap-2">
+          {greyBadge("Not evaluated")}
+          {greyBadge("Static placeholder")}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 interface EvidenceCategoryRow {
   id: string;
   labelDe: string;
@@ -732,16 +822,12 @@ export const EmployeeProfileSectionShell: React.FC<
 
       case "review":
         return (
-          <div className="space-y-4">
-            <div className="flex flex-wrap gap-2">
-              {greyBadge("Readiness: not evaluated")}
-              {greyBadge("Review: open")}
-            </div>
-            <p className="text-xs text-gray-500">
-              Display-only review status (B6.5). ZIP success does not change
-              readiness or review badges in this transitional shell.
-            </p>
-          </div>
+          <ReadinessAmpelStaticOverview
+            employee={employee}
+            roleName={role?.name ?? employee.roleId}
+            overlayNames={overlayNames}
+            totalSelectedDocs={totalSelectedDocs}
+          />
         );
 
       case "notes-open":
