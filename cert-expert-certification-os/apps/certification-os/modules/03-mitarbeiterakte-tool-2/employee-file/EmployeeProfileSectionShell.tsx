@@ -65,7 +65,7 @@ const SECTIONS: SectionDef[] = [
     labelDe: "Rolle / Zusatzrolle",
     labelEn: "Role & overlay",
     icon: <Shield className="h-4 w-4" />,
-    state: "active",
+    state: "read-only",
   },
   {
     id: "evidence",
@@ -86,7 +86,7 @@ const SECTIONS: SectionDef[] = [
     labelDe: "SDL / Projektzuordnung",
     labelEn: "SDL & project",
     icon: <FolderKanban className="h-4 w-4" />,
-    state: "placeholder",
+    state: "read-only",
   },
   {
     id: "output",
@@ -149,6 +149,234 @@ function FieldRow({ label, value }: { label: string; value: React.ReactNode }) {
     <div>
       <dt className="text-xs font-medium text-gray-500">{label}</dt>
       <dd className="mt-0.5 text-sm text-gray-900">{value}</dd>
+    </div>
+  );
+}
+
+interface CategoryRow {
+  id: string;
+  labelDe: string;
+  labelEn: string;
+  status: string;
+  hint: string;
+}
+
+const ROLE_TAXONOMY_BASE = [
+  { code: "SMA", label: "Sicherheitsmitarbeiter / Sicherheitsmitarbeiterin" },
+  { code: "GF", label: "Geschäftsführung / Geschäftsführer" },
+  { code: "BK", label: "Bürokraft / Verwaltung / Backoffice" },
+] as const;
+
+const ROLE_TAXONOMY_LEADERSHIP = [
+  { code: "FK", label: "Führungskraft" },
+  { code: "EL", label: "Einsatzleiter" },
+  { code: "OL", label: "Objektleiter" },
+  { code: "SL", label: "Schichtleiter" },
+] as const;
+
+function AssignmentCategoryList({ categories }: { categories: CategoryRow[] }) {
+  return (
+    <ul className="divide-y divide-gray-100 rounded-xl border border-gray-200 bg-gray-50/40">
+      {categories.map((cat) => (
+        <li
+          key={cat.id}
+          className="flex flex-col gap-2 px-4 py-3 sm:flex-row sm:items-start sm:justify-between"
+        >
+          <div className="min-w-0 flex-1">
+            <p className="text-sm font-medium text-gray-900">
+              {cat.labelDe}{" "}
+              <span className="font-normal text-gray-500">/ {cat.labelEn}</span>
+            </p>
+            <p className="mt-1 text-xs text-gray-500">{cat.hint}</p>
+          </div>
+          <div className="shrink-0">{greyBadge(cat.status)}</div>
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+function RoleAssignmentStaticOverview({
+  employee,
+  roleName,
+  overlayNames,
+  totalSelectedDocs,
+}: {
+  employee: Employee;
+  roleName: string;
+  overlayNames: string[];
+  totalSelectedDocs: number;
+}) {
+  const hasOverlays = overlayNames.length > 0;
+  const hasTrainingSelection = employee.selectedAppointmentDocIds.length > 0;
+
+  const categories: CategoryRow[] = [
+    {
+      id: "grundrolle",
+      labelDe: "Grundrolle / Base role",
+      labelEn: "Base role",
+      status: "Base role not evaluated",
+      hint: `Queue template role: ${roleName} (${employee.roleId}). Static placeholder — catalog reference only.`,
+    },
+    {
+      id: "zusatzrolle",
+      labelDe: "Zusatzrolle / Overlay role",
+      labelEn: "Overlay role",
+      status: hasOverlays ? "Zusatzrolle not evaluated" : "Not assigned",
+      hint: hasOverlays
+        ? `Overlays: ${overlayNames.join(", ")} — assignment placeholder only.`
+        : "No overlay appointments selected on queue record.",
+    },
+    {
+      id: "qualification",
+      labelDe: "Qualifikationsbezug",
+      labelEn: "Qualification relevance",
+      status: "Not evaluated",
+      hint: `Role context ${roleName} — no qualification engine in this slice.`,
+    },
+    {
+      id: "training",
+      labelDe: "Schulung / Unterweisungsbezug",
+      labelEn: "Training / instruction relevance",
+      status: hasTrainingSelection ? "Requires review" : "Open",
+      hint: hasTrainingSelection
+        ? `${employee.selectedAppointmentDocIds.length} overlay doc(s) in generator selection — review required later.`
+        : "No training overlay documents selected.",
+    },
+    {
+      id: "generated",
+      labelDe: "Erzeugte Dokumente Bezug",
+      labelEn: "Generated document relevance",
+      status:
+        totalSelectedDocs === 0 ? "Not selected" : "Prepared — requires review",
+      hint: `${employee.selectedRoleDocIds.length} role + ${employee.selectedAppointmentDocIds.length} overlay doc(s) selected — generator relevance only.`,
+    },
+    {
+      id: "manual-review",
+      labelDe: "Manuelle Prüfung / Entscheidung",
+      labelEn: "Manual review / decision required",
+      status: "Review required",
+      hint: "Review required later. No Freigabe decision in this slice.",
+    },
+  ];
+
+  return (
+    <div className="space-y-4">
+      <div className="flex flex-wrap gap-2">
+        {greyBadge("Static placeholder")}
+        {greyBadge("Readiness: not evaluated")}
+      </div>
+
+      <p className="flex items-start gap-2 rounded-lg border border-indigo-100 bg-indigo-50/60 px-3 py-2 text-xs text-gray-600">
+        <Info className="mt-0.5 h-3.5 w-3.5 shrink-0 text-indigo-500" />
+        Role / assignment overview (static — B7.6). Static placeholder only. No
+        assignment saving in this slice. No Freigabe decision in this slice. Review
+        required later before any assignment can affect readiness. ZIP generation
+        does not change assignment, evidence or readiness status. No DIN decision
+        matrix in this slice.
+      </p>
+
+      <AssignmentCategoryList categories={categories} />
+
+      <div className="rounded-xl border border-gray-200 bg-white p-4">
+        <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">
+          Cert-Expert Tool 2 role taxonomy (static reference)
+        </p>
+        <p className="mt-1 text-xs text-gray-500">
+          Role placeholder labels only — do not trigger assignment, Freigabe, or
+          readiness changes.
+        </p>
+        <div className="mt-3 grid gap-4 sm:grid-cols-2">
+          <div>
+            <p className="text-xs font-medium text-gray-700">
+              Base / organizational roles
+            </p>
+            <ul className="mt-2 space-y-1.5 text-xs text-gray-600">
+              {ROLE_TAXONOMY_BASE.map((r) => (
+                <li key={r.code}>
+                  <span className="font-mono font-medium text-gray-800">
+                    {r.code}
+                  </span>
+                  {" — "}
+                  {r.label}
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div>
+            <p className="text-xs font-medium text-gray-700">
+              Leadership / function roles
+            </p>
+            <ul className="mt-2 space-y-1.5 text-xs text-gray-600">
+              {ROLE_TAXONOMY_LEADERSHIP.map((r) => (
+                <li key={r.code}>
+                  <span className="font-mono font-medium text-gray-800">
+                    {r.code}
+                  </span>
+                  {" — "}
+                  {r.label}
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function SdlProjectAssignmentStaticOverview({
+  roleName,
+}: {
+  roleName: string;
+}) {
+  const categories: CategoryRow[] = [
+    {
+      id: "sdl-77200-1",
+      labelDe: "DIN 77200-1 SDL Pool",
+      labelEn: "DIN 77200-1 SDL pool",
+      status: "Not implemented",
+      hint: "No SDL rule engine in this slice. Static placeholder.",
+    },
+    {
+      id: "sdl-77200-2",
+      labelDe: "DIN 77200-2 Sonder-SDL",
+      labelEn: "DIN 77200-2 special SDL context",
+      status: "Not implemented",
+      hint: "Special SDL context not linked — no persistence in this slice.",
+    },
+    {
+      id: "project",
+      labelDe: "Projekt / Objektzuordnung",
+      labelEn: "Project / object assignment",
+      status: "Not assigned",
+      hint: "No project or object ID on queue record. Assignment placeholder.",
+    },
+    {
+      id: "object-instruction",
+      labelDe: "Objektbezogene Unterweisung",
+      labelEn: "Object-specific instruction requirement",
+      status: "Not applicable",
+      hint: `Role context ${roleName} — object instruction requirement not evaluated.`,
+    },
+  ];
+
+  return (
+    <div className="space-y-4">
+      <div className="flex flex-wrap gap-2">
+        {greyBadge("Static placeholder")}
+        {greyBadge("Readiness: not evaluated")}
+      </div>
+
+      <p className="flex items-start gap-2 rounded-lg border border-teal-100 bg-teal-50/60 px-3 py-2 text-xs text-gray-600">
+        <Info className="mt-0.5 h-3.5 w-3.5 shrink-0 text-teal-600" />
+        SDL / project assignment overview (static — B7.6). Static placeholder only.
+        No SDL rule engine in this slice. No assignment saving in this slice. No
+        project authorization in this slice. ZIP generation does not change
+        assignment, evidence or readiness status.
+      </p>
+
+      <AssignmentCategoryList categories={categories} />
     </div>
   );
 }
@@ -357,22 +585,12 @@ export const EmployeeProfileSectionShell: React.FC<
 
       case "roles":
         return (
-          <dl className="grid gap-4 sm:grid-cols-2">
-            <FieldRow label="Grundrolle" value={role?.name ?? employee.roleId} />
-            <FieldRow label="Role type" value={employee.roleType || "—"} />
-            <FieldRow
-              label="Zusatzrollen / overlays"
-              value={
-                overlayNames.length > 0 ? overlayNames.join(", ") : "None selected"
-              }
-            />
-            <div className="sm:col-span-2">
-              <p className="text-xs text-gray-500">
-                Role and overlay document selection is managed in the form above.
-                Assignment context only — not a release decision.
-              </p>
-            </div>
-          </dl>
+          <RoleAssignmentStaticOverview
+            employee={employee}
+            roleName={role?.name ?? employee.roleId}
+            overlayNames={overlayNames}
+            totalSelectedDocs={totalSelectedDocs}
+          />
         );
 
       case "evidence":
@@ -389,7 +607,11 @@ export const EmployeeProfileSectionShell: React.FC<
         return <PlaceholderPanel title="Schulung / Unterweisung" />;
 
       case "sdl-project":
-        return <PlaceholderPanel title="SDL / Projektzuordnung" />;
+        return (
+          <SdlProjectAssignmentStaticOverview
+            roleName={role?.name ?? employee.roleId}
+          />
+        );
 
       case "output":
         return (
