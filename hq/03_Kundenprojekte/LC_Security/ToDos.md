@@ -48,7 +48,7 @@
 ## TODO-20260603-lc04
 
 - **Aufgabe:** Neuen Audittermin mit Auditor abstimmen (07.–08.07. entfällt)
-- **Status:** cancelled
+- **Status:** done
 - **Erledigt:** 2026-06-03 — Termin entfällt; Abschluss über eingereichte Abweichungen, kein Neutermin nötig
 
 ## TODO-20260603-lc01

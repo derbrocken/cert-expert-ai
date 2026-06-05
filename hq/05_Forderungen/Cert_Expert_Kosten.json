@@ -1,0 +1,135 @@
+{
+  "version": 1,
+  "updated": "2026-06-05",
+  "items": [
+    {
+      "posten": "Mitarbeiter",
+      "kategorie": "Personal",
+      "anbieter": "—",
+      "amount": 500.0,
+      "amount_display": "500,00",
+      "note": "",
+      "id": "ce-001"
+    },
+    {
+      "posten": "Mobilfunk (2 Verträge)",
+      "kategorie": "Telekommunikation",
+      "anbieter": "Congstar",
+      "amount": 40.99,
+      "amount_display": "40,99",
+      "note": "≠ privat Handy 9,99",
+      "id": "ce-002"
+    },
+    {
+      "posten": "Domain (min.)",
+      "kategorie": "Telekommunikation",
+      "anbieter": "IONOS",
+      "amount": 8.5,
+      "amount_display": "8,50+",
+      "note": "Gesamt-Hosting ggf. höher",
+      "id": "ce-003"
+    },
+    {
+      "posten": "Coworking",
+      "kategorie": "Büro",
+      "anbieter": "—",
+      "amount": 155.89,
+      "amount_display": "155,89",
+      "note": "",
+      "id": "ce-004"
+    },
+    {
+      "posten": "MacBook Ratenzahlung",
+      "kategorie": "Hardware",
+      "anbieter": "—",
+      "amount": 200.0,
+      "amount_display": "~200,00",
+      "note": "Schätzung",
+      "id": "ce-005"
+    },
+    {
+      "posten": "Adobe Premium",
+      "kategorie": "Tools",
+      "anbieter": "Adobe",
+      "amount": 47.98,
+      "amount_display": "47,98",
+      "note": "",
+      "id": "ce-006"
+    },
+    {
+      "posten": "OneFlow (Angebote online)",
+      "kategorie": "Tools",
+      "anbieter": "OneFlow",
+      "amount": 20.0,
+      "amount_display": "ab 20,00",
+      "note": "",
+      "id": "ce-007"
+    },
+    {
+      "posten": "Microsoft Lizenzen",
+      "kategorie": "Tools",
+      "anbieter": "Microsoft",
+      "amount": 42.0,
+      "amount_display": "42,00",
+      "note": "",
+      "id": "ce-008"
+    },
+    {
+      "posten": "Buchhaltung + Steuer",
+      "kategorie": "Buchhaltung",
+      "anbieter": "Lexware",
+      "amount": 39.15,
+      "amount_display": "39,15",
+      "note": "= Steuerprogramm (ein Posten)",
+      "id": "ce-009"
+    },
+    {
+      "posten": "Cursor Pro",
+      "kategorie": "Tools",
+      "anbieter": "Cursor",
+      "amount": 17.89,
+      "amount_display": "17,89",
+      "note": "",
+      "id": "ce-010"
+    },
+    {
+      "posten": "ChatGPT",
+      "kategorie": "Tools",
+      "anbieter": "OpenAI",
+      "amount": 22.99,
+      "amount_display": "22,99",
+      "note": "Noch privat (iPhone) → auf Firma umstellen",
+      "id": "ce-011"
+    },
+    {
+      "posten": "Claude Premium",
+      "kategorie": "Tools",
+      "anbieter": "Anthropic",
+      "amount": 137.99,
+      "amount_display": "137,99",
+      "note": "Noch privat → auf Firma umstellen",
+      "id": "ce-012"
+    },
+    {
+      "posten": "Endel",
+      "kategorie": "Tools",
+      "anbieter": "Endel",
+      "amount": 12.99,
+      "amount_display": "12,99",
+      "note": "Noch privat → auf Firma umstellen",
+      "id": "ce-013"
+    }
+  ],
+  "pending": [
+    {
+      "posten": "WordPress",
+      "anbieter": "",
+      "note": "Betrag noch offen"
+    },
+    {
+      "posten": "StudyFetch",
+      "anbieter": "",
+      "note": "kündigen"
+    }
+  ]
+}

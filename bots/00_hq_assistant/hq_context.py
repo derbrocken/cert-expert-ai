@@ -15,7 +15,9 @@ DASH = HQ / "00_Dashboard"
 KP = HQ / "03_Kundenprojekte"
 REGISTRY = KP / "_registry.json"
 BOARD = HQ / "02_Operations_Board" / "Operations_Board_Juni_2026.md"
-SNAPSHOT = DASH / "operations_snapshot.md"
+ARBEITS = DASH / "ARBEITSUEBERSICHT.md"
+KUNDEN_UEBERSICHT = DASH / "Kunden_Uebersicht.md"
+BACKLOG = DASH / "BACKLOG.md"
 DFSS_DIR = HQ / "07_DFSS"
 DFSS_MEASUREMENT_STATUS = DFSS_DIR / "DFSS_MEASUREMENT_STATUS.md"
 DFSS_README = DFSS_DIR / "README.md"
@@ -249,31 +251,22 @@ def build_context_pack(
             blocks.append(chunk)
             sources.append(str(path.relative_to(REPO_ROOT)))
 
-    # Always: operations snapshot first (Phase 1)
-    add("Operations Snapshot", SNAPSHOT)
-    add("Tagesbriefing (Kurz)", DASH / "Tagesbriefing.md")
-    add("Kundenübersicht", DASH / "Kunden_Uebersicht.md")
-
-    if include_full_briefing:
-        add("Tagesbriefing VOLL", DASH / "Tagesbriefing_VOLL.md")
+    add("Kundenübersicht", KUNDEN_UEBERSICHT)
+    add("Arbeitsübersicht", ARBEITS)
 
     if portfolio:
+        add("Backlog (Spiegel)", BACKLOG)
         if include_cross or CROSS_INTENT_RE.search(question or ""):
             for label, path in CROSS_FILES:
                 add(f"Querschnitt {label}", path)
         modus_hint = (
-            "**Portfolio-Frage** — antworte primär aus Operations Snapshot "
-            "(Abschnitt Portfolio-Auswertungen). Keine vollständigen Kundenordner nötig."
+            "**Portfolio-Frage** — primär `Kunden_Uebersicht.md` (Ampeln, Termine), "
+            "dann `ARBEITSUEBERSICHT.md` (offene Aufgaben). "
+            "Details/Blocker: jeweilige `Status.md` nur bei Bedarf."
         )
-        if re.search(r"morgen früh|morgen frueh|erstes machen", question, re.I):
+        if re.search(r"morgen früh|morgen frueh|erstes machen|heute dringend|was ist heute", question, re.I):
             modus_hint += (
-                " Bei „morgen früh“: Kalendertag **Morgen** aus Datumskontext — "
-                "nicht den Operations-Board-Abschnitt „Morgen früh“. "
-                "Priorität: Snapshot § Urgent, § Audits (≤7 Tage), Tagesbriefing Top-Aktionen."
-            )
-        if re.search(r"heute dringend|was ist heute", question, re.I):
-            modus_hint += (
-                " Priorität: Snapshot § Urgent + § Überfällige Aufgaben + Audits ≤7 Tage."
+                " Priorität: urgent-Zeilen in Arbeitsübersicht, Audit-Termine in Kundenübersicht."
             )
         blocks.append(f"### Modus\n{modus_hint}")
     else:
@@ -289,7 +282,7 @@ def build_context_pack(
                 add(f"{display} — Audit 2026", base / "Audit_2026.md")
         blocks.append(
             "### Modus\n"
-            f"**Kunden-Frage** ({', '.join(slugs)}) — Snapshot + Kundenordner kombinieren."
+            f"**Kunden-Frage** ({', '.join(slugs)}) — Kundenübersicht + Status/ToDos/Audit."
         )
 
     if include_cross and not portfolio:
@@ -306,7 +299,7 @@ def build_context_pack(
 SYSTEM_PROMPT = """Du bist der **Cert-Expert HQ Assistant** — Organisation, Steuerung, To-dos.
 
 ## Quellen
-- Antworte **nur** aus **HQ-KONTEXT** (primär `operations_snapshot.md`).
+- Antworte **nur** aus **HQ-KONTEXT** (`Kunden_Uebersicht.md`, `ARBEITSUEBERSICHT.md`, Kundenordner).
 - Felder mit `(inferred)` oder `TBD`/`unbekannt` nicht als harte Fakten darstellen.
 - Nichts erfinden. Fehlende Daten benennen.
 
@@ -317,7 +310,7 @@ SYSTEM_PROMPT = """Du bist der **Cert-Expert HQ Assistant** — Organisation, St
 
 ## Antwortschablone — Portfolio-Fragen
 1. **Kurzantwort** (1–3 Sätze)
-2. **Tabelle oder Liste** (aus Snapshot § Portfolio-Auswertungen)
+2. **Tabelle oder Liste** (aus Kundenübersicht + Arbeitsübersicht)
 3. **Kritischste 3 Punkte**
 4. **Nächste empfohlene Aktion**
 
@@ -327,7 +320,7 @@ SYSTEM_PROMPT = """Du bist der **Cert-Expert HQ Assistant** — Organisation, St
 3. **Hauptblocker**
 4. **Offene urgent To-dos** (kurz)
 5. **Nächste Aktion**
-6. **Quellen** (Dateipfade aus Snapshot/Kundenordner)
+6. **Quellen** (Dateipfade aus Übersicht/Kundenordner)
 
 ## To-dos schreiben
 Terminal: `python -m bots.00_hq_assistant.hq_bot "todo TeamFlex: …"` — im Chat nur auf explizite Bitte in `ToDos.md` schreiben.

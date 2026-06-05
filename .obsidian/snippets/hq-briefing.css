@@ -20,6 +20,24 @@
   margin: 0.75em 0;
 }
 
+/* Arbeitsübersicht: schmale Frist-Spalte (3-Spalten = Mein Tag / Sonstiges) */
+.markdown-preview-view table th:nth-child(2),
+.markdown-preview-view table td:nth-child(2) {
+  width: 4.5rem;
+  white-space: nowrap;
+  text-align: center;
+}
+
+/* Kunden-Projekte: 4-Spalten-Tabelle etwas kompakter */
+.markdown-preview-view h2:has(+ blockquote) + h3 + p + table,
+.markdown-preview-view h3 + p + table {
+  font-size: 0.9em;
+}
+.markdown-preview-view table th:nth-child(4),
+.markdown-preview-view table td:nth-child(4) {
+  min-width: 8rem;
+}
+
 .markdown-preview-view th {
   background: var(--background-secondary);
   font-weight: 600;

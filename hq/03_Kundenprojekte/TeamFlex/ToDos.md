@@ -14,7 +14,7 @@
 - **Projekt:** TeamFlex
 - **Kategorie:** Kundenkommunikation
 - **Verantwortlich:** (unassigned)
-- **Frist:** 2026-06-11
+- **Frist:** 2026-06-06
 - **Status:** open
 - **Priorität:** urgent
 - **Quelle:** manual
@@ -24,7 +24,7 @@
 - **Hinweis:** Haupt-To-do für DIN-Zusatzbeauftragung — Duplikat tf13 → Erledigt
 - **Owner:** TBD
 - **Wartet auf:** Kunde
-- **Due date:** 2026-06-11
+- **Due date:** 2026-06-06
 - **Audit impact:** Scope-/Vertragsnachweis DIN 77200 für Überwachungsaudit unvollständig
 - **S0 relation:** S0-03, S0-05
 - **Evidence ID:** EV-TF-001
@@ -131,7 +131,7 @@
 - **Projekt:** TeamFlex
 - **Kategorie:** Nachweis / Dokumentation
 - **Verantwortlich:** (unassigned)
-- **Frist:** 2026-06-11
+- **Frist:** 2026-06-18
 - **Status:** open
 - **Priorität:** high
 - **Quelle:** manual
@@ -140,7 +140,7 @@
 - **Rohinput:** Operations Board + Master Dump — service locations
 - **Owner:** TBD
 - **Wartet auf:** TBD
-- **Due date:** 2026-06-11
+- **Due date:** 2026-06-18
 - **Audit impact:** Leistungsorte / Scope-Dokumentation für Audit offen
 - **S0 relation:** S0-02, S0-07
 - **Evidence ID:** EV-TF-006
@@ -205,13 +205,13 @@
 ## TODO-20260603-tf01
 
 - **Aufgabe:** Kunden anrufen — offene Punkte vor Audit klären
-- **Status:** done
+- **Status:** open
 - **Erledigt:** 2026-06-03 — Audit 12.06. bestätigt, Subunternehmer-Freigabe, Monatsplan/-bericht und Wachbuch besprochen
 
 ## TODO-20260603-tf03
 
 - **Aufgabe:** Subunternehmer-Thematik klären (Nachweise, Verträge)
-- **Status:** done
+- **Status:** open
 - **Erledigt:** 2026-06-03 — Freigabe / Zusage Subunternehmer vom Kunden erhalten
 
 ## TODO-20260603-tf11

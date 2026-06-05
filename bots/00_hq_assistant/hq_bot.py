@@ -29,6 +29,7 @@ from .hq_context import (
     is_terminal_command,
     refresh_briefing,
 )
+from .hq_briefing import format_result_report, is_briefing_intent, run_briefing_ingest
 from .hq_todos import CATEGORIES, ingest_todo_text, is_todo_intent
 
 LOG = "[HQ-Assistant]"
@@ -53,6 +54,31 @@ def _answer(question: str, context: str, sources: list[str], mode: str, *, tempe
         temperature=temperature,
         debug_meta={"bot": "hq_assistant", "sources": sources},
     )
+
+
+def _run_briefing(
+    text: str,
+    *,
+    slug: str | None,
+    use_llm: bool,
+    dry_run: bool,
+    refresh: bool,
+) -> None:
+    try:
+        result = run_briefing_ingest(
+            text,
+            slug=slug,
+            use_llm=use_llm,
+            dry_run=dry_run,
+            refresh=refresh,
+        )
+    except ValueError as e:
+        print(f"{LOG} {e}", file=sys.stderr)
+        sys.exit(2)
+    except FileNotFoundError as e:
+        print(f"{LOG} {e}", file=sys.stderr)
+        sys.exit(2)
+    print(format_result_report(result, dry_run=dry_run))
 
 
 def _run_add(
@@ -120,8 +146,14 @@ def main() -> None:
     parser.add_argument("--cross", action="store_true")
     parser.add_argument("--dry-run", action="store_true")
     parser.add_argument("--interactive", "-i", action="store_true")
+    parser.add_argument(
+        "--no-refresh",
+        action="store_true",
+        help="Nach To-do/Briefing kein build_dashboard.py",
+    )
     parser.add_argument("--temperature", type=float, default=0.2)
     args = parser.parse_args()
+    auto_refresh = not args.no_refresh
 
     slug = args.customer
 
@@ -132,6 +164,16 @@ def main() -> None:
 
         if is_terminal_command(t):
             _reject_terminal_command()
+            return
+
+        if is_briefing_intent(t):
+            _run_briefing(
+                t,
+                slug=slug,
+                use_llm=not args.no_llm,
+                dry_run=args.dry_run,
+                refresh=auto_refresh,
+            )
             return
 
         is_add = args.add or is_todo_intent(t) or (args.task and slug)
@@ -145,7 +187,7 @@ def main() -> None:
                 prioritaet=args.prioritaet,
                 use_llm=not args.no_llm,
                 dry_run=args.dry_run,
-                refresh=args.refresh,
+                refresh=args.refresh or auto_refresh,
             )
             return
         if args.add or args.task:
@@ -158,7 +200,7 @@ def main() -> None:
                 prioritaet=args.prioritaet,
                 use_llm=not args.no_llm,
                 dry_run=args.dry_run,
-                refresh=args.refresh,
+                refresh=args.refresh or auto_refresh,
             )
             return
 
@@ -182,7 +224,10 @@ def main() -> None:
         print(f"\n{reply}\n")
 
     if args.interactive:
-        print(f"{LOG} Interaktiv — todo/… = To-do, sonst Frage (quit = Ende)")
+        print(
+            f"{LOG} Chat — Kunde + nummerierte Liste = Update (ToDos, EINGANG, Build); "
+            f"todo TeamFlex: … = ein To-do; sonst Frage (quit = Ende)"
+        )
         while True:
             try:
                 q = input("\n> ").strip()

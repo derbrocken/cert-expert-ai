@@ -1,0 +1,44 @@
+{
+  "meta": {
+    "schema": "dfss-historical-export-v1",
+    "project_id": "P-HIST-SC-01",
+    "type": "special_cause_fast_track",
+    "slug": "TeamFlex",
+    "legal_name": "Teamflex Solution GmbH",
+    "exported": "2026-06-05",
+    "status": "archived",
+    "active_rollout": false,
+    "gate_decision": "ACCEPT_AS_SPECIAL_CAUSE_MEASUREMENT_INPUT",
+    "master_docx": "hq/07_DFSS/DFSS_PILOT_MEASUREMENT_ACTIVATION_P_HIST_SC_01_TEAMFLEX_FASTTRACK_FILLED_2026-06-05.docx",
+    "merge_target": "DFSS project design guidelines (future)",
+    "note": "Not comparable to live P03 TeamFlex surveillance pilot"
+  },
+  "norms": ["DIN 77200-1:2022", "DIN 77200-2:2020", "ISO 9001 (group/multi-site context)"],
+  "timeline": {
+    "ksa_date": "2025-05-27",
+    "dekra_folder_sent": "2025-05-27",
+    "audit_plan_created": "2025-06-04",
+    "audit_period": "2025-06-05/2025-06-06",
+    "ksa_to_audit_start_days": 9,
+    "audit_time_days": 1.375
+  },
+  "scope": {
+    "din_77200_1_sdl": "Stationary control service",
+    "din_77200_2": "Refugee/asylum facilities on documentation basis",
+    "employees_total": 282,
+    "employees_din_relevant": 8,
+    "performance_locations": 1
+  },
+  "service_model": "emergency_fast_track_done_for_you",
+  "blockers": ["B-TF-01", "B-TF-02", "B-TF-03", "B-TF-04", "B-TF-05", "B-TF-06"],
+  "evidence_ids": [
+    "EV-TF-SC-001", "EV-TF-SC-002", "EV-TF-SC-003", "EV-TF-SC-004",
+    "EV-TF-SC-EST-001"
+  ],
+  "dfss_use": {
+    "design_input": true,
+    "standard_lead_time_calibration": false,
+    "pilot_validation_report_alone": false,
+    "combine_with": ["P05_SecuGuard", "P-HIST-01_LC_Security", "P-HIST-02_LC_Security_Extension"]
+  }
+}

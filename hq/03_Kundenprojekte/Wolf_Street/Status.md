@@ -1,7 +1,7 @@
 # Status — Wolf Street
 
 **Slug:** `Wolf_Street`  
-**Stand:** 2026-06-03 (Auditoren ergänzt)  
+**Stand:** 2026-06-04 (HQ Assistant Briefing)  
 **Phase:** Aktiv — Überwachungsaudits (zweistufig)  
 **Projekttyp:** Überwachungsaudit ISO 9001 / ISO 14001 + Überwachungsaudit DIN 77200
 
@@ -10,7 +10,7 @@
 - **Ampel:** 🔴 (nächster Termin **16.06.2026**)
 - **Zertifizierungsstelle:** DEKRA
 - **Letzte Aktualisierung HQ:** 2026-06-03 — Korrektur zwei Audit-Termine
-- **Blocker:** Rechtskataster / Umweltkennzahlen / KPI ISO 14001; Managementbewertung vor 16.06. (Auditorwechsel erledigt, DEKRA-Termine bestätigt)
+- **Blocker:** E-Koordinaten (Nicht-Credentials, Handelszentralregister fehlen); KPI-Eingang; Managementbericht, internes Audit, Auditbericht vor 16.06.; DIN-77200-Projektvorbereitung bis 17.07.
 
 ## Fortschritt
 
@@ -64,6 +64,10 @@ Evidence IDs: EV-WS-001, EV-WS-002, EV-WS-003, EV-WS-004, EV-WS-005
 - Kommunikation: [`Kommunikation.md`](Kommunikation.md)
 - Audit: [`Audit_2026.md`](Audit_2026.md)
 - Operations: [`../../02_Operations_Board/Operations_Board_Juni_2026.md`](../../02_Operations_Board/Operations_Board_Juni_2026.md)
+
+## HQ-Notizen (Assistant)
+
+- **2026-06-04:** To-do-Liste an Kunden **bis 05.06.** (Lieferliste Unterlagen). Zwei Audit-Spuren: **16.06.** ISO 9001/14001 (Managementbericht, internes Audit, Auditbericht, KPIs) · **17.07.** DIN 77200 (Projektvorbereitung). E-Koordinaten/Rechtskataster und Mitarbeiterliste erneut prüfen. Weitere To-dos folgen per Chat.
 
 ## Offene HQ-Felder
 

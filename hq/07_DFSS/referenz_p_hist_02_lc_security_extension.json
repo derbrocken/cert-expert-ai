@@ -1,0 +1,72 @@
+{
+  "meta": {
+    "schema": "dfss-historical-export-v1",
+    "project_id": "P-HIST-02",
+    "type": "historical_delta_audit_sdl_extension",
+    "slug": "LC_Security",
+    "legal_name": "LC Security & Service",
+    "hq_customer_note": "ELC Security and Service — folder slug LC_Security",
+    "related_case": "P-HIST-01",
+    "exported": "2026-06-05",
+    "status": "archived",
+    "active_rollout": false,
+    "gate_decision": "ACCEPT_AS_DELTA_AUDIT_TOOL2_TRANSITION_INPUT",
+    "master_docx": "hq/07_DFSS/DFSS_PILOT_MEASUREMENT_ACTIVATION_P_HIST_02_LC_SECURITY_EXTENSION_FILLED_2026-06-05.docx",
+    "merge_target": "DFSS project design guidelines (future)"
+  },
+  "norms": ["DIN 77200-1", "DIN 77200-2"],
+  "sdl_extension": {
+    "din_77200_1": "Veranstaltungsdienst",
+    "din_77200_2": "Veranstaltungen mit besonderer Sicherheitsrelevanz"
+  },
+  "timeline": {
+    "ksa_date": "2026-02-23",
+    "audit_date": "2026-05-25",
+    "follow_up_evidence": "after audit; exact date TBD",
+    "follow_up_effort_hours": "2-3"
+  },
+  "audit_outcome": {
+    "result": "passed",
+    "major_nc": 0,
+    "minor_nc": 0,
+    "follow_up_evidence_items": true
+  },
+  "service_model": "done_for_you_extension_mixed_manual_email_tool2_mvp",
+  "tool2": {
+    "used": true,
+    "purpose": "employee records, training, instruction packages",
+    "friction": "bugs, workflow organization, server migration needs"
+  },
+  "main_blockers": [
+    "organizer security concept unavailable",
+    "SK/EK/DA creation for event SDLs",
+    "contract/additional assignment obtained after audit"
+  ],
+  "effort_estimates": {
+    "sk_learning_prep": "~1 week calendar (not full days)",
+    "final_sprint_before_audit": "~3 intense days incl late-night",
+    "follow_up_submission": "~2-3 hours"
+  },
+  "development_learnings": [
+    "SK-Bot / Security Concept Bot (high, needs expert review)",
+    "EK-Bot / Deployment Concept Bot",
+    "Event DA / ODA logic",
+    "Tool 2 stabilization",
+    "Employee/SDL matrix logic",
+    "Follow-up evidence board"
+  ],
+  "evidence_ids": [
+    "EV-LCEXT-001", "EV-LCEXT-002", "EV-LCEXT-003", "EV-LCEXT-004",
+    "EV-LCEXT-005", "EV-LCEXT-EST-001"
+  ],
+  "dfss_use": {
+    "design_input": true,
+    "initial_certification_baseline": false,
+    "pilot_validation_report_alone": false,
+    "combine_with": [
+      "P05_SecuGuard",
+      "P-HIST-01_LC_Security",
+      "P-HIST-SC-01_TeamFlex"
+    ]
+  }
+}

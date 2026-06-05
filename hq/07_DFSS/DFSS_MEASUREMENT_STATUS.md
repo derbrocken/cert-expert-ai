@@ -15,11 +15,21 @@
 | Kunde | P-ID | DFSS Relevance | Readiness | S0 blocker present | Main blocker | Next critical action |
 |---|---|---|---|---|---|---|
 | TeamFlex | P03 provisional | Pilot / Baseline | NOT READY — audit-critical gaps open | Yes | Wachbuchauszug fehlt; Monatsplan/-bericht ausstehend; Projektordner offen; Zusatzbeauftragung DIN 77200 | EV-TF-003 Wachbuchauszug nachfassen (Prio 1; siehe Evidence action priority) |
-| Schutzritter | P01 provisional | Pilot / Baseline | NOT READY — VK-Upload überfällig; Formular-/Personalnachweis-Kette offen | Yes | VK-Datei noch nicht hochgeladen; Mitarbeiterformulare noch nicht versendet | EV-SR-001 VK-Datei uploaden (Prio 1) |
+| Schutzritter | P-LIVE-SR-01 + P01 operativ | **Live O2C parallel** (blockiert Design nicht) | Messung läuft — VK/Formulare offen | Yes | VK-Upload; Formular-Kette | Live-Messung: [`LIVE_MESSUNG_INDEX.md`](LIVE_MESSUNG_INDEX.md) |
 | Wolf Street | P04 provisional | Pilot / Baseline | NOT READY — Phase 1 audit-critical gaps open | Yes | Rechtskataster / Umweltkennzahlen / KPI ISO 14001; Managementbewertung vor 16.06. | EV-WS-001 Rechtskataster (Prio 1) |
 | SecuGuard | P05 provisional (NC closure) | Pilot / Baseline (NC closure) | NOT READY — 5 Haupt- + 2 Nebenabweichungen offen | Yes | NC-Schließung bis 30.06.; Querschnittsthemen in Bearbeitung | EV-SG-001 Hauptabweichungen M1–M5 (Prio 1) |
 
-**Nicht im DFSS-Rollout:** Checkpoint Regional, ZT Security, LC Security/ELC — kein `## DFSS / Pilot Measurement`-Block.
+**Live O2C parallel (nicht blockierend):** Checkpoint Regional **P-LIVE-CR-01** — [`LIVE_MESSUNG_INDEX.md`](LIVE_MESSUNG_INDEX.md)
+
+**Nicht im schweren DFSS-Rollout:** ZT Security, LC Security/ELC — kein `## DFSS / Pilot Measurement`-Block in der Tagesliste.
+
+**Historical archive (DFSS Measure/Analyze — nicht Tagesarbeit):**
+
+| P-ID | Kunde | Master | Gate | Index |
+|------|-------|--------|------|-------|
+| P-HIST-SC-01 | TeamFlex Fast-Track | `DFSS_PILOT_MEASUREMENT_ACTIVATION_P_HIST_SC_01_TEAMFLEX_FASTTRACK_FILLED_2026-06-05.docx` | ACCEPT special-cause | [`DFSS_HISTORICAL_INDEX.md`](DFSS_HISTORICAL_INDEX.md) |
+| P-HIST-01 | LC Security (ELC) | `DFSS_PILOT_MEASUREMENT_ACTIVATION_P_HIST_01_LC_SECURITY_FILLED_2026-06-05.docx` | ACCEPT with controls | [`DFSS_HISTORICAL_INDEX.md`](DFSS_HISTORICAL_INDEX.md) |
+| P-HIST-02 | LC Security Extension | `DFSS_PILOT_MEASUREMENT_ACTIVATION_P_HIST_02_LC_SECURITY_EXTENSION_FILLED_2026-06-05.docx` | ACCEPT delta-audit / Tool 2 | [`DFSS_HISTORICAL_INDEX.md`](DFSS_HISTORICAL_INDEX.md) |
 
 ---
 

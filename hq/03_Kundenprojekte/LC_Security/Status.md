@@ -26,6 +26,15 @@
 | Nachweise beim Auditor | ⏳ warten auf **Bestätigung**, dass alles eingereicht ist |
 | Zahlung | ⏳ **letzte Zahlung** ausstehend |
 
+## DFSS / Historical baseline
+
+| P-ID | Fall | Master |
+|------|------|--------|
+| P-HIST-01 | Erstzertifizierung ISO 9001 + DIN 77200 (Audit 2026-02-12, 0 NCs) | [`DFSS_PILOT_MEASUREMENT_ACTIVATION_P_HIST_01_LC_SECURITY_FILLED_2026-06-05.docx`](../../07_DFSS/DFSS_PILOT_MEASUREMENT_ACTIVATION_P_HIST_01_LC_SECURITY_FILLED_2026-06-05.docx) |
+| P-HIST-02 | SDL-Erweiterung Veranstaltung / Delta-Audit (KSA 2026-02-23, Audit 2026-05-25) | [`DFSS_PILOT_MEASUREMENT_ACTIVATION_P_HIST_02_LC_SECURITY_EXTENSION_FILLED_2026-06-05.docx`](../../07_DFSS/DFSS_PILOT_MEASUREMENT_ACTIVATION_P_HIST_02_LC_SECURITY_EXTENSION_FILLED_2026-06-05.docx) |
+
+Index: [`../../07_DFSS/DFSS_HISTORICAL_INDEX.md`](../../07_DFSS/DFSS_HISTORICAL_INDEX.md) — **nicht** live Rollout / keine neuen To-dos.
+
 ## Verknüpfung
 
 - To-dos: [`ToDos.md`](ToDos.md)

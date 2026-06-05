@@ -1,4 +1,4 @@
-# Audit 2026 — Schutzritter
+# Audit 2026 — Schutzritter Security Services GmbH
 
 ## Audit-Ziel / Norm
 

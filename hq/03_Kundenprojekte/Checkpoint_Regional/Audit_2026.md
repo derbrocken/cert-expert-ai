@@ -1,4 +1,4 @@
-# Audit 2026 — Checkpoint Regional
+# Audit 2026 — Checkpoint Regional GmbH
 
 ## Projektart
 

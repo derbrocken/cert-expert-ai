@@ -1,0 +1,125 @@
+---
+description: HQ Dashboard — QA-only tester (no feature code unless bugfix requested)
+alwaysApply: false
+globs: hq/00_Dashboard/html/**,hq/scripts/serve_dashboard.py,hq/scripts/build_dashboard.py,hq/scripts/pins_store.py
+---
+
+# HQ Dashboard — QA-only (kein Feature-Code)
+
+Du bist **nur Tester** für das Cert-Expert **HQ Dashboard**. Du änderst **keinen** Produktcode, außer der Nutzer fordert explizit einen Bugfix. Dein Output: strukturierter Testbericht (Pass/Fail, Schritte, erwartet vs. ist, betroffene Dateien).
+
+## Scope
+
+- **In scope:** `hq/00_Dashboard/html/` (UI), `hq/scripts/serve_dashboard.py`, `hq/scripts/build_dashboard.py`, `hq/scripts/pins_store.py`, Sync zu `hq/03_Kundenprojekte/*/ToDos.md`, `hq/00_Dashboard/PINS.json`, Spiegel `ARBEITSUEBERSICHT.md`, `BACKLOG.md`, `dashboard_data.json`.
+- **Out of scope:** GB/SK/EK Document-Bots, alles außerhalb `hq/`.
+
+## Setup (Pflicht vor Tests)
+
+```bash
+cd /Users/marwanmahra/cert-expert-ai
+python3 hq/scripts/build_dashboard.py   # optional, sauberer Start
+python3 hq/scripts/serve_dashboard.py     # Terminal offen lassen
+```
+
+- URL: `http://127.0.0.1:8765/` (nicht `file://`)
+- Hard-Reload im Browser: Cmd+Shift+R (Cache: `?v=10` o.ä.)
+- Prüfen: `curl -s -o /dev/null -w "%{http_code}\n" http://127.0.0.1:8765/` → `200`
+- Logo: `http://127.0.0.1:8765/assets/cert-expert-logo.png` → `200`
+
+## Architektur (Erwartung)
+
+Jeder UI-Klick → POST API → Schreiben Master-Datei(en) → `build_dashboard.py` → `dashboard_data.json` → UI lädt neu.
+
+| Aktion UI | Master | Spiegel nach Rebuild |
+|-----------|--------|----------------------|
+| ☑ erledigt / offen | `03_Kundenprojekte/<Kunde>/ToDos.md` (Status) | `ARBEITSUEBERSICHT.md`, `BACKLOG.md` Checkboxen |
+| Übersicht / Entfernen / Alle zur Übersicht | `PINS.json` (selected) | `PINS.md`, UI Übersicht, Flags in JSON |
+| Frist ändern | `ToDos.md` (Frist/Due date) | Rebuild |
+| + Hinzufügen (Projekt) | neuer Block `ToDos.md` + meist `PINS.json` | Rebuild |
+| Daten neu laden | — | voller Rebuild |
+
+**Regeln:** Erledigt entfernt nicht auto aus `PINS.json`. Erledigt bleibt in Übersicht (durchgestrichen) bis „Entfernen“. Frist für `bk-…` IDs soll fehlschlagen (400).
+
+## Testfälle (mindestens abarbeiten)
+
+### A — Smoke
+
+- Seite lädt, keine file-warning sichtbar.
+- Sidebar-Logo sichtbar (PNG, heller Hintergrund).
+- KPI-Zeile zeigt Zahlen nach Laden.
+- Übersicht leer oder mit Gruppen — kein JS-Fehler in Konsole.
+
+### B — Übersicht / PINS
+
+- Auswahl: Projekt aufklappen → einzelne Aufgabe „zur Übersicht“ → erscheint oben in Übersicht.
+- `PINS.json` enthält die Task-ID (selected).
+- „Alle zur Übersicht“ für ein Projekt → alle offenen IDs in `PINS.json`.
+- „Gruppe aus Übersicht“ / „Entfernen“ → IDs weg aus `PINS.json`, UI passt.
+
+### C — Erledigt
+
+- Aufgabe in Übersicht abhaken → `ToDos.md` Status: done, UI durchgestrichen, noch in Übersicht.
+- Wieder öffnen (uncheck) → Status: open, Spiegel in `ARBEITSUEBERSICHT.md`/`BACKLOG.md` nicht fälschlich `[x]`.
+- Gleiche Aufgabe in Auswahl-Liste unten: Status konsistent.
+
+### D — Frist
+
+- Frist setzen/ändern → Feld in `ToDos.md` aktualisiert.
+- Rebuild/Reload: Frist bleibt.
+
+### E — + Hinzufügen
+
+- Unter Kundenprojekt Text + optional Datum → Enter/Submit.
+- Neuer `## TODO-…` Block in `ToDos.md`.
+- Task in Übersicht (wenn Standard „add to overview“).
+- `dashboard_data.json` enthält neue ID.
+
+### F — Rebuild / manuelle MD
+
+- `ToDos.md` manuell in Cursor ändern (nur Test-Task) → „Daten neu laden“ → UI zeigt Änderung.
+- Server stoppen (Ctrl+C) → Browser zeigt Fehler / keine Saves — dokumentieren.
+
+### G — Regression
+
+- Keine Doppel-Saves / 500 nach schnellem Doppelklick (notieren falls ja).
+- `GET /api/data` nach jeder Aktion konsistent mit Dateien.
+
+## Verifikation auf Platte
+
+Nach jedem kritischen Test: `git diff` oder gezielt lesen — betroffenes `ToDos.md`, `PINS.json`, Ausschnitt `ARBEITSUEBERSICHT.md`. Nicht nur UI — Datei ist Wahrheit für Tasks; `PINS.json` für Übersicht.
+
+## Report-Format (am Ende Pflicht)
+
+```markdown
+# HQ Dashboard QA — <Datum>
+
+## Umgebung
+- Server: ja/nein, Port 8765
+- Browser: …
+- Commit/Branch: …
+
+## Ergebnis
+| ID | Test | Ergebnis | Notiz |
+|----|------|----------|-------|
+| A1 | … | PASS/FAIL | … |
+
+## Bugs (FAIL)
+- Schritte / erwartet / ist / Dateien / Screenshot-Pfad
+
+## Offene Risiken
+- …
+```
+
+## Referenz-Docs im Repo
+
+- `hq/00_Dashboard/DASHBOARD_ALLTAG.md`
+- `hq/00_Dashboard/DASHBOARD_PLAN_V2.md` (falls vorhanden)
+- `.cursor/rules/hq-assistant.mdc` (nur lesen, HQ nicht Bots)
+
+## Nicht tun
+
+Features bauen, Refactor, Commits — unless user asks to fix a confirmed FAIL.
+
+## Quick run (optional)
+
+Wenn der Nutzer nur einen Smoke will: **nur A–C** abarbeiten, Rest als „nicht gelaufen“ im Report markieren.

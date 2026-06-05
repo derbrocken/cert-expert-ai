@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "updated": "2026-06-02",
+  "updated": "2026-06-05",
   "projects": [
     {
       "slug": "TeamFlex",
@@ -25,17 +25,21 @@
     },
     {
       "slug": "Schutzritter",
-      "display_name": "Schutzritter",
-      "aliases": ["schutzritter"],
+      "display_name": "Schutzritter Security Services GmbH",
+      "legal_name": "Schutzritter Security Services GmbH",
+      "aliases": ["schutzritter", "schutzritter security services"],
       "active": true,
-      "bot_project_slug": "schutzritter"
+      "bot_project_slug": "schutzritter",
+      "live_messung": "P-LIVE-SR-01"
     },
     {
       "slug": "Checkpoint_Regional",
-      "display_name": "Checkpoint Regional",
-      "aliases": ["checkpoint regional", "checkpoint"],
+      "display_name": "Checkpoint Regional GmbH",
+      "legal_name": "Checkpoint Regional GmbH",
+      "aliases": ["checkpoint regional", "checkpoint", "checkpoint regional gmbh"],
       "active": true,
-      "bot_project_slug": "checkpoint_regional"
+      "bot_project_slug": "checkpoint_regional",
+      "live_messung": "P-LIVE-CR-01"
     },
     {
       "slug": "ZT_Security",

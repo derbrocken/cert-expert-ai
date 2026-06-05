@@ -1,7 +1,7 @@
 # Status — SecuGuard
 
 **Slug:** `SecuGuard`  
-**Stand:** 2026-06-03  
+**Stand:** 2026-06-05 (DFSS UPDATED)  
 **Phase:** Aktiv — Abweichungen schließen (Überwachungskontext)  
 **Projekttyp:** Schließung Haupt- und Nebenabweichungen vor Frist
 
@@ -10,7 +10,7 @@
 - **Ampel:** 🔴
 - **Frist:** **30.06.2026** (Schließung NCs / Nachweise)
 - **Letzte Aktualisierung HQ:** 2026-06-03 — Welle 1 Befüllung
-- **Blocker:** NC-Schließung bis 30.06.; Querschnittsthemen (Mutterschutz, Beteiligung, FASI, Arzt, Führungskräfte) in Bearbeitung
+- **Blocker:** **0/7 Schließnachweise** erhalten; Gruppen-E-Mail Evidence Request **noch nicht versendet**; 7 NCs offen bis 30.06.
 
 ## Kontext (aus Master Dump)
 
@@ -44,8 +44,17 @@ Audit date: 2026-05-28 (Feststellung); Schließfrist 2026-06-30
 Readiness: NOT READY — 5 Haupt- + 2 Nebenabweichungen offen (see `Audit_2026.md`)  
 Main blocker: NC-Schließung bis 30.06.; Querschnittsthemen (Mutterschutz, Beteiligung, FASI, Arzt, Führungskräfte) in Bearbeitung  
 S0 blocker present: Yes (inferred from open audit-critical items — see ToDos EV-SG-*)  
-Next critical action: EV-SG-001 — Hauptabweichungen M1–M5 schließen (Prio 1; siehe Evidence action priority in `Dokumente_und_Nachweise.md`)  
-Evidence IDs: EV-SG-001, EV-SG-002, EV-SG-003
+Next critical action: **EV-SG-011** — kooperative Gruppen-E-Mail Evidence Request senden (sg09)  
+Evidence IDs: EV-SG-001 … EV-SG-011 (siehe `Dokumente_und_Nachweise.md`)  
+Cert-Expert owner: **Marwan Mahra** · External: **Inductus** (FASI/Betriebsarzt, M3)
+
+## DFSS (nur dieses Projekt)
+
+| Datei | Rolle |
+|-------|--------|
+| [`../../07_DFSS/DFSS_PILOT_MEASUREMENT_ACTIVATION_P05_SecuGuard_UPDATED_2026-06-05.docx`](../../07_DFSS/DFSS_PILOT_MEASUREMENT_ACTIVATION_P05_SecuGuard_UPDATED_2026-06-05.docx) | **Master DFSS (UPDATED)** |
+| [`../../07_DFSS/DFSS_CHATBOT_HANDOFF_SecuGuard_P05_ONLY.md`](../../07_DFSS/DFSS_CHATBOT_HANDOFF_SecuGuard_P05_ONLY.md) | Chatbot-Handoff (Markdown) |
+| [`DFSS_NC_SCHLIESSPLAN.md`](DFSS_NC_SCHLIESSPLAN.md) | NC → geplanter Nachweis (aus UPDATED) |
 
 ## Verknüpfung
 

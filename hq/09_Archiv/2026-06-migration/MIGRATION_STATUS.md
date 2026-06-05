@@ -1,11 +1,11 @@
 # Master Dump — Migrations-Status
 
 **Stand:** 2026-06-03  
-**Regel:** Nicht täglich öffnen. Täglich: `00_Dashboard/Tagesbriefing.md`.
+**Regel:** Nicht täglich öffnen. Täglich: `00_Dashboard/ARBEITSUEBERSICHT.md`.
 
 | Datei | Rolle |
 |-------|--------|
-| `Master_Dump_V1_June_2026.md` | Einmal-Import (Juni 2026) — **Referenz-Inventar** |
+| `Master_Dump_V1_June_2026.md` | Archiv: `09_Archiv/2026-06-quellen-import/Master_Dump/` |
 | `README.md` | Eingangskorb für neue Unklarheiten |
 | Diese Datei | Checkliste: was ist schon in HQ gelandet? |
 
@@ -42,7 +42,7 @@
 ## Offene Bereinigung (wöchentlich, ~15 Min)
 
 - [ ] **Miras Protect:** Entscheidung — Kundenordner anlegen oder bewusst nur Vertrieb
-- [ ] **Operations Board** (`02_Operations_Board/`) mit Kunden-ToDos abgleichen — Doppeltes streichen
+- [x] **Operations Board** — archiviert unter `09_Archiv/2026-06-quellen-import/Operations_Board/`
 - [ ] **Vertrieb:** „LC Security AZAV“ in Angebote prüfen (ELC-Name / noch relevant?)
 - [ ] Erledigte Dump-Zeilen in `Master_Dump_V1` durch ~~Streichung~~ oder Verweis auf `09_Archiv/` markieren
 - [ ] Neue Ideen nur noch in `README.md` Eingang — nicht wieder in den Juni-Dump schreiben
@@ -53,7 +53,7 @@
 
 Wenn alle Tabellenzeilen oben ✅ sind und der Eingang in `README.md` leer bleibt:
 
-1. `Master_Dump_V1_June_2026.md` nach `09_Archiv/2026-06/` verschieben
+1. ~~`Master_Dump_V1`~~ → erledigt: `09_Archiv/2026-06-quellen-import/Master_Dump/`
 2. Nur `README.md` + diese Statusdatei behalten (oder Status archivieren)
 
 Bis dahin: Dump **nicht löschen** — er ist die Quelle „haben wir etwas vergessen?“ für die Wochenreview.

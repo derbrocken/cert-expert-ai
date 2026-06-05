@@ -23,6 +23,7 @@ knowledge/*.canvas
 
 # Python virtual environments
 .venv/
+.venv-dfss/
 .venv-pdf/
 venv/
 

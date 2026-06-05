@@ -1,0 +1,48 @@
+{
+  "meta": {
+    "schema": "dfss-pilot-export-v2",
+    "project_id": "P05",
+    "slug": "SecuGuard",
+    "legal_name": "SecuGuard Service GmbH",
+    "location": "Berlin",
+    "exported": "2026-06-05",
+    "readiness": "NOT_READY",
+    "master_docx": "hq/07_DFSS/DFSS_PILOT_MEASUREMENT_ACTIVATION_P05_SecuGuard_UPDATED_2026-06-05.docx",
+    "handoff_md": "hq/07_DFSS/DFSS_CHATBOT_HANDOFF_SecuGuard_P05_ONLY.md",
+    "closure_evidence_received": "0/7"
+  },
+  "owners": {
+    "cert_expert": "Marwan Mahra",
+    "customer": "M. Marquardt",
+    "external": "Inductus (FASI/Betriebsarzt)"
+  },
+  "kpis": {
+    "nc_major_open": 5,
+    "nc_minor_open": 2,
+    "nc_total_open": 7,
+    "nc_closed": 0,
+    "closure_proofs_received": 0,
+    "evidence_ids_count": 11,
+    "todos_open": 15,
+    "v03_customer_actions_estimate": "5-6 (hypothesis only)"
+  },
+  "next_critical": {
+    "evidence_id": "EV-SG-011",
+    "todo_id": "sg09",
+    "action": "Send grouped cooperative evidence request email"
+  },
+  "evidence": [
+    { "id": "EV-SG-001", "scope": "Major NCs DEKRA doc", "status": "captured/in_review", "dfss_usable": false },
+    { "id": "EV-SG-002", "scope": "Minor NCs DEKRA", "status": "captured/in_review", "dfss_usable": false },
+    { "id": "EV-SG-003", "scope": "Ü1 forms per NC", "status": "open", "dfss_usable": false },
+    { "id": "EV-SG-004", "scope": "M1 signed Mutterschutz instruction", "status": "open", "dfss_usable": false },
+    { "id": "EV-SG-005", "scope": "M2 IM/IMS protocol", "status": "open", "dfss_usable": false },
+    { "id": "EV-SG-006", "scope": "M3 FASI/physician Inductus", "status": "open", "dfss_usable": false },
+    { "id": "EV-SG-007", "scope": "M4 Wachbuch excerpt", "status": "open", "dfss_usable": false },
+    { "id": "EV-SG-008", "scope": "M5 contract (exists, not at audit)", "status": "open", "dfss_usable": false },
+    { "id": "EV-SG-009", "scope": "m1 Prokuristin HR file", "status": "open", "dfss_usable": false },
+    { "id": "EV-SG-010", "scope": "m2 Strom/Wasser baseline", "status": "open", "dfss_usable": false },
+    { "id": "EV-SG-011", "scope": "Grouped evidence request email", "status": "not_sent", "dfss_usable": false }
+  ],
+  "new_todos": ["sg09", "sg10", "sg11", "sg12", "sg13", "sg14"]
+}

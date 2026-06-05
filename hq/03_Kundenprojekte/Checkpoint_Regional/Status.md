@@ -1,6 +1,7 @@
-# Status — Checkpoint Regional
+# Status — Checkpoint Regional GmbH
 
 **Slug:** `Checkpoint_Regional`  
+**Rechtlicher Name:** Checkpoint Regional GmbH  
 **Stand:** 2026-06-03  
 **Phase:** Aktiv — **Erstzertifizierung**  
 **Projekttyp:** Erstzertifizierung (Audittermin noch offen)
@@ -19,6 +20,18 @@
 | Upload Unternehmensunterlagen (vollständig) | **wartet auf Kunde / Upload** |
 | DEKRA-Angebot unterschrieben | offen |
 | Audittermin festlegen | offen |
+
+## DFSS — Parallele Live-Messung (O2C)
+
+**P-LIVE-CR-01** — parallel, **blockiert Design nicht**. Tracker: [`Live_Messung.md`](Live_Messung.md) · Index: [`../../07_DFSS/LIVE_MESSUNG_INDEX.md`](../../07_DFSS/LIVE_MESSUNG_INDEX.md)
+
+| Feld | Stand |
+|------|-------|
+| Willkommens-Mail | offen |
+| Unternehmensunterlagen-Link | offen |
+| Formular begonnen | offen |
+| Blockiert | Upload Unternehmensunterlagen ausstehend |
+| Rückfragen | — |
 
 ## Verknüpfung
 

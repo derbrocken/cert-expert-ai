@@ -1,0 +1,78 @@
+{
+  "version": 1,
+  "updated": "2026-06-05",
+  "items": [
+    {
+      "id": "inc-001",
+      "kunde": "AFAS — a.f.a.s. security & service GmbH",
+      "amount": 5950.0,
+      "amount_display": "5.950",
+      "status": "Warten",
+      "hq_ref": "ford01 — ISO 14001; eigene Rechnung (nicht Schutzritter)",
+      "is_estimate": false
+    },
+    {
+      "id": "inc-002",
+      "kunde": "Bärlin Security Service GmbH",
+      "amount": 833.0,
+      "amount_display": "833",
+      "status": "Warten",
+      "hq_ref": "Schreibweise Bärlin mit R; BWA Apr 2026 Forderungsveränderung 833",
+      "is_estimate": false
+    },
+    {
+      "id": "inc-003",
+      "kunde": "SecuGuard",
+      "amount": 1750.0,
+      "amount_display": "1.750",
+      "status": "Erwartet",
+      "hq_ref": "03_Kundenprojekte/SecuGuard/",
+      "is_estimate": false
+    },
+    {
+      "id": "inc-004",
+      "kunde": "Schutzritter",
+      "amount": 5950.0,
+      "amount_display": "5.950",
+      "status": "Erwartet",
+      "hq_ref": "03_Kundenprojekte/Schutzritter/",
+      "is_estimate": false
+    },
+    {
+      "id": "inc-005",
+      "kunde": "Faust Security",
+      "amount": 1500.0,
+      "amount_display": "1.500",
+      "status": "Offen",
+      "hq_ref": "ford02",
+      "is_estimate": false
+    },
+    {
+      "id": "inc-006",
+      "kunde": "TeamFlex",
+      "amount": 4500.0,
+      "amount_display": "~4.500",
+      "status": "Rechnung noch anlegen",
+      "hq_ref": "Noch kein Konto / keine Rechnung in Lexware",
+      "is_estimate": true
+    },
+    {
+      "id": "inc-007",
+      "kunde": "Wolf Street",
+      "amount": 2200.0,
+      "amount_display": "~2.200",
+      "status": "Rechnung noch anlegen",
+      "hq_ref": "Noch kein Konto / keine Rechnung in Lexware",
+      "is_estimate": true
+    },
+    {
+      "id": "inc-008",
+      "kunde": "LC / ELC",
+      "amount": 0.0,
+      "amount_display": "0",
+      "status": "Nicht erwartet",
+      "hq_ref": "ford03 ggf. schließen / Status anpassen",
+      "is_estimate": false
+    }
+  ]
+}

@@ -1,6 +1,7 @@
-# Status — Schutzritter
+# Status — Schutzritter Security Services GmbH
 
 **Slug:** `Schutzritter`  
+**Rechtlicher Name:** Schutzritter Security Services GmbH  
 **Stand:** 2026-06-03 (nach Kundengespräch)  
 **Phase:** Aktiv — Audit-Vorbereitung
 
@@ -27,12 +28,26 @@
 4. Personalakten / Unterlagen vervollständigen  
 5. SK/EK Referenzprojekt (parallel nach Bedarf)
 
-## DFSS / Pilot Measurement
+## DFSS — Parallele Live-Messung (O2C)
+
+**P-LIVE-SR-01** — parallel, **blockiert Design nicht**. Tracker: [`Live_Messung.md`](Live_Messung.md) · Index: [`../../07_DFSS/LIVE_MESSUNG_INDEX.md`](../../07_DFSS/LIVE_MESSUNG_INDEX.md)
+
+| Feld | Stand |
+|------|-------|
+| Willkommens-Mail | offen |
+| Unternehmensunterlagen-Link | offen |
+| Formular begonnen | offen |
+| Blockiert / fehlender Nachweis | VK-Upload überfällig (operativ) |
+| Rückfragen | — |
+
+Dashboard: Projekt **Schutzritter** aufklappen → Panel **Live-Messung**.
+
+## DFSS / Pilot Measurement (operativ)
 
 <!-- P-ID provisional: no formal P01–P05 registry in HQ yet -->
 
-DFSS Project ID: P01  
-DFSS Relevance: Pilot / Baseline  
+DFSS Project ID: P01 (operativ)  
+DFSS Relevance: Live O2C + Audit-Vorbereitung (parallel zur Design-Spur)  
 Project type: Audit-Vorbereitung (ISO 9001, DIN 77200-1/2)  
 Norms: ISO 9001, DIN 77200-1, DIN 77200-2  
 SDLs: TBD  

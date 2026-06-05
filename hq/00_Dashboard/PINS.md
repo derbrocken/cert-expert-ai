@@ -1,0 +1,22 @@
+# Pins — HQ Dashboard
+
+Übersicht = `selected` (IDs), gewählt im Backlog-Modal.
+
+```json
+{
+  "version": 2,
+  "selected": [
+    "ws09",
+    "ws03",
+    "ws06",
+    "ws12",
+    "ws10",
+    "tf02",
+    "tf06",
+    "tf05",
+    "tf10",
+    "tf01",
+    "tf03"
+  ]
+}
+```

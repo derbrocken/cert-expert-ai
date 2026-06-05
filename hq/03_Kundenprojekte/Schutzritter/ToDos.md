@@ -1,6 +1,7 @@
-# ToDos — Schutzritter
+# ToDos — Schutzritter Security Services GmbH
 
 **Projekt-Slug:** `Schutzritter`  
+**Kunde:** Schutzritter Security Services GmbH  
 **Letzte Aktualisierung:** 2026-06-03 (Kundengespräch)  
 **Audit:** **26.06.2026**
 

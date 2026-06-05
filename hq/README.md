@@ -1,55 +1,37 @@
 # Cert-Expert HQ — Unternehmensgedächtnis
 
-**Stand:** 2026-06-02  
-**Ort im Repo:** `cert-expert-ai/hq/` (gleicher Git-Stand wie Bots & Doku)
+**Stand:** 2026-06-05 (Doku-Reset)
 
-Dieser Ordner ist **System A** (Organisation). Die Bot-Pipeline lebt in `bots/`, `knowledge/`, `projects/`.
+**Einstieg:** [`00_Dashboard/START_HIER.md`](00_Dashboard/START_HIER.md) · **Landkarte:** [`00_Dashboard/HQ_LANDKARTE.md`](00_Dashboard/HQ_LANDKARTE.md)
 
 ---
 
-## Struktur
+## Im Alltag sichtbar
 
 | Ordner | Zweck |
 |--------|--------|
-| `00_Dashboard/` | Übersicht, KPIs, Links, **operations_snapshot.md** |
-| `01_Master_Dump/` | Unsortiertes, zu klären |
-| `02_Operations_Board/` | Tagesgeschäft, Ingest-Log (später) |
-| `03_Kundenprojekte/` | **Kunden** — Status, ToDos, Kommunikation, … |
-| `04_Vertrieb/` | Angebote, Pipeline |
-| `05_Forderungen/` | Mahnungen, offene Posten |
-| `06_Software/` | cert-expert-ai, Portal, DFSS |
-| `07_DFSS/` | DFSS-Themen |
-| `08_Vorlagen/` | Templates (ToDos, neues Kundenprojekt) |
-| `09_Archiv/` | Abgeschlossenes |
+| `00_Dashboard/` | Operations (V1 HTML), Arbeitsübersicht, Backlog — **V3 Strategie geplant** |
+| `03_Kundenprojekte/` | Kundenakten (ToDos, Status, Audit, …) |
+| `04_Vertrieb/` · `05_Forderungen/` · `06_Software/` | Querschnitt-Aufgaben |
+| `08_Vorlagen/` | Templates (nicht täglich) · **Brand:** [`08_Vorlagen/Brand/`](08_Vorlagen/Brand/README.md) · **Strategie-Park:** [`08_Vorlagen/Strategie/`](08_Vorlagen/Strategie/README.md) |
+
+## Selten / Archiv / Parallel
+
+| Ordner | Zweck |
+|--------|--------|
+| `07_DFSS/` | Pilot (nicht Tagesliste) |
+| `09_Archiv/` | Alte Dashboards, Juni-Dump, Operations-Board-Import |
+
+`02_Operations_Board/` — **entfernt** → `09_Archiv/2026-06-quellen-import/Operations_Board_Struktur/` (leere Views/Rollups/Templates).
 
 ---
 
-## Kundenprojekte
+## Morgens
 
-Siehe `03_Kundenprojekte/_registry.json` und je Kunde:
+```bash
+python3 hq/scripts/build_dashboard.py
+```
 
-- `Status.md`
-- `ToDos.md` — **maschinenlesbar** (Telegram-Ziel)
-- `Kommunikation.md`
-- `Audit_2026.md`
-- `Dokumente_und_Nachweise.md`
-- `Lessons_Learned.md`
+Obsidian: [`00_Dashboard/ARBEITSUEBERSICHT.md`](00_Dashboard/ARBEITSUEBERSICHT.md)
 
-**Obsidian (lokal):** Morgens [`00_Dashboard/Tagesbriefing.md`](00_Dashboard/Tagesbriefing.md) — erzeugen mit `python3 hq/scripts/build_dashboard.py` (legt auch [`operations_snapshot.md`](00_Dashboard/operations_snapshot.md) an).
-
-**Fragen-Bot (nur HQ):** [`bots/00_hq_assistant/README.md`](../bots/00_hq_assistant/README.md) — Terminal oder Cursor-Regel **HQ Assistant** (getrennt von GB/SK/EK).
-
-**Nächster Schritt von dir:** Updates per Chat/Cursor (später Telegram) — Schema in `08_Vorlagen/ToDos_template.md`.
-
----
-
-## Verknüpfung Bots
-
-| HQ | Bot-Repo |
-|----|----------|
-| `03_Kundenprojekte/TeamFlex/` | `projects/teamflex/` (wenn Event angelegt) |
-| Dokumente in `Dokumente_und_Nachweise.md` | `outputs/` + `projects/.../documents/` |
-
-Handoff für Chat-Wechsel: [`docs/CHAT_HANDOFF.md`](../docs/CHAT_HANDOFF.md)
-
-Architektur: [`docs/TARGET_ARCHITECTURE_PROPOSAL.md`](../docs/TARGET_ARCHITECTURE_PROPOSAL.md)
+HQ-Chat: [`bots/00_hq_assistant/`](../bots/00_hq_assistant/README.md)

@@ -1,0 +1,64 @@
+{
+  "schema": "cert-expert-strategie-park-v1",
+  "status": "parked_settled",
+  "onedrive_root": "/Users/marwanmahra/Library/CloudStorage/OneDrive-Cert-Expert/QM/Strategie",
+  "updated": "2026-06-05",
+  "nordstern_2026": "Certification OS MVP produktiv — echte Kunden nutzen die Plattform aktiv",
+  "nordstern_2026_2028": "Certification OS etablieren und als Skalierungsfundament nutzen",
+  "vision_2036_one_liner": "Führendes Managementsystem- und Compliance-Ökosystem — Certification OS + CEKS + globales Expertennetz",
+  "mission_one_liner": "Zertifizierungsfähigkeit sicher, schnell, minimaler Kundenaufwand — langfristig aufrechterhalten",
+  "leitbild_one_liner": "Zertifizierungsfähig — schnell, sicher, strukturiert, praxisnah (Mantis-Philosophie)",
+  "jahresmotto_2026": "Automatisieren. Onboarden. Lernen. Nicht perfektionieren. Liefern.",
+  "parallel_strands_2026": ["Production Engine (Bots, Tool 1/2)", "Certification OS MVP"],
+  "documents": [
+    {
+      "id": "vision_2036",
+      "file": "Cert-Expert Vision 2036.docx",
+      "layer": "unternehmen",
+      "parked": true
+    },
+    {
+      "id": "mission",
+      "file": "CERT_EXPERT_MISSION.docx",
+      "layer": "unternehmen",
+      "parked": true
+    },
+    {
+      "id": "leitbild",
+      "file": "CERT_EXPERT_LEITBILD.md-2.docx",
+      "layer": "unternehmen",
+      "parked": true
+    },
+    {
+      "id": "philosophie",
+      "file": "Cert-Expert Philosophie.docx",
+      "layer": "unternehmen",
+      "parked": true
+    },
+    {
+      "id": "business_architecture",
+      "file": "Cert-Expert Business Architecture.docx",
+      "layer": "management",
+      "parked": true
+    },
+    {
+      "id": "master_plan",
+      "file": "CERT_EXPERT_MASTER_PLAN.docx",
+      "layer": "management",
+      "parked": true,
+      "note": "Themenkatalog für spätere Ausarbeitung nach DFSS-Phase"
+    },
+    {
+      "id": "roadmap_2026",
+      "file": "CERT_EXPERT_ROADMAP_2026.docx",
+      "layer": "management",
+      "parked": true
+    },
+    {
+      "id": "tactical_goals_2026_2028",
+      "file": "CERT_EXPERT_TACTICAL_GOALS_2026_2028.pdf",
+      "layer": "management",
+      "parked": true
+    }
+  ]
+}

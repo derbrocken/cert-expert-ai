@@ -15,7 +15,7 @@
 - `TeamFlex: Kunde anrufen wegen Monatsplan`
 - `--add -c SecuGuard --task "NC M3 Korrektur einreichen" --prioritaet urgent`
 
-Antworten basieren auf **`operations_snapshot.md`** (Portfolio) bzw. Kundenordner + Snapshot.
+Antworten basieren auf **`Kunden_Uebersicht.md`**, **`ARBEITSUEBERSICHT.md`** und bei Bedarf Kundenordner (`Status.md`, `ToDos.md`).
 
 ---
 
@@ -45,8 +45,11 @@ python3 -m bots.00_hq_assistant.hq_bot -c SecuGuard "Welche NCs sind offen?"
 # Briefing neu bauen, dann fragen
 python3 -m bots.00_hq_assistant.hq_bot --refresh "Überblick heute"
 
-# Chat-Schleife
+# Chat-Schleife (Kunden-Update + Fragen)
 python3 -m bots.00_hq_assistant.hq_bot -i
+
+# Freitext Kunden-Update (mehrere To-dos → ToDos.md, EINGANG, Status, Build)
+python3 -m bots.00_hq_assistant.hq_bot --dry-run "Information Wolf Street: folgende To-dos: 1. Rechtskataster prüfen 2. KPI finalisieren 3. Umweltkennzahlen liefern"
 ```
 
 | Flag | Bedeutung |
@@ -62,8 +65,10 @@ Nach HQ-Updates immer zuerst:
 python3 hq/scripts/build_dashboard.py
 ```
 
-Portfolio-Fragen nutzen `hq/00_Dashboard/operations_snapshot.md` (Abschnitt **Portfolio-Auswertungen**).
+Portfolio-Fragen: `Kunden_Uebersicht.md` + `ARBEITSUEBERSICHT.md`.
 | `--add` / `todo …` | To-do erfassen |
+| `-i` | Chat: nummerierte Kunden-Liste = **Briefing** (mehrere To-dos + Notiz + Build) |
+| `--no-refresh` | Kein `build_dashboard.py` nach Schreiben |
 | `--task` | Aufgabentext (mit `--add`) |
 | `--no-llm` | Freitext nur regelbasiert |
 

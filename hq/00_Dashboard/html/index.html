@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Cert-Expert HQ — Dashboard</title>
+  <link rel="stylesheet" href="styles.css?v=20" />
+  <link rel="icon" href="assets/logo-mark.svg" type="image/svg+xml" />
+</head>
+<body>
+  <div id="file-warning" class="file-warning hidden">
+    Dashboard nicht per Datei öffnen — Server:
+    <code>python3 hq/scripts/serve_dashboard.py</code>
+    → <a href="http://127.0.0.1:8765/">http://127.0.0.1:8765/</a>
+  </div>
+
+  <div class="app-shell">
+    <aside class="sidebar" aria-label="Navigation">
+      <a class="brand" href="/" title="Cert-Expert HQ">
+        <img src="/assets/cert-expert-logo.png" alt="Cert-Expert" class="brand-logo" />
+      </a>
+      <p class="sidebar-label">HQ Dashboard</p>
+      <nav class="side-nav">
+        <button type="button" class="side-link is-active" data-view="day" data-scroll="pin-zone">Übersicht</button>
+        <button type="button" class="side-link" data-view="day" data-scroll="auswahl-zone">Auswahl</button>
+        <button type="button" class="side-link" data-view="finance">Cert Expert Kosten</button>
+      </nav>
+      <div class="side-foot">
+        <span class="side-foot-title">Daten</span>
+        <code class="side-foot-path">00_Dashboard/PINS.json</code>
+        <code class="side-foot-path">03_Kundenprojekte/…/ToDos.md</code>
+        <code class="side-foot-path">05_Forderungen/Cert_Expert_Kosten.json</code>
+        <code class="side-foot-path">05_Forderungen/Cert_Expert_Einnahmen.json</code>
+      </div>
+    </aside>
+
+    <div class="main-column">
+      <header class="topbar">
+        <div class="topbar-intro">
+          <img src="/assets/cert-expert-logo.png" alt="Cert-Expert" class="topbar-logo" />
+          <p class="eyebrow">Operations</p>
+          <h1>Mein Tag</h1>
+          <p class="meta" id="meta-line">Lade …</p>
+        </div>
+        <div class="topbar-actions">
+          <button type="button" id="btn-rebuild" class="btn secondary">Daten neu laden</button>
+          <button type="button" id="btn-jump-auswahl" class="btn">+ Auswahl</button>
+        </div>
+      </header>
+
+      <div class="kpi-row" id="kpi-row" aria-label="Kurzstatus"></div>
+
+      <aside class="persist-note" role="note">
+        Auswahl in <code>PINS.json</code> — bleibt gespeichert. Server nicht mit Ctrl+C beenden, nur weil du den Tab schließt.
+      </aside>
+
+      <main class="content">
+        <section class="panel pin-zone" id="pin-zone" aria-label="Meine Übersicht">
+          <header class="panel-head">
+            <div>
+              <h2>Übersicht</h2>
+              <p class="hint">Gewählte Aufgaben — erledigt bleibt sichtbar (durchgestrichen) bis „Entfernen“.</p>
+            </div>
+          </header>
+          <nav id="overview-strip" class="overview-strip hidden" aria-label="Schnellnavigation">
+            <span class="overview-strip-label">Springen</span>
+            <div id="overview-chips" class="overview-chips"></div>
+          </nav>
+          <div id="pin-groups" class="pin-groups"></div>
+          <p id="pin-empty" class="empty-state">Noch leer. Unten bei einem Projekt <strong>Alle zur Übersicht</strong> oder <strong>+ Hinzufügen</strong>.</p>
+        </section>
+
+        <section class="panel auswahl-zone" id="auswahl-zone" aria-label="Auswahl aus Backlog">
+          <header class="panel-head">
+            <div>
+              <h2>Auswahl</h2>
+              <p class="hint">Projekte aufklappen — Aufgaben sofort sichtbar. Neue Aufgabe mit + Hinzufügen.</p>
+            </div>
+          </header>
+          <div id="auswahl-sections" class="auswahl-sections"></div>
+        </section>
+
+        <section class="panel finance-hub hidden" id="finance-hub" aria-label="Cert Expert Finanzen">
+          <header class="panel-head panel-head-finance">
+            <div>
+              <h2>Cert Expert — Kosten &amp; Finanzen</h2>
+              <p class="hint">Übersicht mit Diagrammen — Details unter Einnahmen und Ausgaben.</p>
+            </div>
+          </header>
+          <nav class="finance-subnav" aria-label="Finanz-Ansichten">
+            <button type="button" class="finance-tab is-active" data-finance-tab="overview">Übersicht</button>
+            <button type="button" class="finance-tab" data-finance-tab="income">Einnahmen</button>
+            <button type="button" class="finance-tab" data-finance-tab="costs">Ausgaben</button>
+          </nav>
+
+          <section class="finance-subpanel" id="finance-overview-zone" aria-label="Finanz-Übersicht">
+            <div class="finance-summary" id="finance-hub-summary"></div>
+            <div class="finance-compare" id="finance-hub-compare"></div>
+            <div class="finance-overview-charts">
+              <section class="finance-chart-panel" aria-label="Ausgaben nach Kategorie">
+                <h3 class="finance-form-title">Ausgaben (monatlich)</h3>
+                <div class="finance-chart-layout">
+                  <div id="finance-overview-chart" class="finance-chart"></div>
+                  <ul id="finance-overview-chart-legend" class="finance-chart-legend"></ul>
+                </div>
+              </section>
+              <section class="finance-chart-panel" aria-label="Einnahmen nach Status">
+                <h3 class="finance-form-title">Einnahmen (Pipeline)</h3>
+                <div class="finance-chart-layout">
+                  <div id="income-overview-chart" class="finance-chart"></div>
+                  <ul id="income-overview-chart-legend" class="finance-chart-legend"></ul>
+                </div>
+              </section>
+            </div>
+          </section>
+
+        <section class="panel finance-zone finance-subpanel hidden" id="finance-zone" aria-label="Ausgaben">
+          <header class="panel-head panel-head-finance">
+            <div>
+              <h2>Ausgaben — Fixkosten</h2>
+              <p class="hint">
+                Master:
+                <code>hq/05_Forderungen/Cert_Expert_Kosten.json</code>
+                — Sync nach
+                <code>Finanz_Arbeitsgrundlage.md</code> (§3).
+              </p>
+            </div>
+            <div class="finance-toolbar" id="finance-toolbar">
+              <button type="button" id="btn-finance-edit" class="btn-icon" title="Alle bearbeiten" aria-label="Alle bearbeiten">
+                <svg class="icon-pen" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+                  <path fill="currentColor" d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zm2.92 2.83H5v-.92l9.06-9.06.92.92-9.06 9.06zm11.96-12.73l-1.41-1.41a1.25 1.25 0 0 0-1.77 0l-1.13 1.13 3.75 3.75 1.56-1.47z"/>
+                </svg>
+              </button>
+              <div id="finance-edit-actions" class="finance-edit-actions hidden">
+                <button type="button" id="btn-finance-save-all" class="btn">Fertig</button>
+                <button type="button" id="btn-finance-cancel-edit" class="btn secondary">Abbrechen</button>
+              </div>
+            </div>
+          </header>
+          <div class="finance-summary" id="finance-summary"></div>
+          <section class="finance-chart-panel" id="finance-chart-panel" aria-label="Kosten nach Kategorie">
+            <h3 class="finance-form-title">Kosten nach Kategorie</h3>
+            <div class="finance-chart-layout">
+              <div id="finance-chart" class="finance-chart"></div>
+              <ul id="finance-chart-legend" class="finance-chart-legend"></ul>
+            </div>
+          </section>
+          <form id="finance-add-form" class="finance-add-form">
+            <h3 class="finance-form-title">Neue Kosten</h3>
+            <div class="finance-form-grid">
+              <label>
+                <span>Posten</span>
+                <input type="text" name="posten" required placeholder="z. B. WordPress" />
+              </label>
+              <label>
+                <span>Kategorie</span>
+                <select name="kategorie" id="finance-add-kategorie"></select>
+              </label>
+              <label>
+                <span>Anbieter</span>
+                <input type="text" name="anbieter" placeholder="optional" />
+              </label>
+              <label>
+                <span>EUR / Monat</span>
+                <input type="text" name="amount" required placeholder="12,99" inputmode="decimal" />
+              </label>
+              <label class="finance-note-field">
+                <span>Notiz</span>
+                <input type="text" name="note" placeholder="z. B. noch privat → Firma" />
+              </label>
+            </div>
+            <button type="submit" class="btn">Kosten hinzufügen</button>
+          </form>
+          <div class="finance-table-wrap">
+            <table class="finance-table" id="finance-table">
+              <thead>
+                <tr>
+                  <th>Posten</th>
+                  <th>Kategorie</th>
+                  <th>Anbieter</th>
+                  <th class="num">EUR/Monat</th>
+                  <th>Notiz</th>
+                </tr>
+              </thead>
+              <tbody id="finance-tbody"></tbody>
+              <tfoot id="finance-tfoot"></tfoot>
+            </table>
+          </div>
+        </section>
+
+        <section class="panel finance-zone finance-subpanel hidden" id="income-zone" aria-label="Einnahmen">
+          <header class="panel-head panel-head-finance">
+            <div>
+              <h2>Einnahmen — Pipeline</h2>
+              <p class="hint">
+                Master:
+                <code>hq/05_Forderungen/Cert_Expert_Einnahmen.json</code>
+                — Sync nach
+                <code>Finanz_Arbeitsgrundlage.md</code> (§1).
+              </p>
+            </div>
+            <div class="finance-toolbar" id="income-toolbar">
+              <button type="button" id="btn-income-edit" class="btn-icon" title="Alle bearbeiten" aria-label="Alle bearbeiten">
+                <svg class="icon-pen" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+                  <path fill="currentColor" d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zm2.92 2.83H5v-.92l9.06-9.06.92.92-9.06 9.06zm11.96-12.73l-1.41-1.41a1.25 1.25 0 0 0-1.77 0l-1.13 1.13 3.75 3.75 1.56-1.47z"/>
+                </svg>
+              </button>
+              <div id="income-edit-actions" class="finance-edit-actions hidden">
+                <button type="button" id="btn-income-save-all" class="btn">Fertig</button>
+                <button type="button" id="btn-income-cancel-edit" class="btn secondary">Abbrechen</button>
+              </div>
+            </div>
+          </header>
+          <div class="finance-summary" id="income-summary"></div>
+          <section class="finance-chart-panel" id="income-chart-panel" aria-label="Einnahmen nach Status">
+            <h3 class="finance-form-title">Pipeline nach Status</h3>
+            <div class="finance-chart-layout">
+              <div id="income-chart" class="finance-chart"></div>
+              <ul id="income-chart-legend" class="finance-chart-legend"></ul>
+            </div>
+          </section>
+          <form id="income-add-form" class="finance-add-form">
+            <h3 class="finance-form-title">Neue erwartete Zahlung</h3>
+            <div class="finance-form-grid">
+              <label>
+                <span>Kunde / Debitor</span>
+                <input type="text" name="kunde" required placeholder="z. B. Kunde GmbH" />
+              </label>
+              <label>
+                <span>Betrag (EUR)</span>
+                <input type="text" name="amount" required placeholder="1.500 oder ~4.500" inputmode="decimal" />
+              </label>
+              <label>
+                <span>Status</span>
+                <select name="status" id="income-add-status"></select>
+              </label>
+              <label>
+                <span>HQ / Lexware</span>
+                <input type="text" name="hq_ref" placeholder="ford01, Projektordner …" />
+              </label>
+              <label class="finance-check-field">
+                <span>Schätzung</span>
+                <input type="checkbox" name="is_estimate" />
+              </label>
+            </div>
+            <button type="submit" class="btn">Einnahme hinzufügen</button>
+          </form>
+          <div class="finance-table-wrap">
+            <table class="finance-table" id="income-table">
+              <thead>
+                <tr>
+                  <th>Kunde / Debitor</th>
+                  <th class="num">EUR</th>
+                  <th>Status</th>
+                  <th>HQ / Lexware</th>
+                </tr>
+              </thead>
+              <tbody id="income-tbody"></tbody>
+              <tfoot id="income-tfoot"></tfoot>
+            </table>
+          </div>
+        </section>
+        </section>
+      </main>
+
+      <footer class="footer">
+        <span id="status-msg">Bereit.</span>
+      </footer>
+    </div>
+  </div>
+
+  <script src="app.js?v=20"></script>
+</body>
+</html>

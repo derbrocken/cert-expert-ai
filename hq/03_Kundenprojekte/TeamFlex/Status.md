@@ -59,6 +59,8 @@ S0 blocker present: Yes (inferred from open audit-critical items — see ToDos E
 Next critical action: EV-TF-003 — Wachbuchauszug nachfassen (siehe Evidence action priority in `Dokumente_und_Nachweise.md`)  
 Evidence IDs: EV-TF-001, EV-TF-002, EV-TF-003, EV-TF-004, EV-TF-005, EV-TF-006, EV-TF-007, EV-TF-008
 
+**Historical DFSS (separat, nicht live P03):** Fast-Track Erstzertifizierung 2025 als **P-HIST-SC-01** archiviert → [`../../07_DFSS/DFSS_HISTORICAL_INDEX.md`](../../07_DFSS/DFSS_HISTORICAL_INDEX.md)
+
 ## Verknüpfung
 
 - To-dos: [`ToDos.md`](ToDos.md)

@@ -1,0 +1,53 @@
+{
+  "meta": {
+    "schema": "dfss-historical-export-v1",
+    "project_id": "P-HIST-01",
+    "type": "historical_initial_certification",
+    "slug": "LC_Security",
+    "legal_name": "LC Security & Service",
+    "hq_customer_note": "ELC Security and Service — folder slug LC_Security",
+    "exported": "2026-06-05",
+    "status": "archived",
+    "active_rollout": false,
+    "gate_decision": "HISTORICAL_BASELINE_ACCEPTED_WITH_CONTROLS",
+    "master_docx": "hq/07_DFSS/DFSS_PILOT_MEASUREMENT_ACTIVATION_P_HIST_01_LC_SECURITY_FILLED_2026-06-05.docx",
+    "merge_target": "DFSS project design guidelines (future)"
+  },
+  "norms": ["ISO 9001", "DIN 77200-1", "DIN 77200-2"],
+  "timeline": {
+    "sales_call_start": "2026-01-09",
+    "first_document_request": "2026-01-15",
+    "on_site_rescue": "2 days before audit",
+    "audit_date": "2026-02-12",
+    "audit_days": 3,
+    "lead_time_sales_to_audit_days": 34
+  },
+  "scope": {
+    "din_77200_1_sdls": ["stationary service", "control service", "reception service"],
+    "din_77200_2": "refugee/asylum on documentation basis",
+    "employees_declared": 50,
+    "employees_audit_relevant": 5
+  },
+  "service_model": "done_for_you_historical",
+  "audit_outcome": {
+    "major_nc": 0,
+    "minor_nc": 0,
+    "follow_up": "security concept and deployment concept after audit"
+  },
+  "s0_gates": {
+    "S0-04": "Fail/PWC",
+    "S0-05": "Fail/PWC",
+    "S0-08": "Fail/PWC"
+  },
+  "blockers": ["B-LC-01", "B-LC-02", "B-LC-03", "B-LC-04", "B-LC-05", "B-LC-06"],
+  "evidence_ids": [
+    "EV-LC-001", "EV-LC-002", "EV-LC-003", "EV-LC-004", "EV-LC-005",
+    "EV-LC-006", "EV-LC-007", "EV-LC-008", "EV-LC-009", "EV-LC-010",
+    "EV-LC-011", "EV-LC-012", "EV-LC-013", "EV-LC-TBD"
+  ],
+  "dfss_use": {
+    "design_input": true,
+    "pilot_validation_report_alone": false,
+    "combine_with": ["P05_SecuGuard", "P-HIST-SC-01_TeamFlex", "P-HIST-02_LC_Security_Extension"]
+  }
+}

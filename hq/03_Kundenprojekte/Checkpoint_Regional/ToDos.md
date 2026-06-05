@@ -1,6 +1,7 @@
-# ToDos — Checkpoint Regional
+# ToDos — Checkpoint Regional GmbH
 
 **Projekt-Slug:** `Checkpoint_Regional`  
+**Kunde:** Checkpoint Regional GmbH  
 **Letzte Aktualisierung:** 2026-06-03  
 **Projekt:** Erstzertifizierung · **Audittermin:** noch offen
 

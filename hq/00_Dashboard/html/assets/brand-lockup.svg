@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 248 44" role="img" aria-label="Cert-Expert">
+  <circle cx="22" cy="22" r="21" fill="#ffffff" stroke="#e5e7eb" stroke-width="1"/>
+  <g fill="#E30613" transform="translate(10 9) scale(0.58)">
+    <path d="M14 32 L18 14 L22 18 L20 32 Z"/>
+    <path d="M22 18 L28 10 L30 14 L24 22 Z"/>
+    <path d="M24 22 L34 20 L32 26 L26 28 Z"/>
+    <path d="M18 14 L20 8 L24 12 L22 18 Z"/>
+    <path d="M28 10 L32 6 L34 10 L30 14 Z"/>
+  </g>
+  <text x="50" y="27" fill="#374151" font-family="system-ui, -apple-system, BlinkMacSystemFont, sans-serif" font-size="12.5" font-weight="600" letter-spacing="0.14em">CERT</text>
+  <circle cx="104" cy="21" r="2.6" fill="#E30613"/>
+  <text x="112" y="27" fill="#374151" font-family="system-ui, -apple-system, BlinkMacSystemFont, sans-serif" font-size="12.5" font-weight="600" letter-spacing="0.14em">EXPERT</text>
+</svg>

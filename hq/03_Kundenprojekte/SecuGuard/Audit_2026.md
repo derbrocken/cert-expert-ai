@@ -65,6 +65,7 @@
 |------|--------|
 | **Prozess** | Allgemeines |
 | **Befund** | Für das in der Stichprobe geprüfte **aktuelle Projekt** konnte **kein Vertrag** vorgelegt werden. |
+| **DFSS (2026-06-05)** | Vertrag **existiert** laut Kunde/Projekt — bei Audit nicht gefunden; erneut beschaffen und ablegen (EV-SG-008). |
 | **Frist Nachweis** | 30.06.2026 |
 | **Verantwortlich (Kunde)** | *(im Formular noch leer)* |
 | **Status HQ** | offen |
@@ -106,7 +107,7 @@
 | m1 | Neben | ISO 45001 | 7.2 | Personalunterlagen Prokuristin | 30.06. | offen |
 | m2 | Neben | ISO 14001 | 10.3 | Umwelt — Basiswerte / Verbesserung | 30.06. | offen |
 
-**To-dos:** sg01 (M1–M5) · sg02 (m1–m2) · sg03 Querschnitt / Koordination mit Kunde
+**To-dos:** sg01 (M1) · sg04–sg07 (M2–M5) · sg02 (m1) · sg08 (m2) · sg03 Querschnitt / Koordination mit Kunde
 
 ---
 

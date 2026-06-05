@@ -1,7 +1,7 @@
 # ToDos — Wolf Street
 
 **Projekt-Slug:** `Wolf_Street`  
-**Letzte Aktualisierung:** 2026-06-03 (Auditorwechsel + DEKRA bestätigt)  
+**Letzte Aktualisierung:** 2026-06-04 (HQ Assistant — Briefing Chat)  
 **Audits:** **16.06.** ISO 9001+14001 (Dr. Düvel) · **17.07.** DIN 77200 (Dr. Teubart) — **Welle 1 kritisch**
 
 ---
@@ -18,7 +18,7 @@
 - **Status:** open
 - **Priorität:** high
 - **Quelle:** manual
-- **Nächster Schritt:** legal register aus Dump — Stand prüfen
+- **Nächster Schritt:** E-Koordinaten erneut prüfen; neue Nicht-Credentials und Handelszentralregister fehlen noch
 - **Erstellt:** 2026-06-03T12:00:00+02:00
 - **Rohinput:** Operations Board + Master Dump
 - **Owner:** TBD
@@ -40,10 +40,10 @@
 - **Frist:** 2026-06-14
 - **Status:** open
 - **Priorität:** high
-- **Quelle:** manual
+- **Quelle:** manual (Operations Board / Master Dump → Evidence EV-WS-002)
 - **Nächster Schritt:** KPI-Liste mit ws05 abstimmen
 - **Erstellt:** 2026-06-03T12:00:00+02:00
-- **Rohinput:** Operations Board
+- **Rohinput:** Operations Board — erscheint in ARBEITSUEBERSICHT unter „DFSS / Pilot“, nicht unter Kunden-Tagesliste
 - **Owner:** TBD
 - **Wartet auf:** TBD
 - **Due date:** 2026-06-14
@@ -56,14 +56,14 @@
 
 ## TODO-20260603-ws05
 
-- **Aufgabe:** KPI-Liste ISO 14001 finalisieren
+- **Aufgabe:** KPI-Liste ISO 14001 finalisieren — neue KPIs prüfen und einpflegen (Kundeneingang)
 - **Projekt:** Wolf_Street
 - **Kategorie:** Nachweis / Dokumentation
 - **Verantwortlich:** (unassigned)
 - **Frist:** 2026-06-14
 - **Status:** open
 - **Priorität:** high
-- **Quelle:** manual
+- **Quelle:** manual (Operations Board → Evidence EV-WS-003)
 - **Nächster Schritt:** Managementbewertung (ws06) vorbereiten
 - **Erstellt:** 2026-06-03T12:00:00+02:00
 - **Rohinput:** Operations Board
@@ -79,7 +79,7 @@
 
 ## TODO-20260603-ws06
 
-- **Aufgabe:** Managementbewertung vorbereiten / durchführen
+- **Aufgabe:** Managementbericht / Managementbewertung für Überwachungsaudit ISO 9001 + 14001 erstellen
 - **Projekt:** Wolf_Street
 - **Kategorie:** Audit / Zertifizierung
 - **Verantwortlich:** (unassigned)
@@ -136,6 +136,81 @@
 - **Nächster Schritt:** Siehe auch `04_Vertrieb/Angebote_Juni_2026.md`
 - **Erstellt:** 2026-06-03T12:00:00+02:00
 - **Rohinput:** Operations Board
+
+## TODO-20260604-ws09
+
+- **Aufgabe:** To-do-Liste an Wolf Street senden — welche Unterlagen der Kunde liefern muss
+- **Projekt:** Wolf_Street
+- **Kategorie:** Kundenkommunikation
+- **Verantwortlich:** (unassigned)
+- **Frist:** 2026-06-05
+- **Status:** open
+- **Priorität:** urgent
+- **Quelle:** hq_assistant
+- **Nächster Schritt:** Liste der Kunden-Lieferungen formulieren und versenden (bis morgen)
+- **Erstellt:** 2026-06-04T12:00:00+02:00
+- **Rohinput:** Chat-Briefing 2026-06-04
+- **Audit impact:** Kundennachweise für 16.06. und 17.07.
+
+## TODO-20260604-ws10
+
+- **Aufgabe:** Mitarbeiterliste erneut prüfen
+- **Projekt:** Wolf_Street
+- **Kategorie:** Nachweis / Dokumentation
+- **Verantwortlich:** (unassigned)
+- **Frist:** 2026-06-14
+- **Status:** open
+- **Priorität:** high
+- **Quelle:** hq_assistant
+- **Nächster Schritt:** Stand Personalliste vs. Audit-Anforderungen abgleichen
+- **Erstellt:** 2026-06-04T12:00:00+02:00
+- **Rohinput:** Chat-Briefing 2026-06-04
+- **Audit impact:** Personalnachweise ISO 9001 / DIN 77200
+
+## TODO-20260604-ws11
+
+- **Aufgabe:** Projekt vorbereiten — DIN 77200 (Überwachungsaudit 17.07.2026)
+- **Projekt:** Wolf_Street
+- **Kategorie:** Audit / Zertifizierung
+- **Verantwortlich:** (unassigned)
+- **Frist:** 2026-07-10
+- **Status:** open
+- **Priorität:** high
+- **Quelle:** hq_assistant
+- **Nächster Schritt:** SDL-/Betriebsnachweise und Auditmappe Phase 2 (Dr. Teubart)
+- **Erstellt:** 2026-06-04T12:00:00+02:00
+- **Rohinput:** Chat-Briefing 2026-06-04 — Vorbereitung getrennt von 9001/14001 am 16.06.
+- **Audit impact:** Überwachungsaudit DIN 77200 — 17.07.2026
+
+## TODO-20260604-ws12
+
+- **Aufgabe:** Auditbericht für Überwachungsaudit ISO 9001 + ISO 14001 erstellen
+- **Projekt:** Wolf_Street
+- **Kategorie:** Audit / Zertifizierung
+- **Verantwortlich:** (unassigned)
+- **Frist:** 2026-06-15
+- **Status:** open
+- **Priorität:** high
+- **Quelle:** hq_assistant
+- **Nächster Schritt:** Berichtsvorlage befüllen / internes Audit als Basis
+- **Erstellt:** 2026-06-04T12:00:00+02:00
+- **Rohinput:** Chat-Briefing 2026-06-04 — noch offen vor 16.06.
+- **Audit impact:** Überwachungsaudit 16.06.2026 (Dr. Düvel)
+
+## TODO-20260604-ws13
+
+- **Aufgabe:** Internes Audit für ISO 9001 + ISO 14001 durchführen / dokumentieren
+- **Projekt:** Wolf_Street
+- **Kategorie:** Audit / Zertifizierung
+- **Verantwortlich:** (unassigned)
+- **Frist:** 2026-06-14
+- **Status:** open
+- **Priorität:** high
+- **Quelle:** hq_assistant
+- **Nächster Schritt:** Internes Audit planen und Protokoll — Voraussetzung für Auditbericht (ws12)
+- **Erstellt:** 2026-06-04T12:00:00+02:00
+- **Rohinput:** Chat-Briefing 2026-06-04
+- **Audit impact:** Überwachungsaudit 16.06.2026
 
 ---
 
