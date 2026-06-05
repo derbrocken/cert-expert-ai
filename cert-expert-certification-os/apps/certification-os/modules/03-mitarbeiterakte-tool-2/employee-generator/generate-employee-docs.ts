@@ -14,6 +14,10 @@ import {
   buildLatestTemplateKeyMap,
   fetchTemplateBufferByKey,
 } from "@/lib/template-storage";
+import {
+  formatDocumentOutputDate,
+  formatTodayDocumentOutput,
+} from "@/modules/03-mitarbeiterakte-tool-2/employee-file/utils/date";
 
 export interface GenerateEmployeeDocsState {
   success: boolean;
@@ -44,11 +48,7 @@ export async function generateEmployeeDocs(
 
     const zip = new JSZip();
     const handler = new TemplateHandler();
-    const currentDate = new Date().toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    });
+    const currentDate = formatTodayDocumentOutput();
 
     let logoData = null;
     let imageMimeType = "image/png";
@@ -95,16 +95,6 @@ export async function generateEmployeeDocs(
       const employeeFolder = zip.folder(employee.fullName);
       if (!employeeFolder) continue;
 
-      const formatDisplayDate = (dateStr: string) => {
-        const d = new Date(dateStr);
-        if (isNaN(d.getTime())) return dateStr;
-        return d.toLocaleDateString("en-US", {
-          year: "numeric",
-          month: "long",
-          day: "numeric",
-        });
-      };
-
       const templateData: TemplateData = {
         Logo: logoData
           ? {
@@ -116,8 +106,8 @@ export async function generateEmployeeDocs(
             }
           : "",
         FullName: employee.fullName,
-        Birthday: formatDisplayDate(employee.birthday),
-        StartDate: formatDisplayDate(employee.startDate),
+        Birthday: formatDocumentOutputDate(employee.birthday),
+        StartDate: formatDocumentOutputDate(employee.startDate),
         RoleName: role.name,
         RoleType: employee.roleType || "",
         TrainingHours: employee.trainingHours || "",
@@ -128,7 +118,7 @@ export async function generateEmployeeDocs(
         CompanyEmail: globalProps.companyEmail || "",
         CompanyAddress: globalProps.companyAddress || "",
         DocVersion: globalProps.documentVersion || "",
-        DocDate: globalProps.documentDate || "",
+        DocDate: formatDocumentOutputDate(globalProps.documentDate || ""),
         CreatedBy: globalProps.createdBy || "",
         ApprovedBy: globalProps.approvedBy || "",
       };

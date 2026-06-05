@@ -65,3 +65,23 @@ export function formatIsoToInput(iso: string): string {
   const month = String(date.getMonth() + 1).padStart(2, "0");
   return `${day}.${month}.${date.getFullYear()}`;
 }
+
+/** Tool 2 generator output: ISO or DD.MM.YYYY input → DD.MM.YYYY. */
+export function formatDocumentOutputDate(value: string): string {
+  const trimmed = value.trim();
+  if (!trimmed) return "";
+  const iso = parseDateInput(trimmed);
+  if (iso) return formatIsoToInput(iso);
+  return trimmed;
+}
+
+/** Today in local calendar as DD.MM.YYYY for generator placeholders. */
+export function formatTodayDocumentOutput(): string {
+  const now = new Date();
+  const iso = toIsoDate(
+    now.getFullYear(),
+    now.getMonth() + 1,
+    now.getDate(),
+  );
+  return iso ? formatIsoToInput(iso) : "";
+}
