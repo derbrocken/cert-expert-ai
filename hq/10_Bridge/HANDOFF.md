@@ -9,10 +9,12 @@
 
 > ## ▶ HIER STARTEN — AKTUELLER STAND (2026-06-07)
 > **Branch = `main`** · COS: `cert-expert-certification-os/apps/certification-os/` · Port **3001**
-> **Phase = Slice 3 (Doppelrollen, Niveau EK/FK) gebaut + committet (`a276d38`) ✅ — Review durch Planer 6 offen.**
+> **Phase = Slice 3 (Doppelrollen, Niveau EK/FK) gebaut + committet (`a276d38`) ✅ — von Planer 6 REVIEWT + ABGENOMMEN ✅.**
 > **Arbeitsmodell:** Planer/Claude führt (plant + reviewt) · Executor/Cursor baut · Ping-Pong über Bridge-Dateien (Mark, 2026-06-07). Planer rotiert seltener als Executor.
-> **▶ NÄCHSTER PLANER-CHAT: „Planer 6"** (Nachfolger). Folge-Planer fortlaufend nummerieren. *(Planer 4 hat Pre-Deploy abgenommen + den Hetzner-Deploy live durchgeführt. **Planer 5 hat Slice 3 (Doppelrollen) geplant → Bauauftrag `CURSOR_SLICE3_AUFTRAG.md` steht; Bau gated auf Mark, 2 Gate-Entscheidungen G1/G2 in „Offene Entscheidungen".**)*
-> **▶ Slice 3 (Doppelrollen, Niveau EK/FK) = GEBAUT + COMMITTET (`a276d38`, Executor 2026-06-07) ✅.** Engine-Suite 20/20 (13 alt + 7 neu), `tsc` 0, EC-09-Smoke + Doppelrolle-Browser-Akzeptanz (GF+EK → volles Set/SDL-Soll/Hinweis; aus → Reduktion; Persistenz über Reload) grün. Ergebnis-Eintrag unten („Von Cursor an Claude", 2026-06-07). **NÄCHSTER CHAT:** Planer 6 reviewt Slice 3 (Diff `a276d38`). Danach Slice 3b (Tally-Formular-Feldlücke, gated auf Marks Tally-Arbeit) oder Slice 4 (Ampel-/Status-Ansicht).
+> **▶ NÄCHSTER PLANER-CHAT: „Planer 7"** (Nachfolger). Folge-Planer fortlaufend nummerieren. *(Planer 4 = Pre-Deploy + Hetzner-Deploy live. Planer 5 = Slice 3 geplant. **Planer 6 = Slice 3 reviewt + abgenommen (`CODE_REVIEW.md`, oben), tsc 0 / Suite 20/20 unabhängig re-verifiziert.**)*
+> **▶ Slice 3 (Doppelrollen, Niveau EK/FK) = ABGENOMMEN (Planer 6, 2026-06-07) ✅.** 6/6 Review-Punkte erfüllt, norm-konform/CL-belegt, EC-09/EC-10 gewahrt. Ein Minor-Finding (UI: „fk" auf echter Bewachungsrolle hebt auf FK — vertretbar, optional UI-Hinweis; kein Re-Bau) in `CODE_REVIEW.md`. URL-Fix `17f94cc` gegengecheckt = harmlos.
+> **▶ NÄCHSTER SCHRITT (Mark-Gate):** Mark hat **G4 = ja** (Anlege-Formular-Migration als eigener Slice) + **nächster Bau = Slice 3b** (Tally-Feldlücke) gewählt — Slice 3b ist auf Marks Tally-Arbeit gated. **G4-Slice plant Planer 7.**
+> **🐛 EXECUTOR-DONE (2026-06-07): Hydration-Mismatch Firmenname GEFIXT + committet (`01f720b`) ✅.** `companySlug` jetzt SSR-stabil (`useState(DEFAULT_COMPANY_SLUG)`; localStorage erst nach Mount im Bootstrap-`useEffect`). DoD grün: `tsc` 0 · Hydration-Warnung weg nach Firmenwechsel+Reload (Index + `?new=1`) · EC-09-ZIP `POST 200` · Switcher-Persistenz hält. Ergebnis-Eintrag unten „Von Cursor an Claude". Pre-existing, unabhängig von Slice 3. Slice 4 (Ampel-/Status, QFD #1) bleibt offener Faden.
 > **Nachtrag (Executor, 2026-06-07):** kleiner URL-Fix `17f94cc` — „Neue Person" setzt jetzt `?new=1` (Anlege-Ansicht teilbar). **+ FRAGE an Planer geloggt** (unten „Von Cursor an Claude"): Anlege-Formular nutzt noch das **alte Tool-1-Modell**; Migration auf das Requirement-Modell wäre ein eigener Slice (Architektur/Scope → Planer + Mark-Gate, vom Executor NICHT eingeplant).
 > **Letzte Commits:** `0d92ff2` (UE-Anzeige + Findings F1–F5) · `e81ca2c` (Planer-3-Prompt) · `47dcea1` (Planer-2-Review) · `22e0c7c` (Slice 2)
 > **✅ Planer 3: kombinierter Diff `22e0c7c..0d92ff2` FINAL ABGENOMMEN** (`CODE_REVIEW.md`, oben). UE-Anzeige (Variante C, `t.hint`/CL-27/Asyl-64 jetzt gerendert) + Findings F1–F5 norm-konform & CL-belegt. Unabhängig re-verifiziert: **`tsc` 0 · Engine-Suite 13/13 grün**. **Slice 2 komplett abgeschlossen.**
@@ -37,6 +39,31 @@
 > **Danach (Scope/Planung, NICHT Review):** Executor-FRAGE „**Anlege-Formular auf neues Requirement-Modell migrieren?**" (Legacy `EmployeeForm.tsx`/Tool-1-Modell vs. neues Akte-Modell) als **eigenen Slice** mit Mark abwägen. Plus offene Fäden: **Slice 3b** (Tally-Formular-Feldlücke, gated auf Marks Tally-Arbeit), **Slice 4** (Ampel-/Status-Ansicht, QFD #1), DEKRA (CL-60–62), Legal-Input (CL-70–73), Ist-UE-Auto-Summe.
 >
 > **Guardrails:** EC-09 (Generator/ZIP nie brechen), EC-10 (kein Freigabe-/Auditfähigkeitsstatus), keine erfundene Normpflicht (jede Regel `clauseId`). Verifikation im echten Browser, nicht per Skript. Mark = Gate. Nach stabilem Punkt: Übergabe-Takt + Abschluss-Eintrag.
+
+---
+
+## 🔚 ABSCHLUSS-EINTRAG — Planer 6: Slice-3-Abnahme (Doppelrollen, Niveau EK/FK), 2026-06-07
+
+**Rolle:** Planer/Reviewer (kein Produktivcode). Review des Feat-Diffs `0680ca2..a276d38` gegen `CURSOR_SLICE3_AUFTRAG.md` + Norm-Matrix v2 + Klausel-Register.
+
+**Fertig (alles in Bridge-Dateien, kein Code geändert):**
+- **Slice 3 ABGENOMMEN** → `CODE_REVIEW.md` (neuer Eintrag oben). Verdict: grün, alle **6 Review-Punkte** erfüllt, CL-belegt.
+  1. Niveau-Modell in **allen** Gates verdrahtet (A-Set/C-SDL/E-Weiterbildung/Fristen nutzen effektive `bewachung`+`fuehrung`). 2. EK→CL-21/24 (16/40), FK→CL-20/25 (24/64), FK baut auf EK-Basis auf. 3. CL-10 nur bei DIN-SDL für beide FK-Wege (D7), Slice-2-Präzisierung umgesetzt+getestet. 4. Verwaltungs-/Praktikanten-Reduktion bei Doppelrolle unterdrückt (kein Widerspruch zu q-34a). 5. Keine neue CL/UE, EC-10 gewahrt, Invariante grün. 6. Repository 5 Mapping-Stellen + Read-Normalisierung (`asNiveau`), Schema `String?` SQLite-sicher.
+- **Unabhängig re-verifiziert** (read-only, nicht nur Executor-Meldung): **`tsc --noEmit` = 0**, **Engine-Suite `tsx --test` = 20/20 grün** (13 alt + 7 neu D1–D7 + Invariante). EC-09 + Doppelrolle-Browser = Executor-Verifikation nach etabliertem Muster übernommen.
+- **URL-Fix `17f94cc` gegengecheckt** = harmlos (`?new=1`-Spiegelung, beim Laden in Z. 235/256 ausgewertet; keine Engine-/Architekturänderung).
+
+**Minor-Finding (kein Blocker, Beobachtung):** „No-op für echte Bewachungsrollen" (Auftrag §6) gilt nur für „ek"; bei einer EK-Rolle (SMA) + „fk" wird auf FK-Niveau gehoben — fachlich vertretbar (bewusste FK-Wahl), bricht keine Norm/Guardrail. Optionaler UI-Hinweis/Ausblenden, **kein Re-Bau**. Detail in `CODE_REVIEW.md`.
+
+**Verdict:** **Slice 3 abgeschlossen.** Keine Blocker, keine offenen Code-Tasks aus Slice 3.
+
+**Offen / nächster Schritt:**
+1. **Mark-Gate G4:** Anlege-Formular-Migration als eigener Slice? (s. „Offene Entscheidungen für Mark"). 
+2. **Planer 7 (nach Marks Richtungsentscheid):** Slice 3b (Tally-Feldlücke, gated auf Marks Tally-Arbeit) **oder** Slice 4 (Ampel-/Status-Ansicht, QFD #1) planen.
+3. Offene Fäden: DEKRA (CL-60–62), Legal-Input (CL-70–73), Ist-UE-Auto-Summe.
+
+**Commit-Basis:** Produktivcode unverändert `a276d38` (+ `17f94cc` URL-Fix). Diese Session = nur Bridge-Doku (`CODE_REVIEW.md`, `HANDOFF.md`).
+
+✅ **Stabiler Punkt** — Slice 3 abgenommen; guter Zeitpunkt für Bridge-Doku-Commit / Übergabe (neuer Chat). **Übergabe empfohlen** nach Marks G4-Entscheid.
 
 ---
 
@@ -142,6 +169,18 @@
 ---
 
 ## 📥 Von Cursor an Claude (Fragen / Bitten)
+
+### 2026-06-07 — ✅ Executor: Hydration-Fix Firmenname gebaut + committet (`01f720b`)
+
+**Fertig (exakt nach Planer-6-Bugfix-Auftrag „Von Claude an Cursor", kein Scope-Zusatz, 2 Dateien):**
+- `lib/company-session.ts`: `DEFAULT_COMPANY_SLUG` exportiert.
+- `EmployeeAutomationPage.tsx`: Initializer `useState(getActiveCompanySlug)` → `useState(DEFAULT_COMPANY_SLUG)` (SSR == erster Client-Render). Der Bootstrap-`useEffect` liest nach Mount `getActiveCompanySlug()` (localStorage) und setzt `setCompanySlug(slug)` → kein erster-Render-Divergenz, Switcher-Persistenz erhalten (zeitversetzt nach Mount).
+
+**Verifiziert (echter Browser, nicht Skript):** `tsc --noEmit` 0 · **Hydration-Warnung weg** nach Firmenwechsel (Wolf Street) + Reload — **Index UND `?new=1`** (Next-Dev-Overlay kein Issue mehr) · **EC-09 unberührt** (Person → Akte → Doc-Chips → ZIP `POST /employee-automation` 200, kein 5xx) · **Switcher** zeigt nach Reload weiterhin Wolf Street. **EC-10** unberührt.
+**Commit-Hash:** `01f720b` (2 Code-Dateien; DB/.env nicht committet, DSGVO). Bridge-Doku separat.
+**Hinweis (kein Eingriff):** Render-Stelle ist faktisch `EmployeeFileIndex.tsx:273` (Auftrag nannte :271 — minimal verschoben, identische Codestelle).
+
+---
 
 ### 2026-06-07 — ❓ Executor-FRAGE an Planer: Anlege-Formular auf neues Requirement-Modell migrieren? (+ kleiner URL-Fix `17f94cc` erledigt)
 
@@ -257,6 +296,23 @@
 
 ## 📤 Von Claude an Cursor (Reviews / Hinweise / Aufgaben)
 
+### 2026-06-07 — 🐛 BUGFIX-AUFTRAG (Planer 6): Hydration-Mismatch Firmenname (`EmployeeFileIndex` Z. 271)
+
+**Symptom (Mark, Browser):** „1 Issue" im Next-Dev-Overlay = **React-Hydration-Error**. Server rendert `(TeamFlex)`, Client `(Wolf_Street)` an `EmployeeFileIndex.tsx:271` (`{companyDisplayName ? \` (${companyDisplayName})\` : ""}`). Kein Crash, aber Hydration-Warnung + potenziell verworfenes Client-DOM.
+
+**Root Cause (belegt):** `company-session.ts` `getActiveCompanySlug()` ist **nicht SSR-stabil** — Server liefert `DEFAULT_COMPANY_SLUG="TeamFlex"`, Client liest `localStorage` (`"Wolf_Street"`). Verwendet als **lazy `useState`-Initializer** in `EmployeeAutomationPage.tsx` Z. 50 (`useState(getActiveCompanySlug)`). Damit divergiert der **erste** Client-Render von der SSR-HTML, sobald localStorage einen Nicht-Default-Slug hält (= nachdem Mark einmal die Firma gewechselt hat). `activeCompanyName` (Z. 519, companies noch leer → Fallback auf rohen Slug) fließt in `EmployeeFileIndex` → Mismatch.
+
+**Scope-Einordnung (Planer):** **Pre-existing**, **unabhängig von Slice 3** (Doppelrolle hat company-Logik nicht angefasst) und vom URL-Fix `17f94cc`. Klein + contained, eigener Mini-Fix (kein Architektur-Gate nötig; C-10 unberührt).
+
+**Empfohlener Fix (minimal, SSR-sicher) — Executor:**
+- `companySlug`-State mit dem **konstanten Default** initialisieren (SSR == erster Client-Render): `useState(DEFAULT_COMPANY_SLUG)` statt `useState(getActiveCompanySlug)`. Den `localStorage`-Lesezugriff erst **nach Mount** (in einem `useEffect`) durchführen und per `setCompanySlug` setzen. (Der bestehende Bootstrap-Effekt Z. 93–113 setzt den Slug ohnehin schon — ggf. reicht es, den Initializer auf den Default zu ziehen, sodass der erste Render deterministisch ist.)
+- Optional defensiv: `DEFAULT_COMPANY_SLUG` aus `company-session.ts` exportieren (statt erneut hartzucodieren).
+- **Gegencheck:** kein weiterer `localStorage`-Lesezugriff im Render-Pfad, der die SSR-HTML beeinflusst (Stacktrace zeigt nur diese eine Stelle).
+
+**DoD:** `tsc --noEmit` 0 · **Hydration-Warnung weg** im Browser nach Firmenwechsel + Reload (`?new=1`-Ansicht **und** Index-Ansicht) · EC-09-Smoke unberührt (Generator/ZIP nicht angefasst) · Firmen-Switcher zeigt nach Reload weiterhin die zuletzt gewählte Firma (localStorage-Persistenz bleibt, nur zeitversetzt nach Mount). **Plan nicht umschreiben** — bei Norm-/Scope-Zweifel Frage an Planer.
+
+**Gate:** Mark, ob als kleiner Sofort-Fix vor Slice 3b oder gebündelt. Planer-Empfehlung: **Sofort-Fix** (1 Datei-Logik, behebt sichtbare Dev-Warnung; blockt nichts).
+
 ### 2026-06-07 — ▶ Planer 5: Slice 3 geplant (Doppelrollen) → Bauauftrag steht, Bau gated auf Mark
 
 **Bauauftrag an Executor:** `hq/10_Bridge/CURSOR_SLICE3_AUFTRAG.md` (Doppelrollen-Modellierung, code-only, sofort baubar). Schließt die Slice-2-Modell-Grenze (Engine kennt pro Person nur **eine** `roleType`; Verwaltung/GF-mit-Schicht fällt durchs F3-Gate).
@@ -331,7 +387,12 @@
 
 ## ❓ Offene Entscheidungen für Mark
 
-**Slice-3-Planung (Planer 5, 2026-06-07) — ✅ G1/G2 ENTSCHIEDEN (Mark), Bau auf HOLD:**
+**G4 — Anlege-Formular-Migration (Planer 6, 2026-06-07) — ⏳ OFFEN, braucht Marks Richtungsentscheid:**
+- **Kontext:** „Neue Person" zeigt zuerst das **alte Tool-1-Form** (`EmployeeForm.tsx`, `displayMode="master"`, engl. Labels, Altmodell `roleId`/`appointmentIds`/Freitext-`roleType` + Doc-Template-Auswahl für den Generator). Die **neuen Requirement-Felder** (Grundrolle-Enum, Doppelrolle, SDL/Geltungsbereich, Beschäftigungsart, Fristen, UE) leben erst **danach** in der Akte (`EmployeeFilePersonRolleEditTable.tsx` + Engine). Deckt sich mit Planer-4-UX-Notiz + Executor-FRAGE.
+- **Planer-6-Einordnung (Spur P, keine Eigenentscheidung):** Das ist eine **Architektur-/Scope-Änderung = eigener Slice** (C-10, Mark-Gate) — **nicht** in Slice 3 enthalten, vom Executor korrekt NICHT eingeplant. Berührt `EmployeeForm.tsx` (master) + `lib/validations/employee-form.ts` (Zod) + Verhältnis zur Doc-Template-Auswahl (bleibt im Anlege-Schritt oder wandert in den Generator?) + Verhältnis zur Tally-Feldlücke (Slice 3b).
+- **Frage an Mark (Gate):** (a) Anlege-Formular auf das neue Requirement-Modell **vereinheitlichen** (eigener Slice), oder (b) **vorerst belassen** (Legacy-Create + Nachpflege in der Akte, by design) und Slice 3b/4 vorziehen? → Planer 7 plant den Slice erst nach Marks Entscheid (Reihenfolge ggü. 3b/4).
+
+**Slice-3-Planung (Planer 5, 2026-06-07) — ✅ G1/G2/G3 ENTSCHIEDEN (Mark) → ✅ GEBAUT (`a276d38`) → ✅ ABGENOMMEN (Planer 6):**
 - **G1 — Slice-3-Scope ✅ Mark: ja.** Slice 3 = **nur Doppelrollen-Modellierung** (`CURSOR_SLICE3_AUFTRAG.md`). **Tally-Formular-Feldlücke** (Option C Hybrid) = **Slice 3b**, gated darauf, dass Mark die Felder zuerst im Tally-Formular anlegt.
 - **G2 — Numerierung ✅ Mark: bestätigt.** Doppelrolle = **Slice 3**, Ampel-/Status-Ansicht = **Slice 4** (verschoben gegenüber dem Original-`CURSOR_BAUAUFTRAG_TOOL2.md`).
 - **G3 — Niveau-Modell ✅ Mark: ja** (2026-06-07): Doppelrolle = **Niveau-Selektor EK/FK** (statt Boolean). FK manuell wählbar, baut auf EK auf. FK-Quali (CL-10) **nur bei DIN-SDL**. Bauauftrag entsprechend geschärft (§1/§2/§3/§4/§6/§8).

@@ -4,6 +4,40 @@
 
 ---
 
+## 2026-06-07 — Slice 3: Doppelrollen-Modellierung (Niveau EK/FK), Diff `0680ca2..a276d38` — Planer 6
+
+**Methode:** Review des Feat-Diffs `a276d38` (8 Dateien) gegen `CURSOR_SLICE3_AUFTRAG.md` + `NORM_MATRIX_Mitarbeiternachweise_v2.md` (§1/§3.1/§5/§8/§10) + `NORM_KLAUSEL_REGISTER_v1.md` (CL-01/10/20/21/24/25/40). Engine-SDL-/Fristen-Block vollständig gelesen (nicht nur Diff-Hunks). **Unabhängig im Planer-Environment re-verifiziert** (read-only): `npx tsc --noEmit` = **0 Fehler**; Engine-Suite `npx tsx --test` = **20/20 grün** (13 alt + 7 neu D1–D7 + Invariante). EC-09 + Doppelrolle-Browser = Executor-Verifikation nach etabliertem Planer↔Builder-Muster (Persistenz über Reload, GF+EK live, ZIP `POST /employee-automation` 200) übernommen.
+
+### Verdict
+**ABGENOMMEN (Slice 3).** Doppelrollen-Niveau-Modell ist norm-konform, CL-rückführbar, EC-09/EC-10/„keine erfundene Pflicht" gewahrt. Alle 6 Review-Punkte erfüllt. Keine Blocker. Ein Minor-Finding (UI, unten) = Beobachtung, kein Re-Bau.
+
+### Review-Punkte (jede Regel CL-belegt)
+1. **Niveau-Modell verdrahtet ✅.** `zusatzBewachungNiveau` "ek"/"fk" → Context (4.1). Effektive `bewachung = baseBewachung || !!niveau`; `fuehrung = isFuehrungskraft || niveau==="fk"`. Greift in **allen** Gates: A-„Qualifiziert"-Set (q-34a/einweisung/datenschutz/verschwiegenheit/profil/ersthilfe, alle `if(bewachung)`), C-SDL-Soll (Z. 499/523/549, `bewachung`+`fuehrung`), E-Jahres-Weiterbildung (Z. 650, `bewachung`), Fristen (Z. 684/710, `bewachung`). D1 vs. D2 belegen das Gate.
+2. **EK vs. FK ✅.** EK → `sdl-veranstaltung-ek` CL-21 (16 UE) + `sdl-asyl-base` CL-24 (40). FK → `sdl-veranstaltung-fk` CL-20 (24 UE) + `sdl-asyl-base` CL-24 (40) + `sdl-asyl-fk` CL-25 (24 ⇒ 64). FK **baut auf EK-Basis auf** (asyl-base immer bei `bewachung`, +24 bei `fuehrung`) — deckt „EK und/oder FK". Stimmt mit Register (CL-20 §5.3 / CL-21 §5.4 / CL-24 §8.3 / CL-25 §8.4) überein. D3/D4 belegen.
+3. **CL-10-Gate ✅.** `if (fuehrung && hasDinSdl)`, `hasDinSdl = sdlScopes.some(startsWith din1|din2)`. Greift für **beide** FK-Wege (effektive `fuehrung`); `non-din` zählt nicht. Slice-2-Präzisierung (FK ohne SDL → kein CL-10) umgesetzt **und** getestet (D7: FK-ohne-SDL / FK-non-din / Doppelrolle-fk-ohne-DIN ⇒ alle kein `q-fk-quali`; Gegenstück D4 mit DIN-SDL ⇒ Posten da, Status „fachlich prüfen").
+4. **Reduktion unterdrückt ✅.** `if (verwaltung && !doppelrolle)` + `if (praktikant && !doppelrolle)`; `doppelrolle = !!niveau && !baseBewachung`. Kein widersprüchliches `v-34a-na`/`v-datenschutz`/`p-reduziert` neben `q-34a`. D1 (kein v-34a-na/v-datenschutz) + D6 (kein p-reduziert) belegen. (Begründung korrekt: `v-34a-na` hat `clauseId null` → Presenter dedupt es nie → würde sonst neben `q-34a` stehen.)
+5. **Keine erfundene Pflicht / EC-10 ✅.** Keine neue CL-ID, kein neuer UE-Wert — nur Trigger/Niveau auf bestehenden Regeln. Status-Union bleibt konservativ; keine „freigegeben/auditfähig/einsatzbereit"-Aussage. Invarianten-Test grün (jede Regel ohne CL = „fachlich prüfen"/„nicht erforderlich").
+6. **Repository (5 Mapping-Stellen) ✅.** `asNiveau`-Helfer (Read-Normalisierung auf Union). Feld in allen 5 Stellen: `employeeFileToEmployee` (Read), `employeeToUpsertData` (Create), `upsertEmployeeFile`-update, `replaceEmployeeFilesForCompany`-update, `migrateFromLocalStoragePayload`-update. Schema `String?` (nullable, **kein** `@default` → SQLite-sicher, vermeidet den P2023-Json-Default-Crash aus Slice 2). Feld geht über Save/Load/Migration nicht verloren.
+
+### Guardrails
+- **EC-09:** Generator/ZIP nicht berührt (Engine = Logik, Repository = additives Feld). Executor-Browser ZIP 200. ✅
+- **EC-10:** keine Freigabe-/Auditaussage; Status-Union konservativ. ✅
+- **Keine erfundene Norm:** jede aktive Regel CL-belegt; Invariante grün. ✅
+- **DSGVO:** DB/.env nicht committet (Commit = 8 Code-Dateien). ✅
+
+### Minor-Finding (Beobachtung, kein Blocker)
+1. **„No-op für echte Bewachungsrollen" gilt nur für „ek".** Bei einer echten EK-Bewachungsrolle (z. B. SMA) + Auswahl **„fk"** wird `fuehrung = true` → die Person würde auf FK-Niveau gehoben (CL-20/25 statt CL-21/24, + CL-10 bei DIN-SDL). Auftrag §6 nennt die Auswahl für echte Bewachungsrollen einen „No-op" — das stimmt nur für „ek" (D5 testet auch nur „ek"-Idempotenz). Das **„fk"-Hochstufen ist fachlich vertretbar** (bewusste, manuelle FK-Wahl durch den Bearbeiter), bricht keine Norm und keinen Guardrail. **Empfehlung (UI-Feinheit, optional, kein Re-Bau):** entweder den Select für echte Bewachungsrollen ausblenden (Auftrag §6 „optional schlank") **oder** den Hinweistext um „auf einer Bewachungsrolle hebt ‚FK' auf Führungskraft-Niveau" ergänzen. → als Notiz an Executor/Mark, nicht blockierend.
+2. **UI-Status-Badge auf der Select-Zeile** (`employee.zusatzBewachungNiveau ? "vorhanden" : "nicht erforderlich"`): Auftrag §6 sagte „kein Badge nötig (Zeile ohne Badge ok)". Executor hat einen Befüllt-Indikator gesetzt — Werte aus der bestehenden Status-Union, EC-10-neutral, harmlos. Kein Handlungsbedarf.
+
+### Mitgenommen
+- **URL-Fix `17f94cc`** (`?new=1`-Spiegelung in `handleCreateNew`): gegengecheckt — reine `router.replace`-URL-Spiegelung; `?new=1` wird beim Laden in `EmployeeAutomationPage.tsx` Z. 235/256 (`searchParams.get("new") === "1"`) ausgewertet. Keine Engine-/Architekturänderung. **Harmlos, bestätigt** (Planer-5-Einschätzung trägt).
+
+### Offene Fäden (kein Blocker → Planung)
+1. **Executor-FRAGE „Anlege-Formular auf Requirement-Modell migrieren?"** = eigener Slice, Architektur/Scope → Mark-Gate (s. HANDOFF „Offene Entscheidungen").
+2. **Slice 3b** (Tally-Formular-Feldlücke) gated auf Marks Tally-Arbeit. **Slice 4** (Ampel-/Status-Ansicht, QFD #1). DEKRA (CL-60–62), Legal-Input (CL-70–73), Ist-UE-Auto-Summe.
+
+---
+
 ## 2026-06-07 — Post-Deploy-Abnahme: Hetzner LIVE (https://cos.cert-expert.de, Commit `404d55d`) — Planer 4
 
 **Methode:** Deploy von Planer 4 **auf Marks ausdrückliche Anweisung** durchgeführt (Server-Ops, **kein Produktivcode geändert**). Live-Verifikation über echte HTTPS-Requests + reale Tally-Test-Submission (kein Skript-Fake) + Server-Logs/DB.
