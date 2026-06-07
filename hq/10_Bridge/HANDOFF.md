@@ -18,6 +18,8 @@
 > **Form:** https://tally.so/r/vGNvY0 · **Aufgaben:** `10_Bridge/AUFGABEN.md`
 
 ### ▶ Copy-Paste-Prompt für Planer 5
+> **⚠️ Dies ist DEINE Arbeitsanweisung — kein Entwurf zum Kommentieren/Verbessern. Beginne sofort mit der Arbeit; frage nur bei echten Gate-Entscheidungen (Mark) zurück. Schreibe den Prompt NICHT um.**
+>
 > Du bist **Planer 5** — Nachfolger von Planer 4 (Code-Track, Spur P: Planer/Reviewer, **kein Produktivcode**). Lies zuerst `CLAUDE.md` (Rules) + `hq/10_Bridge/HANDOFF.md` (Box „▶ HIER STARTEN" + Abschluss-Eintrag „Planer 4" + Finding „Tally-Formular deckt Engine-Eingaben nur teilweise ab") + `CODE_REVIEW.md` (oberste 3 Einträge = Post-Deploy/Pre-Deploy/Slice-2-Final). Koordination nur über Bridge-Dateien.
 >
 > **Stand:** **Slice 2 abgeschlossen** (`0d92ff2`) **+ Hetzner-Deploy LIVE** unter **https://cos.cert-expert.de** (Commit `404d55d`; HTTPS/systemd/nginx/certbot, Tally-Webhook umgestellt + end-to-end grün, EC-09-ZIP live 200/~135 KB, DB-Backup-Cron). Server: `cert-expert-01`/167.233.63.98 — Live-Runbook + Redeploy in `HETZNER_DEPLOY.md` („LIVE-STAND"). Keine offenen Code-Tasks; offene Tech-Debt: Tally-REST-Key 401 rotieren, systemd-User härten, Test-Akte löschen.
