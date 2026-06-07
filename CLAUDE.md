@@ -25,6 +25,21 @@ Jeder Chat hat genau **EINE** Rolle. Mark sagt sie in der ersten Nachricht an; i
 
 Koordination **NUR über Dateien** (Bauauftrag → HANDOFF → CODE_REVIEW), nicht über Kontext-Hin-und-Her. Beide Spuren folgen dem **Übergabe-Takt**.
 
+### 🔒 Rollen-Kontrakt — verbindlich (sonst „bläst der Executor am Ende alles auf")
+**Die Planung gehört dauerhaft dem Planer (Spur P). Der Executor plant NICHT — er führt aus und meldet zurück.** Konkret:
+
+**Executor DARF am Übergabepunkt NUR:**
+1. Bauen, was im `CURSOR_…_AUFTRAG.md` steht (nicht mehr, nicht weniger).
+2. `tsc` + EC-09-Smoke + Browser-Akzeptanz fahren, dann **committen** (mit Marks OK).
+3. **EINEN** kurzen, datierten Eintrag unter „**Von Cursor an Claude**" anhängen: *fertig / offen / Commit-Hash*.
+4. In der „HIER STARTEN"-Box **nur den Status kippen** (z. B. „Executor baut" → „committet `xyz`") — **nicht den Plan umschreiben**.
+
+**Executor DARF NICHT:**
+- Specs/Entscheidungen/Bauaufträge **umschreiben oder neu aufmachen**, Scope erweitern, Architektur ändern, Norm-Werte erfinden.
+- Das HANDOFF „neu strukturieren" oder Planungstext verfassen.
+
+**Neue Idee, Scope-Frage, Unklarheit, Norm-Zweifel?** → **als Frage** an den Planer in den HANDOFF schreiben (oder Mark fragen) — **nicht selbst entscheiden, nicht selbst einplanen.** Planung/Review/Norm-Mapping = ausschließlich Spur P. Verstoß = Re-Review + Rückbau.
+
 ## Guardrails (nicht verhandelbar)
 - **EC-09:** Person → Akte → Doc-Chips → ZIP-Generator darf NIE brechen. Vor/nach Änderung Smoke grün.
 - **EC-10:** keine automatische Freigabe-/Auditfähigkeits-/Zertifizierungsaussage. Eingehende Nachweise = `unchecked`. „grün/qualifiziert" ≠ „einsatzbereit".
