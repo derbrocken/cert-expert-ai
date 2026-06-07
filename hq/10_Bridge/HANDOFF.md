@@ -13,6 +13,7 @@
 > **Arbeitsmodell:** Planer/Claude führt (plant + reviewt) · Executor/Cursor baut · Ping-Pong über Bridge-Dateien (Mark, 2026-06-07). Planer rotiert seltener als Executor.
 > **▶ NÄCHSTER PLANER-CHAT: „Planer 6"** (Nachfolger). Folge-Planer fortlaufend nummerieren. *(Planer 4 hat Pre-Deploy abgenommen + den Hetzner-Deploy live durchgeführt. **Planer 5 hat Slice 3 (Doppelrollen) geplant → Bauauftrag `CURSOR_SLICE3_AUFTRAG.md` steht; Bau gated auf Mark, 2 Gate-Entscheidungen G1/G2 in „Offene Entscheidungen".**)*
 > **▶ Slice 3 (Doppelrollen, Niveau EK/FK) = GEBAUT + COMMITTET (`a276d38`, Executor 2026-06-07) ✅.** Engine-Suite 20/20 (13 alt + 7 neu), `tsc` 0, EC-09-Smoke + Doppelrolle-Browser-Akzeptanz (GF+EK → volles Set/SDL-Soll/Hinweis; aus → Reduktion; Persistenz über Reload) grün. Ergebnis-Eintrag unten („Von Cursor an Claude", 2026-06-07). **NÄCHSTER CHAT:** Planer 6 reviewt Slice 3 (Diff `a276d38`). Danach Slice 3b (Tally-Formular-Feldlücke, gated auf Marks Tally-Arbeit) oder Slice 4 (Ampel-/Status-Ansicht).
+> **Nachtrag (Executor, 2026-06-07):** kleiner URL-Fix `17f94cc` — „Neue Person" setzt jetzt `?new=1` (Anlege-Ansicht teilbar). **+ FRAGE an Planer geloggt** (unten „Von Cursor an Claude"): Anlege-Formular nutzt noch das **alte Tool-1-Modell**; Migration auf das Requirement-Modell wäre ein eigener Slice (Architektur/Scope → Planer + Mark-Gate, vom Executor NICHT eingeplant).
 > **Letzte Commits:** `0d92ff2` (UE-Anzeige + Findings F1–F5) · `e81ca2c` (Planer-3-Prompt) · `47dcea1` (Planer-2-Review) · `22e0c7c` (Slice 2)
 > **✅ Planer 3: kombinierter Diff `22e0c7c..0d92ff2` FINAL ABGENOMMEN** (`CODE_REVIEW.md`, oben). UE-Anzeige (Variante C, `t.hint`/CL-27/Asyl-64 jetzt gerendert) + Findings F1–F5 norm-konform & CL-belegt. Unabhängig re-verifiziert: **`tsc` 0 · Engine-Suite 13/13 grün**. **Slice 2 komplett abgeschlossen.**
 > **✅ HETZNER-DEPLOY LIVE (2026-06-07).** App läuft öffentlich unter **https://cos.cert-expert.de** (HTTPS/Let's Encrypt, HTTP→HTTPS-Redirect). Deploy von Planer 4 **auf Marks Anweisung** durchgeführt (Server-Ops, **kein Produktivcode geändert** — deployter Commit `404d55d`). Server: Hetzner `cert-expert-01` / **167.233.63.98** (Ubuntu 26.04, Node 24, nginx, systemd-Unit `certification-os` auf :3001). **Tally-Webhook live umgestellt + end-to-end verifiziert:** echte Test-Submission (`responseId Eq16BYX`, 145 Felder) → Signatur OK → Akte „Test Person" erstellt. DB-Backup-Cron (täglich 3 Uhr, 14 Tage) aktiv. **EC-09-ZIP live verifiziert** (echter Klick ELC Security and Service: `POST /employee-automation` 200, ~135 KB ZIP, keine 5xx). **Live-Facts + Redeploy-Schritte:** `HETZNER_DEPLOY.md` (Abschnitt „LIVE-STAND") + Post-Deploy-Review in `CODE_REVIEW.md`. **Offen (nice-to-have):** Test-Akte ggf. löschen; Tally-API-Key rotieren (401, Tech-Debt); systemd-User härten.
@@ -136,6 +137,21 @@
 ---
 
 ## 📥 Von Cursor an Claude (Fragen / Bitten)
+
+### 2026-06-07 — ❓ Executor-FRAGE an Planer: Anlege-Formular auf neues Requirement-Modell migrieren? (+ kleiner URL-Fix `17f94cc` erledigt)
+
+**Mark-Beobachtung (Browser):** Beim Klick auf „Neue Person" erscheint zuerst das **alte Tool-1-Eingabeformular** (`EmployeeForm.tsx`, `displayMode="master"`, englische Labels „Full Name/Role Type/Training Hours/Guard ID", Modell `roleId`/`appointmentIds`/Freitext-`roleType`). Die **neuen Requirement-Felder** (Grundrolle-Dropdown, Doppelrolle, SDL/Geltungsbereich, Beschäftigungsart, Fristen, UE) existieren erst **danach** in der Akte/Dossier (`EmployeeFilePersonRolleEditTable.tsx` + Engine). Deckt sich mit Planer-4-UX-Notiz („Anlege-Maske schlank … Slice-2-Felder erst in der Akte, by design").
+
+**Was ich (Executor) bereits gefixt habe — klein, contained, kein Scope-Zusatz (Commit `17f94cc`):** Der „Neue Person"-Button leerte die URL; der `?new=1`-Deep-Link wurde aber beim Laden bereits ausgewertet. Jetzt setzt `handleCreateNew` `?new=1` → Anlege-Ansicht ist teilbar/bookmarkbar. `tsc` 0, im Browser verifiziert (`window.location.href` = `…?new=1`; Deep-Link öffnet Anlege-Form). Reine URL-Spiegelung, **keine** Engine-/Architekturänderung.
+
+**FRAGE / Scope-Entscheidung (gehört dem Planer + Mark-Gate, C-10 — ich plane das NICHT selbst):** Soll das Anlege-Formular auf das neue Requirement-Modell vereinheitlicht werden (statt Legacy-Tool-1-Form)? Das wäre eine **Architektur-/Scope-Änderung** und ein **eigener Slice**, nicht in Slice 3 enthalten. Grobe Berührungspunkte (read-only beobachtet, ohne Vorentscheidung):
+- `EmployeeForm.tsx` (master mode) + `lib/validations/employee-form.ts` (Zod-Schema) tragen das Altmodell (`roleId`/Dokument-Template-Auswahl für den Generator, Freitext-`roleType`, `trainingHours`).
+- Die Akte-Erfassung (`EmployeeFilePersonRolleEditTable.tsx`) trägt das Neumodell (`roleType` als Enum, `zusatzBewachungNiveau`, `sdlScopes`, `beschaeftigungsart`, Fristen …).
+- Offene Planer-Fragen: bleibt die Doc-Template-Auswahl (Core/Overlay) im Anlege-Schritt oder wandert sie ganz in den Generator? Soll „Neue Person" direkt die Akte-Edit-Fläche für eine leere Person zeigen? Verhältnis zur Tally-Feldlücke (Slice 3b)?
+
+→ Bitte als eigenen Slice einplanen/entscheiden (Mark-Gate). Ich habe **nichts** am Anlege-Formular/Modell geändert außer dem URL-Fix oben.
+
+---
 
 ### 2026-06-07 — ✅ Executor: Slice 3 Doppelrollen (Niveau EK/FK) gebaut + committet (`a276d38`)
 
