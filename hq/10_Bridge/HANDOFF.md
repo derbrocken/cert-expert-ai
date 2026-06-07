@@ -11,7 +11,8 @@
 > **Branch = `main`** · COS: `cert-expert-certification-os/apps/certification-os/` · Port **3001**
 > **Phase = Slice 2 (Requirement-Engine) gebaut + committet (`22e0c7c`) + Engine fachlich abgenommen (`96e9341`) ✅**
 > **Arbeitsmodell:** Planer/Claude führt (plant + reviewt) · Executor/Cursor baut · Ping-Pong über Bridge-Dateien (Mark, 2026-06-07). Planer rotiert seltener als Executor.
-> **▶ NÄCHSTER PLANER-CHAT: „Planer 5"** (Nachfolger). Folge-Planer fortlaufend nummerieren. *(Planer 4 hat Pre-Deploy abgenommen + den Hetzner-Deploy live durchgeführt — Abschluss-Eintrag unten. Nächste Planung = Slice 3 Doppelrollen + Formular-Feldlücke, nach Marks „weiter".)*
+> **▶ NÄCHSTER PLANER-CHAT: „Planer 6"** (Nachfolger). Folge-Planer fortlaufend nummerieren. *(Planer 4 hat Pre-Deploy abgenommen + den Hetzner-Deploy live durchgeführt. **Planer 5 hat Slice 3 (Doppelrollen) geplant → Bauauftrag `CURSOR_SLICE3_AUFTRAG.md` steht; Bau gated auf Mark, 2 Gate-Entscheidungen G1/G2 in „Offene Entscheidungen".**)*
+> **Slice 3 (Doppelrollen) = GEPLANT, Bau noch nicht freigegeben.** Bauauftrag: `CURSOR_SLICE3_AUFTRAG.md`. Form-Feldlücke = Slice 3b (gated auf Marks Tally-Arbeit).
 > **Letzte Commits:** `0d92ff2` (UE-Anzeige + Findings F1–F5) · `e81ca2c` (Planer-3-Prompt) · `47dcea1` (Planer-2-Review) · `22e0c7c` (Slice 2)
 > **✅ Planer 3: kombinierter Diff `22e0c7c..0d92ff2` FINAL ABGENOMMEN** (`CODE_REVIEW.md`, oben). UE-Anzeige (Variante C, `t.hint`/CL-27/Asyl-64 jetzt gerendert) + Findings F1–F5 norm-konform & CL-belegt. Unabhängig re-verifiziert: **`tsc` 0 · Engine-Suite 13/13 grün**. **Slice 2 komplett abgeschlossen.**
 > **✅ HETZNER-DEPLOY LIVE (2026-06-07).** App läuft öffentlich unter **https://cos.cert-expert.de** (HTTPS/Let's Encrypt, HTTP→HTTPS-Redirect). Deploy von Planer 4 **auf Marks Anweisung** durchgeführt (Server-Ops, **kein Produktivcode geändert** — deployter Commit `404d55d`). Server: Hetzner `cert-expert-01` / **167.233.63.98** (Ubuntu 26.04, Node 24, nginx, systemd-Unit `certification-os` auf :3001). **Tally-Webhook live umgestellt + end-to-end verifiziert:** echte Test-Submission (`responseId Eq16BYX`, 145 Felder) → Signatur OK → Akte „Test Person" erstellt. DB-Backup-Cron (täglich 3 Uhr, 14 Tage) aktiv. **EC-09-ZIP live verifiziert** (echter Klick ELC Security and Service: `POST /employee-automation` 200, ~135 KB ZIP, keine 5xx). **Live-Facts + Redeploy-Schritte:** `HETZNER_DEPLOY.md` (Abschnitt „LIVE-STAND") + Post-Deploy-Review in `CODE_REVIEW.md`. **Offen (nice-to-have):** Test-Akte ggf. löschen; Tally-API-Key rotieren (401, Tech-Debt); systemd-User härten.
@@ -219,6 +220,18 @@
 
 ## 📤 Von Claude an Cursor (Reviews / Hinweise / Aufgaben)
 
+### 2026-06-07 — ▶ Planer 5: Slice 3 geplant (Doppelrollen) → Bauauftrag steht, Bau gated auf Mark
+
+**Bauauftrag an Executor:** `hq/10_Bridge/CURSOR_SLICE3_AUFTRAG.md` (Doppelrollen-Modellierung, code-only, sofort baubar). Schließt die Slice-2-Modell-Grenze (Engine kennt pro Person nur **eine** `roleType`; Verwaltung/GF-mit-Schicht fällt durchs F3-Gate).
+
+- **Lösung (geschärft nach Mark 2026-06-07 „GF kann zusätzlich EK und/oder FK"):** additives **Niveau-Feld** `Employee.zusatzBewachungNiveau` (`"ek"`|`"fk"`, leer = keine Doppelrolle) → Engine-Context hebt das F3-Gate (effektive Bewachung) **und** wählt das SDL-Niveau. **Keine neue Normpflicht** — nur Trigger/Niveau auf bestehenden Regeln. **Anker: CL-40 / CL-01** (qualifiziert-Def. + §34a knüpft an Tätigkeit). **EK** → CL-21/CL-24 (16/40 UE); **FK** → CL-20/CL-25 (24/64 UE) + FK-Quali CL-10 („fachlich prüfen"). FK = EK-Basis + Aufschlag (deckt „und/oder" ab).
+- **⚠️ F4-Verfeinerung (Mark bestätigt):** F4 („nur `roleType=Führungskraft`=FK") bleibt für Grundrollen; die Doppelrolle bekommt einen **expliziten, manuell gewählten** FK-Pfad (nicht automatisch). Kein Widerspruch zu F4 (EL/OL/SL bleiben EK).
+- **⚠️ CL-10-Gate (Mark bestätigt):** FK-Quali-Posten (CL-10, „fachlich prüfen") nur **bei DIN-SDL/Auftrag** (`din1-*`/`din2-*`) — gilt für beide FK-Wege. **Bewusste Slice-2-Präzisierung** (vorher feuerte CL-10 für jede FK ohne SDL); bestehende Suite bricht nicht (gegengeprüft). Im Bauauftrag §2/§4.2 dokumentiert.
+- **Umfang:** schema (`String?`) + types (`"ek"|"fk"`) + repository (5 Mapping-Stellen, Read normalisiert) + engine (effektive `bewachung`+`fuehrung`, Verwaltungs-/Praktikanten-Reduktion bei Doppelrolle unterdrücken) + presenter (`buildRequirementContext` + `isSecurityRole` doppelrollen-aware) + UI-Select (EK/FK) + 6 neue Engine-Tests. DoD/Tests im Bauauftrag.
+- **EC-09/EC-10/keine-erfundene-Pflicht** gewahrt; Browser-Verifikation Pflicht.
+
+**Executor: erst bauen nach Marks „los für Slice-3-Bau".** Zwei Gate-Punkte für Mark unten („Offene Entscheidungen").
+
 ### 2026-06-07 — ⚠️ Planer-4-Finding (Slice 3): Tally-Formular `vGNvY0` deckt Engine-Eingaben nur teilweise ab
 
 **Kontext (Marks Frage beim Deploy):** Fragt das Live-Formular alle Felder ab, die die Slice-2-Engine (`RequirementContext`) braucht? **Antwort: nein — Teil-Abdeckung.** Soll-Ist gegen `requirement-engine.ts` (Z. 77–93) + `TALLY_FIELD_MAPPING.md`:
@@ -280,6 +293,12 @@
 ---
 
 ## ❓ Offene Entscheidungen für Mark
+
+**Slice-3-Planung (Planer 5, 2026-06-07) — ✅ G1/G2 ENTSCHIEDEN (Mark), Bau auf HOLD:**
+- **G1 — Slice-3-Scope ✅ Mark: ja.** Slice 3 = **nur Doppelrollen-Modellierung** (`CURSOR_SLICE3_AUFTRAG.md`). **Tally-Formular-Feldlücke** (Option C Hybrid) = **Slice 3b**, gated darauf, dass Mark die Felder zuerst im Tally-Formular anlegt.
+- **G2 — Numerierung ✅ Mark: bestätigt.** Doppelrolle = **Slice 3**, Ampel-/Status-Ansicht = **Slice 4** (verschoben gegenüber dem Original-`CURSOR_BAUAUFTRAG_TOOL2.md`).
+- **G3 — Niveau-Modell ✅ Mark: ja** (2026-06-07): Doppelrolle = **Niveau-Selektor EK/FK** (statt Boolean). FK manuell wählbar, baut auf EK auf. FK-Quali (CL-10) **nur bei DIN-SDL**. Bauauftrag entsprechend geschärft (§1/§2/§3/§4/§6/§8).
+- **⏸ Bau weiterhin auf HOLD (Mark, 2026-06-07):** Executor **noch NICHT** starten. Freigabe-Signal „los für Slice-3-Bau" steht aus.
 
 **Slice-2-Review Findings 3+4 — ✅ ENTSCHIEDEN (Mark, 2026-06-07):**
 - **Finding 4 = Variante B + Upgrade-Pfad:** Nur `roleType = "Führungskraft"` zählt als **FK** (24 UE + FK-Quali CL-10). **Einsatzleitung, Objektleitung, Schichtleitung = EK/SMA-Niveau (16 UE), kein Auto-FK.** Sie bleiben **Bewachungsrollen** (volles Basis-Pflichtset). **Zusatz (Phase 2):** Upgrade-Pfad auf FK, wenn die Person die FK-Schulung absolviert (künftig über Cert-Expert Distance-Learning direkt im Portal) — Design-Notiz, nicht Slice-2-Engine.
