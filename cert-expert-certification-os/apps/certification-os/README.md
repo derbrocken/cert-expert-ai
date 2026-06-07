@@ -1,7 +1,7 @@
 # Certification OS — Daily Start (Tool 1 + Tool 2)
 
 Operative Next.js-App für **Standard-Modelle (Tool 1)** und **Mitarbeiterakte (Tool 2)**.  
-Branch für Migration: `b3-tool2-migration`.
+Branch: `main` (konsolidiert, T-04).
 
 ## Schnellstart
 
@@ -38,14 +38,22 @@ HETZNER_S3_REGION=…
 
 Nach Änderung Dev-Server neu starten.
 
-## Lokale Daten (Tool 2)
+## Persistenz (Tool 2, Slice 0)
 
-| Speicher | Key / Ort | Inhalt |
-|----------|-----------|--------|
-| Personen-Queue | `localStorage` → `cert-expert-tool2-employee-queue-v1` | Personen, Export-Auswahl, Firmendaten-Spiegel |
-| Nachweise | `localStorage` → `cert-expert-tool2-employee-evidence-v1` | PDF-Metadaten pro Person/Nachweiszeile |
+| Schicht | Ort | Inhalt |
+|---------|-----|--------|
+| Strukturdaten | SQLite (`prisma/dev.db`, `DATABASE_URL`) | Firmen, Akten, Export-Settings, Evidence-Metadaten |
+| Dateien | Hetzner S3 unter `cea/companies/{slug}/…` | Logos, Nachweis-PDFs |
+| Migration | Einmalig aus altem `localStorage` | Beim ersten Laden von `/employee-automation` |
 
-Browser-Reload behält Daten. Leeren = DevTools → Application → Local Storage löschen.
+Setup:
+
+```bash
+cp .env.example .env.local   # DATABASE_URL + Hetzner + optional INTERNAL_API_KEY
+npm run db:push
+```
+
+Kunden-Switcher auf `/employee-automation` — je Firma eigener Mitarbeiter-Pool.
 
 ## Typischer Ablauf
 

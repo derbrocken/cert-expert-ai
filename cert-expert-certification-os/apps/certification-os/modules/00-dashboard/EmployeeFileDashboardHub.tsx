@@ -6,35 +6,22 @@ import { useRouter } from "next/navigation";
 import { ExternalLink } from "lucide-react";
 import { EmployeeFileIndex } from "@/modules/03-mitarbeiterakte-tool-2/employee-file/EmployeeFileIndex";
 import { EmployeeFileOverviewIntro } from "@/modules/03-mitarbeiterakte-tool-2/employee-file/EmployeeFileOverviewIntro";
+import { getActiveCompanySlug } from "@/lib/company-session";
 import {
   loadEmployeeQueue,
   saveEmployeeQueue,
 } from "@/lib/employee-queue-storage";
 import type { Employee, Role } from "@/lib/types/employee";
 
-function getInitialHubState() {
-  const saved = loadEmployeeQueue();
-  if (saved) {
-    return {
-      employees: saved.employees,
-      batchSelectedIds: new Set(saved.employees.map((e) => e.id)),
-    };
-  }
-  return {
-    employees: [] as Employee[],
-    batchSelectedIds: new Set<string>(),
-  };
-}
-
 export function EmployeeFileDashboardHub() {
   const router = useRouter();
-  const initial = getInitialHubState();
-  const [employees, setEmployees] = useState<Employee[]>(initial.employees);
+  const [employees, setEmployees] = useState<Employee[]>([]);
   const [roles, setRoles] = useState<Role[]>([]);
   const [batchSelectedIds, setBatchSelectedIds] = useState<Set<string>>(
-    initial.batchSelectedIds,
+    () => new Set(),
   );
-  const [templatesLoaded, setTemplatesLoaded] = useState(false);
+  const [hydrated, setHydrated] = useState(false);
+  const companySlug = getActiveCompanySlug();
 
   useEffect(() => {
     let cancelled = false;
@@ -50,31 +37,36 @@ export function EmployeeFileDashboardHub() {
         if (!cancelled) {
           setRoles([]);
         }
-      } finally {
-        if (!cancelled) {
-          setTemplatesLoaded(true);
-        }
       }
     }
 
+    async function loadEmployees() {
+      const snapshot = await loadEmployeeQueue(companySlug);
+      if (cancelled) return;
+      setEmployees(snapshot.employees);
+      setBatchSelectedIds(new Set(snapshot.employees.map((e) => e.id)));
+      setHydrated(true);
+    }
+
     void loadTemplates();
+    void loadEmployees();
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [companySlug]);
 
   useEffect(() => {
-    if (!templatesLoaded) return;
-    const snap = loadEmployeeQueue();
-    saveEmployeeQueue({
-      employees,
-      globalProps: snap?.globalProps ?? {
-        companyName: "",
-        companyEmail: "",
-        companyAddress: "",
-      },
-    });
-  }, [employees, templatesLoaded]);
+    if (!hydrated) return;
+    const timer = window.setTimeout(() => {
+      void loadEmployeeQueue(companySlug).then((snap) =>
+        saveEmployeeQueue(companySlug, {
+          employees,
+          globalProps: snap.globalProps,
+        }),
+      );
+    }, 400);
+    return () => window.clearTimeout(timer);
+  }, [employees, hydrated, companySlug]);
 
   const openWorkspace = useCallback(
     (path: string) => {
@@ -125,7 +117,7 @@ export function EmployeeFileDashboardHub() {
     [employees],
   );
 
-  if (!templatesLoaded) {
+  if (!hydrated) {
     return (
       <p className="p-6 text-sm text-[#6b7280]">Mitarbeiterakten laden…</p>
     );

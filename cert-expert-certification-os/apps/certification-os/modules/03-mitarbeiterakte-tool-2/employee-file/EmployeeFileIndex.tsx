@@ -27,6 +27,9 @@ export interface EmployeeFileIndexProps {
   isHydrating?: boolean;
   /** Embedded in dashboard output — hides Cert-OS back link */
   embedded?: boolean;
+  /** Tool 2 workspace — per-customer export settings, not Upload Manager */
+  perCompanyMode?: boolean;
+  companyDisplayName?: string;
   onSelectEmployee: (employeeId: string) => void;
   onCreateNew: () => void;
   onBackToOverview: () => void;
@@ -43,6 +46,8 @@ export const EmployeeFileIndex: React.FC<EmployeeFileIndexProps> = ({
   batchSelectedIds,
   isHydrating = false,
   embedded = false,
+  perCompanyMode = false,
+  companyDisplayName,
   onSelectEmployee,
   onCreateNew,
   onBackToOverview,
@@ -164,9 +169,11 @@ export const EmployeeFileIndex: React.FC<EmployeeFileIndexProps> = ({
             </p>
             <p className="mt-1 text-xs text-[#6b7280]">
               {isHydrating
-                ? "Gespeicherte Personen werden aus dem Browser geladen."
+                ? "Gespeicherte Personen werden geladen."
                 : employees.length === 0
-                  ? "Person anlegen — Firmendaten liegen im Upload Manager."
+                  ? perCompanyMode
+                    ? "Person anlegen — Firmendaten je Kunde (Switcher oben)."
+                    : "Person anlegen — Firmendaten liegen im Upload Manager."
                   : "Anderen Suchbegriff versuchen."}
             </p>
           </div>
@@ -258,15 +265,25 @@ export const EmployeeFileIndex: React.FC<EmployeeFileIndexProps> = ({
       </div>
 
       <div className="border-t border-[#e5e7eb] p-3">
-        <Link
-          href="/uploads"
-          className="block rounded-lg border border-[#e5e7eb] bg-[#fafbfc] px-3 py-2 text-xs text-[#6b7280] hover:border-[rgba(227,6,19,0.3)] hover:text-[#111827]"
-        >
-          <span className="font-semibold text-[#111827]">Firmendaten</span>
-          <span className="mt-0.5 block">
-            Logo, Adresse &amp; Footer → Upload Manager
-          </span>
-        </Link>
+        {perCompanyMode ? (
+          <div className="rounded-lg border border-[#e5e7eb] bg-[#fafbfc] px-3 py-2 text-xs text-[#6b7280]">
+            <span className="font-semibold text-[#111827]">Firmendaten</span>
+            <span className="mt-0.5 block">
+              Logo, Adresse &amp; Footer — je Kunde
+              {companyDisplayName ? ` (${companyDisplayName})` : ""}
+            </span>
+          </div>
+        ) : (
+          <Link
+            href="/uploads"
+            className="block rounded-lg border border-[#e5e7eb] bg-[#fafbfc] px-3 py-2 text-xs text-[#6b7280] hover:border-[rgba(227,6,19,0.3)] hover:text-[#111827]"
+          >
+            <span className="font-semibold text-[#111827]">Firmendaten</span>
+            <span className="mt-0.5 block">
+              Logo, Adresse &amp; Footer → Upload Manager
+            </span>
+          </Link>
+        )}
       </div>
     </div>
   );

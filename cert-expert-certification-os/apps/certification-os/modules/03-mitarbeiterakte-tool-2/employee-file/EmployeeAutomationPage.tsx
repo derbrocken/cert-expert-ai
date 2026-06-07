@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useCallback, useEffect, useMemo, Suspense } from "react";
+import React, { useState, useCallback, useEffect, useMemo, useRef, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { EmployeeForm } from "@/components/employee";
 import { EmployeeFileWorkspaceLayout } from "./EmployeeFileWorkspaceLayout";
@@ -19,106 +19,59 @@ import type {
   Role,
   Appointment,
 } from "@/lib/types/employee";
+import { loadCompaniesForSwitcher } from "./load-companies-client";
+import {
+  getActiveCompanySlug,
+  setActiveCompanySlug,
+} from "@/lib/company-session";
 import {
   loadEmployeeQueue,
   saveEmployeeQueue,
   loadGlobalExportSettings,
+  runLocalStorageMigrationIfNeeded,
 } from "@/lib/employee-queue-storage";
 import {
   loadEmployeeEvidence,
   saveEmployeeEvidenceFile,
   removeEmployeeEvidenceFile,
-  readFileAsDataUrl,
   type EmployeeEvidenceMap,
 } from "./employee-evidence-storage";
+import { CompanySwitcher } from "./CompanySwitcher";
 
 type DossierTab = "akte" | "generator";
-
-function getInitialQueueState() {
-  const saved = loadEmployeeQueue();
-  if (saved) {
-    return {
-      employees: saved.employees,
-      globalProps: saved.globalProps,
-      batchSelectedIds: new Set(saved.employees.map((e) => e.id)),
-    };
-  }
-  return {
-    employees: [] as Employee[],
-    globalProps: loadGlobalExportSettings(),
-    batchSelectedIds: new Set<string>(),
-  };
-}
-
-function getInitialUrlSelection(employees: Employee[]) {
-  if (typeof window === "undefined") {
-    return {
-      selectedEmployeeId: null as string | null,
-      editingEmployee: null as Employee | null,
-      isCreatingNew: false,
-    };
-  }
-  const params = new URLSearchParams(window.location.search);
-  if (params.get("new") === "1") {
-    return {
-      selectedEmployeeId: null,
-      editingEmployee: null,
-      isCreatingNew: true,
-    };
-  }
-  const id = params.get("id");
-  if (id) {
-    const employee = employees.find((e) => e.id === id) ?? null;
-    if (employee) {
-      return {
-        selectedEmployeeId: id,
-        editingEmployee: employee,
-        isCreatingNew: false,
-      };
-    }
-  }
-  return {
-    selectedEmployeeId: null,
-    editingEmployee: null,
-    isCreatingNew: false,
-  };
-}
 
 function EmployeeAutomationPageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const initialQueue = useMemo(() => getInitialQueueState(), []);
-  const initialUrl = useMemo(
-    () => getInitialUrlSelection(initialQueue.employees),
-    [initialQueue.employees],
-  );
-
-  const [employees, setEmployees] = useState<Employee[]>(
-    initialQueue.employees,
-  );
-  const [queueHydrated] = useState(true);
-  const [editingEmployee, setEditingEmployee] = useState<Employee | null>(
-    initialUrl.editingEmployee,
-  );
+  const [companies, setCompanies] = useState<
+    { slug: string; displayName: string }[]
+  >([]);
+  const [companySlug, setCompanySlug] = useState(getActiveCompanySlug);
+  const [companiesLoaded, setCompaniesLoaded] = useState(false);
+  const [employees, setEmployees] = useState<Employee[]>([]);
+  const [queueHydrated, setQueueHydrated] = useState(false);
+  const [editingEmployee, setEditingEmployee] = useState<Employee | null>(null);
   const [selectedEmployeeId, setSelectedEmployeeId] = useState<string | null>(
-    initialUrl.selectedEmployeeId,
+    null,
   );
-  const [isCreatingNew, setIsCreatingNew] = useState(initialUrl.isCreatingNew);
+  const [isCreatingNew, setIsCreatingNew] = useState(false);
   const [dossierTab, setDossierTab] = useState<DossierTab>("akte");
   const [evidenceEditMode, setEvidenceEditMode] = useState(false);
   const [evidenceFiles, setEvidenceFiles] = useState<EmployeeEvidenceMap>({});
   const [batchSelectedIds, setBatchSelectedIds] = useState<Set<string>>(
-    initialQueue.batchSelectedIds,
+    () => new Set(),
   );
   const [isGenerating, setIsGenerating] = useState(false);
   const [toast, setToast] = useState<{
     message: string;
     type: "success" | "error";
   } | null>(null);
-  const [globalProps, setGlobalProps] = useState<GlobalProperties>(
-    initialQueue.globalProps,
-  );
+  const [globalProps, setGlobalProps] = useState<GlobalProperties>({
+    companyName: "",
+    companyEmail: "",
+    companyAddress: "",
+  });
 
   const [roles, setRoles] = useState<Role[]>([]);
   const [appointments, setAppointments] = useState<Appointment[]>([]);
@@ -126,10 +79,96 @@ function EmployeeAutomationPageContent() {
   const [templatesLoadError, setTemplatesLoadError] = useState<string | null>(
     null,
   );
+  const bootstrapRunRef = useRef(0);
 
   useEffect(() => {
-    saveEmployeeQueue({ employees, globalProps });
-  }, [employees, globalProps]);
+    const runId = ++bootstrapRunRef.current;
+
+    async function bootstrap() {
+      let list: { slug: string; displayName: string }[] = [];
+
+      try {
+        list = await loadCompaniesForSwitcher();
+        if (runId !== bootstrapRunRef.current) return;
+        setCompanies(list);
+        console.info(
+          "[EmployeeAutomationPage] Loaded companies for switcher:",
+          list.length,
+          list.map((company) => company.slug).join(", "),
+        );
+      } catch (err) {
+        console.error(
+          "[EmployeeAutomationPage] loadCompaniesForSwitcher failed — switcher may stay empty:",
+          err,
+        );
+      }
+
+      let slug = getActiveCompanySlug();
+      if (list.length > 0 && !list.some((company) => company.slug === slug)) {
+        slug = list[0]!.slug;
+        setActiveCompanySlug(slug);
+      }
+      if (runId === bootstrapRunRef.current) {
+        setCompanySlug(slug);
+        setCompaniesLoaded(true);
+      }
+
+      try {
+        console.info(
+          "[EmployeeAutomationPage] Starting localStorage migration (non-blocking)…",
+        );
+        const migration = await runLocalStorageMigrationIfNeeded();
+        if (runId !== bootstrapRunRef.current) return;
+        if (migration?.companySlug && !migration.skipped) {
+          const migratedSlug = migration.companySlug;
+          setActiveCompanySlug(migratedSlug);
+          if (list.some((company) => company.slug === migratedSlug)) {
+            setCompanySlug(migratedSlug);
+          }
+        }
+        console.info(
+          "[EmployeeAutomationPage] localStorage migration finished:",
+          migration,
+        );
+      } catch (err) {
+        console.error(
+          "[EmployeeAutomationPage] localStorage migration failed (page continues):",
+          err,
+        );
+      }
+    }
+
+    void bootstrap();
+  }, []);
+
+  useEffect(() => {
+    if (!companiesLoaded || !companySlug) return;
+    let cancelled = false;
+    async function loadCompanyData() {
+      setQueueHydrated(false);
+      const snapshot = await loadEmployeeQueue(companySlug);
+      if (cancelled) return;
+      setEmployees(snapshot.employees);
+      setGlobalProps(snapshot.globalProps);
+      setBatchSelectedIds(new Set(snapshot.employees.map((e) => e.id)));
+      setSelectedEmployeeId(null);
+      setEditingEmployee(null);
+      setIsCreatingNew(false);
+      setQueueHydrated(true);
+    }
+    void loadCompanyData();
+    return () => {
+      cancelled = true;
+    };
+  }, [companySlug, companiesLoaded]);
+
+  useEffect(() => {
+    if (!queueHydrated || !companySlug) return;
+    const timer = window.setTimeout(() => {
+      void saveEmployeeQueue(companySlug, { employees, globalProps });
+    }, 400);
+    return () => window.clearTimeout(timer);
+  }, [employees, globalProps, queueHydrated, companySlug]);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -189,6 +228,28 @@ function EmployeeAutomationPageContent() {
 
   const searchKey = searchParams.toString();
   const [syncedSearchKey, setSyncedSearchKey] = useState(searchKey);
+  const [initialUrlSynced, setInitialUrlSynced] = useState(false);
+
+  if (queueHydrated && !initialUrlSynced) {
+    setInitialUrlSynced(true);
+    if (searchParams.get("new") === "1") {
+      setSelectedEmployeeId(null);
+      setEditingEmployee(null);
+      setIsCreatingNew(true);
+      setEvidenceEditMode(false);
+    } else {
+      const id = searchParams.get("id");
+      if (id) {
+        const employee = employees.find((e) => e.id === id);
+        if (employee) {
+          setSelectedEmployeeId(id);
+          setEditingEmployee(employee);
+          setIsCreatingNew(false);
+          setDossierTab("akte");
+        }
+      }
+    }
+  }
 
   if (queueHydrated && searchKey !== syncedSearchKey) {
     setSyncedSearchKey(searchKey);
@@ -227,17 +288,22 @@ function EmployeeAutomationPageContent() {
   }, [editingEmployee, selectedEmployeeId, employees, isCreatingNew]);
 
   const focusEmployeeId = focusEmployee?.id ?? null;
-  const [syncedEvidenceEmployeeId, setSyncedEvidenceEmployeeId] = useState<
-    string | null
-  >(focusEmployeeId);
 
-  if (focusEmployeeId !== syncedEvidenceEmployeeId) {
-    setSyncedEvidenceEmployeeId(focusEmployeeId);
-    setEvidenceFiles(
-      focusEmployeeId ? loadEmployeeEvidence(focusEmployeeId) : {},
-    );
-    setEvidenceEditMode(false);
-  }
+  useEffect(() => {
+    if (!focusEmployeeId || !queueHydrated) {
+      return;
+    }
+    let cancelled = false;
+    void loadEmployeeEvidence(companySlug, focusEmployeeId).then((map) => {
+      if (!cancelled) {
+        setEvidenceFiles(map);
+        setEvidenceEditMode(false);
+      }
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [focusEmployeeId, companySlug, queueHydrated]);
 
   const formInstanceKey = isCreatingNew
     ? "new"
@@ -277,35 +343,46 @@ function EmployeeAutomationPageContent() {
   const handleEvidenceUpload = useCallback(
     async (evidenceId: string, file: File) => {
       if (!focusEmployee?.id) return;
-      let dataUrl: string | undefined;
       try {
-        dataUrl = await readFileAsDataUrl(file);
+        const entry = await saveEmployeeEvidenceFile(
+          companySlug,
+          focusEmployee.id,
+          evidenceId,
+          file,
+        );
+        setEvidenceFiles((prev) => ({ ...prev, [evidenceId]: entry }));
+        setToast({ message: "Nachweis hochgeladen.", type: "success" });
       } catch {
-        /* preview optional */
+        setToast({ message: "Nachweis-Upload fehlgeschlagen.", type: "error" });
       }
-      const entry = saveEmployeeEvidenceFile(
-        focusEmployee.id,
-        evidenceId,
-        file,
-        dataUrl,
-      );
-      setEvidenceFiles((prev) => ({ ...prev, [evidenceId]: entry }));
-      setToast({ message: "Nachweis hochgeladen.", type: "success" });
     },
-    [focusEmployee],
+    [focusEmployee, companySlug],
   );
 
   const handleEvidenceRemove = useCallback(
-    (evidenceId: string) => {
+    async (evidenceId: string) => {
       if (!focusEmployee?.id) return;
-      removeEmployeeEvidenceFile(focusEmployee.id, evidenceId);
+      await removeEmployeeEvidenceFile(
+        companySlug,
+        focusEmployee.id,
+        evidenceId,
+      );
       setEvidenceFiles((prev) => {
         const next = { ...prev };
         delete next[evidenceId];
         return next;
       });
     },
-    [focusEmployee],
+    [focusEmployee, companySlug],
+  );
+
+  const handleCompanyChange = useCallback(
+    (slug: string) => {
+      setActiveCompanySlug(slug);
+      setCompanySlug(slug);
+      router.replace("/employee-automation", { scroll: false });
+    },
+    [router],
   );
 
   const handleSelectEmployee = useCallback(
@@ -387,7 +464,7 @@ function EmployeeAutomationPageContent() {
       return;
     }
 
-    const freshGlobal = loadGlobalExportSettings();
+    const freshGlobal = await loadGlobalExportSettings(companySlug);
     setGlobalProps(freshGlobal);
 
     setIsGenerating(true);
@@ -436,6 +513,13 @@ function EmployeeAutomationPageContent() {
     }
   };
 
+
+  const activeCompanyName = useMemo(
+    () =>
+      companies.find((company) => company.slug === companySlug)?.displayName ??
+      companySlug,
+    [companies, companySlug],
+  );
 
   const dossierContent = !queueHydrated || !templatesLoaded ? (
     <div className="flex items-center justify-center p-12">
@@ -517,7 +601,7 @@ function EmployeeAutomationPageContent() {
             companyName={globalProps.companyName}
             evidenceEditMode={evidenceEditMode}
             onToggleEvidenceEdit={() => setEvidenceEditMode((v) => !v)}
-            evidenceFiles={evidenceFiles}
+            evidenceFiles={focusEmployeeId ? evidenceFiles : {}}
             onEvidenceUpload={handleEvidenceUpload}
             onEvidenceRemove={handleEvidenceRemove}
             onSavePerson={handleSavePerson}
@@ -562,7 +646,7 @@ function EmployeeAutomationPageContent() {
           </p>
           <p className="text-xs text-[#6b7280]">
             {exportCount} von {employees.length} Person(en) ausgewählt — nutzt
-            Firmendaten aus Upload Manager.
+            Firmendaten für {activeCompanyName}.
           </p>
         </div>
         <Button
@@ -582,9 +666,25 @@ function EmployeeAutomationPageContent() {
       </div>
     ) : null;
 
+  const companySwitcherToolbar =
+    companies.length > 0 ? (
+      <CompanySwitcher
+        companies={companies}
+        value={companySlug}
+        onChange={handleCompanyChange}
+      />
+    ) : companiesLoaded ? (
+      <p className="text-sm text-red-700">
+        Kundenliste konnte nicht geladen werden — Dev-Konsole prüfen.
+      </p>
+    ) : (
+      <p className="text-sm text-[#6b7280]">Kunden laden…</p>
+    );
+
   return (
     <>
       <EmployeeFileWorkspaceLayout
+        toolbar={companySwitcherToolbar}
         index={
           <EmployeeFileIndex
             employees={employees}
@@ -593,6 +693,8 @@ function EmployeeAutomationPageContent() {
             isCreatingNew={isCreatingNew}
             batchSelectedIds={batchSelectedIds}
             isHydrating={!queueHydrated}
+            perCompanyMode
+            companyDisplayName={activeCompanyName}
             onSelectEmployee={handleSelectEmployee}
             onCreateNew={handleCreateNew}
             onBackToOverview={handleBackToOverview}

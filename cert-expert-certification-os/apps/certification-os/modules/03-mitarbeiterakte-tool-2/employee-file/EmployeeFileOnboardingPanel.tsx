@@ -19,7 +19,7 @@ export const EmployeeFileOnboardingPanel: React.FC<
         Dieser Bereich ist für <strong className="text-[#111827]">Neuanstellungen</strong>:
         Name, Geburtsdatum, Vertragsbeginn, Grundrolle (SMA oder Führungskraft)
         und Zusatzbestellungen (Ersthelfer, Brandschutz, SiBe …). Eine Person
-        pro Firma — Firmendaten kommen aus dem Upload Manager.
+        pro Firma — Firmendaten je Kunde (Switcher oben).
       </p>
       <ol className="mt-6 space-y-3 text-left text-sm text-[#6b7280]">
         <li className="flex gap-3 rounded-lg border border-[#e5e7eb] bg-white p-3">

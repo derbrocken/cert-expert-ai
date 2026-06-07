@@ -4,9 +4,12 @@
   "private": true,
   "scripts": {
     "dev": "next dev -p 3001",
-    "build": "next build",
+    "build": "prisma generate && next build",
     "start": "next start -p 3001",
-    "lint": "eslint"
+    "lint": "eslint",
+    "postinstall": "prisma generate",
+    "db:push": "prisma db push",
+    "db:generate": "prisma generate"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.1062.0",
@@ -14,6 +17,7 @@
     "@formkit/tempo": "^1.0.0",
     "@headlessui/react": "^2.2.9",
     "@hookform/resolvers": "^5.2.2",
+    "@prisma/client": "6.19.3",
     "axios": "^1.13.2",
     "clsx": "^2.1.1",
     "docx-preview": "^0.3.7",
@@ -35,6 +39,7 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.1.1",
+    "prisma": "6.19.3",
     "tailwindcss": "^4",
     "typescript": "^5"
   }

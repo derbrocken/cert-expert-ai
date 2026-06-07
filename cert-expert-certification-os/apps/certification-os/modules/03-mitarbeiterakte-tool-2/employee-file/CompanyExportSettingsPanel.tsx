@@ -15,39 +15,59 @@ import {
   loadGlobalExportSettings,
   saveGlobalExportSettings,
 } from "@/lib/employee-queue-storage";
+import { getActiveCompanySlug } from "@/lib/company-session";
+import { readFileAsDataUrl } from "./employee-evidence-storage";
 
 export interface CompanyExportSettingsPanelProps {
   /** Compact layout for embedding in Upload Manager */
   compact?: boolean;
-}
-
-async function persistExportSettings(
-  props: GlobalProperties,
-  file: File | null,
-) {
-  let companyLogo = props.companyLogo;
-  if (file) {
-    companyLogo = await new Promise<string>((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onloadend = () => resolve(reader.result as string);
-      reader.onerror = reject;
-      reader.readAsDataURL(file);
-    });
-  }
-  saveGlobalExportSettings({ ...props, companyLogo });
+  companySlug?: string;
 }
 
 export const CompanyExportSettingsPanel: React.FC<
   CompanyExportSettingsPanelProps
-> = ({ compact = false }) => {
-  const [value, setValue] = useState<GlobalProperties>(() =>
-    loadGlobalExportSettings(),
-  );
+> = ({ compact = false, companySlug: companySlugProp }) => {
+  const companySlug = companySlugProp ?? getActiveCompanySlug();
+  const [value, setValue] = useState<GlobalProperties>({
+    companyName: "",
+    companyEmail: "",
+    companyAddress: "",
+  });
   const [logoFile, setLogoFile] = useState<File | null>(null);
+  const [hydrated, setHydrated] = useState(false);
 
   useEffect(() => {
-    void persistExportSettings(value, logoFile);
-  }, [value, logoFile]);
+    let cancelled = false;
+    void loadGlobalExportSettings(companySlug).then((settings) => {
+      if (!cancelled) {
+        setValue(settings);
+        setHydrated(true);
+      }
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [companySlug]);
+
+  useEffect(() => {
+    if (!hydrated) return;
+    const timer = window.setTimeout(() => {
+      void (async () => {
+        let logoBase64: string | null = null;
+        if (logoFile) {
+          logoBase64 = await readFileAsDataUrl(logoFile);
+        }
+        const saved = await saveGlobalExportSettings(
+          companySlug,
+          value,
+          logoBase64,
+        );
+        setValue(saved);
+        setLogoFile(null);
+      })();
+    }, 500);
+    return () => window.clearTimeout(timer);
+  }, [value, logoFile, hydrated, companySlug]);
 
   const handleChange = useCallback(
     (field: keyof GlobalProperties, val: string) => {
@@ -55,6 +75,12 @@ export const CompanyExportSettingsPanel: React.FC<
     },
     [],
   );
+
+  if (!hydrated) {
+    return (
+      <p className="text-sm text-[#6b7280]">Firmendaten laden…</p>
+    );
+  }
 
   return (
     <div className={compact ? "space-y-4" : "space-y-5"}>
@@ -67,9 +93,8 @@ export const CompanyExportSettingsPanel: React.FC<
             Firmendaten für Dokument-Export
           </h3>
           <p className="mt-0.5 text-xs text-[#6b7280]">
-            Eine Firma — gilt für alle Mitarbeiterakten (Tool 2) und Vorlagen
-            (Tool 1). Logo, Adresse und Footer-Metadaten werden automatisch
-            übernommen.
+            Pro Kunde ({companySlug}) — gilt für Tool 1 + Tool 2. Logo liegt auf
+            Hetzner S3.
           </p>
         </div>
       </div>
@@ -118,7 +143,7 @@ export const CompanyExportSettingsPanel: React.FC<
           Firmenlogo
         </label>
         <p className="text-xs text-[#6b7280]">
-          Optional — ersetzt {"{Logo}"} in generierten Dokumenten.
+          Optional — ersetzt {"{Logo}"} in generierten Dokumenten (S3).
         </p>
         <FileDropzone
           value={logoFile}
@@ -131,10 +156,6 @@ export const CompanyExportSettingsPanel: React.FC<
       <div className="space-y-3 border-t border-[#e5e7eb] pt-4">
         <p className="text-xs font-semibold uppercase tracking-wider text-[#6b7280]">
           Footer-Metadaten (global)
-        </p>
-        <p className="text-xs text-[#6b7280]">
-          Gleiche Version für alle Standarddokumente — nicht pro Mitarbeiter
-          neu setzen.
         </p>
         <div className="grid gap-3 sm:grid-cols-2">
           <div className="space-y-1.5">

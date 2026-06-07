@@ -1,0 +1,77 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Company {
+  slug          String   @id
+  displayName   String
+  active        Boolean  @default(true)
+  employeeFiles EmployeeFile[]
+  exportSettings CompanyExportSettings?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model CompanyExportSettings {
+  companySlug    String  @id
+  company        Company @relation(fields: [companySlug], references: [slug], onDelete: Cascade)
+  companyName    String  @default("")
+  companyEmail   String  @default("")
+  companyAddress String  @default("")
+  logoStorageKey String?
+  documentVersion String?
+  documentDate   String?
+  createdBy      String?
+  approvedBy     String?
+  updatedAt      DateTime @updatedAt
+}
+
+model EmployeeFile {
+  id                         String   @id
+  companySlug                String
+  company                    Company  @relation(fields: [companySlug], references: [slug], onDelete: Cascade)
+  fullName                   String
+  birthday                   String   @default("")
+  startDate                  String   @default("")
+  roleId                     String   @default("")
+  appointmentIds             Json     @default("[]")
+  selectedRoleDocIds         Json     @default("[]")
+  selectedAppointmentDocIds  Json     @default("[]")
+  roleType                   String?
+  trainingHours              String?
+  guardIDNumber              String?
+  employeeIDNumber           String?
+  useGuardAsEmployeeId       Boolean?
+  evidenceItems              EvidenceItem[]
+  migratedFromLocalStorageAt DateTime?
+  createdAt                  DateTime @default(now())
+  updatedAt                  DateTime @updatedAt
+
+  @@index([companySlug])
+}
+
+model EvidenceItem {
+  id             String       @id @default(cuid())
+  employeeFileId String
+  employeeFile   EmployeeFile @relation(fields: [employeeFileId], references: [id], onDelete: Cascade)
+  evidenceId     String
+  fileName       String
+  mimeType       String
+  storageKey     String
+  status         String       @default("unchecked")
+  uploadedAt     DateTime
+
+  @@unique([employeeFileId, evidenceId])
+}
+
+model MigrationRecord {
+  id          String   @id @default(cuid())
+  sourceKey   String   @unique
+  companySlug String
+  completedAt DateTime @default(now())
+}

@@ -8,16 +8,25 @@ export interface EmployeeFileWorkspaceLayoutProps {
   index: React.ReactNode;
   dossier: React.ReactNode;
   generateBar?: React.ReactNode;
+  /** Rendered below fixed Navbar (e.g. company switcher) */
+  toolbar?: React.ReactNode;
 }
 
 export const EmployeeFileWorkspaceLayout: React.FC<
   EmployeeFileWorkspaceLayoutProps
-> = ({ index, dossier, generateBar }) => {
+> = ({ index, dossier, generateBar, toolbar }) => {
   return (
     <div className="min-h-screen bg-[#f4f5f7]">
       <Navbar />
 
-      <div className="flex min-h-[calc(100vh-3.5rem)] flex-col pt-14 lg:flex-row">
+      <div className="pt-14">
+        {toolbar ? (
+          <div className="border-b border-[#e5e7eb] bg-[#fafbfc] px-4 py-2 sm:px-6">
+            {toolbar}
+          </div>
+        ) : null}
+
+        <div className="flex min-h-[calc(100vh-3.5rem)] flex-col lg:flex-row">
         <aside className="flex w-full flex-col border-b border-[#e5e7eb] bg-white lg:w-[min(100%,280px)] lg:shrink-0 lg:border-b-0 lg:border-r">
           {index}
         </aside>
@@ -32,6 +41,7 @@ export const EmployeeFileWorkspaceLayout: React.FC<
               {generateBar}
             </div>
           ) : null}
+        </div>
         </div>
       </div>
     </div>
