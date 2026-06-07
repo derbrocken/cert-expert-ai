@@ -4,6 +4,32 @@
 
 ---
 
+## 2026-06-07 — Slice 2 Requirement-Engine (`requirement-engine.ts`, Commit `22e0c7c`) — Code-Review
+
+**Methode:** Statische Prüfung der committeten Engine gegen `NORM_KLAUSEL_REGISTER_v1.md` (jede `clauseId`) + `NORM_MATRIX_Mitarbeiternachweise_v2.md` (UE-Werte, Ebenen-Trennung). UI-Display + DB-Pfad nicht Teil dieses Reviews (Executor in Arbeit).
+
+### Verdict
+**Engine abgenommen (fachlich) — die normative Kern-Lücke aus dem 2026-06-06-Review ist geschlossen.** Bedingung → Pflicht-Set wird jetzt deterministisch abgeleitet, jede aktive Pflicht ist CL-rückführbar. Findings sind Verfeinerungen, kein Blocker.
+
+### Stark (behalten)
+- **clauseId-Treue:** CL-01/03/04/05 (§4.1b), CL-06/07 (Profil A), CL-08 (EH 2 J.), CL-09 (Intervention), CL-10 (FK), CL-11 (40/24 WB), CL-20/21 (Veranstaltung 24/16), CL-22 (Objekt +20/J), CL-23 (Brandschutz 3 J.), CL-24/25 (Asyl 40/64), CL-02 (6-Monats-Frist) — **alle korrekt gegen Register + Matrix.**
+- **Invariante hält:** ohne belegte CL → `clauseId: null` **und** `status "fachlich prüfen"` (ÖPV, NON-DIN, SiBe, Fahrer/UVV CL-73, Praktikant). Keine erfundene Pflicht.
+- **Ebenen sauber getrennt (Matrix §9):** Firmen-Quote (CL-41/42) + Personalschlüssel (CL-26) landen als **Hinweis**, nicht als Einzelakten-Pflicht. Korrekt.
+- **EC-10 gewahrt:** nur konservative `WorkingItemStatus`-Union; kein „auditfähig/freigegeben/zertifiziert".
+- **Reine Funktion:** kein DB-/React-Import; deterministische Fristen via `referenceDate`. Testbar.
+
+### Findings (Verfeinerung — kein Blocker, an Executor/Mark)
+1. **`q-34a` bei reiner Unterrichtung = `vorhanden` (grün).** Matrix §2 sieht hier „gelb + Frist" vor. Die separate `frist-sachkunde` (CL-02) fängt es ab, aber die Zeile allein wirkt zu optimistisch. **Vorschlag:** Status `vorbereitet`/`unvollständig` statt `vorhanden`, solange nur Unterrichtung. *(Executor, klein.)*
+2. **Doppelzeilen möglich:** Erste Hilfe (`q-ersthilfe` + `appt-ersthelfer`, beide CL-08) und Brandschutz (`sdl-objekt-brandschutz` + `appt-brandschutz`, beide CL-23) erscheinen bei Bewachung **und** passender Beauftragung doppelt. **Vorschlag:** im Presenter nach `clauseId`+Thema dedupen. *(Executor, klein.)*
+3. **Teil-2-Schulung ohne Bewachungs-Guard:** Veranstaltung/Asyl/Objekt-Schulungssoll wird allein aus `sdlScopes` gepusht — eine Verwaltungsrolle mit SDL-Scope bekäme ein UE-Soll ohne Basis-Set. Real unwahrscheinlich; ggf. mit `bewachung` gaten. *(fachlich, optional.)*
+4. **Leitungsrollen = Führungskraft (FK):** `Einsatz-/Objekt-/Schichtleitung` lösen die FK-Werte aus (§5.3 24 UE statt §5.4 16 UE). Plausibel, aber **fachlich bestätigen** (ist Schichtleitung normativ FK?). *(Mark/Experten-Review CROSS-CONTROL-05.)*
+5. **Asyl-FK-Label:** Basiszeile sagt „EK/SMA: 40 UE", wird aber auch für FK als Basis gepusht (+24). Label kosmetisch anpassen („Basis 40 UE"). *(Executor, kosmetisch.)*
+
+### Nächster Schritt
+Findings 1+2 sind die einzigen, die ich vor dem nächsten Commit empfehle (kleiner Presenter-Fix). 3–5 = fachliche Bestätigung durch Mark bzw. kosmetisch. UI-Display-Review folgt, sobald die UE-Anzeige verdrahtet + die Liste wieder lädt.
+
+---
+
 ## 2026-06-06 — Mitarbeiterakte (Tool 2) `/employee-automation` — Live-Review
 
 **Methode:** Live im Browser (Dev-Server :3001), Dummy „Max Mustermann" angelegt → Akte-Ansicht + Generator-Hinweis erfasst. Code nicht gelesen (außerhalb `hq/`-Scope) — Review auf UI/Verhaltensebene.
