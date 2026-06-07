@@ -11,24 +11,45 @@
 > **Branch = `main`** · COS: `cert-expert-certification-os/apps/certification-os/` · Port **3001**
 > **Phase = Slice 2 (Requirement-Engine) gebaut + committet (`22e0c7c`) + Engine fachlich abgenommen (`96e9341`) ✅**
 > **Arbeitsmodell:** Planer/Claude führt (plant + reviewt) · Executor/Cursor baut · Ping-Pong über Bridge-Dateien (Mark, 2026-06-07). Planer rotiert seltener als Executor.
-> **▶ NÄCHSTER PLANER-CHAT: „Planer 3"** (Nachfolger). Folge-Planer fortlaufend nummerieren. *(Planer 2 (17:24) hat diese Session gemacht — Abschluss-Eintrag unten.)*
+> **▶ NÄCHSTER PLANER-CHAT: „Planer 4"** (Nachfolger). Folge-Planer fortlaufend nummerieren. *(Planer 3 hat den kombinierten Diff `22e0c7c..0d92ff2` final abgenommen — Abschluss-Eintrag unten.)*
 > **Letzte Commits:** `0d92ff2` (UE-Anzeige + Findings F1–F5) · `e81ca2c` (Planer-3-Prompt) · `47dcea1` (Planer-2-Review) · `22e0c7c` (Slice 2)
-> **✅ Builder 2 fertig (`0d92ff2`):** UE-Anzeige (Variante C) + Findings **F1–F5** kombiniert committet. **▶ Nächster: Planer 3** reviewt den kombinierten Diff gegen `22e0c7c` (Final-Abnahme UE + Findings).
-> **✅ Working Tree committet (`0d92ff2`, Basis `22e0c7c`):** tsc 0 · Engine-Suite 13/13 · EC-09-ZIP grün · Browser-Akzeptanz. (CL-74 · Bulk · Hetzner → unverändert, siehe unten.)
+> **✅ Planer 3: kombinierter Diff `22e0c7c..0d92ff2` FINAL ABGENOMMEN** (`CODE_REVIEW.md`, oben). UE-Anzeige (Variante C, `t.hint`/CL-27/Asyl-64 jetzt gerendert) + Findings F1–F5 norm-konform & CL-belegt. Unabhängig re-verifiziert: **`tsc` 0 · Engine-Suite 13/13 grün**. **Slice 2 komplett abgeschlossen.**
+> **▶ Nächster Schritt = Marks Gate:** (a) **Hetzner-Deploy** freigeben (Pre-Deploy-Checkliste unten + `HETZNER_DEPLOY.md`) ODER (b) **Slice 3** anstoßen (u. a. Doppelrollen-Modellierung). Bis dahin keine offenen Code-Tasks.
 > **Form:** https://tally.so/r/vGNvY0 · **Aufgaben:** `10_Bridge/AUFGABEN.md`
 
-### ▶ Copy-Paste-Prompt für Planer 3
-> Du bist **Planer 3** — Nachfolger von Planer 2 (Code-Track, Spur P: Planer/Reviewer, **kein Produktivcode**). Lies zuerst `CLAUDE.md` (Rules) + `hq/10_Bridge/HANDOFF.md` (Box „▶ HIER STARTEN" + Abschluss-Eintrag „Planer 2"). Koordination nur über Bridge-Dateien.
+### ▶ Copy-Paste-Prompt für Planer 4
+> Du bist **Planer 4** — Nachfolger von Planer 3 (Code-Track, Spur P: Planer/Reviewer, **kein Produktivcode**). Lies zuerst `CLAUDE.md` (Rules) + `hq/10_Bridge/HANDOFF.md` (Box „▶ HIER STARTEN" + Abschluss-Eintrag „Planer 3") + `CODE_REVIEW.md` (oberster Eintrag = Slice-2-Final-Abnahme). Koordination nur über Bridge-Dateien.
 >
-> **Stand (Builder 2 fertig, committet `0d92ff2`, Basis `22e0c7c`):** Slice-2-Engine abgenommen (`22e0c7c`). ⚠️ **KEIN separater UE-Commit** — UE-Anzeige (Variante C) + Findings 1–5 liegen **kombiniert** in `0d92ff2`. Builder-Verifikation laut HANDOFF: `tsc` 0 · Engine-Suite 13/13 · EC-09-ZIP grün · Browser-Akzeptanz (F4 live). Findings: F1 q-34a `unvollständig`, F2 CL-08/CL-23 Dedup (Presenter-only), F3 SDL-Soll gegatet, F4 nur „Führungskraft"=FK(24 UE)/EL·OL·SL=EK(16 UE, bleiben Bewachung), F5 Asyl-Label.
+> **Stand:** **Slice 2 komplett abgeschlossen + final abgenommen** (`0d92ff2`, Basis `22e0c7c`): Requirement-Engine + UE-Anzeige (Variante C) + Findings F1–F5 norm-konform & CL-belegt. Re-verifiziert: `tsc` 0 · Engine-Suite 13/13 grün · EC-09-ZIP grün · Browser-Akzeptanz. Keine offenen Code-Tasks aus Slice 2.
 >
-> **Aufgaben (in Reihenfolge):**
-> 1. **Kombinierten Diff abnehmen:** `git diff 22e0c7c 0d92ff2` — Review beider Teile (UE-Anzeige + F1–F5) in einem. Es gibt **keinen** separaten UE-Commit, nicht danach suchen.
-> 2. **Final-Abnahme UE-Anzeige** (im selben Diff) → `CODE_REVIEW.md`. Offener Punkt aus Pre-Commit-Review: `t.hint` rendern (CL-27-Anrechnungszeile + Asyl-„64 UE"-Hinweis) — prüfen ob Builder 2 mitgezogen.
-> 3. **Review Findings 1–5** gegen `knowledge/NORM_MATRIX_Mitarbeiternachweise_v2.md` + `NORM_KLAUSEL_REGISTER_v1.md`: jede `clauseId` belegt; F4 korrekt (SL=16 UE, kein Auto-FK-Quali; EL/OL/SL bleiben Bewachung). **F4 roleType-String-Matching** hat Builder 2 bereits geprüft → laut HANDOFF **kein Bug** (gespeicherte `roleType` aus `ROLLE_TYPE_OPTIONS` matcht Engine; `GRUNDROLLE_CATALOG` nur Anzeige). Nur gegenchecken, nicht neu aufrollen. F3 gaten + Doppelrollen-Kommentar drin.
-> 4. **Offene Fäden:** Doppelrollen-Design-Lücke (Verwaltung+Bewachung) → Slice 3+. **Hetzner-Deploy** als eigener Schritt (Pre-Deploy-Checkliste in HANDOFF + `HETZNER_DEPLOY.md`) — erst nach Marks „los".
+> **Nächster Schritt hängt an Marks Gate** — frag Mark, welche der zwei Spuren:
+> 1. **Hetzner-Deploy** (nach Marks „los"): Pre-Deploy-Checkliste unten in diesem HANDOFF („Von Claude an Cursor" / Hetzner) abarbeiten lassen (DB-Doppelpfad vereinheitlichen, `next build`-Gate grün, Env-Vollständigkeit) → dann Mark deployt (DNS/Subdomain/Env/Webhook-PATCH). Runbook: `HETZNER_DEPLOY.md`.
+> 2. **Slice 3** planen: u. a. **Doppelrollen-Modellierung** (Verwaltung/GF + zusätzlich Bewachung — heute nur EINE `roleType`/Person; durch F3-Gate bekäme so jemand kein SDL-Soll). Weitere offene Fäden: DEKRA-Klärung (Matrix §15 / CL-60–62), Legal-Input Mark (CL-70–73), Ist-UE-Auto-Summe aus Nachweisen (bewusst Slice 3/4), Tech-Debt (Tally-Key, Bulk, Legacy-Backfill).
 >
-> **Guardrails:** EC-09 (Generator/ZIP nie brechen), EC-10 (kein Freigabe-/Auditfähigkeitsstatus), jede Norm-Regel mit CL-ID. Verifikation im echten Browser, nicht per Skript. Mark = Gate. Nach stabilem Punkt: Übergabe-Takt + Abschluss-Eintrag.
+> Als Planer: gegen `NORM_MATRIX_…v2` + `NORM_KLAUSEL_REGISTER_v1` planen, jede Norm-Regel mit `clauseId`, Bauauftrag nach Bridge. **Guardrails:** EC-09 (Generator/ZIP nie brechen), EC-10 (kein Freigabe-/Auditfähigkeitsstatus). Verifikation im echten Browser, nicht per Skript. Mark = Gate. Nach stabilem Punkt: Übergabe-Takt + Abschluss-Eintrag.
+
+---
+
+## 🔚 ABSCHLUSS-EINTRAG — Planer 3: Slice-2-Final-Abnahme (kombinierter Diff), 2026-06-07
+
+**Rolle:** Planer/Reviewer (kein Produktivcode). Review des kombinierten Builder-2-Diffs.
+
+**Fertig (alles in Bridge-Dateien, kein Code geändert):**
+- **Kombinierten Diff `git diff 22e0c7c 0d92ff2` final abgenommen** → `CODE_REVIEW.md` (neuer Eintrag oben, „Final-Abnahme"). Beide Teile (UE-Anzeige Variante C + Findings F1–F5) in einem Review. Kein separater UE-Commit gesucht (gibt es nicht).
+- **Offener Pre-Commit-Punkt (Planer 2) geschlossen:** `t.hint` wird jetzt gerendert (`EmployeeFileTrainingTargets.tsx`). Dadurch erscheinen **CL-27-Anrechnungszeile** (Engine-Hint auf `jahres-weiterbildung`/CL-11, Z. 629) **und** Asyl-„Gesamt 64 UE"-Hinweis (`sdl-asyl-fk`/CL-25). Bestätigt.
+- **Findings F1–F5 gegen Norm-Matrix v2 + Klausel-Register geprüft — jede `clauseId` belegt:** F1 §34a-Unterrichtung→`unvollständig` (Matrix §2 „gelb+Frist"); F2 Presenter-Dedup nach `clauseId` (Engine unverändert, `null` nie dedupt, nur CL-08/CL-23-Kollisionen = gleiches Thema); F3 SDL-UE-Soll an `bewachung` gegatet (Brandschutz-Pflichtnachweis bleibt ungated) + Doppelrollen-Kommentar drin; F4 nur „Führungskraft"=FK 24 UE/EL·OL·SL=EK 16 UE (Matrix §5.3/5.4 + §8.3/8.4), bleiben Bewachung — Mark-Variante-B, Gate-konform; F5 Asyl-Label rollen-neutral.
+- **F4 roleType-String-Matching gegengecheckt** (nicht neu aufgerollt): gespeicherte `roleType` aus `ROLLE_TYPE_OPTIONS` matcht Engine-Sets; `GRUNDROLLE_CATALOG` nur Anzeige → kein Write-Path-Bug (wie Builder 2 gemeldet).
+- **Unabhängig re-verifiziert** (read-only, nicht nur Builder-Meldung): **`tsc --noEmit` = 0 Fehler**, **Engine-Suite `tsx --test` = 13/13 grün** (inkl. neue Szenarien 3c/4c/5b + Invariante). EC-09-ZIP + F4-live = Builder-2-Browser-Verifikation.
+
+**Verdict:** **Slice 2 komplett abgeschlossen.** Keine Blocker, keine offenen Code-Tasks aus Slice 2.
+
+**Offen / nächster Schritt (Marks Gate):**
+1. **Mark entscheidet:** (a) Hetzner-Deploy freigeben (Pre-Deploy-Checkliste unten + `HETZNER_DEPLOY.md`) ODER (b) Slice 3 anstoßen (Doppelrollen-Modellierung als erste Lücke).
+2. **Planer 4:** je nach Marks Entscheidung Deploy-Vorbereitung reviewen oder Slice 3 planen.
+
+**Commit-Basis:** unverändert `0d92ff2` — diese Session = nur Bridge-Doku (`CODE_REVIEW.md` + `HANDOFF.md`), kein Code.
+
+✅ **Stabiler Punkt** — Slice 2 sauber abgeschlossen; guter Zeitpunkt für Bridge-Doku-Commit / Übergabe (neuer Chat). **Übergabe empfohlen.**
 
 ---
 

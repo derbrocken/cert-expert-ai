@@ -4,6 +4,38 @@
 
 ---
 
+## 2026-06-07 — Final-Abnahme: UE-Anzeige (Variante C) + Findings F1–F5, kombiniert (`0d92ff2`, Basis `22e0c7c`) — Planer 3
+
+**Methode:** Review des **kombinierten Diffs** `git diff 22e0c7c 0d92ff2` (es gibt **keinen** separaten UE-Commit) gegen `NORM_MATRIX_Mitarbeiternachweise_v2.md` + `NORM_KLAUSEL_REGISTER_v1.md`. Unabhängig im Planer-Environment re-verifiziert: **`tsc --noEmit` = 0 Fehler**, **Engine-Suite 13/13 grün** (`tsx --test`, inkl. neue F1/F3/F4-Szenarien 3c/4c/5b + Invariante). Browser-Akzeptanz (EC-09-ZIP 200, F4 live) = Builder-2-Verifikation laut HANDOFF.
+
+### Verdict
+**ABGENOMMEN (Final).** UE-Anzeige + F1–F5 sind norm-konform, CL-rückführbar, EC-09/EC-10 gewahrt. Der einzige offene Pre-Commit-Punkt (Planer 2: `t.hint` nicht gerendert) ist **geschlossen**. Keine Blocker. Nächster Code-Schritt = neue Slices/Deploy nach Marks Gate.
+
+### Teil A — UE-Anzeige (Variante C): offener Punkt geschlossen
+- **`t.hint` wird jetzt gerendert** (`EmployeeFileTrainingTargets.tsx`: `{t.hint ? <p…>{t.hint}</p> : null}`). Damit erscheinen die beiden zuvor fehlenden Hinweise:
+  - **CL-27-Anrechnungszeile** — Engine setzt auf `jahres-weiterbildung` (CL-11): `hint: "DL ≤ 50 %. Einmalschulung im Erwerbsjahr anrechenbar (CL-27)."` (`requirement-engine.ts` Z. 629). CL-27 ist im Register **belegt** (§5.3/5.4/8.4).
+  - **Asyl-„64 UE"-Hinweis** — `sdl-asyl-fk` (CL-25): `hint: "Gesamt 64 UE (40 Basis + 24 FK-Aufschlag)"`.
+- Persistenz, Zwei-Block-Layout, Balken-nur-laufend, EC-10-Header („rechnerisch · kein Freigabestatus") unverändert korrekt (siehe Pre-Commit-Review unten). `istFor`/`setIst` matchen die Engine-ID `jahres-weiterbildung` exakt.
+
+### Teil B — Findings F1–F5 gegen Norm (jede CL belegt)
+- **F1 — §34a nur Unterrichtung ⇒ `unvollständig`** (statt `vorhanden`). ✅ Matrix §2: „Unterrichtung §34a … Ampel **gelb** + Frist". Nicht-grün ist korrekt; die 6-Monats-Sachkunde-Frist (CL-02) bleibt zusätzlich in `fristen[]`. Test Szenario 2 prüft `q-34a = "unvollständig"`.
+- **F2 — Pflicht-Set-Dedup nach `clauseId` (Presenter-only).** ✅ Engine unverändert; `dedupePflichtSetByClause` greift erst vor dem Row-Mapping. `null`-CL wird **nie** dedupt (jede ist eigene Prüfaufforderung). Kollisionen nur bei CL-08 (Erste Hilfe: `q-ersthilfe`+`appt-ersthelfer`) und CL-23 (Brandschutz: `sdl-objekt-brandschutz`+`appt-brandschutz`) — **gleiches Thema je CL**, Merge fachlich sauber. Trigger werden zusammengeführt, strengerer Status (`STATUS_STRICTNESS`, abgelaufen>fehlt>…>vorhanden) gewinnt. CL-04/05/09 sind in der Engine gegenseitig exklusiv → kein Fehlmerge.
+- **F3 — SDL-UE-Soll an `bewachung` gegatet.** ✅ Veranstaltung/Asyl/Objekt-Zusatz-UE entstehen nur bei Bewachungsrolle (kein „schwebendes" Soll ohne Basis-Set). **Brandschutz-Pflichtnachweis (CL-23) bleibt ungated** (Pflichtnachweis, kein UE-Soll) — korrekt. Doppelrollen-Modellgrenze als Engine-Kommentar **drin** (Z. 455–462). Test Szenario 5b grün.
+- **F4 — nur `roleType="Führungskraft"`=FK; EL/OL/SL=EK, bleiben Bewachung.** ✅ Matrix §5.3/5.4 (Veranstaltung FK **24** / EK **16**) + §8.3/8.4 (Asyl EK **40** / FK **+24=64**). `FUEHRUNG_ROLES = {Führungskraft}`; `LEITUNG_BEWACHUNG_ROLES = {Einsatz/Objekt/Schichtleitung}` werden **explizit** in `isBewachungsrolle` aufgenommen (Basis-Set ohne FK-Quali CL-10). **Mark-Entscheidung (Variante B + Upgrade-Pfad Phase 2)** — die Org-Rolle→FK/EK-Zuordnung ist Marks Mapping, nicht aus der Norm ableitbar (Norm trennt FK/EK, nicht Org-Titel) → Gate-konform. Tests 3c (Schichtleitung=16, kein FK-Quali) + 4c (Einsatzleitung Asyl=40, kein +24) grün.
+  - **F4 roleType-String-Matching (Gegencheck):** gespeicherte `roleType` stammt aus `ROLLE_TYPE_OPTIONS` und matcht die Engine-Sets exakt; `GRUNDROLLE_CATALOG` ist nur Anzeige → laut HANDOFF kein Write-Path-Bug. Bestätigt, nicht neu aufgerollt. *(Tally-Intake schreibt rohen Dropdown-Text = separater Alt-Thread, außerhalb dieses Scopes.)*
+- **F5 — Asyl-Basis-Label rollen-neutral** („Flüchtling/Asyl — Basis 40 UE …"). ✅ kosmetisch, Matrix §8.3-konform (Basis gilt EK/SMA und als FK-Basis).
+
+### Guardrails
+- **EC-09:** Generator/ZIP nicht berührt (Engine-Änderungen = Logik/Display; Presenter-Dedup nur Anzeige) — Builder meldet ZIP-Export 200. ✅
+- **EC-10:** keine „erfüllt/auditfähig/einsatzbereit"-Aussage; Status-Union konservativ; Karten-Header „rechnerisch · kein Freigabestatus". ✅
+- **Keine erfundene Norm:** Invarianten-Test grün (jede Regel ohne CL = „fachlich prüfen"/„nicht erforderlich"). ✅
+
+### Offene Fäden (kein Blocker → Slice 3+ / Deploy-Gate)
+1. **Doppelrolle (Verwaltung/GF + zusätzlich Bewachung)** — durch F3-Gate bekäme so eine Person kein SDL-Soll. Modellgrenze (eine `roleType`/Person). Workaround bis dahin: als Bewachungsrolle erfassen. → **Design-Notiz Slice 3+** (Flag „übt zusätzlich Bewachung aus" o. Mehrfach-`roleType`).
+2. **Hetzner-Deploy** = eigener Schritt **nach Marks „los"** (Pre-Deploy-Checkliste in HANDOFF + Runbook `HETZNER_DEPLOY.md`).
+
+---
+
 ## 2026-06-07 — UE-Anzeige Schulungs-Soll (Variante C, `EmployeeFileTrainingTargets.tsx`) — Pre-Commit-Review (Planer 2)
 
 **Methode:** Statisches Review des **uncommitteten** Working Trees (neue Datei `EmployeeFileTrainingTargets.tsx` + Diffs an `EmployeeFileDossierView.tsx`, `types/employee.ts`, `lib/employee-file-repository.ts`, `prisma/schema.prisma`) gegen die Variante-C-Spez (`CURSOR_SLICE2_AUFTRAG.md` §E.1). `tsc --noEmit` = **0 Fehler**, ReadLints der 4 Dateien = **0**. Engine-Logik unverändert (nur Typ-Felder + Anzeige-Komponente ergänzt). **Engine-Test-Suite hier nicht re-run** (kein `tsx` im Planer-Environment) → Executor bestätigt 10/10 + Browser.
