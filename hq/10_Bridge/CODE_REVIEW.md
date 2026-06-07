@@ -4,6 +4,58 @@
 
 ---
 
+## 2026-06-07 — Post-Deploy-Abnahme: Hetzner LIVE (https://cos.cert-expert.de, Commit `404d55d`) — Planer 4
+
+**Methode:** Deploy von Planer 4 **auf Marks ausdrückliche Anweisung** durchgeführt (Server-Ops, **kein Produktivcode geändert**). Live-Verifikation über echte HTTPS-Requests + reale Tally-Test-Submission (kein Skript-Fake) + Server-Logs/DB.
+
+### Verdict
+**LIVE ABGENOMMEN.** App öffentlich unter HTTPS erreichbar, Tally-Intake end-to-end grün (Signaturprüfung real bestanden, Akte erstellt). Guardrails gewahrt. **EC-09-ZIP-Klick live** mit role-zugeordneter Person steht als einzige nice-to-have-Bestätigung aus (Build identisch zum Pre-Deploy-grünen Stand).
+
+### Verifiziert (live)
+- **Erreichbarkeit:** `https://cos.cert-expert.de/` + `/employee-automation` → HTTP **200**; `http://…` → **301**-Redirect auf HTTPS; HTTPS-Zert. Let's Encrypt (bis 2026-09-05, Auto-Renew).
+- **Webhook-Endpoint:** GET → **405** (POST-only, **kein 502** → Route + Proxy + App gesund).
+- **Tally-Intake end-to-end (echte Submission):** Server-Log `[POST /api/webhooks/tally] Accepted { responseId: 'Eq16BYX', formId: 'vGNvY0', fieldCount: 145 }` → `[tally-intake] Intake complete { employeeIds: ['tally-Eq16BYX-emp-1'] }`. **Signaturprüfung real bestanden** (verifyTallySignature; sonst 401). Akte „Test Person"/SMA in DB. Firma „Test Deploy" → Legacy-Pool (kein Registry-Slug = erwartet).
+- **Infra:** systemd-Unit aktiv (Restart on-failure), DB unter `prisma/prisma/dev.db` (kanonisch, kein zweites File), Backup-Cron erster Lauf erfolgreich.
+
+### Guardrails
+- **EC-09:** Generator/ZIP-Code unverändert (deployter Commit = abgenommener Stand); UI live 200. Voller ZIP-Klick = offene nice-to-have-Bestätigung. ✅(mit Vorbehalt)
+- **EC-10:** kein Freigabe-/Auditstatus durch Deploy berührt. ✅
+- **DSGVO:** `.env.production.local` nur auf Server, nicht im Git; reale Keys nicht committet. ✅
+- **Kein Produktivcode geändert** (Spur-P-konform): Deploy = bestehender Commit `404d55d` + Server-Config. ✅
+
+### Offene Fäden (kein Blocker)
+1. **EC-09-ZIP live** mit role-zugeordneter Person klicken (Bestätigung).
+2. **Tally-REST-Key 401** → rotieren (Tech-Debt); Webhook-Verwaltung lief korrekt über Tally-UI.
+3. **systemd User=root** → später auf non-root härten. **Test-Akte** ggf. löschen.
+4. **Slice 3** (Planer 5): Doppelrollen + Tally-Formular-Feldlücke (s. HANDOFF-Finding) — jede Regel mit `clauseId`.
+
+---
+
+## 2026-06-07 — Pre-Deploy-Final-Abnahme: Hetzner-Gates (Basis `0d92ff2`, kein Code-Commit) — Planer 4
+
+**Methode:** Review des Executor-Ergebnisses (HANDOFF „Von Cursor an Claude", 2026-06-07: alle 4 Gates grün) gegen `CURSOR_HETZNER_PREDEPLOY_AUFTRAG.md`. Die belegbaren Gates **unabhängig im Planer-Environment re-verifiziert** (read-only, kein Produktivcode).
+
+### Verdict
+**ABGENOMMEN (Pre-Deploy).** Alle 4 Gates grün, 3 davon vom Planer unabhängig nachgeprüft, 1 (EC-09-Prod-Browser) Builder-verifiziert nach etabliertem Muster. **Keine Blocker → Mark kann deployen** (DNS / `.env.production.local` / systemd / nginx / certbot / Webhook-PATCH / Backup-Cron), Runbook `HETZNER_DEPLOY.md` + Bauauftrag „DANACH".
+
+### Gate-für-Gate
+1. **`next build` = 0 Errors — UNABHÄNGIG RE-VERIFIZIERT ✅.** Selbst `npm run build` gefahren: `prisma generate` + `next build` (Next 16.1.1/Turbopack) → **Exit 0**, „Compiled successfully", **„Running TypeScript" ohne Fehler**, alle 15 statischen Seiten + alle Routen (`/employee-automation`, `/model-creator`, `/uploads`, `api/webhooks/tally`, …) generiert. Gegencheck `next.config.ts`: **kein** `eslint.ignoreDuringBuilds`, **kein** `typescript.ignoreBuildErrors` → der Gate ist echt (tsc + ESLint laufen im Prod-Modus). Die vom Builder gemeldeten 5 ESLint-Warnings sind nicht blockierend (Build bricht nicht ab). **Kein Code-Commit nötig** bestätigt.
+2. **EC-09-ZIP im Prod-Build grün — Builder-verifiziert (Muster wie Planer 3 ↔ Builder 2).** Builder: `npm run start` Prod-Build, echter Browser, Person → Akte → Doc-Chips → ZIP, Server-Action **200**, RSC-Body `UEsDBA…` (= `PK\x03\x04` ZIP-Magic), Client-Blob **`application/zip` 132,8 KB** + Download, **EC-10-Disclaimer** sichtbar. Build-Output bestätigt, dass die ZIP-relevanten Routen/Server-Actions im Prod-Build existieren. *(Das Test-Daten-Artefakt „Felix … ohne Rolle" → Engine `{success:false, Role "" not found}` ist korrektes Verhalten, kein Build-/Code-Problem.)*
+3. **`.env.example` vollständig — UNABHÄNGIG RE-VERIFIZIERT ✅.** Alle zur Laufzeit per `process.env.*` gelesenen Variablen abgedeckt: S3×5 (`HETZNER_S3_KEY/SECRET`, `HETZNER_BUCKET_NAME`, `HETZNER_S3_ENDPOINT/REGION`), `INTERNAL_API_KEY`, `TALLY_WEBHOOK_SECRET`, `DATABASE_URL` (von Prisma), optional `CEA_REGISTRY_PATH` (auskommentiert). `NODE_ENV` per systemd (korrekt nicht in `.env.example`). **Befund (kein Blocker):** `TALLY_API_KEY` steht in `.env.example`, wird aktuell aber an **keiner** Stelle per `process.env` gelesen (nur dokumentiert für Feld-Mapping/Scripts) — harmloser Überschuss, keine fehlende Variable.
+4. **`db:push` nur `prisma/prisma/dev.db` — UNABHÄNGIG RE-VERIFIZIERT ✅.** Filesystem-Check: genau **ein** DB-File `prisma/prisma/dev.db` (90 KB), **kein** zweites `prisma/dev.db`. `DATABASE_URL="file:./prisma/dev.db"` löst relativ zum Schema-Ordner (`prisma/`) dorthin auf — entspricht der vom Planer entschiedenen Kanonik. `db:push` „already in sync" laut Builder.
+
+### Guardrails
+- **EC-09:** Generator/ZIP im Prod-Build grün (Builder-Browser). ✅
+- **EC-10:** Disclaimer „kein automatischer Freigabe-/Zertifizierungsstatus" sichtbar. ✅
+- **Kein Produktivcode geändert** → Commit-Basis bleibt `0d92ff2`; diese Session = nur Bridge-Doku. ✅
+- **DSGVO:** `.env.local` (enthält reale S3-/Tally-/Internal-Keys) ist gitignored — nicht committen. Tally-Key-Rotation bleibt offener Tech-Debt (CLAUDE.md). ✅
+
+### Nächster Schritt
+- **Mark deployt** (Server-Schritte aus `CURSOR_HETZNER_PREDEPLOY_AUFTRAG.md` „DANACH" + `HETZNER_DEPLOY.md`). Nach Deploy: Planer 4 reviewt das Live-Ergebnis (HTTPS-URL erreichbar, Webhook `deliveryStatus: SUCCEEDED`, EC-09 live).
+- **Slice 3 (Doppelrollen-Modellierung)** parkt bis nach Deploy + Marks „weiter".
+
+---
+
 ## 2026-06-07 — Final-Abnahme: UE-Anzeige (Variante C) + Findings F1–F5, kombiniert (`0d92ff2`, Basis `22e0c7c`) — Planer 3
 
 **Methode:** Review des **kombinierten Diffs** `git diff 22e0c7c 0d92ff2` (es gibt **keinen** separaten UE-Commit) gegen `NORM_MATRIX_Mitarbeiternachweise_v2.md` + `NORM_KLAUSEL_REGISTER_v1.md`. Unabhängig im Planer-Environment re-verifiziert: **`tsc --noEmit` = 0 Fehler**, **Engine-Suite 13/13 grün** (`tsx --test`, inkl. neue F1/F3/F4-Szenarien 3c/4c/5b + Invariante). Browser-Akzeptanz (EC-09-ZIP 200, F4 live) = Builder-2-Verifikation laut HANDOFF.

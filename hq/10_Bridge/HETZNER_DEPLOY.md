@@ -1,7 +1,48 @@
-# Hetzner VPS — Certification OS Deploy (Vorbereitung)
+# Hetzner VPS — Certification OS Deploy
 
 > Ziel: **stabile HTTPS-URL** für Tally-Webhooks statt wechselndem cloudflared-Tunnel.  
 > App: `cert-expert-certification-os/apps/certification-os/` · Port **3001** (intern)
+
+## ✅ LIVE-STAND (2026-06-07, Planer 4 auf Marks Anweisung)
+
+**App live: https://cos.cert-expert.de** (HTTPS, HTTP→HTTPS-Redirect). Deployter Commit `404d55d`.
+
+| Sache | Wert |
+|-------|------|
+| Server | Hetzner `cert-expert-01`, IP **167.233.63.98**, Ubuntu 26.04 |
+| Runtime | Node 24 LTS, nginx 1.28, certbot 4.0 |
+| App-Pfad | `/opt/cert-expert-ai/cert-expert-certification-os/apps/certification-os` |
+| Service | systemd `certification-os` (User root — Härtung = Tech-Debt), Port 3001 |
+| Env | `.env.production.local` (chmod 600, **nicht** im Git) |
+| DB | `prisma/prisma/dev.db` (kanonisch) |
+| HTTPS-Zert | Let's Encrypt, gültig bis 2026-09-05, Auto-Renew (certbot timer) |
+| Backup | `/usr/local/bin/cos-backup.sh` → `/var/backups/certification-os/`, cron tägl. 3 Uhr, 14 Tage |
+| Repo-Zugang | GitHub Deploy-Key (read-only) `/root/.ssh/github_deploy` |
+| Webhook | Tally → `https://cos.cert-expert.de/api/webhooks/tally` (Tally-UI umgestellt, Signing Secret unverändert; end-to-end verifiziert) |
+
+### Redeploy (neuer Code auf main)
+```bash
+ssh root@167.233.63.98
+cd /opt/cert-expert-ai/cert-expert-certification-os/apps/certification-os
+git pull origin main
+npm ci
+DATABASE_URL="file:./prisma/dev.db" npm run db:push   # nur bei Schema-Änderung
+npm run build
+systemctl restart certification-os
+```
+
+### Service-Diagnose
+```bash
+systemctl status certification-os
+journalctl -u certification-os -f          # Live-Logs (Webhook-Intake etc.)
+curl -s -o /dev/null -w "%{http_code}\n" https://cos.cert-expert.de/
+```
+
+**Offen (nice-to-have):** EC-09-ZIP live mit role-zugeordneter Person klicken · Tally-REST-Key rotieren (401) · systemd-User auf non-root härten · ggf. DB-Doppelpfad-Vereinheitlichung (eigener Tech-Debt-Slice).
+
+---
+
+## (Original-Vorbereitung — Referenz)
 
 ## Voraussetzungen (VPS)
 

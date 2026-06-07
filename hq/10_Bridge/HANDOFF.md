@@ -11,10 +11,10 @@
 > **Branch = `main`** · COS: `cert-expert-certification-os/apps/certification-os/` · Port **3001**
 > **Phase = Slice 2 (Requirement-Engine) gebaut + committet (`22e0c7c`) + Engine fachlich abgenommen (`96e9341`) ✅**
 > **Arbeitsmodell:** Planer/Claude führt (plant + reviewt) · Executor/Cursor baut · Ping-Pong über Bridge-Dateien (Mark, 2026-06-07). Planer rotiert seltener als Executor.
-> **▶ NÄCHSTER PLANER-CHAT: „Planer 4"** (Nachfolger). Folge-Planer fortlaufend nummerieren. *(Planer 3 hat den kombinierten Diff `22e0c7c..0d92ff2` final abgenommen — Abschluss-Eintrag unten.)*
+> **▶ NÄCHSTER PLANER-CHAT: „Planer 5"** (Nachfolger). Folge-Planer fortlaufend nummerieren. *(Planer 4 hat Pre-Deploy abgenommen + den Hetzner-Deploy live durchgeführt — Abschluss-Eintrag unten. Nächste Planung = Slice 3 Doppelrollen + Formular-Feldlücke, nach Marks „weiter".)*
 > **Letzte Commits:** `0d92ff2` (UE-Anzeige + Findings F1–F5) · `e81ca2c` (Planer-3-Prompt) · `47dcea1` (Planer-2-Review) · `22e0c7c` (Slice 2)
 > **✅ Planer 3: kombinierter Diff `22e0c7c..0d92ff2` FINAL ABGENOMMEN** (`CODE_REVIEW.md`, oben). UE-Anzeige (Variante C, `t.hint`/CL-27/Asyl-64 jetzt gerendert) + Findings F1–F5 norm-konform & CL-belegt. Unabhängig re-verifiziert: **`tsc` 0 · Engine-Suite 13/13 grün**. **Slice 2 komplett abgeschlossen.**
-> **▶ AKTIV = HETZNER-DEPLOY (Mark hat „los" gegeben, 2026-06-07).** Pre-Deploy-Gates für Executor: **`CURSOR_HETZNER_PREDEPLOY_AUFTRAG.md`** (Planer 3). DB-Pfad-Frage geklärt + entschieden (kanonisch `prisma/prisma/dev.db`); `HETZNER_DEPLOY.md` Doku-Bugs gefixt. **✅ Executor: alle 4 Pre-Deploy-Gates grün** (`next build` 0 Err · EC-09-Prod-ZIP grün/132 KB · `.env.example` vollständig · `db:push` nur `prisma/prisma/dev.db`) — **kein Code-Commit nötig** (Ergebnis-Eintrag unten „Von Cursor an Claude"). **▶ Nächster: Mark deployt** (DNS/`.env.production.local`/systemd/nginx/certbot/Webhook-PATCH/Backup), Runbook `HETZNER_DEPLOY.md`; danach Planer 4 reviewt.
+> **✅ HETZNER-DEPLOY LIVE (2026-06-07).** App läuft öffentlich unter **https://cos.cert-expert.de** (HTTPS/Let's Encrypt, HTTP→HTTPS-Redirect). Deploy von Planer 4 **auf Marks Anweisung** durchgeführt (Server-Ops, **kein Produktivcode geändert** — deployter Commit `404d55d`). Server: Hetzner `cert-expert-01` / **167.233.63.98** (Ubuntu 26.04, Node 24, nginx, systemd-Unit `certification-os` auf :3001). **Tally-Webhook live umgestellt + end-to-end verifiziert:** echte Test-Submission (`responseId Eq16BYX`, 145 Felder) → Signatur OK → Akte „Test Person" erstellt. DB-Backup-Cron (täglich 3 Uhr, 14 Tage) aktiv. **Live-Facts + Redeploy-Schritte:** `HETZNER_DEPLOY.md` (Abschnitt „LIVE-STAND") + Post-Deploy-Review in `CODE_REVIEW.md`. **Offen (nice-to-have):** EC-09-ZIP live mit role-zugeordneter Person klicken (Build identisch zum Pre-Deploy-grünen Stand); Test-Akte ggf. löschen; Tally-API-Key rotieren (401, Tech-Debt).
 > **Form:** https://tally.so/r/vGNvY0 · **Aufgaben:** `10_Bridge/AUFGABEN.md`
 
 ### ▶ Copy-Paste-Prompt für Planer 4
@@ -27,6 +27,40 @@
 > 2. **Slice 3** planen: u. a. **Doppelrollen-Modellierung** (Verwaltung/GF + zusätzlich Bewachung — heute nur EINE `roleType`/Person; durch F3-Gate bekäme so jemand kein SDL-Soll). Weitere offene Fäden: DEKRA-Klärung (Matrix §15 / CL-60–62), Legal-Input Mark (CL-70–73), Ist-UE-Auto-Summe aus Nachweisen (bewusst Slice 3/4), Tech-Debt (Tally-Key, Bulk, Legacy-Backfill).
 >
 > Als Planer: gegen `NORM_MATRIX_…v2` + `NORM_KLAUSEL_REGISTER_v1` planen, jede Norm-Regel mit `clauseId`, Bauauftrag nach Bridge. **Guardrails:** EC-09 (Generator/ZIP nie brechen), EC-10 (kein Freigabe-/Auditfähigkeitsstatus). Verifikation im echten Browser, nicht per Skript. Mark = Gate. Nach stabilem Punkt: Übergabe-Takt + Abschluss-Eintrag.
+
+---
+
+## 🔚 ABSCHLUSS-EINTRAG — Planer 4: Pre-Deploy-Abnahme + Hetzner-Deploy LIVE, 2026-06-07
+
+**Rolle:** Planer/Reviewer (kein Produktivcode). Review des Executor-Pre-Deploy-Ergebnisses gegen `CURSOR_HETZNER_PREDEPLOY_AUFTRAG.md`.
+
+**Fertig (alles in Bridge-Dateien, kein Code geändert):**
+- **Pre-Deploy-Gates ABGENOMMEN** → `CODE_REVIEW.md` (neuer Eintrag oben). Verdict: grün, **Mark kann deployen**.
+- **3 von 4 Gates unabhängig re-verifiziert** (read-only, nicht nur Builder-Meldung):
+  - **`next build` selbst gefahren** → **Exit 0**, „Compiled successfully" + „Running TypeScript" ohne Fehler, alle 15 Seiten/Routen generiert. `next.config.ts` ohne `ignoreDuringBuilds`/`ignoreBuildErrors` → echter Gate.
+  - **`.env.example` vs. alle `process.env.*`-Reads** gegengecheckt → vollständig. Befund (kein Blocker): `TALLY_API_KEY` dokumentiert, aber aktuell nirgends per `process.env` gelesen — harmloser Überschuss.
+  - **DB-Pfad Filesystem-Check** → genau **ein** File `prisma/prisma/dev.db`, kein zweites `prisma/dev.db`.
+- **EC-09-Prod-ZIP** = Builder-Browser-Verifikation (200 / `PK`-ZIP-Magic / 132,8 KB / EC-10-Disclaimer) — nach etabliertem Muster (Planer 3 ↔ Builder 2) übernommen.
+
+**Verdict:** **Pre-Deploy abgeschlossen.** Keine Blocker, kein Code-Commit nötig.
+
+**▶ DANACH (selbe Session): Hetzner-Deploy LIVE durchgeführt** (Planer 4 auf Marks ausdrückliche Anweisung „kannst du das machen / führ mich durch"). Server-Ops, **kein Produktivcode geändert** — deployter Stand = Commit `404d55d` (origin/main). Schritte:
+- **Server eingerichtet:** Hetzner `cert-expert-01` (167.233.63.98, Ubuntu 26.04). Node 24 LTS + npm + nginx 1.28 + certbot 4.0 installiert. ufw (22/80/443). SSH-Key-Login (Marks Mac → Server) + GitHub-**Deploy-Key** (read-only) für privates Repo `derbrocken/cert-expert-ai`.
+- **App ausgerollt:** Repo nach `/opt/cert-expert-ai` geklont; `.env.production.local` (chmod 600, alle Keys aus Dev-`.env.local`, `DATABASE_URL=file:./prisma/dev.db`, `NODE_ENV=production`); `npm ci`; `db:push` (explizit `DATABASE_URL`, da Prisma-CLI `.env` liest) → DB unter `prisma/prisma/dev.db` (kanonisch, kein zweites File); `npm run build` = Exit 0.
+- **Dauerbetrieb:** systemd-Unit `certification-os` (User root — Härtung auf non-root = Tech-Debt) auf :3001, `enable --now`; nginx-Reverse-Proxy + **certbot HTTPS** (`cos.cert-expert.de`, Zert. bis 2026-09-05, Auto-Renew) + HTTP→HTTPS-Redirect. DB-Backup-Cron (`/usr/local/bin/cos-backup.sh`, täglich 3 Uhr, 14 Tage Retention).
+- **DNS (Mark/IONOS):** A `cos` → 167.233.63.98 (IONOS-Parkseite + AAAA deaktiviert; propagiert).
+- **Tally-Webhook (Mark/Tally-UI):** bestehenden App-Webhook auf `https://cos.cert-expert.de/api/webhooks/tally` umgestellt (Signing Secret unverändert). **End-to-end verifiziert:** echte Submission `responseId Eq16BYX` (145 Felder) → `[POST /api/webhooks/tally] Accepted` → Signatur OK → Akte „Test Person"/SMA erstellt (`tally-Eq16BYX-emp-1`, Firma „Test Deploy" → Legacy-Pool, kein Slug = erwartet).
+
+**Live-Verifikation:** `https://cos.cert-expert.de/` + `/employee-automation` = HTTP 200; HTTP→HTTPS 301; Webhook-Endpoint lehnt GET mit 405 ab (POST-only, kein 502). Webhook-Intake real grün. **EC-09-ZIP live** noch nicht per echtem Klick (Build identisch zum Pre-Deploy-grünen Stand; Test-Akte hat keine `roleId`/Template) → mit role-zugeordneter Person nachklicken empfohlen.
+
+**Offen / nächster Schritt:**
+1. **EC-09-ZIP live** mit einer role-zugeordneten Person im Browser klicken (Bestätigung; kein erwarteter Blocker).
+2. **Tally-API-Key rotieren** (REST-Key gibt 401 — Webhook-Verwaltung lief über Tally-UI; Tech-Debt aus CLAUDE.md). Test-Akte „Test Person" ggf. löschen.
+3. **Slice 3 (Planer 5, nach Marks „weiter"):** Doppelrollen-Modellierung **+ Formular-Feldlücke** (s. Planer-4-Finding „Von Claude an Cursor") gegen Norm-Matrix v2 + Klausel-Register, jede Regel `clauseId`, Bauauftrag nach Bridge.
+
+**Commit-Basis:** Produktivcode unverändert `404d55d`/`0d92ff2`. Diese Session = Bridge-Doku (`CODE_REVIEW.md`, `HANDOFF.md`, `HETZNER_DEPLOY.md`) + Server-Setup. **DSGVO:** `.env.production.local` nur auf Server (nicht im Git); `.env.local` bleibt gitignored.
+
+✅ **Stabiler Punkt** — App ist live unter HTTPS, Webhook end-to-end grün; guter Zeitpunkt für Bridge-Doku-Commit / Übergabe (neuer Chat).
 
 ---
 
@@ -182,6 +216,23 @@
 ---
 
 ## 📤 Von Claude an Cursor (Reviews / Hinweise / Aufgaben)
+
+### 2026-06-07 — ⚠️ Planer-4-Finding (Slice 3): Tally-Formular `vGNvY0` deckt Engine-Eingaben nur teilweise ab
+
+**Kontext (Marks Frage beim Deploy):** Fragt das Live-Formular alle Felder ab, die die Slice-2-Engine (`RequirementContext`) braucht? **Antwort: nein — Teil-Abdeckung.** Soll-Ist gegen `requirement-engine.ts` (Z. 77–93) + `TALLY_FIELD_MAPPING.md`:
+
+| Engine-Eingabe | im Formular? | CL (für künftige Felder) |
+|---|---|---|
+| `roleType` / `employmentType` / `qualification` + Dok-Uploads (§34a/BWR/EH/Brandschutz/Vertrag/Ausweis) | ✅ vorhanden | — |
+| `sdlScopes` (Veranstaltung/Asyl/Objekt-Geltungsbereich) | ❌ fehlt | CL-20/21/22/24/25 |
+| `drivesServiceVehicle` (Dienstfahrzeug ja/nein) | ❌ fehlt | CL-73 (heute „fachlich prüfen") |
+| `ersteHilfeGueltigBis` / `brandschutzGueltigBis` (Ablaufdaten, nicht nur Datei) | ❌ fehlt | CL-08 (2 J.) / CL-23 (3 J.) |
+| `appointmentLabels` (Beauftragungen/Bestellungen) | ❌ fehlt | appt-* (CL-08/23 u. a.) |
+| `startDate` (Eintrittsdatum, treibt Fristen) | ❌ fehlt (nur Geburtsdatum) | CL-02 (6-Mon-Sachkunde) |
+
+**Kein Deploy-Blocker:** Intake legt die Basis-Akte korrekt an; die fehlenden Treiber werden heute **manuell in der App** nachgepflegt (Slice-2-Erfassungsfelder: SDL-Mehrfachauswahl, Dienstfahrzeug, Fristdaten). Webhook-Umstellung bleibt richtig.
+
+**Slice-3-Scope-Notiz (Planung gehört Planer):** Wenn der **Kunde** diese Angaben selbst im Formular liefern soll → Formular erweitern + Webhook-Mapping (`tally-employee-slots.json`) + Engine-Verdrahtung. Jede neue norm-getriebene Frage braucht eine `clauseId` (keine erfundene Pflicht). **Reiht sich neben die Doppelrollen-Lücke ein** (s. „Offene Entscheidungen für Mark") → beide zusammen in Slice-3-Planung abwägen. Mark: „Slice-3-Finding festhalten + Deploy weiter" entschieden (2026-06-07).
 
 ### 2026-06-07 — ▶ Findings 1+2 (+5) zum Verdrahten + UE-Anzeige Pre-Commit-Review (Planer 2)
 
