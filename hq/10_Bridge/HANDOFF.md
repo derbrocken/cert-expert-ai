@@ -12,19 +12,19 @@
 > **Phase = Slice 2 (Requirement-Engine) gebaut + committet (`22e0c7c`) + Engine fachlich abgenommen (`96e9341`) ✅**
 > **Arbeitsmodell:** Planer/Claude führt (plant + reviewt) · Executor/Cursor baut · Ping-Pong über Bridge-Dateien (Mark, 2026-06-07). Planer rotiert seltener als Executor.
 > **▶ NÄCHSTER PLANER-CHAT: „Planer 3"** (Nachfolger). Folge-Planer fortlaufend nummerieren. *(Planer 2 (17:24) hat diese Session gemacht — Abschluss-Eintrag unten.)*
-> **Letzte Commits:** `a09461f` (Rollen-Kontrakt) · `92bb8d6` (Planer-3-Prompt) · `47dcea1` (Planer-2-Review) · `22e0c7c` (Slice 2)
-> **▶ Nächster Executor: Builder 2** — baut `CURSOR_FINDINGS_1_2_AUFTRAG.md` **F1–F5** (F3/F4 Mark ✓, im Auftrag verdrahtet).
-> **⏳ Working Tree uncommitted (Basis `9cad207`):** UE-Anzeige Variante C + P2023-Fix — **offen:** Commit + Browser final + EC-09. (CL-74 · Bulk · Hetzner → unverändert, siehe unten.)
+> **Letzte Commits:** `0d92ff2` (UE-Anzeige + Findings F1–F5) · `e81ca2c` (Planer-3-Prompt) · `47dcea1` (Planer-2-Review) · `22e0c7c` (Slice 2)
+> **✅ Builder 2 fertig (`0d92ff2`):** UE-Anzeige (Variante C) + Findings **F1–F5** kombiniert committet. **▶ Nächster: Planer 3** reviewt den kombinierten Diff gegen `22e0c7c` (Final-Abnahme UE + Findings).
+> **✅ Working Tree committet (`0d92ff2`, Basis `22e0c7c`):** tsc 0 · Engine-Suite 13/13 · EC-09-ZIP grün · Browser-Akzeptanz. (CL-74 · Bulk · Hetzner → unverändert, siehe unten.)
 > **Form:** https://tally.so/r/vGNvY0 · **Aufgaben:** `10_Bridge/AUFGABEN.md`
 
 ### ▶ Copy-Paste-Prompt für Planer 3
 > Du bist **Planer 3** — Nachfolger von Planer 2 (Code-Track, Spur P: Planer/Reviewer, **kein Produktivcode**). Lies zuerst `CLAUDE.md` (Rules) + `hq/10_Bridge/HANDOFF.md` (Box „▶ HIER STARTEN" + Abschluss-Eintrag „Planer 2"). Koordination nur über Bridge-Dateien.
 >
-> **Stand (committet + gepusht, `47dcea1`):** Slice-2-Engine abgenommen (`22e0c7c`). UE-Anzeige (Variante C) von Planer 2 **statisch** abgenommen (`CODE_REVIEW.md`): `tsc` 0, Lints 0 — Code liegt **uncommitted** im Working Tree beim Executor. Findings 1–5 alle entschieden + in `hq/10_Bridge/CURSOR_FINDINGS_1_2_AUFTRAG.md` (F1 q-34a `unvollständig`, F2 CL-08/CL-23 Doppelzeilen-Dedup, F3 SDL-Soll gaten, F4 Leitungsrollen=EK/nur „Führungskraft"=FK, F5 Asyl-Label).
+> **Stand (committet + gepusht, `e81ca2c`):** Slice-2-Engine abgenommen (`22e0c7c`). ⚠️ **UE-Anzeige wurde NICHT separat committet** — Builder 1 hat nur den HANDOFF-Status gekippt + an Builder 2 übergeben. **Working Tree = UE-Anzeige (Variante C, von Planer 2 statisch abgenommen: `tsc` 0, Lints 0) + Builder-2-Findings vermischt, uncommitted.** Findings 1–5 alle entschieden + in `hq/10_Bridge/CURSOR_FINDINGS_1_2_AUFTRAG.md` (F1 q-34a `unvollständig`, F2 CL-08/CL-23 Doppelzeilen-Dedup, F3 SDL-Soll gaten, F4 Leitungsrollen=EK/nur „Führungskraft"=FK, F5 Asyl-Label).
 >
 > **Aufgaben (in Reihenfolge):**
-> 1. **Prüfen, was der Executor gemacht hat** (`git log`, Working Tree): UE-Anzeige committet? Findings 1–5 gebaut?
-> 2. **Final-Abnahme UE-Anzeige** nach Executor-Commit + dessen Browser-Verifikation → `CODE_REVIEW.md` (offen war: `t.hint` rendern → CL-27-Anrechnungszeile + Asyl-„64 UE"-Hinweis).
+> 1. **Git-Realität prüfen** (`git log`, `git status`): Hat Builder 2 inzwischen **einen gemeinsamen Commit** (UE-Anzeige + Findings) gemacht? **Es gibt KEINEN separaten UE-Commit** — nicht danach suchen. Review = kombinierter Diff gegen `22e0c7c`.
+> 2. **Final-Abnahme UE-Anzeige** (im selben Diff): Browser-Verifikation durch Builder + `t.hint`-Punkt (CL-27-Anrechnungszeile + Asyl-„64 UE") → `CODE_REVIEW.md`.
 > 3. **Review Findings 1–5** gegen `knowledge/NORM_MATRIX_Mitarbeiternachweise_v2.md` + `NORM_KLAUSEL_REGISTER_v1.md`: jede `clauseId` belegt; F4 korrekt (SL=16 UE, kein Auto-FK-Quali; EL/OL/SL bleiben Bewachung); **F4 roleType-String-Matching** Katalog (`"SMA / Sicherheitsmitarbeiter"`) vs. Engine (`"Sicherheitsmitarbeiter"`) — möglicher realer Bug, explizit verifizieren; F3 gaten + Doppelrollen-Kommentar drin.
 > 4. **Offene Fäden:** Doppelrollen-Design-Lücke (Verwaltung+Bewachung) → Slice 3+. **Hetzner-Deploy** als eigener Schritt (Pre-Deploy-Checkliste in HANDOFF + `HETZNER_DEPLOY.md`) — erst nach Marks „los".
 >
@@ -72,6 +72,18 @@
 ---
 
 ## 📥 Von Cursor an Claude (Fragen / Bitten)
+
+### 2026-06-07 — ✅ Builder 2: UE-Anzeige + Findings F1–F5 committet (`0d92ff2`)
+
+**Fertig (Commit `0d92ff2`, Basis `22e0c7c` — kombiniert UE-Anzeige + Findings, kein separater UE-Commit):**
+- **F1** q-34a bei reiner Unterrichtung (ohne Sachkunde) → `unvollständig`. **F2** Pflicht-Set-Dedup nach `clauseId` (Presenter-only, Engine unverändert; CL-08/CL-23; Trigger gemerged, strengerer Status; null-CL nie dedupt). **F3** SDL-Schulungssoll nur bei Bewachung (Brandschutz-Pflichtnachweis ungated; Doppelrollen-Modellgrenze als Kommentar). **F4** nur `Führungskraft`=FK (24 UE + CL-10); EL/OL/SL=EK (16 UE), bleiben Bewachung (Basis-Set). **F5** Asyl-Basis-Label rollen-neutral.
+- **F4-Naming-Check (erledigt, kein Bug):** gespeicherte `roleType`-Werte kommen aus `ROLLE_TYPE_OPTIONS` (`Sicherheitsmitarbeiter`, `Praktikant / Azubi`, …) und matchen **exakt** die Engine-Sets. `GRUNDROLLE_CATALOG` (`SMA / Sicherheitsmitarbeiter`) ist nur Anzeige-Chip-Liste → **kein** Write-Path-Bug. *(Hinweis: Tally-Intake schreibt rohen Dropdown-Text — separater Alt-Thread, nicht in diesem Scope.)*
+- **Verifiziert:** `tsc --noEmit` = 0 · Engine-Suite **13/13** grün · Presenter-Integration `getEmployeeFileSummary` Szenarien a–d grün (inkl. F2-Dedup mit gemergtem Trigger) · Browser: **EC-09-ZIP-Export 200/kein Fehler**, Akte rendert, **F4 live** (Schichtleitung → 16 UE EK, kein FK-Quali); Testperson „joe" danach auf SMA/ohne-SDL zurückgesetzt.
+
+**Offen:** Planer 3 — Final-Abnahme (kombinierter Diff gegen `22e0c7c`) gegen Norm-Matrix v2 + Klausel-Register.
+**Commit-Hash:** `0d92ff2`.
+
+---
 
 ### 2026-06-07 — Stabiler Punkt → Übergabe Builder 2 (F1–F5)
 
