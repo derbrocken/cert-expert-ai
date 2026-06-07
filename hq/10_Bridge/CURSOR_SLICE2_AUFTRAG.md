@@ -161,6 +161,8 @@ Definition „qualifiziert" = **§4.1 b) UND §4.19.1** (CL-40, Matrix §1).
 > **UE-Werte sind §-belegt (v2-Matrix)** → Engine berechnet sie als echte Zahlen mit `clauseId`. **Anzeige festgelegt (Entscheidung 3, s. u.).** Wo kein belegter Wert existiert (ÖPV, Fahrer/UVV, B/C-Stufe) → „fachlich prüfen", **kein Wert erfunden.**
 
 ### E.1 Anzeige-Spezifikation Schulungs-Soll (Entscheidung 3 — Mark, 2026-06-07)
+**▶ FREIGABE ZUM VERDRAHTEN JETZT (Mark, 2026-06-07):** UE-Zahlen jetzt anzeigen (nicht mehr zurückhalten). **Layout muss nicht final sein — iterierbar**, Mark optimiert per Feedback. **Leitplanke: nichts brechen — EC-09-Smoke + `tsc` grün halten, EC-10-Wording (rechnerisch, kein Freigabestatus).** Additive Anzeige, Engine rechnet die Werte bereits.
+
 **Layout = Variante C (Zwei-Block-Karte), laufend/einmalig getrennt.** Balken (aus Variante B) **NUR** beim laufenden Jahres-UE; einmalige Posten **ohne** Balken.
 
 ```
