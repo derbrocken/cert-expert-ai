@@ -53,6 +53,10 @@ export interface Employee {
   ersteHilfeGueltigBis?: string;
   /** Ablaufdatum Brandschutzhelfer (ISO) — 3-Jahres-Frist (CL-23) */
   brandschutzGueltigBis?: string;
+  /** Manuell erfasste Ist-UE Jahres-Weiterbildung (laufendes Jahr, §4.19.2) */
+  weiterbildungIstUE?: number;
+  /** Manuell erfasste Ist-UE je einmaligem/laufendem SDL-Posten (Posten-ID → UE) */
+  einmaligIstUE?: Record<string, number>;
 }
 
 export interface GlobalProperties {

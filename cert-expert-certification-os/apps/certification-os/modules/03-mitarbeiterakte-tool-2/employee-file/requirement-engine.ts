@@ -168,8 +168,15 @@ export function sdlScopeLabel(id: string): string {
 // Rollen-Klassifikation (roleType, nicht roleId-Heuristik)
 // ---------------------------------------------------------------------------
 
-const FUEHRUNG_ROLES = new Set([
-  "Führungskraft",
+// F4 (Mark, 2026-06-07): NUR `Führungskraft` zählt als DIN-FK (24 UE §5.3 +
+// FK-Quali CL-10). Einsatz-/Objekt-/Schicht­leitung sind operative Leitung auf
+// EK/SMA-Niveau (16 UE), KEIN Auto-FK — bleiben aber Bewachungsrollen mit
+// vollem Basis-Pflichtset. Upgrade auf FK = Phase 2 (FK-Schulung absolviert →
+// `roleType` auf "Führungskraft" setzen), kein Sondercode hier.
+const FUEHRUNG_ROLES = new Set(["Führungskraft"]);
+
+/** Leitungsrollen unterhalb der DIN-FK — Bewachung, EK-Niveau (kein Auto-FK). */
+const LEITUNG_BEWACHUNG_ROLES = new Set([
   "Einsatzleitung",
   "Objektleitung",
   "Schichtleitung",
@@ -193,14 +200,19 @@ function isSubunternehmer(roleType?: string): boolean {
   return roleType === "Subunternehmer-SMA";
 }
 
-/** Person mit Bewachungsrolle ⇒ "qualifiziert"-Pflichtset (CL-40). */
+/**
+ * Person mit Bewachungsrolle ⇒ "qualifiziert"-Pflichtset (CL-40).
+ * EL/OL/SL explizit aufnehmen (nicht über `isFuehrungskraft` ableiten), damit
+ * sie das Basis-Set bekommen, ohne als FK zu zählen.
+ */
 export function isBewachungsrolle(roleType?: string): boolean {
   if (!roleType) return false;
   if (isVerwaltung(roleType) || isPraktikant(roleType)) return false;
   return (
     roleType === "Sicherheitsmitarbeiter" ||
     isSubunternehmer(roleType) ||
-    isFuehrungskraft(roleType)
+    isFuehrungskraft(roleType) ||
+    LEITUNG_BEWACHUNG_ROLES.has(roleType)
   );
 }
 
@@ -289,10 +301,13 @@ export function deriveRequirements(ctx: RequirementContext): RequirementResult {
       clauseId: "CL-01",
       quelle: "DIN 77200-1 §4.1 b) 1)",
       trigger: "Bewachungsrolle",
+      // F1: nur Unterrichtung (ohne Sachkunde) = §34a teilerfüllt ⇒
+      // "unvollständig" (nicht grün). Die 6-Monats-Sachkunde-Frist (CL-02)
+      // fängt die Nachholpflicht zusätzlich in fristen[] ab.
       status: sachkunde
         ? "vorhanden"
         : unterrichtung
-          ? "vorhanden"
+          ? "unvollständig"
           : "fehlt",
       hint: sachkunde
         ? "Sachkunde erfasst"
@@ -437,7 +452,17 @@ export function deriveRequirements(ctx: RequirementContext): RequirementResult {
   // -------------------------------------------------------------------------
   // C. SDL / Geltungsbereich → Scope-Nachweise + einmalige Schulung
   // -------------------------------------------------------------------------
-  if (sdl.has("din2-veranstaltung")) {
+  // F3 (Mark, 2026-06-07): Das UE-Schulungssoll aus SDL (Veranstaltung/Asyl/
+  // Objekt-Zusatz) nur erzeugen, wenn die Person eine Bewachungsrolle hat —
+  // sonst entstünde ein "schwebendes" UE-Soll ohne Basis-Pflichtset.
+  // Brandschutz-Pflichtnachweis (Objekte) sowie ÖPV/NON-DIN "fachlich prüfen"
+  // bleiben davon unberührt (kein UE-Soll).
+  // 🟡 Modell-Grenze: Die Engine kennt pro Person nur EINE roleType. Eine
+  // Doppelrolle (Verwaltung/GF + zusätzlich Bewachung, z. B. GF, der mit auf
+  // Schicht geht) bekommt durch dieses Gate fälschlich kein SDL-Soll.
+  // Workaround bis Phase 2: solche Personen als Bewachungsrolle erfassen.
+  // Doppelrollen-Modellierung = Slice 3+ (Design-Notiz im HANDOFF).
+  if (sdl.has("din2-veranstaltung") && bewachung) {
     if (fuehrung) {
       schulungsSoll.push({
         id: "sdl-veranstaltung-fk",
@@ -462,16 +487,20 @@ export function deriveRequirements(ctx: RequirementContext): RequirementResult {
   }
 
   if (hasObjekte) {
-    schulungsSoll.push({
-      id: "sdl-objekt-zusatz",
-      label: "Objekte bes. SR — objektspezifischer Zusatz",
-      clauseId: "CL-22",
-      ue: 20,
-      period: "jaehrlich",
-      dlCap: 50,
-      trigger: "SDL Objekte bes. SR",
-      status: "fehlt",
-    });
+    // Objektspezifischer UE-Zusatz nur bei Bewachungsrolle (F3-Gate).
+    if (bewachung) {
+      schulungsSoll.push({
+        id: "sdl-objekt-zusatz",
+        label: "Objekte bes. SR — objektspezifischer Zusatz",
+        clauseId: "CL-22",
+        ue: 20,
+        period: "jaehrlich",
+        dlCap: 50,
+        trigger: "SDL Objekte bes. SR",
+        status: "fehlt",
+      });
+    }
+    // Brandschutz-Pflichtnachweis aus SDL Objekte bleibt ungated (kein UE-Soll).
     pflichtSet.push({
       id: "sdl-objekt-brandschutz",
       label: "Brandschutzhelfer (ASR A2.2): 4 UE, alle 3 Jahre",
@@ -483,27 +512,30 @@ export function deriveRequirements(ctx: RequirementContext): RequirementResult {
   }
 
   if (sdl.has("din2-fluechtling-asyl")) {
-    schulungsSoll.push({
-      id: "sdl-asyl-base",
-      label:
-        "Flüchtling/Asyl — EK/SMA: 40 UE einmalig (interkult. + Deeskalation + Brandschutz)",
-      clauseId: "CL-24",
-      ue: 40,
-      period: "einmalig",
-      trigger: "SDL Flüchtling/Asyl · EK/SMA",
-      status: "fehlt",
-    });
-    if (fuehrung) {
+    if (bewachung) {
       schulungsSoll.push({
-        id: "sdl-asyl-fk",
-        label: "Flüchtling/Asyl — Führungskraft: +24 UE (= 64) einmalig",
-        clauseId: "CL-25",
-        ue: 24,
+        id: "sdl-asyl-base",
+        // F5: rollen-neutrales Label (Basis gilt für EK/SMA und als FK-Basis).
+        label:
+          "Flüchtling/Asyl — Basis 40 UE einmalig (interkult. + Deeskalation + Brandschutz)",
+        clauseId: "CL-24",
+        ue: 40,
         period: "einmalig",
-        trigger: "SDL Flüchtling/Asyl · Rolle FK",
+        trigger: "SDL Flüchtling/Asyl",
         status: "fehlt",
-        hint: "Gesamt 64 UE (40 Basis + 24 FK-Aufschlag)",
       });
+      if (fuehrung) {
+        schulungsSoll.push({
+          id: "sdl-asyl-fk",
+          label: "Flüchtling/Asyl — Führungskraft: +24 UE (= 64) einmalig",
+          clauseId: "CL-25",
+          ue: 24,
+          period: "einmalig",
+          trigger: "SDL Flüchtling/Asyl · Rolle FK",
+          status: "fehlt",
+          hint: "Gesamt 64 UE (40 Basis + 24 FK-Aufschlag)",
+        });
+      }
     }
     hinweise.push(
       "Flüchtling/Asyl: Personalschlüssel (z. B. 2 SMA/Schicht, CL-26) ist Schicht-/Firmenebene, nicht Einzelakten-Pflicht.",

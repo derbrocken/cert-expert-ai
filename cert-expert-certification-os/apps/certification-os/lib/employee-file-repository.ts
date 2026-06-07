@@ -36,6 +36,15 @@ function asStringArray(value: unknown): string[] {
   return value.filter((v): v is string => typeof v === "string");
 }
 
+function asNumberRecord(value: unknown): Record<string, number> {
+  if (!value || typeof value !== "object" || Array.isArray(value)) return {};
+  const out: Record<string, number> = {};
+  for (const [k, v] of Object.entries(value as Record<string, unknown>)) {
+    if (typeof v === "number" && Number.isFinite(v)) out[k] = v;
+  }
+  return out;
+}
+
 export function employeeFileToEmployee(record: EmployeeFile): Employee {
   return {
     id: record.id,
@@ -57,6 +66,8 @@ export function employeeFileToEmployee(record: EmployeeFile): Employee {
     drivesServiceVehicle: record.drivesServiceVehicle ?? undefined,
     ersteHilfeGueltigBis: record.ersteHilfeGueltigBis ?? undefined,
     brandschutzGueltigBis: record.brandschutzGueltigBis ?? undefined,
+    weiterbildungIstUE: record.weiterbildungIstUE ?? undefined,
+    einmaligIstUE: asNumberRecord(record.einmaligIstUE),
   };
 }
 
@@ -85,6 +96,8 @@ function employeeToUpsertData(
     drivesServiceVehicle: employee.drivesServiceVehicle ?? null,
     ersteHilfeGueltigBis: employee.ersteHilfeGueltigBis ?? null,
     brandschutzGueltigBis: employee.brandschutzGueltigBis ?? null,
+    weiterbildungIstUE: employee.weiterbildungIstUE ?? null,
+    einmaligIstUE: employee.einmaligIstUE ?? {},
   };
 }
 
@@ -196,6 +209,8 @@ export async function upsertEmployeeFile(
       drivesServiceVehicle: employee.drivesServiceVehicle ?? null,
       ersteHilfeGueltigBis: employee.ersteHilfeGueltigBis ?? null,
       brandschutzGueltigBis: employee.brandschutzGueltigBis ?? null,
+      weiterbildungIstUE: employee.weiterbildungIstUE ?? null,
+      einmaligIstUE: employee.einmaligIstUE ?? {},
     },
   });
   return employeeFileToEmployee(row);
@@ -242,6 +257,8 @@ export async function replaceEmployeeFilesForCompany(
           drivesServiceVehicle: employee.drivesServiceVehicle ?? null,
           ersteHilfeGueltigBis: employee.ersteHilfeGueltigBis ?? null,
           brandschutzGueltigBis: employee.brandschutzGueltigBis ?? null,
+          weiterbildungIstUE: employee.weiterbildungIstUE ?? null,
+          einmaligIstUE: employee.einmaligIstUE ?? {},
         },
       });
     }
@@ -570,6 +587,8 @@ export async function migrateFromLocalStoragePayload(
             drivesServiceVehicle: employee.drivesServiceVehicle ?? null,
             ersteHilfeGueltigBis: employee.ersteHilfeGueltigBis ?? null,
             brandschutzGueltigBis: employee.brandschutzGueltigBis ?? null,
+            weiterbildungIstUE: employee.weiterbildungIstUE ?? null,
+            einmaligIstUE: employee.einmaligIstUE ?? {},
             migratedFromLocalStorageAt: new Date(),
           },
         });

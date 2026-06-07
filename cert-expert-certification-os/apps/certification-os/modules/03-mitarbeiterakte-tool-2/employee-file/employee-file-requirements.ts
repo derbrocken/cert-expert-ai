@@ -128,6 +128,68 @@ function isSecurityRole(employee: Pick<Employee, "roleType">): boolean {
   return isBewachungsrolle(employee.roleType);
 }
 
+/**
+ * F2: Status-Strenge für das Dedup (höher = strenger ⇒ wird behalten).
+ * Reihenfolge laut Auftrag: abgelaufen > fehlt > beantragt/offen/unvollständig
+ * > vorbereitet > vorhanden > nicht erforderlich.
+ */
+const STATUS_STRICTNESS: Record<WorkingItemStatus, number> = {
+  abgelaufen: 100,
+  "nicht lesbar": 95,
+  fehlt: 90,
+  beantragt: 80,
+  offen: 78,
+  unvollständig: 76,
+  "fachlich prüfen": 70,
+  vorbereitet: 60,
+  vorhanden: 50,
+  "nicht erforderlich": 10,
+};
+
+/**
+ * F2: Pflicht-Set-Doppelzeilen nach `clauseId` dedupen (Presenter-only, Engine
+ * bleibt unverändert). Beispiele: Erste Hilfe (CL-08: `q-ersthilfe` +
+ * `appt-ersthelfer`), Brandschutz (CL-23: `sdl-objekt-brandschutz` +
+ * `appt-brandschutz`).
+ * - `null`-clauseId ("fachlich prüfen") wird NIE dedupt — jede ist eine eigene
+ *   Prüfaufforderung.
+ * - Bei gleicher non-null CL: eine Zeile behalten (erste Reihenfolge), Trigger
+ *   zusammenführen, den strengeren Status übernehmen.
+ * Die übrigen Mehrfach-CLs (CL-04/05 Bewachung XOR Verwaltung, CL-09 Bewachung
+ * XOR Beauftragung) sind in der Engine gegenseitig exklusiv → harmlos.
+ */
+function dedupePflichtSetByClause(rules: EngineRule[]): EngineRule[] {
+  const result: EngineRule[] = [];
+  const indexByClause = new Map<string, number>();
+
+  for (const rule of rules) {
+    if (rule.clauseId == null) {
+      result.push(rule);
+      continue;
+    }
+    const existingIdx = indexByClause.get(rule.clauseId);
+    if (existingIdx === undefined) {
+      indexByClause.set(rule.clauseId, result.length);
+      result.push({ ...rule });
+      continue;
+    }
+    const existing = result[existingIdx];
+    const mergedTriggers = Array.from(
+      new Set(
+        [existing.trigger, rule.trigger].filter(
+          (t): t is string => !!t && t.length > 0,
+        ),
+      ),
+    );
+    existing.trigger = mergedTriggers.join(" + ");
+    if (STATUS_STRICTNESS[rule.status] > STATUS_STRICTNESS[existing.status]) {
+      existing.status = rule.status;
+    }
+  }
+
+  return result;
+}
+
 /** Engine-Regel → Presenter-Row (clauseId + Fundstelle in den Hint). */
 function engineRuleToRow(rule: EngineRule): RequirementRow {
   const clausePart = rule.clauseId ? `${rule.clauseId}` : "ohne CL — fachlich prüfen";
@@ -594,7 +656,10 @@ export function getEmployeeFileSummary(
   const engine: RequirementResult = deriveRequirements(
     buildRequirementContext(employee, appointments),
   );
-  const pflichtSet: RequirementRow[] = engine.pflichtSet.map(engineRuleToRow);
+  // F2: Doppelzeilen (gleiche clauseId) vor dem Row-Mapping zusammenführen.
+  const pflichtSet: RequirementRow[] = dedupePflichtSetByClause(
+    engine.pflichtSet,
+  ).map(engineRuleToRow);
   const fristen: RequirementRow[] = engine.fristen.map((d) => ({
     id: d.id,
     label: d.label,

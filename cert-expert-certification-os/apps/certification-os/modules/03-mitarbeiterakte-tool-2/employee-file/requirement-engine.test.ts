@@ -68,6 +68,8 @@ test("Szenario 2 — SMA Teilzeit + Unterrichtung + Eintritt vor 5 Mt.: 6-Monats
       sdlScopes: ["din1-grunddienste"],
     }),
   );
+  // F1: reine Unterrichtung (ohne Sachkunde) ⇒ §34a "unvollständig" (nicht grün)
+  assert.equal(rule(res.pflichtSet, "q-34a")?.status, "unvollständig");
   const frist = res.fristen.find((f) => f.id === "frist-sachkunde");
   assert.equal(frist?.status, "beantragt"); // noch nicht überschritten
   assert.equal(frist?.clauseId, "CL-02");
@@ -121,6 +123,22 @@ test("Szenario 3b — Führungskraft Veranstaltung bes. SR: 24 UE einmalig (CL-2
   assert.ok(rule(res.pflichtSet, "q-fk-quali")); // CL-10
 });
 
+// F4: Schichtleitung = EK-Niveau (16 UE), KEIN Auto-FK, aber Bewachungsrolle
+test("Szenario 3c — Schichtleitung Veranstaltung bes. SR: 16 UE (EK, nicht 24), kein FK-Quali, Basis-Set", () => {
+  const res = deriveRequirements(
+    baseCtx({
+      roleType: "Schichtleitung",
+      sdlScopes: ["din2-veranstaltung"],
+    }),
+  );
+  assert.equal(target(res.schulungsSoll, "sdl-veranstaltung-ek")?.ue, 16);
+  assert.equal(target(res.schulungsSoll, "sdl-veranstaltung-fk"), undefined);
+  assert.equal(rule(res.pflichtSet, "q-fk-quali"), undefined); // kein CL-10
+  // bleibt Bewachungsrolle ⇒ Basis-Pflichtset vorhanden
+  assert.ok(rule(res.pflichtSet, "q-34a"));
+  assert.ok(rule(res.pflichtSet, "q-datenschutz"));
+});
+
 // 4. EK Flüchtling/Asyl → 40 UE (CL-24) + Brandschutz-Hinweis
 test("Szenario 4 — EK/SMA Flüchtling/Asyl: 40 UE (CL-24) + Personalschlüssel-Hinweis", () => {
   const res = deriveRequirements(
@@ -139,12 +157,25 @@ test("Szenario 4 — EK/SMA Flüchtling/Asyl: 40 UE (CL-24) + Personalschlüssel
 test("Szenario 4b — Führungskraft Flüchtling/Asyl: +24 UE (= 64) (CL-25)", () => {
   const res = deriveRequirements(
     baseCtx({
+      roleType: "Führungskraft",
+      sdlScopes: ["din2-fluechtling-asyl"],
+    }),
+  );
+  assert.equal(target(res.schulungsSoll, "sdl-asyl-base")?.ue, 40);
+  assert.equal(target(res.schulungsSoll, "sdl-asyl-fk")?.ue, 24);
+  assert.equal(target(res.schulungsSoll, "sdl-asyl-fk")?.clauseId, "CL-25");
+});
+
+// F4: Einsatzleitung Asyl = nur Basis (40), KEIN FK-Aufschlag
+test("Szenario 4c — Einsatzleitung Flüchtling/Asyl: nur Basis 40 UE, kein FK-Aufschlag", () => {
+  const res = deriveRequirements(
+    baseCtx({
       roleType: "Einsatzleitung",
       sdlScopes: ["din2-fluechtling-asyl"],
     }),
   );
-  assert.equal(target(res.schulungsSoll, "sdl-asyl-fk")?.ue, 24);
-  assert.equal(target(res.schulungsSoll, "sdl-asyl-fk")?.clauseId, "CL-25");
+  assert.equal(target(res.schulungsSoll, "sdl-asyl-base")?.ue, 40);
+  assert.equal(target(res.schulungsSoll, "sdl-asyl-fk"), undefined);
 });
 
 // 5. Bürokraft → kein §34a-Set; Datenschutz/Verschwiegenheit aktiv
@@ -161,6 +192,22 @@ test("Szenario 5 — Bürokraft: kein §34a-Set, Datenschutz/Verschwiegenheit ak
   assert.equal(rule(res.pflichtSet, "v-verschwiegenheit")?.clauseId, "CL-05");
   assert.equal(rule(res.pflichtSet, "v-34a-na")?.status, "nicht erforderlich");
   assert.equal(target(res.schulungsSoll, "jahres-weiterbildung"), undefined);
+});
+
+// F3: Verwaltung mit SDL-Scope ⇒ KEIN schwebendes UE-Soll (an Bewachung gegatet)
+test("Szenario 5b — Bürokraft + SDL Veranstaltung/Objekt/Asyl: kein UE-Schulungssoll (F3-Gate)", () => {
+  const res = deriveRequirements(
+    baseCtx({
+      roleType: "Bürokraft / Verwaltung",
+      sdlScopes: ["din2-veranstaltung", "din2-objekte", "din2-fluechtling-asyl"],
+    }),
+  );
+  assert.equal(res.schulungsSoll.length, 0);
+  assert.equal(target(res.schulungsSoll, "sdl-veranstaltung-ek"), undefined);
+  assert.equal(target(res.schulungsSoll, "sdl-objekt-zusatz"), undefined);
+  assert.equal(target(res.schulungsSoll, "sdl-asyl-base"), undefined);
+  // Brandschutz-Pflichtnachweis aus SDL Objekte bleibt ungated (kein UE-Soll)
+  assert.ok(rule(res.pflichtSet, "sdl-objekt-brandschutz"));
 });
 
 // 6. drivesServiceVehicle = true → Fahrer-/UVV-Zeile "fachlich prüfen" (CL-73 legal-input → clauseId null)

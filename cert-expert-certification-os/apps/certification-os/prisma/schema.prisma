@@ -53,6 +53,8 @@ model EmployeeFile {
   drivesServiceVehicle       Boolean?
   ersteHilfeGueltigBis       String?
   brandschutzGueltigBis      String?
+  weiterbildungIstUE         Int?
+  einmaligIstUE              Json?
   evidenceItems              EvidenceItem[]
   migratedFromLocalStorageAt DateTime?
   createdAt                  DateTime @default(now())

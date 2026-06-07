@@ -25,6 +25,7 @@ import {
 import { EmployeeFileStatusBadge } from "./EmployeeFileStatusBadge";
 import { EmployeeFileEvidenceRow } from "./EmployeeFileEvidenceRow";
 import { EmployeeFilePersonRolleEditTable } from "./EmployeeFilePersonRolleEditTable";
+import { EmployeeFileTrainingTargets } from "./EmployeeFileTrainingTargets";
 import type { EmployeeEvidenceMap } from "./employee-evidence-storage";
 
 export interface EmployeeFileDossierViewProps {
@@ -452,40 +453,11 @@ export const EmployeeFileDossierView: React.FC<EmployeeFileDossierViewProps> = (
 
           {summary.schulungsSoll.length > 0 ? (
             <div className="mt-6">
-              <SubSectionHeader
-                icon={<GraduationCap className="h-3.5 w-3.5 text-[#e30613]" />}
-                title="Schulungs-Soll (Vorschau)"
-                subtitle="Posten + Norm-Fundstelle. UE-Zahlen-Darstellung in Abstimmung — vorerst ausgeblendet."
-                level="anforderung"
+              <EmployeeFileTrainingTargets
+                targets={summary.schulungsSoll}
+                employee={employee}
+                onSave={onSavePerson}
               />
-              <ul className="divide-y divide-[#e5e7eb] rounded-lg border border-[#e5e7eb]">
-                {summary.schulungsSoll.map((t) => (
-                  <li
-                    key={t.id}
-                    className="flex flex-col gap-1 px-3 py-2.5 sm:flex-row sm:items-start sm:justify-between sm:gap-3"
-                  >
-                    <div className="min-w-0 flex-1">
-                      <div className="flex items-center gap-2">
-                        <p className="text-sm text-[#111827]">{t.label}</p>
-                        <ClauseBadge clauseId={t.clauseId} />
-                      </div>
-                      <p className="mt-0.5 text-[10px] text-[#9ca3af]">
-                        Bedingung: {t.trigger}
-                        {t.period
-                          ? ` · ${t.period === "jaehrlich" ? "jährlich" : "einmalig"}`
-                          : ""}
-                        {typeof t.dlCap === "number"
-                          ? ` · DL ≤ ${t.dlCap}%`
-                          : ""}
-                      </p>
-                      <p className="mt-0.5 text-[10px] text-[#6b7280]">
-                        UE-Wert intern erfasst — Darstellung wird abgestimmt
-                      </p>
-                    </div>
-                    <EmployeeFileStatusBadge status={t.status} />
-                  </li>
-                ))}
-              </ul>
             </div>
           ) : null}
 
