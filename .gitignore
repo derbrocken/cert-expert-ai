@@ -6,9 +6,20 @@ venv/
 .env
 .env.*
 
-# Node.js
-shared/renderer/node_modules/
+# Node.js (alle node_modules + Next.js Build — Haupt-Ursache für "too many active changes")
+node_modules/
+**/node_modules/
 shared/renderer/package-lock.json
+.next/
+**/.next/
+*.tsbuildinfo
+**/*.tsbuildinfo
+
+# Prisma / SQLite DB (enthält Personendaten — DSGVO, NIE committen)
+*.db
+*.db-journal
+**/*.db
+**/prisma/**/*.db
 
 # Outputs (generated files — not committed)
 outputs/
@@ -17,11 +28,12 @@ outputs/
 .DS_Store
 
 # Obsidian (local UI state — not project knowledge)
-knowledge/.obsidian/
+.obsidian/
+**/.obsidian/
 knowledge/2026-*.md
 knowledge/*.canvas
 
-# Python virtual environments
-.venv/
-.venv-pdf/
-venv/
+# Python virtual environments (alle Varianten)
+.venv*/
+venv*/
+_dfss_tmp/
