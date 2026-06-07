@@ -15,7 +15,7 @@ Vollständiges Tool-2-Design liegt in OneDrive `QM/Strategie/` + `…/DFFS/`:
 `TOOL_2_EMPLOYEE_FILE_FUNCTIONAL_DESIGN_V1`, `EMPLOYEE_FILE_READINESS_RULES_V1`, `EMPLOYEE_FILE_WORKSPACE_STRUCTURE_V1_1`, `CERT_EXPERT_MVP_SCOPE_BOUNDARY_V1`, `…DEVELOPER_BACKLOG/HANDOVER/BUILD_SCAFFOLD`. → Kern: Requirement→Evidence→**Readiness/Ampel** + **Pools** + **Mitarbeiterakten-Generator** (vorausgefüllt, markiert Fehlendes). **Intern zuerst, kein Portal.**
 
 ## Dein Scope
-- **Repo:** `cert-expert-certification-os/apps/certification-os/` (Branch `b3-tool2-migration`, Port 3001).
+- **Repo:** `cert-expert-certification-os/apps/certification-os/` (Branch `main` — konsolidiert T-04, Port 3001).
 - Tool 1 `/model-creator` · Tool 2 `/employee-automation` · neue Zentrale `/intern` · `/uploads`.
 - **Du reviewst/testest**; **Cursor schreibt den Code**. Feedback an Cursor → `HANDOFF.md` („Von Claude an Cursor").
 - **Nicht** `hq/` bearbeiten (gehört dem Generalist-Track).

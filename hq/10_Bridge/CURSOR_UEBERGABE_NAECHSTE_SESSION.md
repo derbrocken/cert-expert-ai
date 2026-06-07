@@ -1,6 +1,6 @@
 # Cursor-Übergabe — nächste Session (Tool 1 + Tool 2 stabilisieren)
 
-**Stand:** 2026-06-07 · **Branch:** `b3-tool2-migration`  
+**Stand:** 2026-06-07 · **Branch:** `main` (konsolidiert, T-04)  
 **Vorherige Session:** Mitarbeiterakte UI polish (inline edit, Nachweise, Section-Reorder) — teils **uncommitted**
 
 ---
@@ -22,7 +22,7 @@ GUARDRAILS:
 - EC-09 Generator (Person → Queue → Doc-Chips → ZIP) NICHT brechen.
 - Transitional: keine Freigabe-/Zertifizierungsaussage.
 - Keine erfundenen Norm-Pflichten.
-- Branch b3-tool2-migration.
+- Branch main (konsolidiert, T-04).
 - Keine Commits ohne explizite Anweisung von Mark.
 
 APP-PFAD:

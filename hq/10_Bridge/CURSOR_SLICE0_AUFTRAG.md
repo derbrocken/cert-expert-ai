@@ -2,7 +2,7 @@
 
 **Freigabe:** Mark, 2026-06-07 („los"). **Track:** Code-Track (Claude reviewt, Cursor baut).
 **Kontext zuerst lesen:** `hq/10_Bridge/CURSOR_BAUAUFTRAG_TOOL2.md` (Gesamtplan), `DFSS_GOLD_GAP_4SLICE.md`, `TOOL2_FAHRPLAN_DFSS.md`.
-**Repo:** `cert-expert-certification-os/apps/certification-os/` · Branch `b3-tool2-migration` · Port **3001**.
+**Repo:** `cert-expert-certification-os/apps/certification-os/` · Branch `main` (konsolidiert, T-04) · Port **3001**.
 
 ---
 

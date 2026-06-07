@@ -67,3 +67,40 @@
 - ℹ️ Norm-Matrix erwartungsgemäß noch nicht verdrahtet (Phase 2), keine erfundenen Normpflichten.
 
 **Nicht getestet:** Live-ZIP-Export im Browser (lt. Cursor 2026-06-07 manuell verifiziert); Hetzner-S3-Roundtrip (Creds liegen in `.env.local`, Sandbox-Netz nicht genutzt).
+
+---
+
+## 2026-06-07 — Review Slice 0b: Persistente Akte (SQLite/Prisma + S3) — **ABGENOMMEN**
+
+**Methode:** Statisches Code-Review (`schema.prisma`, `employee-file-repository.ts`, `employee-file-actions.ts`, `cea-blob-storage.ts`, `employee-queue-storage.ts`-Adapter, `api-auth.ts`, Routes) + `tsc --noEmit` + git-Check. Branch `main` (Code **uncommitted** im Working Tree).
+
+**Verdikt: passt — Fundament solide, keine Blocker.**
+- ✅ **Datenmodell** (Company → CompanyExportSettings → EmployeeFile → EvidenceItem + MigrationRecord) wie 0a freigegeben; IDs werden beibehalten.
+- ✅ **EC-09 unangetastet:** `generate-employee-docs.ts` seit Merge nicht geändert (git verifiziert); `employeeFileToEmployee()` rekonstruiert den `Employee`-Typ **1:1** → Generator bekommt identische Objekte.
+- ✅ **Migration** idempotent (`MigrationRecord.sourceKey`), Company-Match per Name → Fallback `_legacy_import`; Evidence Base64→S3; localStorage erst nach Erfolg umbenannt (nicht gelöscht).
+- ✅ **Logo→S3** (`logoStorageKey`); `getExportSettings` rehydriert zu dataUrl → `GlobalProperties.companyLogo` für Generator erhalten.
+- ✅ **Auth** `requireInternalApiKey` timing-safe; `.gitignore` schließt `.env*` + `/prisma/*.db` aus (Secrets/DB nicht im Git).
+- ✅ `tsc --noEmit` → **0 Fehler**; Prisma-Client generiert.
+
+**Follow-ups (keine 0b-Blocker):**
+1. **Commit** — 0b ist komplett uncommitted. Nach Marks Browser-Smoke committen.
+2. **⚠️ Slice-1-Fix `verifyTallySignature`:** nutzt **hex-Digest + Strip `sha256=`**. Tally-Doku-Beispiel nutzt **base64-Digest, Header ohne Prefix** (`createHmac(...).digest('base64')`). → beim Slice-1-Verdrahten Encoding angleichen + raw-body vs. re-stringified testen, sonst werden gültige Webhooks abgelehnt.
+3. Migration: Evidence-Einträge ohne `dataUrl` werden still übersprungen (Low-Risk; Legacy speicherte dataUrl).
+
+**Nicht getestet (braucht Marks Rechner):** `npm run db:push` (Tabellen anlegen), Browser-EC-09-Smoke (Person→Generator→ZIP), Kunden-Switcher mit 2 Firmen (getrennte Pools), Migration mit echten Alt-Daten.
+
+---
+
+## 2026-06-07 — Review Slice-1-Nachzug: Beschäftigungsart + Qualifikation + Rolle — **ABGENOMMEN**
+
+**Methode:** Statischer Gegencheck im Repo (schema.prisma, lib/data/tally-employee-slots.json, employee-stammdaten-options.ts) + Cursors Browser-Verifikation (echte Submission rDKJXb2, Wolf Street/blubermann).
+
+**Verdikt: passt, keine Blocker.**
+- ✅ `EmployeeFile.employmentType` + `qualification` (String?, optional) im Schema; db:push erfolgt.
+- ✅ Mapping über alle 10 Slots: `roleTypeQuestionId`/`employmentTypeQuestionId`/`qualificationQuestionId` getrennt (Bugfix bestätigt — Beschäftigungsart `aBv7BE` ≠ roleType `pLzdKP`). Dropdown-Werte als lesbare Labels.
+- ✅ UI-Label „Rolle (Sicherheitsmitarbeiter / Führungskraft)“; volle Taxonomie inkl. Bürokraft/Verwaltung + Geschäftsführung.
+- ✅ EC-09 (`generateEmployeeDocs`) unverändert; EC-10 (Nachweise `unchecked`) gewahrt; keine erfundenen UE-Werte.
+
+**Follow-up (KEIN Blocker, → Slice 2):** ZIP-Export braucht `roleId` (Dokumenten-Vorlage); bei reinem Tally-Intake oft leer → Generator läuft für solche Akten erst nach Rollen-/Template-Zuordnung. Das ist genau das „Rolle macht doppelt Dienst“ aus dem Slice-2-Modell (Rolle → Template-Palette **und** Pflicht-Set). In Slice 2 verdrahten.
+
+**Mini-Notiz:** Taxonomie führt „Subunternehmer-SMA“ und „Subunternehmer“ getrennt — bei Slice 2 prüfen, ob beide gewollt (sonst zusammenführen).

@@ -2,7 +2,7 @@
 
 **Stand:** 2026-06-07 · **Autor:** Claude (Code-Track) · **Für:** Cursor · **Freigabe:** Mark
 **Lesen vorab:** `DFSS_GOLD_GAP_4SLICE.md` (Lücken + QFD-Priorisierung), `TOOL2_FAHRPLAN_DFSS.md`, `knowledge/NORM_MATRIX_Mitarbeiternachweise_v1.md`. Gold-Design: `cert-expert-certification-os/docs/03-controls/` (B5/B6/B7).
-**Repo:** `cert-expert-certification-os/apps/certification-os/` · Branch `b3-tool2-migration` · Port **3001**.
+**Repo:** `cert-expert-certification-os/apps/certification-os/` · Branch `main` (konsolidiert, T-04) · Port **3001**.
 
 > **Prinzip (für jeden Slice):** Erst beschreiben *„Was kann Mark am Ende tun"*, dann bauen. Kein Technik-Selbstzweck. Klein liefern, EC-09 nie brechen.
 
