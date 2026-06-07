@@ -6,11 +6,12 @@
 
 > ## ▶ HIER STARTEN — AKTUELLER STAND (2026-06-07)
 > **Branch = `main`** · COS: `cert-expert-certification-os/apps/certification-os/` · Port **3001**
-> **Phase = Slice 2 (Requirement-Engine) gebaut + committet (`22e0c7c`) ✅** · EC-09+tsc grün · Tests 10/10.
-> **Arbeitsmodell:** Planer/Claude führt (plant + reviewt) · Executor/Cursor baut · Ping-Pong über Bridge-Dateien (Mark, 2026-06-07).
-> **Letzte Commits:** `22e0c7c` · `6017564` · `b768eee` · `4d9cefe`
-> **▶ Offen vor Slice 3:** (1) **UE-Anzeige (Punkt 3)** — Mark liefert Darstellungs-Vorlage → Executor verdrahtet UE-Zahlen. (2) **Claude-Review Slice-2-Engine** gegen Norm-Matrix v2 + Klausel-Register (jede `clauseId`) → `CODE_REVIEW.md`. (3) Bulk-Gruppen-Scope (freigegeben, noch offen — evtl. Slice 3).
-> **Form:** https://tally.so/r/vGNvY0 · **Deploy:** `HETZNER_DEPLOY.md` · **Aufgaben:** `10_Bridge/AUFGABEN.md`
+> **Phase = Slice 2 (Requirement-Engine) gebaut + committet (`22e0c7c`) + Engine fachlich abgenommen (`96e9341`) ✅**
+> **Arbeitsmodell:** Planer/Claude führt (plant + reviewt) · Executor/Cursor baut · Ping-Pong über Bridge-Dateien (Mark, 2026-06-07). Planer rotiert seltener als Executor.
+> **Letzte Commits:** `aa96369` (CL-74) · `96e9341` (Review) · `81a0145` · `a8e378a` · `22e0c7c`
+> **⏳ Executor baut GERADE:** UE-Anzeige (Variante C, `EmployeeFileTrainingTargets.tsx`) + DB-Pfad-Fix (Akten-Load crashte: `employeeFile.findMany` — neue Spalten fehlten in der DB des Servers, DB-Doppelpfad). Noch uncommitted im Working Tree.
+> **▶ Offen (Planer, nach Executor-Done):** (1) **Review UE-Anzeige** im Browser. (2) **Findings 1+2** aus `CODE_REVIEW.md` an Executor: `q-34a` bei reiner Unterrichtung nicht „vorhanden" (Matrix §2 = gelb+Frist); EH/Brandschutz-Doppelzeilen (gleiche CL) dedupen. (3) Findings 3–5 = Marks fachl. Bestätigung (u.a. Schichtleitung normativ FK?). (4) **CL-74** (Beauftragung≠Schulung, Ausbilder-Befähigung Brandschutz+Erste-Hilfe) → Anbieter-Validierung = Slice 3/4. (5) Bulk-Gruppen-Scope (freigegeben, offen). (6) **Hetzner-Deploy** = eigener Schritt NACH Slice 2 (`HETZNER_DEPLOY.md`).
+> **Form:** https://tally.so/r/vGNvY0 · **Aufgaben:** `10_Bridge/AUFGABEN.md`
 
 ---
 
