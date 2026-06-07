@@ -6,10 +6,32 @@
 
 > ## ▶ HIER STARTEN — AKTUELLER STAND (2026-06-07)
 > **Branch = `main`** · COS: `cert-expert-certification-os/apps/certification-os/` · Port **3001**
-> **Phase = Slice-1-Nachzug ✅ · Norm v2 + Klausel-Register ✅ · EC-09+tsc ✅ · Bridge v1→v2 (`b768eee`)** — **Pause** bis Slice 2 freigegeben.
-> **Letzte Commits:** `b768eee` · `eaede2b` · `df44278` · `4d9cefe`
-> **Form:** https://tally.so/r/vGNvY0 · **Deploy:** `HETZNER_DEPLOY.md`
-> **▶ Aufgaben:** `10_Bridge/AUFGABEN.md`
+> **Phase = Slice 2 (Requirement-Engine) gebaut + committet (`22e0c7c`) ✅** · EC-09+tsc grün · Tests 10/10.
+> **Arbeitsmodell:** Planer/Claude führt (plant + reviewt) · Executor/Cursor baut · Ping-Pong über Bridge-Dateien (Mark, 2026-06-07).
+> **Letzte Commits:** `22e0c7c` · `6017564` · `b768eee` · `4d9cefe`
+> **▶ Offen vor Slice 3:** (1) **UE-Anzeige (Punkt 3)** — Mark liefert Darstellungs-Vorlage → Executor verdrahtet UE-Zahlen. (2) **Claude-Review Slice-2-Engine** gegen Norm-Matrix v2 + Klausel-Register (jede `clauseId`) → `CODE_REVIEW.md`. (3) Bulk-Gruppen-Scope (freigegeben, noch offen — evtl. Slice 3).
+> **Form:** https://tally.so/r/vGNvY0 · **Deploy:** `HETZNER_DEPLOY.md` · **Aufgaben:** `10_Bridge/AUFGABEN.md`
+
+---
+
+## 🔚 ABSCHLUSS-EINTRAG — Slice 2 Requirement-Engine gebaut + committet, 2026-06-07
+
+**Fertig (Commit `22e0c7c`):**
+- **Requirement-Engine** (`requirement-engine.ts`, UI-unabhängig, reine TS-Logik): `deriveRequirements(ctx)` → Pflicht-Set + Schulungs-Soll + Fristen aus Rolle × Beauftragung × SDL × Geltungsbereich × Beschäftigungsart × „fährt Dienstfahrzeug". Jede Regel mit `clauseId` (CL-01..CL-27); ohne belegte CL → „fachlich prüfen". Tests **10/10** grün.
+- **Presenter** `employee-file-requirements.ts` auf `roleType` umgestellt (Legacy `isSecurityRole` raus).
+- **Neue Felder** (Employee + Prisma + Repository): `sdlScopes`, `drivesServiceVehicle`, `ersteHilfeGueltigBis`, `brandschutzGueltigBis` (`db push` gelaufen).
+- **UI** Erfassung (SDL-Mehrfachauswahl, Dienstfahrzeug, Fristdaten) + Anzeige (Pflicht-Set mit CL-Badge, Fristen, Schulungs-Soll-Vorschau **ohne** UE-Zahlen).
+- Bauauftrag `CURSOR_SLICE2_AUFTRAG.md` (vollständig freigegeben, Variante C für UE-Anzeige).
+- Guardrails: **EC-09-Smoke grün**, `tsc` 0 Fehler, **EC-10** gewahrt (rechnerisch, kein Freigabe-/Auditfähigkeitsstatus).
+
+**Offen / nächster Schritt:**
+1. **UE-Anzeige (Entscheidung 3):** Mark zeigt Darstellungs-Vorlage (Variante C, Balken nur bei laufender Jahres-WB) → Executor verdrahtet die UE-Zahlen (Engine rechnet sie bereits intern).
+2. **Claude-Review** der Engine-Regeln gegen Norm-Matrix v2 + Klausel-Register → `CODE_REVIEW.md`.
+3. **Bulk-Gruppen-Scope-Zuweisung** (freigegeben) noch nicht gebaut — Pool-/Listen-UX, evtl. mit Slice 3.
+
+**Nächster Chat:** liest `CLAUDE.md` + diese Box. **Planer-Chat** → Review Slice 2 + UE-Anzeige spezifizieren. **Executor-Chat** → UE-Verdrahtung nach Marks Vorlage.
+
+**Commit-Basis:** `22e0c7c` · `feat(tool2): Slice 2 Requirement-Engine (Pflicht-Set + Schulungs-Soll, CL-traceable)`
 
 ---
 
