@@ -6,8 +6,8 @@
 
 > ## ▶ HIER STARTEN — AKTUELLER STAND (2026-06-07)
 > **Branch = `main`** · COS: `cert-expert-certification-os/apps/certification-os/` · Port **3001**
-> **Phase = Slice-1-Nachzug ✅ · Norm v2 + Klausel-Register ✅ · EC-09+tsc ✅ · Bridge v1→v2 (uncommitted)** — **Pause** bis Slice 2 freigegeben.
-> **Letzte Commits:** `eaede2b` · `d1ffc9a` · `df44278` · `4d9cefe`
+> **Phase = Slice-1-Nachzug ✅ · Norm v2 + Klausel-Register ✅ · EC-09+tsc ✅ · Bridge v1→v2 (`b768eee`)** — **Pause** bis Slice 2 freigegeben.
+> **Letzte Commits:** `b768eee` · `eaede2b` · `df44278` · `4d9cefe`
 > **Form:** https://tally.so/r/vGNvY0 · **Deploy:** `HETZNER_DEPLOY.md`
 > **▶ Aufgaben:** `10_Bridge/AUFGABEN.md`
 
@@ -15,20 +15,19 @@
 
 ## 🔚 ABSCHLUSS-EINTRAG — Norm v2 verifiziert + Bridge-Sync + EC-09 (Cursor), 2026-06-07
 
-**Fertig (diese Session, noch nicht committet):**
+**Fertig (diese Session, Commit `b768eee`):**
 - Norm-Quellen auf `main` bestätigt: `knowledge/NORM_MATRIX_Mitarbeiternachweise_v2.md` + `NORM_KLAUSEL_REGISTER_v1.md` (Basis `df44278`).
 - Stale Bridge-Verweise **v1 → v2** in 7 Docs (`CURSOR_BAUAUFTRAG_*`, `CODE_TRACK_KICKOFF`, `DFSS_GOLD_GAP_4SLICE`, `TOOL2_FAHRPLAN_DFSS`, `CURSOR_SLICE0_AUFTRAG`, `HANDOFF`).
 - **EC-09-Smoke** Browser :3001 (TeamFlex joe → Generator → ZIP, POST 200 ~504ms) · **`tsc --noEmit`** 0 Fehler.
 - **Übergabe-Takt** in `CLAUDE.md` + HANDOFF verankert.
 
 **Offen:**
-- **Commit** der Bridge-Updates (s. unten) — Mark-Freigabe.
 - Slice 2 **nicht** gestartet (wartet auf „los").
 - Tech-Debt unverändert: Hetzner, Hidden `cea_company_slug`, Key-Rotation, DB-Pfad.
 
 **Nächster Schritt:** Mark gibt Slice-2-„los" **oder** commit + neuer Chat für Tech-Debt/Hetzner.
 
-**Commit-Basis:** `eaede2b` · vorgeschlagener Scope: `hq/10_Bridge/*.md` (+ ggf. `CLAUDE.md` Übergabe-Takt).
+**Commit-Basis:** `b768eee` · `docs(bridge): Norm-Matrix v2-Verweise, Übergabe-Takt und Session-Abschluss`
 
 ---
 
