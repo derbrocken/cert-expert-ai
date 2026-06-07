@@ -10,6 +10,30 @@
 
 ---
 
+## 🔚 ABSCHLUSS-EINTRAG — Migration Cowork → Cursor (Claude Code), 2026-06-07
+
+**Warum:** Der Code-Track zieht von Claude Cowork **direkt nach Cursor** (Claude Code, Opus 4), Split-Modell **Planer/Reviewer ↔ Executor**, Mark als Gate. Diese HANDOFF.md wird ab jetzt **Projekt-Historie**; Koordination läuft im IDE.
+
+**Was fertig & committet ist:**
+- `chore`: `.gitignore`-Hygiene + **Prisma-DB (`*.db`) ignoriert (DSGVO)** + getrackte `.pyc` raus.
+- `feat(tool2)` **`4d9cefe`**: Slice-1 Tally-Intake Live-Fix + Nachzug (employmentType/qualification, Rolle/Taxonomie, Slot-Mapping). Browser-verifiziert.
+- `docs(norm+bridge)`: **Norm-Matrix v2**, **Klausel-Register (CL-IDs)**, **Geschäftsmodell-Notiz**, Bridge-Updates.
+- **Repo-`CLAUDE.md`** angelegt (Arbeitsmodell + Guardrails + Pointer + Build-Stand) → wird in Cursor automatisch geladen.
+- Frühere Marke: Slice 0 = `861f210`.
+
+**Was offen / in Arbeit ist:**
+- **Slice 2** (Requirement-Engine + Schulungsrechner) — NICHT gestartet, braucht Mark-Freigabe. Gegen `NORM_MATRIX v2` + `KLAUSEL_REGISTER` bauen, jede Regel `clauseId`.
+- **DEKRA-Punkte** CL-60–62 · **Legal-Input Mark** CL-70–73 (BewachV/Wachbuch).
+- **Tech-Debt:** Tally-Key rotieren, Hetzner-Deploy (stabile URL), Hidden-Slug-Routing exakt, Legacy-Backfill, DB-Doppelpfad `prisma/prisma/` vereinheitlichen.
+- **Nicht vom Code-Track committet:** der **Generalisten-Track** (hq Dashboards/Master_Dump/Operations_Board/Kundenprojekte/Vertrieb) liegt bewusst uncommitted — gehört dem Generalisten.
+
+**Was der nächste Agent (Claude Code in Cursor) ZUERST tut:**
+1. Repo-Root `cert-expert-ai/` in Cursor öffnen; `CLAUDE.md` + die Source-of-Truth-Docs lesen.
+2. `npm run dev` (:3001) + **EC-09-Smoke** (Person → Generator → ZIP) grün bestätigen; `tsc --noEmit`.
+3. Mit Mark **Slice 2 freigeben** oder offene Tech-Debt (Hetzner/Key-Rotation) priorisieren.
+
+---
+
 ## 📥 Von Cursor an Claude (Fragen / Bitten)
 
 ### 2026-06-07 — Session-Start: Bauauftrag Readiness/DEKRA gelesen · **Pause bis Slice-2-Freigabe**
