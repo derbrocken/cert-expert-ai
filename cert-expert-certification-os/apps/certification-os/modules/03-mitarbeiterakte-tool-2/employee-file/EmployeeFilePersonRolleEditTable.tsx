@@ -14,8 +14,10 @@ import {
 } from "./employee-display-labels";
 import {
   BESCHAEFTIGUNGSART_OPTIONS,
+  DIENSTFAHRZEUG_OPTIONS,
   ROLLE_STAMMDATEN_LABEL,
   ROLLE_TYPE_OPTIONS,
+  SDL_SCOPE_CATALOG,
 } from "./employee-stammdaten-options";
 import {
   joinFullName,
@@ -67,6 +69,23 @@ export const EmployeeFilePersonRolleEditTable: React.FC<
       })),
     [appointments],
   );
+
+  const sdlOptions = useMemo(
+    () =>
+      SDL_SCOPE_CATALOG.map((s) => ({
+        id: s.id,
+        name: s.name,
+        description: s.geltungsbereich,
+      })),
+    [],
+  );
+
+  const dienstfahrzeugValue =
+    employee.drivesServiceVehicle === true
+      ? "ja"
+      : employee.drivesServiceVehicle === false
+        ? "nein"
+        : "";
 
   const patch = (partial: Partial<Employee>) => {
     onSave(applyEmployeePatchWithDocSync(employee, partial, roles, appointments));
@@ -230,6 +249,65 @@ export const EmployeeFilePersonRolleEditTable: React.FC<
           placeholder="z. B. Sachkunde §34a"
           className="py-2 text-sm"
         />,
+      )}
+
+      {rowShell(
+        "sdl-scopes",
+        "SDL / Geltungsbereich",
+        <div className={COMPACT_SELECT}>
+          <MultiSelect
+            options={sdlOptions}
+            value={employee.sdlScopes ?? []}
+            onChange={(sdlScopes) => patch({ sdlScopes })}
+            placeholder="DIN 77200-1/-2, Veranstaltung, Objekt, Asyl …"
+          />
+        </div>,
+        "Eingang der Pflicht-Engine — Mehrfachauswahl",
+      )}
+
+      {rowShell(
+        "dienstfahrzeug",
+        "Fährt Dienstfahrzeug?",
+        <div className={COMPACT_SELECT}>
+          <Select
+            options={[...DIENSTFAHRZEUG_OPTIONS]}
+            value={dienstfahrzeugValue}
+            onChange={(v) =>
+              patch({
+                drivesServiceVehicle:
+                  v === "ja" ? true : v === "nein" ? false : undefined,
+              })
+            }
+            placeholder="unbekannt"
+          />
+        </div>,
+        "Ja → Fahrer-/UVV-Unterweisung (fachlich prüfen, CL-73)",
+      )}
+
+      {rowShell(
+        "erste-hilfe-frist",
+        "Erste Hilfe gültig bis",
+        <DatePicker
+          value={employee.ersteHilfeGueltigBis || ""}
+          onChange={(ersteHilfeGueltigBis) => patch({ ersteHilfeGueltigBis })}
+          placeholder="Ablaufdatum Erste Hilfe"
+          className="text-sm"
+        />,
+        "2-Jahres-Frist (CL-08)",
+      )}
+
+      {rowShell(
+        "brandschutz-frist",
+        "Brandschutzhelfer gültig bis",
+        <DatePicker
+          value={employee.brandschutzGueltigBis || ""}
+          onChange={(brandschutzGueltigBis) =>
+            patch({ brandschutzGueltigBis })
+          }
+          placeholder="Ablaufdatum Brandschutzhelfer"
+          className="text-sm"
+        />,
+        "3-Jahres-Frist (CL-23)",
       )}
 
       {rowShell(

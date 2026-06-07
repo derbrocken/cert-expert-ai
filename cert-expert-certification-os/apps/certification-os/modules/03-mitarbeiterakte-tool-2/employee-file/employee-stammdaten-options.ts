@@ -23,3 +23,13 @@ export const BESCHAEFTIGUNGSART_OPTIONS = [
   { id: "Praktikum / Ausbildung", name: "Praktikum / Ausbildung" },
   { id: "Freelance / Honorar", name: "Freelance / Honorar" },
 ] as const;
+
+/** SDL / Geltungsbereich (Slice 2 — Engine-Eingang). Quelle: requirement-engine SDL_SCOPE_CATALOG. */
+export { SDL_SCOPE_CATALOG, sdlScopeLabel } from "./requirement-engine";
+export type { SdlScopeId, SdlScopeOption } from "./requirement-engine";
+
+/** "fährt Dienstfahrzeug?" — Tri-State über Select (unbekannt = leer). */
+export const DIENSTFAHRZEUG_OPTIONS = [
+  { id: "ja", name: "Ja — fährt Dienstfahrzeug" },
+  { id: "nein", name: "Nein" },
+] as const;

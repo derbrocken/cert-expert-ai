@@ -4,19 +4,17 @@ import {
   roleLabelDe,
   ROLE_LABELS_DE,
 } from "./employee-display-labels";
+import {
+  deriveRequirements,
+  isBewachungsrolle,
+  sdlScopeLabel,
+  type EngineRule,
+  type RequirementContext,
+  type RequirementResult,
+  type WorkingItemStatus,
+} from "./requirement-engine";
 
-/** Conservative working statuses — no audit/release claims */
-export type WorkingItemStatus =
-  | "vorhanden"
-  | "fehlt"
-  | "beantragt"
-  | "unvollständig"
-  | "nicht lesbar"
-  | "abgelaufen"
-  | "nicht erforderlich"
-  | "fachlich prüfen"
-  | "vorbereitet"
-  | "offen";
+export type { WorkingItemStatus };
 
 export interface RequirementRow {
   id: string;
@@ -26,6 +24,8 @@ export interface RequirementRow {
   hint?: string;
   /** Condition — why this requirement applies */
   trigger?: string;
+  /** Norm-Fundstelle (CL-xx) — gesetzt bei Engine-abgeleiteten Pflichten */
+  clauseId?: string | null;
 }
 
 export const GRUNDROLLE_CATALOG = [
@@ -120,14 +120,50 @@ function fieldStatus(
   return "vorhanden";
 }
 
-function isSecurityRole(roleId: string): boolean {
-  return (
-    roleId.includes("engineer") ||
-    roleId.includes("manager") ||
-    roleId.includes("analyst") ||
-    roleId === "software-engineer" ||
-    roleId === "project-manager"
-  );
+/**
+ * Bewachungsrolle (Slice 2) — abgeleitet aus der echten Stammdatenrolle
+ * (`Employee.roleType`), nicht mehr aus der Legacy-`roleId`-Heuristik.
+ */
+function isSecurityRole(employee: Pick<Employee, "roleType">): boolean {
+  return isBewachungsrolle(employee.roleType);
+}
+
+/** Engine-Regel → Presenter-Row (clauseId + Fundstelle in den Hint). */
+function engineRuleToRow(rule: EngineRule): RequirementRow {
+  const clausePart = rule.clauseId ? `${rule.clauseId}` : "ohne CL — fachlich prüfen";
+  const quellePart = rule.quelle ? ` · ${rule.quelle}` : "";
+  const hint = rule.hint
+    ? `${clausePart}${quellePart} — ${rule.hint}`
+    : `${clausePart}${quellePart}`;
+  return {
+    id: rule.id,
+    label: rule.label,
+    status: rule.status,
+    trigger: rule.trigger,
+    clauseId: rule.clauseId,
+    hint,
+  };
+}
+
+/** Bedingungs-Vektor für die Engine aus Akte + Beauftragungen. */
+export function buildRequirementContext(
+  employee: Employee,
+  appointments: Appointment[],
+): RequirementContext {
+  return {
+    roleType: employee.roleType,
+    appointmentLabels: overlayFromAppointments(
+      appointments,
+      employee.appointmentIds,
+    ),
+    employmentType: employee.employmentType,
+    qualification: employee.qualification,
+    startDate: employee.startDate,
+    sdlScopes: employee.sdlScopes ?? [],
+    drivesServiceVehicle: employee.drivesServiceVehicle,
+    ersteHilfeGueltigBis: employee.ersteHilfeGueltigBis,
+    brandschutzGueltigBis: employee.brandschutzGueltigBis,
+  };
 }
 
 function overlayFromAppointments(
@@ -228,46 +264,68 @@ export function buildPersonUndRollePflichtangaben(
 }
 
 export function buildGeltungsbereich(employee: Employee): RequirementRow[] {
-  const security = isSecurityRole(employee.roleId);
+  const scopes = employee.sdlScopes ?? [];
+  const hasDin1 = scopes.some((s) => s.startsWith("din1"));
+  const hasDin2 = scopes.some((s) => s.startsWith("din2"));
+  const scopeLabels = scopes.map(sdlScopeLabel);
+
+  const drives =
+    employee.drivesServiceVehicle === true
+      ? "Ja"
+      : employee.drivesServiceVehicle === false
+        ? "Nein"
+        : undefined;
 
   return [
     {
       id: "din-1",
       label: "DIN 77200-1 Relevanz",
-      status: security ? "fachlich prüfen" : "nicht erforderlich",
-      hint: "Bedingung — löst Anforderungen aus",
+      status: hasDin1 ? "vorbereitet" : "nicht erforderlich",
+      hint: "Aus SDL-Auswahl abgeleitet",
     },
     {
       id: "din-2",
       label: "DIN 77200-2 Relevanz",
-      status: "fachlich prüfen",
-      hint: "Scope-abhängig — keine Matrix in diesem Slice",
+      status: hasDin2 ? "vorbereitet" : "nicht erforderlich",
+      hint: "Aus SDL-Auswahl abgeleitet",
     },
     {
       id: "sdl",
-      label: "SDL / Dienstleistung",
-      status: "offen",
+      label: "SDL / Geltungsbereich",
+      value: scopeLabels.length > 0 ? scopeLabels.join(", ") : undefined,
+      status: scopeLabels.length > 0 ? "vorhanden" : "offen",
+      hint: "Eingang der Pflicht-Engine",
+    },
+    {
+      id: "dienstfahrzeug",
+      label: "Fährt Dienstfahrzeug?",
+      value: drives,
+      status:
+        employee.drivesServiceVehicle === true
+          ? "fachlich prüfen"
+          : employee.drivesServiceVehicle === false
+            ? "nicht erforderlich"
+            : "offen",
+      trigger:
+        employee.drivesServiceVehicle === true
+          ? "Löst Fahrer-/UVV-Unterweisung aus (CL-73)"
+          : undefined,
     },
     {
       id: "projekt",
       label: "Projekt / Objekt",
       status: "offen",
+      hint: "Projekt-Referenz folgt (Slice 3)",
     },
     {
       id: "objekt-einweisung-pflicht",
       label: "Objektbezogene Einweisung erforderlich",
-      status: "fachlich prüfen",
+      status: scopes.includes("din2-objekte") ? "fehlt" : "fachlich prüfen",
       trigger: "Projekt-/Objektkontext",
     },
     {
-      id: "qualifikation",
-      label: "Erforderliches Qualifikationsniveau",
-      status: "fachlich prüfen",
-      hint: "Abhängig von Grundrolle und Geltungsbereich",
-    },
-    {
       id: "zusatz-schulung",
-      label: "Zusätzliche Schulungsanforderung",
+      label: "Zusätzliche Schulungsanforderung (Notiz)",
       value: employee.trainingHours || undefined,
       status: employee.trainingHours?.trim() ? "vorbereitet" : "offen",
     },
@@ -279,7 +337,7 @@ export function buildPflichtangaben(
   companyName: string,
 ): RequirementRow[] {
   const { vorname, nachname } = splitName(employee.fullName);
-  const security = isSecurityRole(employee.roleId);
+  const security = isSecurityRole(employee);
 
   return [
     {
@@ -412,7 +470,7 @@ export function buildPflichtnachweise(
   overlayLabels: string[],
   schulungRows: RequirementRow[],
 ): RequirementRow[] {
-  const security = isSecurityRole(employee.roleId);
+  const security = isSecurityRole(employee);
   const ersthelfer = hasOverlayHint(overlayLabels, "ersthelfer", "erste hilfe");
   const brandschutz = hasOverlayHint(overlayLabels, "brand");
 
@@ -530,7 +588,22 @@ export function getEmployeeFileSummary(
     appointments,
     employee.appointmentIds,
   );
-  const security = isSecurityRole(employee.roleId);
+  const security = isSecurityRole(employee);
+
+  // Slice-2 Requirement-Engine — deterministische Ableitung (clauseId-belegt)
+  const engine: RequirementResult = deriveRequirements(
+    buildRequirementContext(employee, appointments),
+  );
+  const pflichtSet: RequirementRow[] = engine.pflichtSet.map(engineRuleToRow);
+  const fristen: RequirementRow[] = engine.fristen.map((d) => ({
+    id: d.id,
+    label: d.label,
+    value: d.dueDate,
+    status: d.status,
+    trigger: d.trigger,
+    clauseId: d.clauseId,
+    hint: [d.clauseId ?? undefined, d.basis].filter(Boolean).join(" · ") || undefined,
+  }));
 
   const personUndRolle = buildPersonUndRolle(
     employee,
@@ -572,6 +645,12 @@ export function getEmployeeFileSummary(
     pflichtnachweise,
     schulungUnterweisung,
     openIssues,
+    // Slice-2 Engine-Ableitung (clauseId-belegt)
+    engine,
+    pflichtSet,
+    fristen,
+    schulungsSoll: engine.schulungsSoll,
+    engineHinweise: engine.hinweise,
     missingPflichtangaben: pflichtangaben.filter((r) => r.status === "fehlt")
       .length,
     missingNachweise: pflichtnachweise.filter(

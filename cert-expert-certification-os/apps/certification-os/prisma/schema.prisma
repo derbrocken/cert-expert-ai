@@ -49,6 +49,10 @@ model EmployeeFile {
   guardIDNumber              String?
   employeeIDNumber           String?
   useGuardAsEmployeeId       Boolean?
+  sdlScopes                  Json     @default("[]")
+  drivesServiceVehicle       Boolean?
+  ersteHilfeGueltigBis       String?
+  brandschutzGueltigBis      String?
   evidenceItems              EvidenceItem[]
   migratedFromLocalStorageAt DateTime?
   createdAt                  DateTime @default(now())

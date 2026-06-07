@@ -9,6 +9,9 @@ import {
   Pencil,
   GraduationCap,
   BookOpen,
+  ListChecks,
+  CalendarClock,
+  Info,
 } from "lucide-react";
 import { formatIsoToInput } from "@/lib/utils/date";
 import type { Employee, Role, Appointment } from "@/lib/types/employee";
@@ -100,6 +103,22 @@ function SectionHeader({
   );
 }
 
+function ClauseBadge({ clauseId }: { clauseId?: string | null }) {
+  if (clauseId === undefined) return null;
+  if (clauseId === null) {
+    return (
+      <span className="inline-flex shrink-0 rounded border border-violet-200 bg-violet-50 px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wide text-violet-800">
+        ohne CL
+      </span>
+    );
+  }
+  return (
+    <span className="inline-flex shrink-0 rounded border border-[#e5e7eb] bg-[#f9fafb] px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wide text-[#6b7280]">
+      {clauseId}
+    </span>
+  );
+}
+
 function RequirementTable({ rows }: { rows: RequirementRow[] }) {
   return (
     <ul className="divide-y divide-[#e5e7eb] rounded-lg border border-[#e5e7eb]">
@@ -109,7 +128,10 @@ function RequirementTable({ rows }: { rows: RequirementRow[] }) {
           className="flex flex-col gap-1 px-3 py-2.5 sm:flex-row sm:items-start sm:justify-between sm:gap-3"
         >
           <div className="min-w-0 flex-1">
-            <p className="text-sm text-[#111827]">{row.label}</p>
+            <div className="flex items-center gap-2">
+              <p className="text-sm text-[#111827]">{row.label}</p>
+              <ClauseBadge clauseId={row.clauseId} />
+            </div>
             {row.value ? (
               <p className="mt-0.5 text-xs text-[#374151]">
                 {formatValue(row.value)}
@@ -409,6 +431,89 @@ export const EmployeeFileDossierView: React.FC<EmployeeFileDossierViewProps> = (
               <RequirementTable rows={summary.geltungsbereich} />
             </div>
           </div>
+        </section>
+
+        {/* 1b. Pflicht-Set (Engine-abgeleitet, clauseId-belegt) */}
+        <section className="p-5">
+          <SectionHeader
+            icon={<ListChecks className="h-4 w-4 text-[#e30613]" />}
+            title="Pflicht-Set (abgeleitet)"
+            subtitle="Automatisch aus Rolle × Beauftragung × SDL × Beschäftigungsart × Dienstfahrzeug — jede Pflicht mit Norm-Fundstelle (CL-xx)"
+            level="anforderung"
+          />
+          {summary.pflichtSet.length > 0 ? (
+            <RequirementTable rows={summary.pflichtSet} />
+          ) : (
+            <p className="rounded-lg border border-dashed border-[#e5e7eb] px-3 py-4 text-sm text-[#6b7280]">
+              Kein Pflicht-Set ableitbar — Rolle und ggf. SDL/Geltungsbereich
+              erfassen.
+            </p>
+          )}
+
+          {summary.schulungsSoll.length > 0 ? (
+            <div className="mt-6">
+              <SubSectionHeader
+                icon={<GraduationCap className="h-3.5 w-3.5 text-[#e30613]" />}
+                title="Schulungs-Soll (Vorschau)"
+                subtitle="Posten + Norm-Fundstelle. UE-Zahlen-Darstellung in Abstimmung — vorerst ausgeblendet."
+                level="anforderung"
+              />
+              <ul className="divide-y divide-[#e5e7eb] rounded-lg border border-[#e5e7eb]">
+                {summary.schulungsSoll.map((t) => (
+                  <li
+                    key={t.id}
+                    className="flex flex-col gap-1 px-3 py-2.5 sm:flex-row sm:items-start sm:justify-between sm:gap-3"
+                  >
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-center gap-2">
+                        <p className="text-sm text-[#111827]">{t.label}</p>
+                        <ClauseBadge clauseId={t.clauseId} />
+                      </div>
+                      <p className="mt-0.5 text-[10px] text-[#9ca3af]">
+                        Bedingung: {t.trigger}
+                        {t.period
+                          ? ` · ${t.period === "jaehrlich" ? "jährlich" : "einmalig"}`
+                          : ""}
+                        {typeof t.dlCap === "number"
+                          ? ` · DL ≤ ${t.dlCap}%`
+                          : ""}
+                      </p>
+                      <p className="mt-0.5 text-[10px] text-[#6b7280]">
+                        UE-Wert intern erfasst — Darstellung wird abgestimmt
+                      </p>
+                    </div>
+                    <EmployeeFileStatusBadge status={t.status} />
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ) : null}
+
+          {summary.fristen.length > 0 ? (
+            <div className="mt-6">
+              <SubSectionHeader
+                icon={<CalendarClock className="h-3.5 w-3.5 text-[#e30613]" />}
+                title="Fristen / Termine"
+                subtitle="Frist-Vorstufe (volle Ampel folgt) — Sachkunde 6 Monate, Erste Hilfe 2 J., Brandschutz 3 J."
+                level="anforderung"
+              />
+              <RequirementTable rows={summary.fristen} />
+            </div>
+          ) : null}
+
+          {summary.engineHinweise.length > 0 ? (
+            <ul className="mt-4 space-y-1.5">
+              {summary.engineHinweise.map((h, i) => (
+                <li
+                  key={i}
+                  className="flex items-start gap-2 rounded-md border border-[#e5e7eb] bg-[#fafbfc] px-2.5 py-2 text-[11px] text-[#6b7280]"
+                >
+                  <Info className="mt-0.5 h-3 w-3 shrink-0 text-[#9ca3af]" />
+                  <span>{h}</span>
+                </li>
+              ))}
+            </ul>
+          ) : null}
         </section>
 
         {/* 2. Offene Punkte */}

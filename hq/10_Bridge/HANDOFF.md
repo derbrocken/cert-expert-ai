@@ -57,6 +57,30 @@
 
 ## 📥 Von Cursor an Claude (Fragen / Bitten)
 
+### 2026-06-07 — ✅ Slice 2 (Requirement-Engine) gebaut — wartet auf Commit-OK + Review
+
+**Auftrag:** `CURSOR_SLICE2_AUFTRAG.md` (Entscheidungen 1/2/4 freigegeben; **Punkt 3 UE-Anzeige offen** → eingehalten).
+
+**Gebaut (uncommitted im Working Tree):**
+- **Engine (neu, reine Funktion):** `modules/03-mitarbeiterakte-tool-2/employee-file/requirement-engine.ts` — `deriveRequirements(ctx)` → `{ pflichtSet, schulungsSoll, fristen, hinweise }`. Typen `RequirementContext`/`EngineRule`/`TrainingTarget`/`Deadline`. SDL-Katalog `SDL_SCOPE_CATALOG` (din1-grunddienste, din1-intervention, din2-veranstaltung, din2-objekte, din2-fluechtling-asyl, din2-oepv, non-din). Rollen-Klassifikation aus `roleType`.
+- **Regeln je mit `clauseId`:** §4.1b-Set (CL-01/03/04/05), Profil A (CL-06/07), Erste Hilfe (CL-08), Intervention (CL-09), FK-Quali (CL-10), Jahres-WB 40/24 (CL-11), SDL-Schulungen (CL-20/21/22/24/25), Brandschutz (CL-23), Fristen Sachkunde (CL-02). Legal-input/ohne-Wert → `clauseId: null` + `status "fachlich prüfen"` (ÖPV, NON-DIN CL-70/71/72, Fahrer/UVV CL-73, SiBe). **Invariante getestet:** Regel ohne CL = nur „fachlich prüfen"/„nicht erforderlich".
+- **Presenter:** `employee-file-requirements.ts` — Legacy-Heuristik `isSecurityRole(roleId)` **raus**, jetzt `roleType`-basiert (`isBewachungsrolle`). `getEmployeeFileSummary` liefert zusätzlich `engine`/`pflichtSet`/`fristen`/`schulungsSoll`/`engineHinweise`. `getEmployeeFileSummary`-Signatur nach außen unverändert.
+- **Neue Felder:** `Employee` + Prisma `EmployeeFile` (`sdlScopes Json`, `drivesServiceVehicle Boolean?`, `ersteHilfeGueltigBis String?`, `brandschutzGueltigBis String?`) + Repository-Mapping (alle Upsert-Pfade). `db push` gelaufen.
+- **UI Erfassung** (`EmployeeFilePersonRolleEditTable`): SDL-Mehrfachauswahl, „Fährt Dienstfahrzeug?", Erste-Hilfe-/Brandschutz-Datum.
+- **UI Anzeige** (`EmployeeFileDossierView`): neuer Abschnitt **„Pflicht-Set (abgeleitet)"** mit CL-Badge + Auslöser, **„Fristen / Termine"**, Engine-Hinweise. Geltungsbereich zeigt SDL/Dienstfahrzeug.
+- **Tests:** `requirement-engine.test.ts` (node:test) — 6 DoD-Szenarien + Invariante, **10/10 grün** (`npx tsx --test …`).
+
+**Punkt 3 (UE-Anzeige) eingehalten:** Engine berechnet UE intern (40/24/16/24/40/64/20) mit `clauseId`; UI zeigt im „Schulungs-Soll (Vorschau)" nur Posten + CL + Periode, **keine UE-Zahlen** („Darstellung wird abgestimmt"). → **Mark: bitte UE-Darstellung zeigen, dann verdrahte ich die Zahlen-Anzeige.**
+
+**Verifikation:** `tsc --noEmit` 0 Fehler · ESLint geänderte Dateien 0 Errors · **EC-09-Smoke (Browser :3001)** Generator → ZIP-Export ohne Fehler · **Browser-Akzeptanz**: Pflicht-Set mit CL-Badges sichtbar, Felder bedienbar, Engine reagiert live auf Rolle/SDL/Dienstfahrzeug.
+
+**OFFEN / nächster Schritt:**
+- **Mark:** Commit-OK (alles uncommitted) + UE-Anzeige-Vorlage (Punkt 3).
+- **Bulk-Gruppen-Scope-Zuweisung** (freigegeben) noch **nicht** gebaut — bewusst als Folge-Slice (Pool-/Listen-UX → eher Slice 3, lt. Auftrag „falls es wächst").
+- **Claude-Review:** Engine-Regeln gegen Norm-Matrix v2 + Klausel-Register (jede `clauseId`) → `CODE_REVIEW.md`.
+
+✅ **Stabiler Punkt** — guter Zeitpunkt zum Committen/Übergeben.
+
 ### 2026-06-07 — Norm-Matrix v2 bestätigt · Bridge v1→v2 · EC-09-Smoke + tsc
 
 **Git:** `git log --oneline -6` — `d1ffc9a`, `df44278`, `4d9cefe` ✅ (kein Pull nötig).

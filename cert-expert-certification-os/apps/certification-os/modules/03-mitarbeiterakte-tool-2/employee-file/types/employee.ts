@@ -44,6 +44,15 @@ export interface Employee {
   employeeIDNumber?: string;
   /** When true, GuardIDNumber is used as the Employee ID */
   useGuardAsEmployeeId?: boolean;
+  // Slice 2 — Requirement-Engine inputs
+  /** SDL-Katalog-IDs (Geltungsbereich), in denen die Person eingesetzt ist */
+  sdlScopes?: string[];
+  /** Fährt Dienstfahrzeug? (true/false/undefined = unbekannt) */
+  drivesServiceVehicle?: boolean;
+  /** Ablaufdatum Erste Hilfe (ISO) — 2-Jahres-Frist (CL-08) */
+  ersteHilfeGueltigBis?: string;
+  /** Ablaufdatum Brandschutzhelfer (ISO) — 3-Jahres-Frist (CL-23) */
+  brandschutzGueltigBis?: string;
 }
 
 export interface GlobalProperties {

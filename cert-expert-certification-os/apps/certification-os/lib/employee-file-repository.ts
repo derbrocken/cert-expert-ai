@@ -53,6 +53,10 @@ export function employeeFileToEmployee(record: EmployeeFile): Employee {
     guardIDNumber: record.guardIDNumber ?? undefined,
     employeeIDNumber: record.employeeIDNumber ?? undefined,
     useGuardAsEmployeeId: record.useGuardAsEmployeeId ?? undefined,
+    sdlScopes: asStringArray(record.sdlScopes),
+    drivesServiceVehicle: record.drivesServiceVehicle ?? undefined,
+    ersteHilfeGueltigBis: record.ersteHilfeGueltigBis ?? undefined,
+    brandschutzGueltigBis: record.brandschutzGueltigBis ?? undefined,
   };
 }
 
@@ -77,6 +81,10 @@ function employeeToUpsertData(
     guardIDNumber: employee.guardIDNumber ?? null,
     employeeIDNumber: employee.employeeIDNumber ?? null,
     useGuardAsEmployeeId: employee.useGuardAsEmployeeId ?? null,
+    sdlScopes: employee.sdlScopes ?? [],
+    drivesServiceVehicle: employee.drivesServiceVehicle ?? null,
+    ersteHilfeGueltigBis: employee.ersteHilfeGueltigBis ?? null,
+    brandschutzGueltigBis: employee.brandschutzGueltigBis ?? null,
   };
 }
 
@@ -184,6 +192,10 @@ export async function upsertEmployeeFile(
       guardIDNumber: employee.guardIDNumber ?? null,
       employeeIDNumber: employee.employeeIDNumber ?? null,
       useGuardAsEmployeeId: employee.useGuardAsEmployeeId ?? null,
+      sdlScopes: employee.sdlScopes ?? [],
+      drivesServiceVehicle: employee.drivesServiceVehicle ?? null,
+      ersteHilfeGueltigBis: employee.ersteHilfeGueltigBis ?? null,
+      brandschutzGueltigBis: employee.brandschutzGueltigBis ?? null,
     },
   });
   return employeeFileToEmployee(row);
@@ -226,6 +238,10 @@ export async function replaceEmployeeFilesForCompany(
           guardIDNumber: employee.guardIDNumber ?? null,
           employeeIDNumber: employee.employeeIDNumber ?? null,
           useGuardAsEmployeeId: employee.useGuardAsEmployeeId ?? null,
+          sdlScopes: employee.sdlScopes ?? [],
+          drivesServiceVehicle: employee.drivesServiceVehicle ?? null,
+          ersteHilfeGueltigBis: employee.ersteHilfeGueltigBis ?? null,
+          brandschutzGueltigBis: employee.brandschutzGueltigBis ?? null,
         },
       });
     }
@@ -550,6 +566,10 @@ export async function migrateFromLocalStoragePayload(
             guardIDNumber: employee.guardIDNumber ?? null,
             employeeIDNumber: employee.employeeIDNumber ?? null,
             useGuardAsEmployeeId: employee.useGuardAsEmployeeId ?? null,
+            sdlScopes: employee.sdlScopes ?? [],
+            drivesServiceVehicle: employee.drivesServiceVehicle ?? null,
+            ersteHilfeGueltigBis: employee.ersteHilfeGueltigBis ?? null,
+            brandschutzGueltigBis: employee.brandschutzGueltigBis ?? null,
             migratedFromLocalStorageAt: new Date(),
           },
         });
