@@ -1,0 +1,113 @@
+{
+  "ec09": {
+    "success": true,
+    "zipBytes": 147055,
+    "zipPath": "/Users/marwanmahra/cert-expert-ai/cert-expert-certification-os/docs/02-acceptance/evidence/exports/b58b-output-quality-verify.zip"
+  },
+  "inspections": [
+    {
+      "path": "B58b Output Quality Employee/Din 77200 1 Allgemeine/01_Jahresweiterbildung_DIN_77200-1_24UE.docx",
+      "enUsLongDates": [],
+      "ddMmYyyyDates": [
+        "15.03.1990",
+        "01.06.2024",
+        "01.06.2024"
+      ],
+      "unreplacedPlaceholders": []
+    },
+    {
+      "path": "B58b Output Quality Employee/Din 77200 1 Allgemeine/02_Jahresweiterbildung_DIN_77200-1_40UE.docx",
+      "enUsLongDates": [],
+      "ddMmYyyyDates": [
+        "15.03.1990",
+        "01.06.2024",
+        "01.06.2024"
+      ],
+      "unreplacedPlaceholders": []
+    },
+    {
+      "path": "B58b Output Quality Employee/Din 77200 1 Allgemeine/Ausgabe Dienstausweis.docx",
+      "enUsLongDates": [],
+      "ddMmYyyyDates": [
+        "01.06.2024"
+      ],
+      "unreplacedPlaceholders": []
+    },
+    {
+      "path": "B58b Output Quality Employee/Din 77200 1 Allgemeine/Datenschutz und Vertraulichkeit.docx",
+      "enUsLongDates": [],
+      "ddMmYyyyDates": [
+        "01.06.2024",
+        "01.06.2024"
+      ],
+      "unreplacedPlaceholders": []
+    },
+    {
+      "path": "B58b Output Quality Employee/Unterweisungen/Unterweisungsnachweis_Allgm. Pflichtunterweisung.docx",
+      "enUsLongDates": [],
+      "ddMmYyyyDates": [
+        "01.06.2024"
+      ],
+      "unreplacedPlaceholders": []
+    },
+    {
+      "path": "B58b Output Quality Employee/Unterweisungen/Unterweisungsnachweis_Arbeitsschutz_DGUV.docx",
+      "enUsLongDates": [],
+      "ddMmYyyyDates": [
+        "01.06.2024"
+      ],
+      "unreplacedPlaceholders": []
+    }
+  ],
+  "kfskClassification": {
+    "templateSourcePlaceholders": [
+      {
+        "logicalPath": "roles/din-77200-1-allgemeine/01_Jahresweiterbildung_DIN_77200-1_24UE.docx",
+        "placeholders": [
+          "{Birthday}",
+          "{EndDate}",
+          "{FullName}",
+          "{StartDate}"
+        ]
+      },
+      {
+        "logicalPath": "roles/din-77200-1-allgemeine/02_Jahresweiterbildung_DIN_77200-1_40UE.docx",
+        "placeholders": [
+          "{Birthday}",
+          "{EndDate}",
+          "{FullName}",
+          "{StartDate}"
+        ]
+      },
+      {
+        "logicalPath": "roles/din-77200-1-allgemeine/Datenschutz und Vertraulichkeit.docx",
+        "placeholders": [
+          "{CompanyAddress}",
+          "{CompanyEmail}",
+          "{CompanyName}",
+          "{FullName}",
+          "{StartDate}"
+        ]
+      }
+    ],
+    "b58aFalsePositiveNote": "{K}/{F}/{SK} in B5.8a whole-file byte scan — not present in document.xml plain text",
+    "documentXmlTokens": {
+      "K": true,
+      "F": true,
+      "SK": true
+    }
+  },
+  "duplicateAnalysis": {
+    "appointmentDocs": [
+      "B58b Output Quality Employee/Unterweisungen/Unterweisungsnachweis_Allgm. Pflichtunterweisung.docx",
+      "B58b Output Quality Employee/Unterweisungen/Unterweisungsnachweis_Arbeitsschutz_DGUV.docx"
+    ],
+    "normalizedSimilarity": 0.02,
+    "identical": false
+  },
+  "aggregate": {
+    "anyEnUsLong": false,
+    "anyDdMmYyyy": true,
+    "allDocsHaveDdWhereDatesExpected": true
+  }
+}

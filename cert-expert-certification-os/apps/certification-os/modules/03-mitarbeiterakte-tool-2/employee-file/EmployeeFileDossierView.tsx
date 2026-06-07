@@ -1,0 +1,469 @@
+"use client";
+
+import React from "react";
+import {
+  User,
+  FileCheck,
+  MapPin,
+  AlertCircle,
+  Pencil,
+  GraduationCap,
+  BookOpen,
+} from "lucide-react";
+import { formatIsoToInput } from "@/lib/utils/date";
+import type { Employee, Role, Appointment } from "@/lib/types/employee";
+import { roleLabelDe } from "./employee-display-labels";
+import {
+  GRUNDROLLE_CATALOG,
+  ZUSATZROLLEN_CATALOG,
+  getEmployeeFileSummary,
+  type RequirementRow,
+} from "./employee-file-requirements";
+import { EmployeeFileStatusBadge } from "./EmployeeFileStatusBadge";
+import { EmployeeFileEvidenceRow } from "./EmployeeFileEvidenceRow";
+import { EmployeeFilePersonRolleEditTable } from "./EmployeeFilePersonRolleEditTable";
+import type { EmployeeEvidenceMap } from "./employee-evidence-storage";
+
+export interface EmployeeFileDossierViewProps {
+  employee: Employee;
+  roles: Role[];
+  appointments: Appointment[];
+  companyName?: string;
+  evidenceEditMode?: boolean;
+  onToggleEvidenceEdit?: () => void;
+  evidenceFiles?: EmployeeEvidenceMap;
+  onEvidenceUpload?: (evidenceId: string, file: File) => void;
+  onEvidenceRemove?: (evidenceId: string) => void;
+  onSavePerson?: (employee: Employee) => void;
+  onOpenGenerator?: () => void;
+}
+
+function formatValue(value: string | undefined): string {
+  if (!value) return "—";
+  if (/^\d{4}-\d{2}-\d{2}/.test(value)) {
+    return formatIsoToInput(value) || value;
+  }
+  return value;
+}
+
+function SectionHeader({
+  icon,
+  title,
+  subtitle,
+  level,
+  onEdit,
+  editLabel,
+}: {
+  icon: React.ReactNode;
+  title: string;
+  subtitle?: string;
+  level?: "bedingung" | "anforderung" | "nachweis";
+  onEdit?: () => void;
+  editLabel?: string;
+}) {
+  const levelLabel =
+    level === "bedingung"
+      ? "Bedingung"
+      : level === "anforderung"
+        ? "Anforderung"
+        : level === "nachweis"
+          ? "Nachweis"
+          : null;
+
+  return (
+    <div className="mb-3 flex items-start justify-between gap-2">
+      <div>
+        {levelLabel ? (
+          <p className="text-[10px] font-semibold uppercase tracking-wide text-[#9ca3af]">
+            {levelLabel}
+          </p>
+        ) : null}
+        <h3 className="flex items-center gap-2 text-sm font-semibold text-[#111827]">
+          {icon}
+          {title}
+        </h3>
+        {subtitle ? (
+          <p className="mt-1 text-xs text-[#6b7280]">{subtitle}</p>
+        ) : null}
+      </div>
+      {onEdit ? (
+        <button
+          type="button"
+          onClick={onEdit}
+          className="inline-flex shrink-0 items-center gap-1 rounded-md border border-[#e5e7eb] px-2 py-1 text-xs text-[#6b7280] hover:border-[rgba(227,6,19,0.35)] hover:text-[#e30613]"
+        >
+          <Pencil className="h-3 w-3" />
+          {editLabel ?? "Bearbeiten"}
+        </button>
+      ) : null}
+    </div>
+  );
+}
+
+function RequirementTable({ rows }: { rows: RequirementRow[] }) {
+  return (
+    <ul className="divide-y divide-[#e5e7eb] rounded-lg border border-[#e5e7eb]">
+      {rows.map((row) => (
+        <li
+          key={row.id}
+          className="flex flex-col gap-1 px-3 py-2.5 sm:flex-row sm:items-start sm:justify-between sm:gap-3"
+        >
+          <div className="min-w-0 flex-1">
+            <p className="text-sm text-[#111827]">{row.label}</p>
+            {row.value ? (
+              <p className="mt-0.5 text-xs text-[#374151]">
+                {formatValue(row.value)}
+              </p>
+            ) : null}
+            {row.trigger ? (
+              <p className="mt-0.5 text-[10px] text-[#9ca3af]">
+                Bedingung: {row.trigger}
+              </p>
+            ) : null}
+            {row.hint ? (
+              <p className="mt-0.5 text-[10px] text-[#6b7280]">{row.hint}</p>
+            ) : null}
+          </div>
+          <EmployeeFileStatusBadge status={row.status} />
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+function SubSectionHeader({
+  icon,
+  title,
+  subtitle,
+  level,
+  onEdit,
+  editLabel,
+}: {
+  icon: React.ReactNode;
+  title: string;
+  subtitle?: string;
+  level?: "bedingung" | "anforderung" | "nachweis";
+  onEdit?: () => void;
+  editLabel?: string;
+}) {
+  const levelLabel =
+    level === "bedingung"
+      ? "Bedingung"
+      : level === "anforderung"
+        ? "Anforderung"
+        : level === "nachweis"
+          ? "Nachweis"
+          : null;
+
+  return (
+    <div className="mb-3 flex items-start justify-between gap-2">
+      <div>
+        {levelLabel ? (
+          <p className="text-[10px] font-semibold uppercase tracking-wide text-[#9ca3af]">
+            {levelLabel}
+          </p>
+        ) : null}
+        <h4 className="mt-0.5 flex items-center gap-2 text-sm font-semibold text-[#111827]">
+          {icon}
+          {title}
+        </h4>
+        {subtitle ? (
+          <p className="mt-0.5 text-xs text-[#6b7280]">{subtitle}</p>
+        ) : null}
+      </div>
+      {onEdit ? (
+        <button
+          type="button"
+          onClick={onEdit}
+          className="inline-flex shrink-0 items-center gap-1 rounded-md border border-[#e5e7eb] px-2 py-1 text-xs text-[#6b7280] hover:border-[rgba(227,6,19,0.35)] hover:text-[#e30613]"
+        >
+          <Pencil className="h-3 w-3" />
+          {editLabel ?? "Bearbeiten"}
+        </button>
+      ) : null}
+    </div>
+  );
+}
+
+function catalogMatch(active: string, catalogLabel: string): boolean {
+  const a = active.toLowerCase();
+  const c = catalogLabel.toLowerCase();
+  return (
+    a.includes(c.slice(0, 6)) ||
+    c.includes(a.split("/")[0].trim().slice(0, 6)) ||
+    a.includes(c.split("/")[0].trim())
+  );
+}
+
+export const EmployeeFileDossierView: React.FC<EmployeeFileDossierViewProps> = ({
+  employee,
+  roles,
+  appointments,
+  companyName = "",
+  evidenceEditMode = false,
+  onToggleEvidenceEdit,
+  evidenceFiles = {},
+  onEvidenceUpload,
+  onEvidenceRemove,
+  onSavePerson,
+  onOpenGenerator,
+}) => {
+  const role = roles.find((r) => r.id === employee.roleId);
+  const apiRoleName = role?.name ?? employee.roleId;
+
+  const summary = getEmployeeFileSummary(
+    employee,
+    appointments,
+    companyName,
+    roleLabelDe(employee.roleId, apiRoleName),
+  );
+
+  const docCount =
+    employee.selectedRoleDocIds.length +
+    employee.selectedAppointmentDocIds.length;
+
+  return (
+    <div className="overflow-hidden rounded-xl border border-[#e5e7eb] bg-white shadow-sm">
+      <div className="border-b border-[#e5e7eb] bg-linear-to-r from-[rgba(227,6,19,0.06)] to-white px-5 py-4">
+        <div className="flex items-start justify-between gap-3">
+          <div className="min-w-0 flex-1">
+            <p className="text-[0.65rem] font-semibold uppercase tracking-[0.14em] text-[#e30613]">
+              Mitarbeiterakte
+            </p>
+            <h2 className="mt-1 text-xl font-bold text-[#111827]">
+              {employee.fullName || "Unbenannt"}
+            </h2>
+            <p className="mt-1 text-sm text-[#6b7280]">
+              {evidenceEditMode
+                ? "Nachweise bearbeiten — PDF pro Position hochladen"
+                : "Bedingung → Anforderung → Nachweis"}
+            </p>
+          </div>
+          {onToggleEvidenceEdit ? (
+            <button
+              type="button"
+              onClick={onToggleEvidenceEdit}
+              className={`inline-flex shrink-0 items-center gap-1.5 rounded-lg border px-3 py-2 text-xs font-semibold transition-colors ${
+                evidenceEditMode
+                  ? "border-[#e30613] bg-[rgba(227,6,19,0.08)] text-[#b80510]"
+                  : "border-[#e5e7eb] text-[#6b7280] hover:border-[rgba(227,6,19,0.35)] hover:text-[#e30613]"
+              }`}
+              title={
+                evidenceEditMode
+                  ? "Nachweis-Bearbeitung beenden"
+                  : "Nachweise bearbeiten / hochladen"
+              }
+            >
+              <Pencil className="h-3.5 w-3.5" />
+              {evidenceEditMode ? "Fertig" : "Nachweise bearbeiten"}
+            </button>
+          ) : null}
+        </div>
+        {!evidenceEditMode ? (
+          <dl className="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-xs text-[#6b7280]">
+            <div>
+              <span className="font-medium text-[#374151]">
+                {summary.missingPflichtangaben}
+              </span>{" "}
+              fehlende Pflichtangaben
+            </div>
+            <div>
+              <span className="font-medium text-[#374151]">
+                {summary.missingNachweise}
+              </span>{" "}
+              offene Nachweise
+            </div>
+            <div>
+              <span className="font-medium text-[#374151]">
+                {summary.fachlichPruefen}
+              </span>{" "}
+              fachlich prüfen
+            </div>
+          </dl>
+        ) : null}
+      </div>
+
+      <div className="grid gap-0 divide-y divide-[#e5e7eb]">
+        {/* 1. Akte-Kern: Bedingung → Anforderung → Nachweis */}
+        <section
+          className={
+            evidenceEditMode
+              ? "bg-[rgba(227,6,19,0.03)] p-5 ring-2 ring-inset ring-[rgba(227,6,19,0.15)]"
+              : "p-5"
+          }
+        >
+          <SectionHeader
+            icon={<User className="h-4 w-4 text-[#e30613]" />}
+            title="Rolle, Bedingungen, Anforderungen & Nachweise"
+            subtitle={
+              evidenceEditMode
+                ? "Nachweise hochladen · Stammdaten und Kontext im gleichen Block"
+                : "Bedingung → Anforderung → Nachweis — alles an einem Ort"
+            }
+          />
+
+          <div className="space-y-6">
+            <div>
+              <SubSectionHeader
+                icon={<User className="h-3.5 w-3.5 text-[#e30613]" />}
+                title="Person & Rolle"
+                subtitle="Pflichtangaben je Person — direkt bearbeiten: Grundrolle, Bestellungen, Namen, IDs"
+                level="bedingung"
+              />
+              {onSavePerson ? (
+                <EmployeeFilePersonRolleEditTable
+                  employee={employee}
+                  roles={roles}
+                  appointments={appointments}
+                  companyName={companyName}
+                  rows={summary.personUndRollePflichtangaben}
+                  onSave={onSavePerson}
+                />
+              ) : (
+                <RequirementTable rows={summary.personUndRollePflichtangaben} />
+              )}
+              <p className="mb-2 mt-4 text-[10px] font-semibold uppercase tracking-wide text-[#9ca3af]">
+                Grundrollen-Taxonomie
+              </p>
+              <div className="mb-3 flex flex-wrap gap-1.5">
+                {GRUNDROLLE_CATALOG.map((label) => (
+                  <span
+                    key={label}
+                    className={
+                      catalogMatch(summary.roleName, label)
+                        ? "rounded-md border border-[rgba(227,6,19,0.35)] bg-[rgba(227,6,19,0.08)] px-2 py-0.5 text-[10px] font-medium text-[#b80510]"
+                        : "rounded-md border border-[#e5e7eb] bg-white px-2 py-0.5 text-[10px] text-[#6b7280]"
+                    }
+                  >
+                    {label}
+                  </span>
+                ))}
+              </div>
+              {summary.overlayLabels.length > 0 ? (
+                <>
+                  <p className="mb-2 text-[10px] font-semibold uppercase tracking-wide text-[#9ca3af]">
+                    Bestellungen-Katalog (zugeordnet hervorgehoben)
+                  </p>
+                  <div className="flex flex-wrap gap-1.5">
+                    {ZUSATZROLLEN_CATALOG.map((label) => (
+                      <span
+                        key={label}
+                        className={
+                          summary.overlayLabels.some((o) =>
+                            catalogMatch(o, label),
+                          )
+                            ? "rounded-md border border-[rgba(227,6,19,0.35)] bg-[rgba(227,6,19,0.08)] px-2 py-0.5 text-[10px] font-medium text-[#b80510]"
+                            : "rounded-md border border-[#e5e7eb] px-2 py-0.5 text-[10px] text-[#6b7280]"
+                        }
+                      >
+                        {label}
+                      </span>
+                    ))}
+                  </div>
+                </>
+              ) : null}
+            </div>
+
+            <div className="border-t border-[#e5e7eb] pt-6">
+              <SubSectionHeader
+                icon={<FileCheck className="h-3.5 w-3.5 text-[#e30613]" />}
+                title="Pflichtnachweise"
+                subtitle={
+                  evidenceEditMode
+                    ? "An jeder Position PDF hochladen — Platzhalter wenn leer"
+                    : "Dokumente / Nachweisgruppen — z. B. Arbeitsvertrag, Beschäftigungsnachweis"
+                }
+                level="nachweis"
+              />
+              <ul className="space-y-2">
+                {summary.pflichtnachweise.map((row) => (
+                  <EmployeeFileEvidenceRow
+                    key={row.id}
+                    row={row}
+                    storedFile={evidenceFiles[row.id]}
+                    editMode={evidenceEditMode}
+                    onUpload={(file) => onEvidenceUpload?.(row.id, file)}
+                    onRemove={() => onEvidenceRemove?.(row.id)}
+                  />
+                ))}
+              </ul>
+            </div>
+
+            <div className="border-t border-[#e5e7eb] pt-6">
+              <SubSectionHeader
+                icon={<GraduationCap className="h-3.5 w-3.5 text-[#e30613]" />}
+                title="Schulung & Unterweisung"
+                subtitle="Verpflichtende Qualifikationen und Anforderungen"
+                level="anforderung"
+              />
+              <RequirementTable rows={summary.schulungUnterweisung} />
+            </div>
+
+            <div className="border-t border-[#e5e7eb] pt-6">
+              <SubSectionHeader
+                icon={<MapPin className="h-3.5 w-3.5 text-[#e30613]" />}
+                title="Geltungsbereich / Einsatzkontext"
+                subtitle="Anwendung und Einsatzkontext — löst weitere Anforderungen aus"
+                level="bedingung"
+              />
+              <RequirementTable rows={summary.geltungsbereich} />
+            </div>
+          </div>
+        </section>
+
+        {/* 2. Offene Punkte */}
+        <section className="bg-[#fafbfc] p-5">
+          <SectionHeader
+            icon={<AlertCircle className="h-4 w-4 text-amber-600" />}
+            title="Offene Punkte / Prüfbedarf"
+            subtitle="Konsolidiert — fehlende Angaben, Nachweise, Unterweisungen, scope-abhängige Prüfung"
+          />
+          {summary.openIssues.length === 0 ? (
+            <p className="text-sm text-[#6b7280]">
+              Keine offenen Punkte aus den erfassten Stammdaten abgeleitet.
+            </p>
+          ) : (
+            <ul className="max-h-56 space-y-1.5 overflow-auto">
+              {summary.openIssues.map((issue) => (
+                <li
+                  key={issue.id}
+                  className="flex items-start justify-between gap-2 rounded-md border border-[#e5e7eb] bg-white px-2.5 py-2"
+                >
+                  <span className="text-xs text-[#111827]">{issue.label}</span>
+                  <EmployeeFileStatusBadge status={issue.status} />
+                </li>
+              ))}
+            </ul>
+          )}
+        </section>
+
+        <section className="border-t border-[#e5e7eb] bg-white px-5 py-3">
+          <p className="flex items-start gap-2 text-xs text-[#6b7280]">
+            <BookOpen className="mt-0.5 h-3.5 w-3.5 shrink-0" />
+            <span>
+              Generator (Schritt 2):{" "}
+              <span className="font-medium text-[#374151]">
+                {docCount} Dokument(e)
+              </span>{" "}
+              vorgemerkt — keine Freigabe oder Zertifizierungsaussage.
+              {onOpenGenerator ? (
+                <>
+                  {" "}
+                  <button
+                    type="button"
+                    onClick={onOpenGenerator}
+                    className="font-semibold text-[#e30613] hover:underline"
+                  >
+                    Generator öffnen →
+                  </button>
+                </>
+              ) : null}
+            </span>
+          </p>
+        </section>
+      </div>
+    </div>
+  );
+};
+
+EmployeeFileDossierView.displayName = "EmployeeFileDossierView";

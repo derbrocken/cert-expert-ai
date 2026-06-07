@@ -1,0 +1,202 @@
+{
+  "ec09": {
+    "success": true,
+    "zipBytes": 147069,
+    "zipPath": "/Users/marwanmahra/cert-expert-ai/cert-expert-certification-os/docs/02-acceptance/evidence/exports/b58a-output-quality-verify.zip"
+  },
+  "testInput": {
+    "globalProps": {
+      "companyName": "B58a Verify GmbH",
+      "companyEmail": "verify@b58a-test.local",
+      "companyAddress": "Musterstraße 12, 10115 Berlin",
+      "companyLogo": "",
+      "documentVersion": "v2.1-b58a",
+      "documentDate": "05.06.2026",
+      "createdBy": "B58a Tester",
+      "approvedBy": "B58a Approver"
+    },
+    "employee": {
+      "id": "b58a-1",
+      "fullName": "B58a Output Quality Employee",
+      "birthday": "1990-03-15",
+      "startDate": "2024-06-01",
+      "roleId": "din-77200-1-allgemeine",
+      "roleType": "Standard",
+      "trainingHours": "24",
+      "guardIDNumber": "GRD-B58A-001",
+      "employeeIDNumber": "EMP-B58A-001",
+      "appointmentIds": [
+        "unterweisungen"
+      ],
+      "selectedRoleDocIds": [
+        "din-77200-1-allgemeine-01_Jahresweiterbildung_DIN_77200-1_24UE",
+        "din-77200-1-allgemeine-02_Jahresweiterbildung_DIN_77200-1_40UE",
+        "din-77200-1-allgemeine-Ausgabe Dienstausweis",
+        "din-77200-1-allgemeine-Datenschutz und Vertraulichkeit"
+      ],
+      "selectedAppointmentDocIds": [
+        "unterweisungen-Unterweisungsnachweis_Allgm. Pflichtunterweisung",
+        "unterweisungen-Unterweisungsnachweis_Arbeitsschutz_DGUV"
+      ]
+    }
+  },
+  "documentsInspected": 6,
+  "inspections": [
+    {
+      "path": "B58a Output Quality Employee/Din 77200 1 Allgemeine/01_Jahresweiterbildung_DIN_77200-1_24UE.docx",
+      "textLength": 1145,
+      "textSample": "Schulung · Qualifizierung · Weiterbildung URKUNDE · TEILNAHMEBESTÄTIGUNG Zertifikat Hiermit wird bestätigt, dass B58a Output Quality Employee geboren am March 15, 1990 an der Schulung Allgemeine Jahresweiterbildung nach DIN 77200-1 Paket A – 24 UE für Sicherheitsmitarbeiter teilgenommen hat. ZEITRAUM June 1, 2024 - LEHRGANGSDAUER 24 Unterrichtseinheiten AUSBILDUNGSINHALTE Grundlagen der DIN 77200-",
+      "enUsLongDates": [
+        "March 15, 1990",
+        "June 1, 2024",
+        "June 1, 2024"
+      ],
+      "ddMmYyyyDates": [],
+      "unreplacedPlaceholders": [],
+      "fieldChecks": {
+        "companyName": false,
+        "companyEmail": false,
+        "companyAddress": false,
+        "docVersion": false,
+        "docDate": false,
+        "createdBy": false,
+        "approvedBy": false,
+        "fullName": true,
+        "guardId": false,
+        "employeeId": false
+      }
+    },
+    {
+      "path": "B58a Output Quality Employee/Din 77200 1 Allgemeine/02_Jahresweiterbildung_DIN_77200-1_40UE.docx",
+      "textLength": 1227,
+      "textSample": "Schulung · Qualifizierung · Weiterbildung URKUNDE · TEILNAHMEBESTÄTIGUNG Zertifikat Hiermit wird bestätigt, dass B58a Output Quality Employee geboren am March 15, 1990 an der Schulung Allgemeine Jahresweiterbildung nach DIN 77200-1 Paket B – 40 UE für Sicherheitsmitarbeiter teilgenommen hat. ZEITRAUM June 1, 2024 - LEHRGANGSDAUER 40 Unterrichtseinheiten AUSBILDUNGSINHALTE Vertiefung der DIN 77200-",
+      "enUsLongDates": [
+        "March 15, 1990",
+        "June 1, 2024",
+        "June 1, 2024"
+      ],
+      "ddMmYyyyDates": [],
+      "unreplacedPlaceholders": [],
+      "fieldChecks": {
+        "companyName": false,
+        "companyEmail": false,
+        "companyAddress": false,
+        "docVersion": false,
+        "docDate": false,
+        "createdBy": false,
+        "approvedBy": false,
+        "fullName": true,
+        "guardId": false,
+        "employeeId": false
+      }
+    },
+    {
+      "path": "B58a Output Quality Employee/Din 77200 1 Allgemeine/Ausgabe Dienstausweis.docx",
+      "textLength": 813,
+      "textSample": "Dokument · Sicherheitsdienst · Ausgabe Ausgabe Dienstausweis Empfangs- und Rückgabebestätigung Unternehmen B58a Verify GmbH Datum June 1, 2024 Name Beschäftigte/r B58a Output Quality Employee 01 Ausgabe- & Rückgabeprotokoll Nr. Dienstausweis Nr. Datum Empfang Unterschrift Empfang Datum Rückgabe Unterschrift Rückgabe 01 02 03 04 05 06 07 08 09 10 Hinweis · Eigentum & Verwendung Dieser Dienstausweis",
+      "enUsLongDates": [
+        "June 1, 2024"
+      ],
+      "ddMmYyyyDates": [],
+      "unreplacedPlaceholders": [],
+      "fieldChecks": {
+        "companyName": true,
+        "companyEmail": false,
+        "companyAddress": false,
+        "docVersion": false,
+        "docDate": false,
+        "createdBy": false,
+        "approvedBy": false,
+        "fullName": true,
+        "guardId": false,
+        "employeeId": false
+      }
+    },
+    {
+      "path": "B58a Output Quality Employee/Din 77200 1 Allgemeine/Datenschutz und Vertraulichkeit.docx",
+      "textLength": 6360,
+      "textSample": "Dokument · Sicherheitsdienst · Vertraulichkeit Datenschutz & Vertraulichkeit Datenschutzinformation und Verpflichtung auf Vertraulichkeit für Beschäftigte / Sicherheitsmitarbeiter Unternehmen B58a Verify GmbH Anschrift Musterstraße 12, 10115 Berlin Beschäftigte/r B58a Output Quality Employee Datum der Kenntnisnahme June 1, 2024 Kontakt / Datenschutzkontakt verify@b58a-test.local § 1 Zweck & Geltun",
+      "enUsLongDates": [
+        "June 1, 2024",
+        "June 1, 2024"
+      ],
+      "ddMmYyyyDates": [],
+      "unreplacedPlaceholders": [],
+      "fieldChecks": {
+        "companyName": true,
+        "companyEmail": true,
+        "companyAddress": true,
+        "docVersion": false,
+        "docDate": false,
+        "createdBy": false,
+        "approvedBy": false,
+        "fullName": true,
+        "guardId": false,
+        "employeeId": false
+      }
+    },
+    {
+      "path": "B58a Output Quality Employee/Unterweisungen/Unterweisungsnachweis_Allgm. Pflichtunterweisung.docx",
+      "textLength": 1421,
+      "textSample": "Dokument · Sicherheitsdienst Unterweisungsnachweis Allgemeine Pflichtunterweisung Unternehmen B58a Verify GmbH Datum June 1, 2024 Name unterwiesene Person B58a Output Quality Employee Ort Berlin Kontakt Musterstraße 12, 10115 Berlin · verify@b58a-test.local Unterweisende/r Anlass ☐ Erstunterweisung ☐ Wiederholungsunterweisung ☐ Anlassbezogen 01 Inhalt & Unterlagen Inhalt der Unterweisung — Allgeme",
+      "enUsLongDates": [
+        "June 1, 2024"
+      ],
+      "ddMmYyyyDates": [],
+      "unreplacedPlaceholders": [],
+      "fieldChecks": {
+        "companyName": true,
+        "companyEmail": true,
+        "companyAddress": true,
+        "docVersion": false,
+        "docDate": false,
+        "createdBy": false,
+        "approvedBy": false,
+        "fullName": true,
+        "guardId": false,
+        "employeeId": false
+      }
+    },
+    {
+      "path": "B58a Output Quality Employee/Unterweisungen/Unterweisungsnachweis_Arbeitsschutz_DGUV.docx",
+      "textLength": 1817,
+      "textSample": "Dokument · Sicherheitsdienst · Unterweisungsnachweis Unterweisungsnachweis Arbeitsschutz, DGUV, Gefährdungen und Notfallverhalten Unternehmen B58a Verify GmbH Datum June 1, 2024 Name B58a Output Quality Employee Ort Berlin Kontakt Musterstraße 12, 10115 Berlin · verify@b58a-test.local Nachweisart Arbeitsschutz-/DGUV-Unterweisung / keine UE-Anrechnung Anlass ☐ Erstunterweisung ☐ Wiederholung ☐ Anla",
+      "enUsLongDates": [
+        "June 1, 2024"
+      ],
+      "ddMmYyyyDates": [],
+      "unreplacedPlaceholders": [],
+      "fieldChecks": {
+        "companyName": true,
+        "companyEmail": true,
+        "companyAddress": true,
+        "docVersion": false,
+        "docDate": false,
+        "createdBy": false,
+        "approvedBy": false,
+        "fullName": true,
+        "guardId": false,
+        "employeeId": false
+      }
+    }
+  ],
+  "duplicateAnalysis": {
+    "appointmentDocs": [
+      "B58a Output Quality Employee/Unterweisungen/Unterweisungsnachweis_Allgm. Pflichtunterweisung.docx",
+      "B58a Output Quality Employee/Unterweisungen/Unterweisungsnachweis_Arbeitsschutz_DGUV.docx"
+    ],
+    "docA": "B58a Output Quality Employee/Unterweisungen/Unterweisungsnachweis_Allgm. Pflichtunterweisung.docx",
+    "docB": "B58a Output Quality Employee/Unterweisungen/Unterweisungsnachweis_Arbeitsschutz_DGUV.docx",
+    "identicalPrefixChars": 29,
+    "lengthA": 1421,
+    "lengthB": 1817,
+    "normalizedSimilarity": 0.015960374243258118,
+    "sharedEmployeeBlock": true,
+    "sharedCompanyBlock": true
+  },
+  "aggregate": {
+    "anyEnUsLong": true,
+    "anyDdMmYyyy": false,
+    "anyUnreplaced": false
+  }
+}
