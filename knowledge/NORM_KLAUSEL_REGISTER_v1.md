@@ -57,6 +57,7 @@
 | CL-71 | Bewacherregister / §34a: wer darf was (Unterrichtung vs. Sachkunde) | BewachV / §34a GewO | legal-input |
 | CL-72 | NON-DIN-SDL Pflichtangaben (gesetzlicher Mindeststandard) | BewachV ___ | legal-input |
 | CL-73 | Fahrer-/UVV-Unterweisung (bei „fährt Dienstfahrzeug") | DGUV ___ | legal-input |
+| CL-74 | **Ausbilder-/Anbieter-Befähigung** für **Brandschutzhelfer-** und **Ersthelfer-Schulung** (Schulung muss von befähigtem Ausbilder/ermächtigtem Anbieter durchgeführt werden) — getrennt von der internen **Beauftragung** (Arbeitsschutz) | DGUV/ASR A2.2 / DGUV-Grundsatz ___ | legal-input |
 
 ---
 *Konvention: Engine-Regeln (Slice 2) tragen `clauseId: "CL-xx"`. Neue Anforderung ohne CL-ID = nicht zulässig (keine erfundenen Pflichten). Bei Norm-Neuausgabe: betroffene CL-IDs prüfen + Status/Edition aktualisieren.*

@@ -162,6 +162,7 @@ Für die Zertifizierung müssen **nicht alle** SMA qualifiziert sein, sondern nu
 ---
 
 ## 11. Offene Prüfpunkte (vor Produktivschaltung)
+- **Beauftragung ≠ Schulung (Brandschutzhelfer + Erste Hilfe)** [CL-74, bestätigt Mark 2026-06-07]: Zu trennen sind (a) die **interne Beauftragung** im Unternehmen (betrieblicher/Arbeitsschutz-Akt, z. B. Brandschutzhelfer bestellen) und (b) die **Schulung/Ausbildung** selbst. Die **Schulung muss von einem befähigten Ausbilder / ermächtigten Anbieter** durchgeführt werden (gilt für **Brandschutzhelfer** und **Ersthelfer-Ausbildung**). → Engine/Modell: Overlay-Beauftragung (intern) vom Schulungs-**Nachweis** trennen; Nachweis trägt zusätzlich das Attribut „Anbieter/Ausbilder befähigt?". Exakte Rechtsgrundlage (DGUV/ASR A2.2) = **legal-input** (Mark liefert §). **Anbieter-Validierung = Slice 3/4**, nicht Slice 2.
 - Fahrer-/UVV-Unterweisung: konkrete Pflicht/Turnus (DGUV) — **fachlich prüfen** (nicht DIN 77200).
 - B-Stufe per „3 Jahre ununterbrochene Tätigkeit": Nachweisform/Dokumentation festlegen.
 - Stichtags-Ausnahme 13.10.2020 (Sachkunde-Befreiung): Erfassung als manuelles Flag.
