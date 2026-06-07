@@ -4,6 +4,32 @@
 
 ---
 
+## 2026-06-07 — UE-Anzeige Schulungs-Soll (Variante C, `EmployeeFileTrainingTargets.tsx`) — Pre-Commit-Review (Planer 2)
+
+**Methode:** Statisches Review des **uncommitteten** Working Trees (neue Datei `EmployeeFileTrainingTargets.tsx` + Diffs an `EmployeeFileDossierView.tsx`, `types/employee.ts`, `lib/employee-file-repository.ts`, `prisma/schema.prisma`) gegen die Variante-C-Spez (`CURSOR_SLICE2_AUFTRAG.md` §E.1). `tsc --noEmit` = **0 Fehler**, ReadLints der 4 Dateien = **0**. Engine-Logik unverändert (nur Typ-Felder + Anzeige-Komponente ergänzt). **Engine-Test-Suite hier nicht re-run** (kein `tsx` im Planer-Environment) → Executor bestätigt 10/10 + Browser.
+
+### Verdict
+**Statisches Review besteht** — Variante C korrekt umgesetzt, EC-10-Wording gewahrt, Persistenz vollständig. **Browser-Abnahme + Commit stehen noch aus** (Executor/Mark-Gate); danach schließe ich das Review final.
+
+### Stark (behalten)
+- **Zwei-Block-Karte** laufend/einmalig; **Balken nur** beim laufenden Jahres-UE (`renderRow(t, true)` vs. `false`) — exakt Variante C.
+- **Wording-Baustein verbindlich erfüllt:** Soll/Ist/Rest; Status-Union `offen · unvollständig · rechnerisch erreicht · fachlich prüfen`; **kein** „erfüllt/einsatzbereit/auditfähig". Karten-Header trägt dauerhaft „rechnerisch · kein Freigabestatus" (**EC-10**).
+- **Ist = „manuell erfasst"** gekennzeichnet (kein Auto-Nachweis-Beleg) — Slice-2-konform.
+- **`soll === null` → „fachlich prüfen"** + „Kein belegter UE-Wert" statt erfundener Zahl. Korrekt.
+- **Persistenz vollständig:** `weiterbildungIstUE Int?` + `einmaligIstUE Json?` in Schema; Repository mappt beide in `fromRecord` **und allen vier** Upsert-Pfaden (Z. 65–70/95–100/208–213/256–261/586–591); `onSave={onSavePerson}` schreibt zurück.
+- **ClausePill** zeigt `CL-xx` bzw. „ohne CL" für `null`.
+
+### Findings (Anzeige, klein — kein Blocker, an Executor)
+1. **`t.hint` wird nie gerendert.** `renderRow` zeigt label/CL/trigger/dlCap/Soll/Ist/Rest, aber **nicht** `t.hint`. Dadurch fehlen: der **Anrechnungs-Hinweis CL-27** („Einmalschulung im Erwerbsjahr anrechenbar") **und** der Asyl-FK-Hinweis „Gesamt 64 UE". Die Variante-C-Vorlage zeigt die **Anrechnungs-Zeile CL-27** explizit. → Hint rendern (mind. die Anrechnungs-Fußzeile im Einmalig-Block). *(Executor, klein.)*
+2. **Feldname-Abweichung:** Auftrag §E.1 nannte `einmalSchulungIstUE`, Code nutzt durchgängig `einmaligIstUE` (Type/Schema/Repo/Komponente konsistent). **Kein Handlungsbedarf** — nur dokumentiert.
+3. **`einmaligIstUE Json?` ohne `@default("{}")`** (Auftrag schlug Default vor). Repo schreibt `?? {}`, `null` wird abgefangen → unkritisch. *(optional.)*
+
+### Pending vor Final-Abnahme
+- **Browser-Akzeptanz** (live :3001): Schulungs-Soll-Karte rendert pro Akte, Ist-Eingabe **persistiert über Reload**, Balken nur laufend, EC-09-Smoke (Person → Generator → ZIP) grün.
+- **Commit** (alles uncommitted). Danach Final-Eintrag hier.
+
+---
+
 ## 2026-06-07 — Slice 2 Requirement-Engine (`requirement-engine.ts`, Commit `22e0c7c`) — Code-Review
 
 **Methode:** Statische Prüfung der committeten Engine gegen `NORM_KLAUSEL_REGISTER_v1.md` (jede `clauseId`) + `NORM_MATRIX_Mitarbeiternachweise_v2.md` (UE-Werte, Ebenen-Trennung). UI-Display + DB-Pfad nicht Teil dieses Reviews (Executor in Arbeit).

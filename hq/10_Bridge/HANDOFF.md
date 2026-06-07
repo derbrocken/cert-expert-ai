@@ -8,11 +8,34 @@
 > **Branch = `main`** · COS: `cert-expert-certification-os/apps/certification-os/` · Port **3001**
 > **Phase = Slice 2 (Requirement-Engine) gebaut + committet (`22e0c7c`) + Engine fachlich abgenommen (`96e9341`) ✅**
 > **Arbeitsmodell:** Planer/Claude führt (plant + reviewt) · Executor/Cursor baut · Ping-Pong über Bridge-Dateien (Mark, 2026-06-07). Planer rotiert seltener als Executor.
-> **▶ NÄCHSTER PLANER-CHAT: nennt sich „Planer 2 (17:24)"** (Nachfolger dieser Session). Folge-Planer fortlaufend nummerieren.
-> **Letzte Commits:** `aa96369` (CL-74) · `96e9341` (Review) · `81a0145` · `a8e378a` · `22e0c7c`
-> **⏳ Executor baut GERADE:** UE-Anzeige (Variante C, `EmployeeFileTrainingTargets.tsx`) + DB-Pfad-Fix (Akten-Load crashte: `employeeFile.findMany` — neue Spalten fehlten in der DB des Servers, DB-Doppelpfad). Noch uncommitted im Working Tree.
-> **▶ Offen (Planer, nach Executor-Done):** (1) **Review UE-Anzeige** im Browser. (2) **Findings 1+2** aus `CODE_REVIEW.md` an Executor: `q-34a` bei reiner Unterrichtung nicht „vorhanden" (Matrix §2 = gelb+Frist); EH/Brandschutz-Doppelzeilen (gleiche CL) dedupen. (3) Findings 3–5 = Marks fachl. Bestätigung (u.a. Schichtleitung normativ FK?). (4) **CL-74** (Beauftragung≠Schulung, Ausbilder-Befähigung Brandschutz+Erste-Hilfe) → Anbieter-Validierung = Slice 3/4. (5) Bulk-Gruppen-Scope (freigegeben, offen). (6) **Hetzner-Deploy** = eigener Schritt NACH Slice 2 (`HETZNER_DEPLOY.md`).
+> **▶ NÄCHSTER PLANER-CHAT: „Planer 3"** (Nachfolger). Folge-Planer fortlaufend nummerieren. *(Planer 2 (17:24) hat diese Session gemacht — Abschluss-Eintrag unten.)*
+> **Letzte Commits:** `deab71b` · `b042beb` · `aa96369` (CL-74) · `96e9341` (Review) · `22e0c7c` (Slice 2)
+> **⏳ Executor-Working-Tree (uncommitted):** UE-Anzeige (Variante C, `EmployeeFileTrainingTargets.tsx`) + DB-Pfad-Fix + Ist-UE-Felder (`weiterbildungIstUE`/`einmaligIstUE` in type/schema/repo). **Planer 2 hat den Tree statisch reviewt: `tsc` 0, Lints 0, Variante C korrekt** (`CODE_REVIEW.md`). **Executor offen:** Browser-Akzeptanz + Commit + 1 Anzeige-Finding (`t.hint` rendern → CL-27-Anrechnungszeile).
+> **▶ Offen (Stand Planer 2):** (1) **UE-Anzeige Final-Abnahme** nach Executor-Commit + Browser. (2) **Findings 1+2 (+5)** → Auftrag liegt: `CURSOR_FINDINGS_1_2_AUFTRAG.md` (q-34a `unvollständig`; CL-08/CL-23-Doppelzeilen dedupen; Asyl-Label). (3) **Findings 3+4 = Marks normative Entscheidung** → siehe „Offene Entscheidungen für Mark" (SDL-Soll an Bewachung gaten? Schichtleitung = FK?). (4) **CL-74** (Beauftragung≠Schulung, Ausbilder-Befähigung) → Anbieter-Validierung = Slice 3/4. (5) Bulk-Gruppen-Scope (freigegeben, offen). (6) **Hetzner-Deploy** = eigener Schritt NACH Slice 2 — gerahmt im „Von Claude an Cursor"-Eintrag + `HETZNER_DEPLOY.md`.
 > **Form:** https://tally.so/r/vGNvY0 · **Aufgaben:** `10_Bridge/AUFGABEN.md`
+
+---
+
+## 🔚 ABSCHLUSS-EINTRAG — Planer 2 (17:24): UE-Anzeige-Review + Findings verteilt, 2026-06-07
+
+**Rolle:** Planer/Reviewer (kein Produktivcode). Offene Fäden des Vorgängers abgearbeitet.
+
+**Fertig (alles in Bridge-Dateien, kein Code geändert):**
+- **UE-Anzeige (Variante C) statisch reviewt** → `CODE_REVIEW.md` (neuer Eintrag oben). Working Tree: `EmployeeFileTrainingTargets.tsx` + Verdrahtung + Persistenz (`weiterbildungIstUE`/`einmaligIstUE`) vollständig & konsistent (Schema/Repo/Komponente). Verifiziert: **`tsc --noEmit` = 0**, **ReadLints 4 Dateien = 0**, Variante C + EC-10-Wording korrekt. Verdict: **Pre-Commit-Review besteht**; Browser-Abnahme + Commit = Executor-Gate.
+- **Findings 1+2 (+5) an Executor** → `CURSOR_FINDINGS_1_2_AUFTRAG.md` (F1 `q-34a` `unvollständig`; F2 CL-08/CL-23 Doppelzeilen im Presenter dedupen; F5 Asyl-Label kosmetisch). Mit DoD + EC-09/tsc/Test-Anforderung.
+- **Findings 3+4 für Mark aufbereitet** → „Offene Entscheidungen für Mark" (SDL-Schulungssoll an Bewachungsrolle gaten? Schichtleitung normativ FK?). Normativ/CROSS-CONTROL-05.
+- **Hetzner-Deploy als eigener Schritt gerahmt** → „Von Claude an Cursor"-Eintrag: Pre-Deploy-Checkliste (DB-Doppelpfad vereinheitlichen, `next build`-Gate, Env-Vollständigkeit) + Mark-Aktionen (DNS/Subdomain/Env/Webhook-PATCH). Runbook steht in `HETZNER_DEPLOY.md`.
+
+**Anmerkung Verifikation:** Engine-Test-Suite (`tsx --test`) im Planer-Environment **nicht** re-run-bar (`tsx` nicht installiert). Engine-Logik durch die UE-Arbeit unverändert → Executor bestätigt 10/10 beim Findings-1+2-Commit (F1 ändert die Suite ohnehin).
+
+**Offen / nächster Schritt:**
+1. **Executor:** Browser-Akzeptanz UE-Anzeige + Commit; danach `CURSOR_FINDINGS_1_2_AUFTRAG.md` bauen.
+2. **Mark:** Findings 3+4 entscheiden; ggf. „los" für Hetzner-Deploy.
+3. **Planer 3:** Final-Abnahme UE-Anzeige + Findings-1+2-Commit reviewen.
+
+**Commit-Basis:** unverändert `22e0c7c` (Slice 2) — diese Session = nur Bridge-Doku (HANDOFF/CODE_REVIEW/neuer Auftrag). Code-Working-Tree weiter beim Executor (uncommitted).
+
+✅ **Stabiler Punkt** — Bridge-Stand sauber; guter Zeitpunkt für Executor-Commit / Übergabe.
 
 ---
 
@@ -669,6 +692,27 @@ cea/
 
 ## 📤 Von Claude an Cursor (Reviews / Hinweise / Aufgaben)
 
+### 2026-06-07 — ▶ Findings 1+2 (+5) zum Verdrahten + UE-Anzeige Pre-Commit-Review (Planer 2)
+
+**1) UE-Anzeige (Variante C) — statisches Pre-Commit-Review besteht** (`CODE_REVIEW.md`, oben). `EmployeeFileTrainingTargets.tsx` + Verdrahtung + Persistenz vollständig, `tsc` 0, Lints 0. **Offen vor Final-Abnahme:** Browser-Akzeptanz (Karte rendert, Ist persistiert über Reload, EC-09-Smoke grün) + **Commit**. Kleines Anzeige-Finding: `t.hint` wird nicht gerendert → **CL-27-Anrechnungs-Zeile** + Asyl-„64 UE"-Hinweis fehlen (Variante-C-Vorlage zeigt die Anrechnungszeile). Bitte mit Findings 1+2 mitnehmen.
+
+**2) Findings 1+2 (+5) — Bauauftrag:** `hq/10_Bridge/CURSOR_FINDINGS_1_2_AUFTRAG.md`.
+- **F1:** `q-34a` bei reiner Unterrichtung → `status: "unvollständig"` statt `"vorhanden"` (Engine + Test).
+- **F2:** Pflicht-Set-Doppelzeilen CL-08 (Erste Hilfe) + CL-23 (Brandschutz) im **Presenter** dedupen (Trigger mergen; `null`-CL nie dedupen; exklusive CL-04/05/09 prüfen).
+- **F5 (kosmetisch):** Asyl-Basis-Label rollen-neutral.
+- DoD: `tsc` 0, EC-09-Smoke grün, Browser-Akzeptanz, Suite grün. **Findings 3+4 NICHT** (warten auf Marks normative Entscheidung).
+
+### 2026-06-07 — ▶ Hetzner-Deploy = eigener Schritt NACH Slice 2 (nicht vermischen) — Planer 2
+
+**Rahmung (kein Bau-Start jetzt — erst nach Slice-2-Stabilität + Marks „los"):** Deploy-Runbook steht vollständig in `HETZNER_DEPLOY.md` (systemd, nginx/Let's Encrypt, Env-Checkliste, Webhook-PATCH auf Prod-URL). Ziel: **stabile HTTPS-URL** statt flüchtigem cloudflared-Tunnel.
+
+**Pre-Deploy-Checkliste (Executor, klein — bevor Mark deployt):**
+1. **DB-Doppelpfad vereinheitlichen** (`prisma/prisma/dev.db` vs. `prisma/dev.db`, Tech-Debt aus CLAUDE.md) — sonst zeigt der Server auf eine andere DB als Dev. Vor Deploy klären, welcher Pfad kanonisch ist.
+2. **Prod-Build-Gate prüfen:** `next build` muss durchlaufen (ESLint war repo-weit mal blockierend; T-02 hat auf 0 gefixt — vor Deploy `npm run build` lokal grün bestätigen).
+3. `.env.production.local` Env-Vollständigkeit (DATABASE_URL, HETZNER_S3_*, TALLY_API_KEY, TALLY_WEBHOOK_SECRET, INTERNAL_API_KEY, NODE_ENV).
+
+**Mark-Aktionen (aus `HETZNER_DEPLOY.md` „Offen"):** Subdomain + DNS (`cos.cert-expert.de` → VPS-IP), `.env.production.local` auf VPS, erster Deploy + Webhook-URL umstellen, optional Tally Hidden Field `cea_company_slug`.
+
 ### 2026-06-07 — ✅ Norm-Matrix v2 erweitert + Geschäftsmodell-Notiz angelegt
 
 **Norm-Matrix v2 ergänzt** (`knowledge/NORM_MATRIX_Mitarbeiternachweise_v2.md`, §12–§15): Zertifizierungszyklus (Z→Ü1→Ü2→Rezert), **Erstaudit-Einstiegswege** (Weg 1 Doku-Basis ohne Objekt §4.4.2 für Teil 1 + Teil 2 §6/§8; Weg 2 Doku-Einsicht vergangener Auftrag §610 einmalig/Zyklus; Weg 3 Vor-Ort) inkl. Ausschluss-Klausel (Weg 1 ≠ Weg-2-Limit), **Quoten-Logik je SDL** (pro SDL eigene Basis, Subunternehmer <50 %), **offene DEKRA-Punkte** (§15: Teil-1-Doku-Basis, „Schulungen nur geplant" [nie angewandt], vergangenes Event als Referenz).
@@ -857,7 +901,12 @@ Im Repo liegt eine **leere Doppelung**: `cert-expert-ai/cert-expert-ai/cert-expe
 
 ## ❓ Offene Entscheidungen für Mark
 
-- _(leer)_
+**Slice-2-Review Findings 3+4 — ✅ ENTSCHIEDEN (Mark, 2026-06-07):**
+- **Finding 4 = Variante B + Upgrade-Pfad:** Nur `roleType = "Führungskraft"` zählt als **FK** (24 UE + FK-Quali CL-10). **Einsatzleitung, Objektleitung, Schichtleitung = EK/SMA-Niveau (16 UE), kein Auto-FK.** Sie bleiben **Bewachungsrollen** (volles Basis-Pflichtset). **Zusatz (Phase 2):** Upgrade-Pfad auf FK, wenn die Person die FK-Schulung absolviert (künftig über Cert-Expert Distance-Learning direkt im Portal) — Design-Notiz, nicht Slice-2-Engine.
+- **Finding 3 = gaten, BESTÄTIGT (Mark):** SDL-Schulungssoll nur bei Bewachungsrolle. Beispiel akzeptiert: reine Bürokraft ohne Bewachung → kein SDL-Soll. Korrekt für den Normalfall (eine Rolle).
+- **🟡 Design-Lücke „Doppelrolle" (Mark-Feedback, Phase 2 — NICHT Slice 2):** Die Engine kennt pro Person nur **eine** `roleType`. Eine Person mit **Verwaltung/Geschäftsführung + zusätzlich Bewachung** (z. B. GF, der mit auf Schicht geht — bei kleinen Firmen real) kann heute **nicht** abgebildet werden → bekäme fälschlich kein Bewachungs-Set/SDL-Soll. Lösung später: Doppelrolle modellieren (z. B. Flag „übt zusätzlich Bewachungstätigkeit aus" oder Mehrfach-`roleType`). **Bis dahin Workaround:** solche Personen als Bewachungsrolle erfassen. → als Design-Notiz für Slice 3+ vorgemerkt.
+
+→ F3/F4 in **`CURSOR_FINDINGS_1_2_AUFTRAG.md`** als Engine-Auftrag verdrahtet. *(Finding 1+2 = Presenter/Engine-Feinschliff; Finding 5 kosmetisch.)*
 
 ---
 
