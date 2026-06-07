@@ -23,6 +23,7 @@ import { loadCompaniesForSwitcher } from "./load-companies-client";
 import {
   getActiveCompanySlug,
   setActiveCompanySlug,
+  DEFAULT_COMPANY_SLUG,
 } from "@/lib/company-session";
 import {
   loadEmployeeQueue,
@@ -47,7 +48,10 @@ function EmployeeAutomationPageContent() {
   const [companies, setCompanies] = useState<
     { slug: string; displayName: string }[]
   >([]);
-  const [companySlug, setCompanySlug] = useState(getActiveCompanySlug);
+  // SSR-stabil: erster Render (Server == Client) nutzt den konstanten Default.
+  // Der echte localStorage-Slug wird erst nach Mount im Bootstrap-Effekt
+  // (getActiveCompanySlug → setCompanySlug) gesetzt → kein Hydration-Mismatch.
+  const [companySlug, setCompanySlug] = useState(DEFAULT_COMPANY_SLUG);
   const [companiesLoaded, setCompaniesLoaded] = useState(false);
   const [employees, setEmployees] = useState<Employee[]>([]);
   const [queueHydrated, setQueueHydrated] = useState(false);

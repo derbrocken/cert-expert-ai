@@ -1,5 +1,5 @@
 const ACTIVE_COMPANY_KEY = "cea-active-company-slug";
-const DEFAULT_COMPANY_SLUG = "TeamFlex";
+export const DEFAULT_COMPANY_SLUG = "TeamFlex";
 
 export function getActiveCompanySlug(): string {
   if (typeof window === "undefined") return DEFAULT_COMPANY_SLUG;
