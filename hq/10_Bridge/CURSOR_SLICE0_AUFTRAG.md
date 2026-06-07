@@ -13,7 +13,7 @@ Einen Kunden öffnen und seine gespeicherten Mitarbeiter sehen — **Stammdaten 
 Slice 0 führt **erstmals serverseitige Persistenz** ein. Das ist eine Architekturentscheidung → **nicht still selbst wählen.**
 
 **Schritt 0a — Vorschlag (kein Code):** Cursor legt einen kurzen Vorschlag in `HANDOFF.md` („Von Cursor an Claude") vor:
-- **Datenmodell:** Entitäten **Firma → Mitarbeiter-Akte** (1 Akte = 1 Firma-Relation, per-file; nicht Session-global), Felder gemäß O2C-Checkliste 2 / `NORM_MATRIX_…v1.md` + bestehende Akte-Felder.
+- **Datenmodell:** Entitäten **Firma → Mitarbeiter-Akte** (1 Akte = 1 Firma-Relation, per-file; nicht Session-global), Felder gemäß O2C-Checkliste 2 / `NORM_MATRIX_Mitarbeiternachweise_v2.md` + bestehende Akte-Felder.
 - **Speichertechnik (serverseitig):** konkreter Vorschlag + kurze Begründung (z. B. Postgres/SQLite via Prisma auf Hetzner, oder bestehende Hetzner-S3-Struktur). Was passt zum vorhandenen Stack/Hosting?
 - **Migration:** wie die bestehenden `localStorage`-Queue-Daten (`employee-queue-storage.ts`) + Nachweise (`employee-evidence-storage.ts`) übernommen werden (verlustfrei).
 - **Auswirkungen** auf EC-09-Generator (darf nicht brechen).

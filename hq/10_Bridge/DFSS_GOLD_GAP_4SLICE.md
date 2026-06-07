@@ -43,9 +43,9 @@
 Das Gold selbst zieht die Grenze (MVP_SCOPE_BOUNDARY / Fahrplan) — bewusst beachten, damit wir nicht overengineeren:
 
 - **In dieser Runde (intern):** Akte-Entität, per-file Company, Requirement-Ableitung (Rolle/Overlay/Geltungsbereich), Readiness/Ampel-Evaluator, Evidence-Check, Generator-in-Akte, Negativtests.
-- **Bewusst Phase 2 / NICHT jetzt:** Kundenportal/SaaS, **volle DIN-77200-2-Detailmatrix-Verdrahtung** (= die Norm-Matrix-Werte 16/24/40/64 UE aus `NORM_MATRIX_…v1.md`; offene Prüfpunkte + Experten-Review pflicht, CROSS-CONTROL-05), LMS/Schulungskalender, Server-Backend, Preise.
+- **Bewusst Phase 2 / NICHT jetzt:** Kundenportal/SaaS, **volle Engine-Verdrahtung aller Matrix-Zeilen** (= Werte 16/24/40/64 UE aus `NORM_MATRIX_Mitarbeiternachweise_v2.md` + CL-IDs; offene CL-60 ff. + Experten-Review pflicht, CROSS-CONTROL-05), LMS/Schulungskalender, Server-Backend, Preise.
 
-→ Die Readiness-**Mechanik** ist In-MVP; die Norm-**Detailwerte** bleiben Phase 2. Engine bauen, Matrix-Werte später einhängen (eine Quelle: `NORM_MATRIX_…v1.md`).
+→ Die Readiness-**Mechanik** ist In-MVP; Matrix v2 + Klausel-Register liegen bereit. Engine bauen mit `clauseId: CL-xx` (Quellen: `NORM_MATRIX_Mitarbeiternachweise_v2.md`, `NORM_KLAUSEL_REGISTER_v1.md`).
 
 ---
 

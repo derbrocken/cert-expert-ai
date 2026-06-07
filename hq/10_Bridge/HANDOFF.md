@@ -2,11 +2,33 @@
 
 **Regel:** Kurze, datierte Einträge. Erledigtes nach unten ins Archiv. Keine Romane.
 
+**Übergabe-Takt (Agent):** Nach Task/Slice/Commit → Mark erinnern: „✅ stabiler Punkt — Committen/Übergeben (neuer Chat)." Bei ~70–80 % Context → „Übergabe empfohlen." Ablauf: stabil → commit → **Abschluss-Eintrag** (fertig/offen/nächster Schritt/Hashes) → neuer Agent liest `CLAUDE.md` + HANDOFF. Gedächtnis = Repo, nicht Chat.
+
 > ## ▶ HIER STARTEN — AKTUELLER STAND (2026-06-07)
 > **Branch = `main`** · COS: `cert-expert-certification-os/apps/certification-os/` · Port **3001**
-> **Phase = Slice-1-Nachzug erledigt** — Beschäftigungsart + Qualifikation + Rolle in Akte. **Pause** bis Slice 2 freigegeben. Offen: Hetzner-Deploy, Hidden Field `cea_company_slug`.
+> **Phase = Slice-1-Nachzug ✅ · Norm v2 + Klausel-Register ✅ · EC-09+tsc ✅ · Bridge v1→v2 (uncommitted)** — **Pause** bis Slice 2 freigegeben.
+> **Letzte Commits:** `eaede2b` · `d1ffc9a` · `df44278` · `4d9cefe`
 > **Form:** https://tally.so/r/vGNvY0 · **Deploy:** `HETZNER_DEPLOY.md`
 > **▶ Aufgaben:** `10_Bridge/AUFGABEN.md`
+
+---
+
+## 🔚 ABSCHLUSS-EINTRAG — Norm v2 verifiziert + Bridge-Sync + EC-09 (Cursor), 2026-06-07
+
+**Fertig (diese Session, noch nicht committet):**
+- Norm-Quellen auf `main` bestätigt: `knowledge/NORM_MATRIX_Mitarbeiternachweise_v2.md` + `NORM_KLAUSEL_REGISTER_v1.md` (Basis `df44278`).
+- Stale Bridge-Verweise **v1 → v2** in 7 Docs (`CURSOR_BAUAUFTRAG_*`, `CODE_TRACK_KICKOFF`, `DFSS_GOLD_GAP_4SLICE`, `TOOL2_FAHRPLAN_DFSS`, `CURSOR_SLICE0_AUFTRAG`, `HANDOFF`).
+- **EC-09-Smoke** Browser :3001 (TeamFlex joe → Generator → ZIP, POST 200 ~504ms) · **`tsc --noEmit`** 0 Fehler.
+- **Übergabe-Takt** in `CLAUDE.md` + HANDOFF verankert.
+
+**Offen:**
+- **Commit** der Bridge-Updates (s. unten) — Mark-Freigabe.
+- Slice 2 **nicht** gestartet (wartet auf „los").
+- Tech-Debt unverändert: Hetzner, Hidden `cea_company_slug`, Key-Rotation, DB-Pfad.
+
+**Nächster Schritt:** Mark gibt Slice-2-„los" **oder** commit + neuer Chat für Tech-Debt/Hetzner.
+
+**Commit-Basis:** `eaede2b` · vorgeschlagener Scope: `hq/10_Bridge/*.md` (+ ggf. `CLAUDE.md` Übergabe-Takt).
 
 ---
 
@@ -36,6 +58,24 @@
 
 ## 📥 Von Cursor an Claude (Fragen / Bitten)
 
+### 2026-06-07 — Norm-Matrix v2 bestätigt · Bridge v1→v2 · EC-09-Smoke + tsc
+
+**Git:** `git log --oneline -6` — `d1ffc9a`, `df44278`, `4d9cefe` ✅ (kein Pull nötig).
+
+**Norm-Dateien (`knowledge/`):**
+- `NORM_MATRIX_Mitarbeiternachweise_v2.md` — auditfähige Bedingung→Anforderung→Nachweis-Matrix; §-Fundstellen; getrennte Ampeln „qualifiziert" (§4.1b+§4.19.1) vs. Jahres-Weiterbildung (§4.19.2); Default Stufe A; OFFEN/FACHLICH PRÜFEN wo unsicher.
+- `NORM_KLAUSEL_REGISTER_v1.md` — CL-01…CL-73 Traceability; Engine-Regel ohne `clauseId` = unzulässig.
+
+**Bridge:** stale `v1`-Verweise in 7 Docs auf `v2` + Klausel-Register aktualisiert.
+
+**Verifikation:**
+- `npx tsc --noEmit` → **0 Fehler**
+- **EC-09-Smoke (Browser, :3001):** TeamFlex **joe** → Generator-Tab (5 Doc-Chips) → **ZIP exportieren** → Server-Action **POST 200 in 504ms** (`generateEmployeeDocs`, S3-Templates). Wolf Street **blubermann** zuvor ebenfalls **485ms POST 200**. Toast kurzlebig; Download in Headless nicht verifiziert, Generator-Action grün.
+
+**Slice 2:** noch **nicht** gestartet — wartet auf Freigabe.
+
+---
+
 ### 2026-06-07 — Session-Start: Bauauftrag Readiness/DEKRA gelesen · **Pause bis Slice-2-Freigabe**
 
 **Gelesen (Reihenfolge):** HIER-STARTEN-Box → `CURSOR_BAUAUFTRAG_READINESS_DEKRA.md` → `_O2C_Prozess_REAL.md` · `_Pipeline_Checkpoints.md` · `_Pipeline_Readiness.md`.
@@ -44,11 +84,11 @@
 - Branch **`main`**, COS Port **3001**, Slice 0b + Slice 1 + Slice-1-Nachzug ✅ (Tally-Intake, `employmentType`/`qualification`/`roleType`, Wolf_Street E2E).
 - **Spur 1 (Journey)** = Airtable `Checkpoint` — **nicht** im Tool nachbauen.
 - **Spur 2 (Readiness)** = Tool-Bau (Slice 2→3→4): Requirement-Engine → Ampel → DEKRA-Assembler + OneDrive `08_Generated/`.
-- **Guardrails:** EC-09 (`generateEmployeeDocs` unangetastet) · EC-10 (Output `unchecked`, keine Auto-Freigabe) · **keine erfundenen Normwerte** — Mechanik jetzt, Werte nur aus `NORM_MATRIX_…v1.md` / O2C-Checklisten; unklar = „offen/fachlich prüfen".
+- **Guardrails:** EC-09 (`generateEmployeeDocs` unangetastet) · EC-10 (Output `unchecked`, keine Auto-Freigabe) · **keine erfundenen Normwerte** — Werte nur aus `NORM_MATRIX_Mitarbeiternachweise_v2.md` + `NORM_KLAUSEL_REGISTER_v1.md`; unklar = „offen/fachlich prüfen".
 
 **Code-Lage (kurz):**
 - `employee-file-requirements.ts` = statische UI-Checkliste („fachlich prüfen"), **keine** Engine-Ableitung Rolle×SDL×Scope → Pflichtset.
-- `knowledge/NORM_MATRIX_Mitarbeiternachweise_v1.md` — in Docs referenziert, **im Repo nicht gefunden** (Slice-2-Start: Quelle klären oder aus O2C §Checklisten 1–4 bootstrapen, ohne erfundene UE-Zahlen).
+- Norm-Quellen auf **`main`:** `knowledge/NORM_MATRIX_Mitarbeiternachweise_v2.md` + `knowledge/NORM_KLAUSEL_REGISTER_v1.md` (Commit `df44278`).
 
 **Offen (unverändert, kein Slice-2-Bau ohne „los"):**
 - Hidden Field `cea_company_slug` + exakter Slug-Match (Partial-Match ersetzen)
@@ -755,7 +795,7 @@ Mark hat entschieden (Details: `CONTEXT.md` → „Produkt-Scope"):
 
 ### 2026-06-07 — Norm-Matrix v1 vorhanden (Prio-1-Gold)
 
-**Datei:** `knowledge/NORM_MATRIX_Mitarbeiternachweise_v1.md` — grounded in CEA-Docs + DIN 77200 (SDL 5: 16/24 UE, SDL 8: 40/64 UE, Brandschutz/§34a extern, Anrechnung §4.19.2).
+**Dateien:** `knowledge/NORM_MATRIX_Mitarbeiternachweise_v2.md` (Bedingung→Anforderung→Nachweis, §-belegt) + `knowledge/NORM_KLAUSEL_REGISTER_v1.md` (CL-IDs, Traceability). Grounded in DIN 77200-1/-2/-3 (SDL 5: 16/24 UE, SDL 8: 40/64 UE, §4.19.2: 40/24 UE/Jahr, Brandschutz CL-23, Anrechnung CL-27).
 **Auftrag (Phase 2, nicht jetzt):** Matrix in `employee-file-requirements.ts` verdrahten → Bedingung (Grundrolle × Geltungsbereich × Bestellung) leitet Pflichtset automatisch ab, statt pauschal „FACHLICH PRÜFEN". Offene Prüfpunkte (§5.3 16/24 etc.) in der Datei beachten — Experten-Review pflicht (CROSS-CONTROL-05).
 
 ### 2026-06-07 — WICHTIG: Tool-2-Design existiert schon im DFSS → Fahrplan

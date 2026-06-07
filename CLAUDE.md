@@ -17,6 +17,23 @@
 - **DSGVO:** `prisma/**/*.db` (Personendaten) **nie** committen — ist ignoriert. `.env*` nie committen.
 - **Nicht in Dateien schreiben, die Mark gerade offen hat** (Save-Konflikt).
 
+## Übergabe-Takt (Agent → Mark, dauerhaft)
+**Mark muss nicht dran denken — der Agent erinnert aktiv.**
+
+Nach jedem **abgeschlossenen Task/Slice** und nach jedem **Commit** kurz melden:
+> ✅ **Stabiler Punkt** — guter Zeitpunkt zum Committen/Übergeben (neuer Chat).
+
+Wenn der Kontext **~70–80 % voll** ist oder frühe Infos verloren gehen: aktiv vorschlagen:
+> **Übergabe empfohlen.**
+
+**Übergabe-Ablauf (immer gleich):**
+1. Stabilen Punkt erreicht (Smoke/Lint grün, Scope klar abgeschlossen).
+2. **Committen** (nur mit Marks OK — oder Mark committet selbst).
+3. **`hq/10_Bridge/HANDOFF.md`** — Abschluss-Eintrag: fertig / offen / nächster Schritt / **Commit-Hashes**.
+4. **Neuer Agent** auf `main`: liest **`CLAUDE.md` + HANDOFF (HIER STARTEN + Abschluss)** → macht weiter.
+
+Nicht bis 100 % Context warten. **Dauerhaftes Gedächtnis = Repo-Dateien, nicht der Chat.**
+
 ## Source of Truth (zuerst lesen)
 - `hq/10_Bridge/HANDOFF.md` — Status, letzter Abschluss-Eintrag, nächster Schritt.
 - `hq/10_Bridge/CURSOR_BAUAUFTRAG_TOOL2.md` — Gesamt-Bauplan (Slices 0–5, gesperrte Entscheidungen).

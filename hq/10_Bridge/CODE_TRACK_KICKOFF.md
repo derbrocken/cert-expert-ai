@@ -7,7 +7,7 @@
 - `hq/10_Bridge/CONTEXT.md` — Endarchitektur + Entscheidungen
 - `hq/10_Bridge/CODE_REVIEW.md` — bisheriges OS-Review
 - `hq/10_Bridge/HANDOFF.md` — Briefkasten mit Cursor (inkl. DFSS-Hinweis)
-- `knowledge/NORM_MATRIX_Mitarbeiternachweise_v1.md` — Norm-Logik (Phase 2 verdrahten)
+- `knowledge/NORM_MATRIX_Mitarbeiternachweise_v2.md` + `knowledge/NORM_KLAUSEL_REGISTER_v1.md` — Norm-Logik (Slice 2 verdrahten)
 - `hq/00_Dashboard/Master_Ordnungsplan.md`
 
 ## Das DFSS-Gold (existierende Spec — bauen, nicht neu erfinden)

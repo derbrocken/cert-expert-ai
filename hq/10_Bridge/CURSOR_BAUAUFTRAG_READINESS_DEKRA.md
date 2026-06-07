@@ -20,7 +20,7 @@
 ## Guardrails (hart)
 - **EC-09** (Person → Queue → Doc-Chips → ZIP) **nie brechen**.
 - **EC-10:** keine Auto-Freigabe-/Zertifizierungs-Aussage; Generator-Output `status: unchecked`.
-- **Keine erfundenen Norm-Pflichten** — Werte nur aus `knowledge/NORM_MATRIX_…v1.md` bzw. Input. Unklar = offen markieren.
+- **Keine erfundenen Norm-Pflichten** — Werte nur aus `knowledge/NORM_MATRIX_Mitarbeiternachweise_v2.md` + `knowledge/NORM_KLAUSEL_REGISTER_v1.md` bzw. Input. Unklar = offen markieren.
 - **DSGVO:** Personendaten serverseitig (DB/S3), kein öffentlicher Lesezugriff.
 
 ---
@@ -30,7 +30,7 @@
 
 - Ableitung pro Akte: **Rolle × Zusatzrolle × SDL × Norm-Scope** → Pflicht-Nachweisliste (Checklisten 1–4, `_O2C_Prozess_REAL.md` §Checklisten).
 - Plus **7 Unternehmens-Vorbedingungen** (`_Pipeline_Readiness.md` §A) als Firmen-Level-Requirements.
-- Quelle der Werte: `NORM_MATRIX_…v1.md` (UE-Zahlen etc.) — **DIN-Detailwerte bleiben Phase 2**, jetzt nur die Mechanik (Engine baubar, Werte später einhängen).
+- Quelle der Werte: `NORM_MATRIX_Mitarbeiternachweise_v2.md` + Klausel-IDs aus `NORM_KLAUSEL_REGISTER_v1.md` (UE-Zahlen etc.) — Engine-Mechanik jetzt; offene CL-IDs (z. B. CL-60 ff.) = „fachlich prüfen".
 - **DoD:** Für eine Test-Akte wird die korrekte Pflichtliste angezeigt; keine hartkodierten erfundenen Werte.
 
 ## Slice 3 — Readiness-Ampel (was blockiert)

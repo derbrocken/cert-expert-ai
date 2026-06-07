@@ -10,7 +10,7 @@
 - `EMPLOYEE_FILE_WORKSPACE_STRUCTURE_V1_1` — die 9 Bereiche der Akte + Generator
 - `DFFS/CERT_EXPERT_MVP_SCOPE_BOUNDARY_V1` — was rein/raus
 - `EMPLOYEE_FILE_GENERATOR_REQUIREMENTS_V1`, `TOOL_2_EMPLOYEE_FILE_REQUIREMENTS_V1`, `DFFS/TOOL_2_EMPLOYEE_FILE_DEVELOPER_BACKLOG`/`…DEVELOPER_HANDOVER_BRIEF`/`…BUILD_SCAFFOLD_AND_MODULE_BOUNDARY`
-- Norm-Logik: `knowledge/NORM_MATRIX_Mitarbeiternachweise_v1.md`
+- Norm-Logik: `knowledge/NORM_MATRIX_Mitarbeiternachweise_v2.md` · Traceability: `knowledge/NORM_KLAUSEL_REGISTER_v1.md`
 
 ## Leitprinzipien (dürfen NICHT verloren gehen)
 1. **Requirement → Evidence → Readiness.** Status entsteht aus Rolle + Nachweis + Zusatzrolle + SDL/Projekt + fachlicher Prüfung. Kein Freigabestatus ohne nachvollziehbaren Bezug.

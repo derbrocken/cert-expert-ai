@@ -1,7 +1,7 @@
 # Bauauftrag Tool 2 — Interne Cert-Expert-Zentrale (Code-Track → Cursor)
 
 **Stand:** 2026-06-07 · **Autor:** Claude (Code-Track) · **Für:** Cursor · **Freigabe:** Mark
-**Lesen vorab:** `DFSS_GOLD_GAP_4SLICE.md` (Lücken + QFD-Priorisierung), `TOOL2_FAHRPLAN_DFSS.md`, `knowledge/NORM_MATRIX_Mitarbeiternachweise_v1.md`. Gold-Design: `cert-expert-certification-os/docs/03-controls/` (B5/B6/B7).
+**Lesen vorab:** `DFSS_GOLD_GAP_4SLICE.md` (Lücken + QFD-Priorisierung), `TOOL2_FAHRPLAN_DFSS.md`, `knowledge/NORM_MATRIX_Mitarbeiternachweise_v2.md`, `knowledge/NORM_KLAUSEL_REGISTER_v1.md`. Gold-Design: `cert-expert-certification-os/docs/03-controls/` (B5/B6/B7).
 **Repo:** `cert-expert-certification-os/apps/certification-os/` · Branch `main` (konsolidiert, T-04) · Port **3001**.
 
 > **Prinzip (für jeden Slice):** Erst beschreiben *„Was kann Mark am Ende tun"*, dann bauen. Kein Technik-Selbstzweck. Klein liefern, EC-09 nie brechen.
@@ -13,7 +13,7 @@
 1. **Schritt 1 = Tally-Anbindung** (Gratis-Webhook, EU-gehostet). Schnell live. **Make.com aus dem Pfad nehmen.** Eigene Formulare = **Phase 2** (ersetzen Tally später, mehr Branding).
 2. **Automatischer Eingang** = Tally-Submission → legt/aktualisiert die Akte + Dateien werden auf Hetzner gesichert.
 3. **Audit-Export ist Pflicht-Feature** (ersetzt die „SMA-Daten-Gesamt-Excel").
-4. **DIN-77200-2-Detailwerte (UE-Zahlen) bleiben Phase 2** — jetzt nur die Mechanik, Werte später aus `NORM_MATRIX_…v1.md` einhängen. Keine erfundenen Normpflichten.
+4. **Norm-Werte aus v2-Matrix + CL-Register** — Engine-Mechanik Slice 2; jede Regel mit `clauseId: CL-xx`. Keine erfundenen Normpflichten (offene CL-IDs = „fachlich prüfen").
 5. **Kundenportal (Login/Gates/Fortschritt/Auto-Mails) = Phase 2.** Intern zuerst.
 6. **DSGVO-Pflicht** bei allem mit Personendaten: Zugriffsschutz, Einwilligung im Formular, Aufbewahrungs-/Löschregel.
 
@@ -43,7 +43,7 @@
 ### Slice 2 — Requirement-Logik („was ist Pflicht")
 **Was Mark am Ende tun kann:** Pro Mitarbeiter sehen, **welche Nachweise Pflicht sind** — automatisch je nach Grundrolle, Geltungsbereich (DIN 77200-1/-2/SDL) und Bestellungen, statt alles manuell zu prüfen.
 **Cursor baut (DoD):**
-- Engine: Bedingung (Grundrolle × Geltungsbereich × Bestellung) → Pflichtset. Inhalte = O2C-Checkliste 2 / `NORM_MATRIX_…v1.md` (z. B. „Brandschutz nur bei DIN 77200-2").
+- Engine: Bedingung (Grundrolle × Geltungsbereich × Bestellung) → Pflichtset. Inhalte = O2C-Checkliste 2 / `NORM_MATRIX_Mitarbeiternachweise_v2.md` (z. B. „Brandschutz nur bei DIN 77200-2", CL-23).
 - **Mechanik deterministisch; UE-Detailwerte als Platzhalter** (Phase 2). Unklares = „fachlich prüfen".
 **Guardrail:** Keine erfundenen Pflichten — nur aus Norm-Matrix ableitbar (CROSS-CONTROL-05, Experten-Review).
 
