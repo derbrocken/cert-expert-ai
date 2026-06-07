@@ -40,11 +40,23 @@ export const EmployeeFileDossierHeader: React.FC<
           </h2>
           <dl className="mt-3 flex flex-wrap gap-x-6 gap-y-2 text-sm">
             <div>
-              <dt className="text-xs text-[#6b7280]">Grundrolle</dt>
+              <dt className="text-xs text-[#6b7280]">Rolle</dt>
               <dd className="font-medium text-[#111827]">
-                {(role?.name ?? employee.roleId) || "—"}
+                {employee.roleType || (role?.name ?? employee.roleId) || "—"}
               </dd>
             </div>
+            {employee.employmentType ? (
+              <div>
+                <dt className="text-xs text-[#6b7280]">Beschäftigungsart</dt>
+                <dd className="text-[#111827]">{employee.employmentType}</dd>
+              </div>
+            ) : null}
+            {employee.qualification ? (
+              <div>
+                <dt className="text-xs text-[#6b7280]">Qualifikation</dt>
+                <dd className="text-[#111827]">{employee.qualification}</dd>
+              </div>
+            ) : null}
             <div>
               <dt className="text-xs text-[#6b7280]">Eintritt</dt>
               <dd className="text-[#111827]">

@@ -25,16 +25,12 @@ import {
   sortRolesForSelect,
   sortAppointmentsForSelect,
 } from "./employee-display-labels";
+import {
+  BESCHAEFTIGUNGSART_OPTIONS,
+  ROLLE_STAMMDATEN_LABEL,
+  ROLLE_TYPE_OPTIONS,
+} from "./employee-stammdaten-options";
 import { joinFullName, splitFullName } from "./employee-file-requirements";
-
-const BESCHAEFTIGUNGSART_OPTIONS = [
-  { id: "Vollzeit", name: "Vollzeit" },
-  { id: "Teilzeit", name: "Teilzeit" },
-  { id: "Minijob", name: "Minijob" },
-  { id: "Subunternehmer", name: "Subunternehmer" },
-  { id: "Praktikum / Ausbildung", name: "Praktikum / Ausbildung" },
-  { id: "Freelance / Honorar", name: "Freelance / Honorar" },
-] as const;
 
 const akteEditSchema = employeeFormSchema.extend({
   vorname: z.string().min(1, "Vorname erforderlich"),
@@ -76,6 +72,8 @@ export const EmployeeFileAkteInlineEdit: React.FC<
       roleId: employee.roleId,
       appointmentIds: employee.appointmentIds,
       roleType: employee.roleType || "",
+      employmentType: employee.employmentType || "",
+      qualification: employee.qualification || "",
       trainingHours: employee.trainingHours || "",
       guardIDNumber: employee.guardIDNumber || "",
       employeeIDNumber: employee.employeeIDNumber || "",
@@ -133,6 +131,8 @@ export const EmployeeFileAkteInlineEdit: React.FC<
       roleId: data.roleId,
       appointmentIds: data.appointmentIds,
       roleType: data.roleType,
+      employmentType: data.employmentType,
+      qualification: data.qualification,
       trainingHours: employee.trainingHours,
       guardIDNumber: data.guardIDNumber,
       employeeIDNumber: effectiveEmployeeId,
@@ -175,7 +175,24 @@ export const EmployeeFileAkteInlineEdit: React.FC<
             />
           </FormField>
           <FormField
-            label="Grundrolle"
+            label={ROLLE_STAMMDATEN_LABEL}
+            name="roleType"
+          >
+            <Controller
+              name="roleType"
+              control={control}
+              render={({ field }) => (
+                <Select
+                  options={[...ROLLE_TYPE_OPTIONS]}
+                  value={field.value || ""}
+                  onChange={field.onChange}
+                  placeholder="Rolle wählen…"
+                />
+              )}
+            />
+          </FormField>
+          <FormField
+            label="Dokumenten-Vorlage"
             name="roleId"
             required
             error={errors.roleId?.message}
@@ -188,7 +205,7 @@ export const EmployeeFileAkteInlineEdit: React.FC<
                   options={roleOptions}
                   value={field.value}
                   onChange={field.onChange}
-                  placeholder="Grundrolle wählen (Führung / operative Kraft)…"
+                  placeholder="Vorlagen-Rolle wählen…"
                   hasError={!!errors.roleId}
                 />
               )}
@@ -279,16 +296,29 @@ export const EmployeeFileAkteInlineEdit: React.FC<
               )}
             />
           </FormField>
-          <FormField label="Beschäftigungsart" name="roleType">
+          <FormField label="Beschäftigungsart" name="employmentType">
             <Controller
-              name="roleType"
+              name="employmentType"
               control={control}
               render={({ field }) => (
                 <Select
-                  options={BESCHAEFTIGUNGSART_OPTIONS}
+                  options={[...BESCHAEFTIGUNGSART_OPTIONS]}
                   value={field.value || ""}
                   onChange={field.onChange}
                   placeholder="Beschäftigungsart wählen…"
+                />
+              )}
+            />
+          </FormField>
+          <FormField label="Qualifikation" name="qualification">
+            <Controller
+              name="qualification"
+              control={control}
+              render={({ field }) => (
+                <Input
+                  {...field}
+                  value={field.value || ""}
+                  placeholder="z. B. Sachkunde §34a"
                 />
               )}
             />

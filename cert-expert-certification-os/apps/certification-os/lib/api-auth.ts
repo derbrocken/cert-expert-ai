@@ -28,7 +28,8 @@ export function requireInternalApiKey(request: NextRequest): void {
 }
 
 /**
- * Tally webhook signature (Slice 1). Header: Tally-Signature = sha256=...
+ * Tally webhook signature (Slice 1).
+ * Header: Tally-Signature — base64 HMAC-SHA256 of the raw request body, no prefix.
  * @see https://tally.so/help/webhooks
  */
 export function verifyTallySignature(
@@ -38,11 +39,11 @@ export function verifyTallySignature(
   const secret = process.env.TALLY_WEBHOOK_SECRET?.trim();
   if (!secret || !signatureHeader) return false;
 
-  const expected = createHmac("sha256", secret).update(rawBody).digest("hex");
-  const received = signatureHeader.replace(/^sha256=/i, "").trim();
+  const expected = createHmac("sha256", secret).update(rawBody).digest("base64");
+  const received = signatureHeader.trim();
   try {
-    const a = Buffer.from(expected, "hex");
-    const b = Buffer.from(received, "hex");
+    const a = Buffer.from(expected, "utf8");
+    const b = Buffer.from(received, "utf8");
     return a.length === b.length && timingSafeEqual(a, b);
   } catch {
     return false;

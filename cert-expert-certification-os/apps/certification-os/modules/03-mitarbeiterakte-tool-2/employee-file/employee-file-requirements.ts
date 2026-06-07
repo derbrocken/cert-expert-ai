@@ -313,10 +313,22 @@ export function buildPflichtangaben(
       hint: "Nur bei Beendigung erfassen",
     },
     {
-      id: "beschaeftigungsart",
-      label: "Beschäftigungsart",
+      id: "rolle",
+      label: "Rolle (Sicherheitsmitarbeiter / Führungskraft)",
       value: employee.roleType || undefined,
       status: employee.roleType?.trim() ? "vorhanden" : "offen",
+    },
+    {
+      id: "beschaeftigungsart",
+      label: "Beschäftigungsart",
+      value: employee.employmentType || undefined,
+      status: employee.employmentType?.trim() ? "vorhanden" : "offen",
+    },
+    {
+      id: "qualifikation",
+      label: "Qualifikation",
+      value: employee.qualification || undefined,
+      status: employee.qualification?.trim() ? "vorhanden" : "offen",
     },
     {
       id: "aktiv",

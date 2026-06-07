@@ -11,6 +11,8 @@ export const employeeFormSchema = z.object({
   appointmentIds: z.array(z.string()),
   // New optional fields
   roleType: z.string().optional(),
+  employmentType: z.string().optional(),
+  qualification: z.string().optional(),
   trainingHours: z.string().optional(),
   guardIDNumber: z.string().optional(),
   employeeIDNumber: z.string().optional(),

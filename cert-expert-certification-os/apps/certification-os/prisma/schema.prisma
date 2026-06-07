@@ -43,6 +43,8 @@ model EmployeeFile {
   selectedRoleDocIds         Json     @default("[]")
   selectedAppointmentDocIds  Json     @default("[]")
   roleType                   String?
+  employmentType             String?
+  qualification              String?
   trainingHours              String?
   guardIDNumber              String?
   employeeIDNumber           String?
@@ -74,4 +76,12 @@ model MigrationRecord {
   sourceKey   String   @unique
   companySlug String
   completedAt DateTime @default(now())
+}
+
+model TallyIntakeRecord {
+  responseId   String   @id
+  formId       String
+  companySlug  String
+  employeeIds  Json     @default("[]")
+  processedAt  DateTime @default(now())
 }

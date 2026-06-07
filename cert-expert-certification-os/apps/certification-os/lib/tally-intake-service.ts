@@ -1,0 +1,416 @@
+import {
+  LEGACY_IMPORT_SLUG,
+  resolveCompanySlug,
+} from "@/lib/customer-registry";
+import {
+  mapTallyUploadToEvidenceId,
+  questionIdFromFieldKey,
+  TALLY_EMPLOYEE_FORM_ID,
+  TALLY_EMPLOYEE_SLOTS,
+  TALLY_GLOBAL_QUESTIONS,
+  type TallyEmployeeSlotConfig,
+} from "@/lib/tally-intake-config";
+import {
+  ensureCompaniesSeeded,
+  saveEmployeeEvidenceFile,
+} from "@/lib/employee-file-repository";
+import { prisma } from "@/lib/prisma";
+
+const LOG = "[tally-intake]";
+
+interface TallyFieldOption {
+  id: string;
+  text: string;
+}
+
+export interface TallyWebhookField {
+  key: string;
+  label: string;
+  type: string;
+  value: unknown;
+  options?: TallyFieldOption[];
+}
+
+export interface TallyWebhookPayload {
+  eventType?: string;
+  data?: {
+    responseId?: string;
+    submissionId?: string;
+    formId?: string;
+    formName?: string;
+    fields?: TallyWebhookField[];
+  };
+}
+
+export interface TallyIntakeResult {
+  skipped: boolean;
+  responseId: string;
+  companySlug: string;
+  employeeIds: string[];
+  evidenceImported: number;
+  reason?: string;
+}
+
+interface TallyUploadedFile {
+  id?: string;
+  name?: string;
+  url?: string;
+  mimeType?: string;
+}
+
+function asString(value: unknown): string {
+  if (value == null) return "";
+  if (typeof value === "string") return value.trim();
+  if (typeof value === "number") return String(value);
+  if (Array.isArray(value)) return asString(value[0]);
+  return "";
+}
+
+function asStringArray(value: unknown): string[] {
+  if (!Array.isArray(value)) return [];
+  return value.map((item) => asString(item)).filter(Boolean);
+}
+
+/** Resolve Tally DROPDOWN/MULTI_SELECT option UUIDs to human-readable labels. */
+function resolveTallyDropdownText(field: TallyWebhookField | undefined): string {
+  if (!field) return "";
+  const raw = field.value;
+  const optionIds = Array.isArray(raw)
+    ? raw.map((item) => asString(item)).filter(Boolean)
+    : asString(raw)
+      ? [asString(raw)]
+      : [];
+  const options = field.options ?? [];
+  if (optionIds.length > 0 && options.length > 0) {
+    const labels = optionIds
+      .map((id) => options.find((opt) => opt.id === id)?.text?.trim())
+      .filter((text): text is string => Boolean(text));
+    if (labels.length > 0) return labels.join(", ");
+  }
+  return asString(raw);
+}
+
+function buildFieldMap(fields: TallyWebhookField[]): Map<string, TallyWebhookField> {
+  const map = new Map<string, TallyWebhookField>();
+  for (const field of fields) {
+    const questionId = questionIdFromFieldKey(field.key);
+    if (questionId) {
+      map.set(questionId, field);
+    }
+  }
+  return map;
+}
+
+function extractCompanySlugHint(
+  fieldMap: Map<string, TallyWebhookField>,
+): string {
+  const configuredId = TALLY_GLOBAL_QUESTIONS.companySlug;
+  if (configuredId) {
+    const configured = asString(fieldMap.get(configuredId)?.value);
+    if (configured) return configured;
+  }
+  for (const field of fieldMap.values()) {
+    const keyLower = field.key.toLowerCase();
+    const labelLower = (field.label || "").toLowerCase();
+    if (
+      keyLower.includes("company_slug") ||
+      keyLower.includes("cea_slug") ||
+      keyLower.includes("cea_company") ||
+      labelLower.includes("company slug") ||
+      labelLower.includes("kunden-slug") ||
+      labelLower.includes("cea_company")
+    ) {
+      const value = asString(field.value);
+      if (value) return value;
+    }
+  }
+  return "";
+}
+
+function parseEmployeeCount(raw: string): number {
+  const match = raw.match(/\d+/);
+  if (!match) return 1;
+  const count = Number.parseInt(match[0], 10);
+  return Number.isFinite(count) ? Math.min(Math.max(count, 1), 10) : 1;
+}
+
+function normalizeDate(raw: string): string {
+  if (!raw) return "";
+  if (/^\d{4}-\d{2}-\d{2}/.test(raw)) return raw.slice(0, 10);
+  return raw;
+}
+
+function isUploadedFile(value: unknown): value is TallyUploadedFile {
+  return (
+    typeof value === "object" &&
+    value !== null &&
+    "url" in value &&
+    typeof (value as TallyUploadedFile).url === "string"
+  );
+}
+
+function extractUploadedFiles(value: unknown): TallyUploadedFile[] {
+  if (!value) return [];
+  if (Array.isArray(value)) {
+    return value.filter(isUploadedFile);
+  }
+  if (isUploadedFile(value)) return [value];
+  return [];
+}
+
+async function downloadTallyFile(url: string): Promise<Buffer> {
+  const response = await fetch(url, { cache: "no-store" });
+  if (!response.ok) {
+    throw new Error(`Tally file download failed: HTTP ${response.status}`);
+  }
+  const arrayBuffer = await response.arrayBuffer();
+  return Buffer.from(arrayBuffer);
+}
+
+function guessMimeType(fileName: string, declared?: string): string {
+  if (declared?.trim()) return declared;
+  const lower = fileName.toLowerCase();
+  if (lower.endsWith(".pdf")) return "application/pdf";
+  if (lower.endsWith(".png")) return "image/png";
+  if (lower.endsWith(".jpg") || lower.endsWith(".jpeg")) return "image/jpeg";
+  return "application/octet-stream";
+}
+
+async function importEvidenceFiles(
+  companySlug: string,
+  employeeFileId: string,
+  slot: TallyEmployeeSlotConfig,
+  fieldMap: Map<string, TallyWebhookField>,
+): Promise<number> {
+  let imported = 0;
+  for (const fileField of slot.fileQuestionIds) {
+    const field = fieldMap.get(fileField.questionId);
+    if (!field) continue;
+    const uploads = extractUploadedFiles(field.value);
+    if (uploads.length === 0) continue;
+
+    const evidenceId = mapTallyUploadToEvidenceId(
+      fileField.label || field.label || fileField.questionId,
+    );
+
+    for (const upload of uploads) {
+      if (!upload.url) continue;
+      const fileName = upload.name || `${evidenceId}.pdf`;
+      console.info(`${LOG} Downloading Tally file → S3`, {
+        employeeFileId,
+        evidenceId,
+        fileName,
+      });
+      const buffer = await downloadTallyFile(upload.url);
+      try {
+        await saveEmployeeEvidenceFile(
+          companySlug,
+          employeeFileId,
+          evidenceId,
+          fileName,
+          guessMimeType(fileName, upload.mimeType),
+          buffer,
+        );
+        imported += 1;
+      } catch (err) {
+        console.error(`${LOG} Evidence upload failed`, {
+          employeeFileId,
+          evidenceId,
+          fileName,
+          err,
+        });
+      }
+    }
+  }
+  return imported;
+}
+
+export async function processTallyWebhookPayload(
+  payload: TallyWebhookPayload,
+): Promise<TallyIntakeResult> {
+  await ensureCompaniesSeeded();
+
+  const data = payload.data;
+  if (!data) {
+    throw new Error("Missing Tally webhook data");
+  }
+
+  const responseId = data.responseId || data.submissionId;
+  if (!responseId) {
+    throw new Error("Missing Tally responseId/submissionId");
+  }
+
+  const existing = await prisma.tallyIntakeRecord.findUnique({
+    where: { responseId },
+  });
+  if (existing) {
+    console.info(`${LOG} Duplicate response skipped`, { responseId });
+    return {
+      skipped: true,
+      responseId,
+      companySlug: existing.companySlug,
+      employeeIds: asStringArray(existing.employeeIds),
+      evidenceImported: 0,
+      reason: "duplicate",
+    };
+  }
+
+  const formId = data.formId ?? "";
+  if (formId !== TALLY_EMPLOYEE_FORM_ID) {
+    console.warn(`${LOG} Unsupported form — stored as skipped`, { formId });
+    await prisma.tallyIntakeRecord.create({
+      data: {
+        responseId,
+        formId,
+        companySlug: LEGACY_IMPORT_SLUG,
+        employeeIds: [],
+      },
+    });
+    return {
+      skipped: true,
+      responseId,
+      companySlug: LEGACY_IMPORT_SLUG,
+      employeeIds: [],
+      evidenceImported: 0,
+      reason: `unsupported-form:${formId}`,
+    };
+  }
+
+  const fields = data.fields ?? [];
+  const fieldMap = buildFieldMap(fields);
+
+  const companyName = asString(
+    fieldMap.get(TALLY_GLOBAL_QUESTIONS.companyName)?.value,
+  );
+  const companyEmail = asString(
+    fieldMap.get(TALLY_GLOBAL_QUESTIONS.companyEmail)?.value,
+  );
+  const slugHint = extractCompanySlugHint(fieldMap);
+  const companySlug = resolveCompanySlug({ slugHint, companyName });
+
+  if (companySlug === LEGACY_IMPORT_SLUG) {
+    console.warn(`${LOG} Company not matched — legacy import pool`, {
+      companyName,
+      slugHint: slugHint || undefined,
+    });
+  } else {
+    console.info(`${LOG} Company resolved`, {
+      companySlug,
+      companyName: companyName || undefined,
+      slugHint: slugHint || undefined,
+    });
+  }
+
+  const employeeCountRaw = asStringArray(
+    fieldMap.get(TALLY_GLOBAL_QUESTIONS.employeeCount)?.value,
+  ).join(" ");
+  const employeeCount = parseEmployeeCount(employeeCountRaw);
+
+  if (companyEmail) {
+    await prisma.companyExportSettings.upsert({
+      where: { companySlug },
+      create: {
+        companySlug,
+        companyName: companyName || companySlug,
+        companyEmail,
+      },
+      update: {
+        companyEmail,
+        ...(companyName ? { companyName } : {}),
+      },
+    });
+  }
+
+  const employeeIds: string[] = [];
+  let evidenceImported = 0;
+
+  for (const slot of TALLY_EMPLOYEE_SLOTS) {
+    if (slot.index > employeeCount) break;
+
+    const fullName = asString(fieldMap.get(slot.nameQuestionId)?.value);
+    if (!fullName) continue;
+
+    const roleType = resolveTallyDropdownText(
+      fieldMap.get(slot.roleTypeQuestionId ?? ""),
+    );
+    const employmentType = resolveTallyDropdownText(
+      fieldMap.get(slot.employmentTypeQuestionId ?? ""),
+    );
+    const qualification = resolveTallyDropdownText(
+      fieldMap.get(slot.qualificationQuestionId ?? ""),
+    );
+    const birthday = normalizeDate(
+      asString(fieldMap.get(slot.birthdayQuestionId ?? "")?.value),
+    );
+    const guardIDNumber = asString(
+      fieldMap.get(slot.guardIdQuestionId ?? "")?.value,
+    );
+    const employeeIDNumber = asString(
+      fieldMap.get(slot.employeeIdQuestionId ?? "")?.value,
+    );
+
+    const employeeFileId = `tally-${responseId}-emp-${slot.index}`;
+
+    await prisma.employeeFile.upsert({
+      where: { id: employeeFileId },
+      create: {
+        id: employeeFileId,
+        companySlug,
+        fullName,
+        birthday,
+        startDate: "",
+        roleId: "",
+        roleType: roleType || null,
+        employmentType: employmentType || null,
+        qualification: qualification || null,
+        guardIDNumber: guardIDNumber || null,
+        employeeIDNumber: employeeIDNumber || null,
+        appointmentIds: [],
+        selectedRoleDocIds: [],
+        selectedAppointmentDocIds: [],
+      },
+      update: {
+        companySlug,
+        fullName,
+        birthday,
+        roleType: roleType || null,
+        employmentType: employmentType || null,
+        qualification: qualification || null,
+        guardIDNumber: guardIDNumber || null,
+        employeeIDNumber: employeeIDNumber || null,
+      },
+    });
+
+    employeeIds.push(employeeFileId);
+    evidenceImported += await importEvidenceFiles(
+      companySlug,
+      employeeFileId,
+      slot,
+      fieldMap,
+    );
+  }
+
+  await prisma.tallyIntakeRecord.create({
+    data: {
+      responseId,
+      formId,
+      companySlug,
+      employeeIds,
+    },
+  });
+
+  console.info(`${LOG} Intake complete`, {
+    responseId,
+    companySlug,
+    employeeIds,
+    evidenceImported,
+  });
+
+  return {
+    skipped: false,
+    responseId,
+    companySlug,
+    employeeIds,
+    evidenceImported,
+  };
+}

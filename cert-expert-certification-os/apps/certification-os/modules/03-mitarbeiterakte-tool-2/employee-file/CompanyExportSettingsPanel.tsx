@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Input, DatePicker, FileDropzone } from "@/components/ui";
 import {
   Building2,
@@ -35,14 +35,22 @@ export const CompanyExportSettingsPanel: React.FC<
   });
   const [logoFile, setLogoFile] = useState<File | null>(null);
   const [hydrated, setHydrated] = useState(false);
+  const lastSavedSnapshotRef = useRef("");
+  const loadedSlugRef = useRef<string | null>(null);
 
   useEffect(() => {
+    if (loadedSlugRef.current === companySlug && hydrated) return;
     let cancelled = false;
+    loadedSlugRef.current = companySlug;
     void loadGlobalExportSettings(companySlug).then((settings) => {
-      if (!cancelled) {
-        setValue(settings);
-        setHydrated(true);
-      }
+      if (cancelled) return;
+      setValue(settings);
+      setLogoFile(null);
+      lastSavedSnapshotRef.current = JSON.stringify({
+        value: settings,
+        hasLogo: false,
+      });
+      setHydrated(true);
     });
     return () => {
       cancelled = true;
@@ -51,6 +59,10 @@ export const CompanyExportSettingsPanel: React.FC<
 
   useEffect(() => {
     if (!hydrated) return;
+
+    const snapshot = JSON.stringify({ value, hasLogo: Boolean(logoFile) });
+    if (snapshot === lastSavedSnapshotRef.current) return;
+
     const timer = window.setTimeout(() => {
       void (async () => {
         let logoBase64: string | null = null;
@@ -62,7 +74,13 @@ export const CompanyExportSettingsPanel: React.FC<
           value,
           logoBase64,
         );
-        setValue(saved);
+        lastSavedSnapshotRef.current = JSON.stringify({
+          value: saved,
+          hasLogo: false,
+        });
+        if (JSON.stringify(saved) !== JSON.stringify(value)) {
+          setValue(saved);
+        }
         setLogoFile(null);
       })();
     }, 500);

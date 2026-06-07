@@ -37,6 +37,8 @@ export interface Employee {
   selectedAppointmentDocIds: string[];
   // New fields
   roleType?: string;
+  employmentType?: string;
+  qualification?: string;
   trainingHours?: string;
   guardIDNumber?: string;
   employeeIDNumber?: string;

@@ -13,6 +13,11 @@ import {
   sortRolesForSelect,
 } from "./employee-display-labels";
 import {
+  BESCHAEFTIGUNGSART_OPTIONS,
+  ROLLE_STAMMDATEN_LABEL,
+  ROLLE_TYPE_OPTIONS,
+} from "./employee-stammdaten-options";
+import {
   joinFullName,
   splitFullName,
   type RequirementRow,
@@ -21,15 +26,6 @@ import {
   applyEmployeePatchWithDocSync,
 } from "./employee-doc-selection-sync";
 import { EmployeeFileStatusBadge } from "./EmployeeFileStatusBadge";
-
-const BESCHAEFTIGUNGSART_OPTIONS = [
-  { id: "Vollzeit", name: "Vollzeit" },
-  { id: "Teilzeit", name: "Teilzeit" },
-  { id: "Minijob", name: "Minijob" },
-  { id: "Subunternehmer", name: "Subunternehmer" },
-  { id: "Praktikum / Ausbildung", name: "Praktikum / Ausbildung" },
-  { id: "Freelance / Honorar", name: "Freelance / Honorar" },
-] as const;
 
 const COMPACT_SELECT =
   "[&_button]:rounded-lg [&_button]:py-2 [&_button]:text-sm [&_button]:shadow-none";
@@ -115,17 +111,31 @@ export const EmployeeFilePersonRolleEditTable: React.FC<
   return (
     <ul className="divide-y divide-[#e5e7eb] rounded-lg border border-[#e5e7eb]">
       {rowShell(
-        "grundrolle",
-        "Grundrolle",
+        "rolle",
+        ROLLE_STAMMDATEN_LABEL,
+        <div className={COMPACT_SELECT}>
+          <Select
+            options={[...ROLLE_TYPE_OPTIONS]}
+            value={employee.roleType || ""}
+            onChange={(roleType) => patch({ roleType })}
+            placeholder="Rolle wählen…"
+          />
+        </div>,
+        "Aus Tally oder manuell — keine Pflicht-Ableitung in diesem Slice",
+      )}
+
+      {rowShell(
+        "dokumenten-vorlage",
+        "Dokumenten-Vorlage",
         <div className={COMPACT_SELECT}>
           <Select
             options={roleOptions}
             value={employee.roleId}
             onChange={(roleId) => patch({ roleId })}
-            placeholder="Grundrolle wählen…"
+            placeholder="Vorlagen-Rolle wählen…"
           />
         </div>,
-        "Klicken und Grundrolle auswählen",
+        "Steuert die Generator-Dokumentenpalette",
       )}
 
       {rowShell(
@@ -203,12 +213,23 @@ export const EmployeeFilePersonRolleEditTable: React.FC<
         "Beschäftigungsart",
         <div className={COMPACT_SELECT}>
           <Select
-            options={BESCHAEFTIGUNGSART_OPTIONS}
-            value={employee.roleType || ""}
-            onChange={(roleType) => patch({ roleType })}
+            options={[...BESCHAEFTIGUNGSART_OPTIONS]}
+            value={employee.employmentType || ""}
+            onChange={(employmentType) => patch({ employmentType })}
             placeholder="Beschäftigungsart wählen…"
           />
         </div>,
+      )}
+
+      {rowShell(
+        "qualifikation",
+        "Qualifikation",
+        <Input
+          value={employee.qualification || ""}
+          onChange={(e) => patch({ qualification: e.target.value })}
+          placeholder="z. B. Sachkunde §34a"
+          className="py-2 text-sm"
+        />,
       )}
 
       {rowShell(
