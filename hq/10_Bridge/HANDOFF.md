@@ -14,7 +14,7 @@
 > **▶ NÄCHSTER PLANER-CHAT: „Planer 4"** (Nachfolger). Folge-Planer fortlaufend nummerieren. *(Planer 3 hat den kombinierten Diff `22e0c7c..0d92ff2` final abgenommen — Abschluss-Eintrag unten.)*
 > **Letzte Commits:** `0d92ff2` (UE-Anzeige + Findings F1–F5) · `e81ca2c` (Planer-3-Prompt) · `47dcea1` (Planer-2-Review) · `22e0c7c` (Slice 2)
 > **✅ Planer 3: kombinierter Diff `22e0c7c..0d92ff2` FINAL ABGENOMMEN** (`CODE_REVIEW.md`, oben). UE-Anzeige (Variante C, `t.hint`/CL-27/Asyl-64 jetzt gerendert) + Findings F1–F5 norm-konform & CL-belegt. Unabhängig re-verifiziert: **`tsc` 0 · Engine-Suite 13/13 grün**. **Slice 2 komplett abgeschlossen.**
-> **▶ Nächster Schritt = Marks Gate:** (a) **Hetzner-Deploy** freigeben (Pre-Deploy-Checkliste unten + `HETZNER_DEPLOY.md`) ODER (b) **Slice 3** anstoßen (u. a. Doppelrollen-Modellierung). Bis dahin keine offenen Code-Tasks.
+> **▶ AKTIV = HETZNER-DEPLOY (Mark hat „los" gegeben, 2026-06-07).** Pre-Deploy-Gates für Executor: **`CURSOR_HETZNER_PREDEPLOY_AUFTRAG.md`** (Planer 3). DB-Pfad-Frage geklärt + entschieden (kanonisch `prisma/prisma/dev.db`); `HETZNER_DEPLOY.md` Doku-Bugs gefixt. **▶ Nächster: Builder/Executor** baut die Pre-Deploy-Gates (`next build` grün · EC-09-Prod-Smoke · Env-Check · `db:push`-Trockencheck), dann **Mark** deployt (DNS/systemd/nginx/Webhook-PATCH).
 > **Form:** https://tally.so/r/vGNvY0 · **Aufgaben:** `10_Bridge/AUFGABEN.md`
 
 ### ▶ Copy-Paste-Prompt für Planer 4
@@ -43,13 +43,19 @@
 
 **Verdict:** **Slice 2 komplett abgeschlossen.** Keine Blocker, keine offenen Code-Tasks aus Slice 2.
 
-**Offen / nächster Schritt (Marks Gate):**
-1. **Mark entscheidet:** (a) Hetzner-Deploy freigeben (Pre-Deploy-Checkliste unten + `HETZNER_DEPLOY.md`) ODER (b) Slice 3 anstoßen (Doppelrollen-Modellierung als erste Lücke).
-2. **Planer 4:** je nach Marks Entscheidung Deploy-Vorbereitung reviewen oder Slice 3 planen.
+**Danach (selbe Session): Mark gab „los" für Hetzner-Deploy** → Pre-Deploy als Bauauftrag gerahmt:
+- **`CURSOR_HETZNER_PREDEPLOY_AUFTRAG.md`** geschrieben (Executor-Gates: `next build` grün · EC-09-Prod-Smoke · Env-Check · `db:push`-Trockencheck). Keine Architektur drin — vom Planer entschieden.
+- **DB-Doppelpfad faktisch geklärt + entschieden:** nur eine DB (`prisma/prisma/dev.db`), kanonisch so belassen; Vereinheitlichung = eigener Slice. **`HETZNER_DEPLOY.md` Doku-Bugs gefixt** (Env-Tabelle nannte `file:./dev.db`, Backup zeigte auf `prisma/dev.db` — beides falsch).
+- **Build-Gate verifiziert:** `next.config.ts` ohne `eslint.ignoreDuringBuilds` → `next build` ist der echte Gate.
 
-**Commit-Basis:** unverändert `0d92ff2` — diese Session = nur Bridge-Doku (`CODE_REVIEW.md` + `HANDOFF.md`), kein Code.
+**Offen / nächster Schritt:**
+1. **Executor/Builder:** `CURSOR_HETZNER_PREDEPLOY_AUFTRAG.md` bauen (Gates grün, Ergebnis in HANDOFF).
+2. **Mark (Server):** nach grünen Gates deployen (DNS/systemd/nginx/Webhook-PATCH/Backup) — Runbook `HETZNER_DEPLOY.md`.
+3. **Planer 4:** Pre-Deploy-Ergebnis reviewen; Slice 3 (Doppelrollen) parkt bis nach Deploy.
 
-✅ **Stabiler Punkt** — Slice 2 sauber abgeschlossen; guter Zeitpunkt für Bridge-Doku-Commit / Übergabe (neuer Chat). **Übergabe empfohlen.**
+**Commit-Basis:** unverändert `0d92ff2` — diese Session = nur Bridge-Doku (`CODE_REVIEW.md`, `HANDOFF.md`, `HETZNER_DEPLOY.md`, neuer `CURSOR_HETZNER_PREDEPLOY_AUFTRAG.md`), kein Produktivcode.
+
+✅ **Stabiler Punkt** — Slice 2 abgeschlossen + Deploy-Bauauftrag steht; guter Zeitpunkt für Bridge-Doku-Commit / Übergabe (neuer Chat). **Übergabe empfohlen.**
 
 ---
 
@@ -178,6 +184,16 @@
 - **F4 = Variante B + Upgrade-Pfad:** nur `roleType = "Führungskraft"` = FK (24 UE + CL-10); Einsatz-/Objekt-/Schichtleitung = EK/SMA (16 UE), bleiben Bewachung; FK-Upgrade über Distance-Learning = Phase 2.
 - **F3 = gaten:** SDL-Schulungssoll nur bei Bewachungsrolle. Doppelrolle (Verwaltung+Bewachung) = Design-Lücke für Slice 3+.
 - Beide in `CURSOR_FINDINGS_1_2_AUFTRAG.md` als Engine-Auftrag (F3/F4) ergänzt.
+
+### 2026-06-07 — ✅ Mark: „los" für Hetzner-Deploy → Pre-Deploy-Bauauftrag (Planer 3)
+
+**Bauauftrag an Executor:** `CURSOR_HETZNER_PREDEPLOY_AUFTRAG.md` (klein, keine Architektur). Gates: `npm run build` grün (zentral — `next build` fährt tsc+ESLint, **kein** `ignoreDuringBuilds`) · EC-09-Smoke gegen Prod-Build im Browser · `.env.example`-Vollständigkeit · `db:push`-Trockencheck (nur `prisma/prisma/dev.db`).
+
+**Planer-Entscheidung DB-Pfad (Checklisten-Punkt 1 „klären" = erledigt):** Es gibt **nur eine** DB, live `prisma/prisma/dev.db` (Prisma löst `file:./prisma/dev.db` relativ zum Schema-Ordner auf). **Kanonisch bleibt genau das** — kein Pfad-Churn vor Deploy; frischer VPS bekommt frische DB via `db:push`. Kosmetische Vereinheitlichung auf ein einzelnes `prisma/` = eigener Tech-Debt-Slice. `HETZNER_DEPLOY.md` Env-Tabelle + Backup-Pfad (zeigten fälschlich auf `prisma/dev.db`) **gefixt**.
+
+**Build-Gate-Hinweis:** Lint-Errors bei `next build` → erst fixen; `ignoreDuringBuilds` nur nach Rückfrage (Lint-Gate nicht eigenmächtig aushebeln). T-02 hatte ESLint mal auf 0 — Executor bestätigt per echtem Build.
+
+**Danach Mark (Server):** DNS/Subdomain · `.env.production.local` auf VPS · erster Deploy (systemd/nginx/certbot) · Webhook-PATCH auf Prod-URL · Backup-Cron auf `prisma/prisma/dev.db`. Details: `HETZNER_DEPLOY.md` + Bauauftrag.
 
 ### 2026-06-07 — ▶ Hetzner-Deploy = eigener Schritt NACH Slice 2 (nicht vermischen) — Planer 2
 

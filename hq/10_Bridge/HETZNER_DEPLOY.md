@@ -25,7 +25,7 @@ npm run build
 
 | Variable | Zweck |
 |----------|--------|
-| `DATABASE_URL` | `file:./dev.db` (relativ zu `prisma/schema.prisma` → `prisma/dev.db`) |
+| `DATABASE_URL` | **`file:./prisma/dev.db`** — Prisma löst `file:`-Pfade **relativ zum Schema-Ordner** (`prisma/`) auf → reale DB unter **`prisma/prisma/dev.db`** (kanonisch, Stand 2026-06-07, = Dev). NICHT `file:./dev.db` (das ergäbe `prisma/dev.db` → andere/leere DB). Die kosmetische Pfad-Vereinheitlichung auf ein einzelnes `prisma/` ist eigener Tech-Debt-Slice, **nicht** Teil dieses Deploys (frischer VPS bekommt ohnehin frische DB via `db:push`). |
 | `HETZNER_S3_*` | Object Storage (Vorlagen + Evidence) |
 | `TALLY_API_KEY` | REST / Webhook-Verwaltung |
 | `TALLY_WEBHOOK_SECRET` | Signatur-Check Webhook |
@@ -87,7 +87,7 @@ server {
 
 ## Backup
 
-- SQLite: `prisma/dev.db` täglich kopieren (cron → Hetzner Storage Box o. ä.)
+- SQLite: **`prisma/prisma/dev.db`** täglich kopieren (cron → Hetzner Storage Box o. ä.) — **nicht** `prisma/dev.db` (existiert nicht; siehe Env-Checkliste/DB-Pfad).
 - S3: Bucket-Lifecycle / Versioning prüfen
 
 ## Offen (Mark)
