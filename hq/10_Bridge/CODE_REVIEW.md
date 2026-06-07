@@ -9,7 +9,7 @@
 **Methode:** Deploy von Planer 4 **auf Marks ausdrückliche Anweisung** durchgeführt (Server-Ops, **kein Produktivcode geändert**). Live-Verifikation über echte HTTPS-Requests + reale Tally-Test-Submission (kein Skript-Fake) + Server-Logs/DB.
 
 ### Verdict
-**LIVE ABGENOMMEN.** App öffentlich unter HTTPS erreichbar, Tally-Intake end-to-end grün (Signaturprüfung real bestanden, Akte erstellt). Guardrails gewahrt. **EC-09-ZIP-Klick live** mit role-zugeordneter Person steht als einzige nice-to-have-Bestätigung aus (Build identisch zum Pre-Deploy-grünen Stand).
+**LIVE ABGENOMMEN (vollständig).** App öffentlich unter HTTPS erreichbar, Tally-Intake end-to-end grün (Signaturprüfung real bestanden, Akte erstellt), **EC-09-ZIP live verifiziert** (echter Klick, ELC Security and Service: `POST /employee-automation 200`, Body **135.179 B ≈ 135 KB ZIP**, keine 5xx). Guardrails gewahrt. Keine Blocker.
 
 ### Verifiziert (live)
 - **Erreichbarkeit:** `https://cos.cert-expert.de/` + `/employee-automation` → HTTP **200**; `http://…` → **301**-Redirect auf HTTPS; HTTPS-Zert. Let's Encrypt (bis 2026-09-05, Auto-Renew).
@@ -18,16 +18,16 @@
 - **Infra:** systemd-Unit aktiv (Restart on-failure), DB unter `prisma/prisma/dev.db` (kanonisch, kein zweites File), Backup-Cron erster Lauf erfolgreich.
 
 ### Guardrails
-- **EC-09:** Generator/ZIP-Code unverändert (deployter Commit = abgenommener Stand); UI live 200. Voller ZIP-Klick = offene nice-to-have-Bestätigung. ✅(mit Vorbehalt)
+- **EC-09:** Live verifiziert — echter ZIP-Export (ELC Security and Service) `POST /employee-automation` → **200, ~135 KB ZIP-Body**, keine 5xx. Generator/ZIP live grün. ✅
 - **EC-10:** kein Freigabe-/Auditstatus durch Deploy berührt. ✅
 - **DSGVO:** `.env.production.local` nur auf Server, nicht im Git; reale Keys nicht committet. ✅
 - **Kein Produktivcode geändert** (Spur-P-konform): Deploy = bestehender Commit `404d55d` + Server-Config. ✅
 
 ### Offene Fäden (kein Blocker)
-1. **EC-09-ZIP live** mit role-zugeordneter Person klicken (Bestätigung).
-2. **Tally-REST-Key 401** → rotieren (Tech-Debt); Webhook-Verwaltung lief korrekt über Tally-UI.
-3. **systemd User=root** → später auf non-root härten. **Test-Akte** ggf. löschen.
-4. **Slice 3** (Planer 5): Doppelrollen + Tally-Formular-Feldlücke (s. HANDOFF-Finding) — jede Regel mit `clauseId`.
+1. **Tally-REST-Key 401** → rotieren (Tech-Debt); Webhook-Verwaltung lief korrekt über Tally-UI.
+2. **systemd User=root** → später auf non-root härten. **Test-Akte** ggf. löschen.
+3. **UX-Beobachtung (Mark, live):** Anlege-Maske ist schlank (Slice-2-Felder SDL/Dienstfahrzeug/Fristen/UE erscheinen erst in der Akte/Dossier, nicht im Create-Form) — by design, kein Bug; deckt sich mit der Formular-Feldlücke (Slice-3-Thema).
+4. **Slice 3** (Planer 5): Doppelrollen + Tally-Formular-Feldlücke (s. HANDOFF-Finding, C-Empfehlung) — jede Regel mit `clauseId`.
 
 ---
 
