@@ -9,12 +9,14 @@
 
 > ## ▶ HIER STARTEN — AKTUELLER STAND (2026-06-07)
 > **Branch = `main`** · COS: `cert-expert-certification-os/apps/certification-os/` · Port **3001**
+> **🤖 AUTONOMER DAUERLAUF AKTIV (Mark-Vollmacht, 2026-06-08, bis Montagnachmittag):** Betriebsanleitung = **`hq/10_Bridge/CURSOR_AUTONOMOUS_RUN_ORDER.md`**. Ein Executor baut die Queue (G4 P1 → P1-Review → G4 P2 → Slice 4 → Resttechnik) **eigenständig**, reviewt sich selbst, **committet autonom** nach grüner Verifikation (tsc 0 / Suite / EC-09-ZIP 200). Harte Grenzen bleiben: EC-09/EC-10/keine erfundene Normpflicht/kein `.env`/`.db`/Kundendaten-Commit. **Frischer Chat: lies zuerst den Run-Order + Kickoff-Prompt dort.** Bug-Fixer läuft parallel (rebase, kein force).
 > **Phase = Slice 3 (Doppelrollen, Niveau EK/FK) gebaut + committet (`a276d38`) ✅ — von Planer 6 REVIEWT + ABGENOMMEN ✅.**
 > **Arbeitsmodell:** Planer/Claude führt (plant + reviewt) · Executor/Cursor baut · Ping-Pong über Bridge-Dateien (Mark, 2026-06-07). Planer rotiert seltener als Executor.
 > **▶ NÄCHSTER PLANER-CHAT: „Planer 7"** (Nachfolger). Folge-Planer fortlaufend nummerieren. *(Planer 4 = Pre-Deploy + Hetzner-Deploy live. Planer 5 = Slice 3 geplant. **Planer 6 = Slice 3 reviewt + abgenommen (`CODE_REVIEW.md`, oben), tsc 0 / Suite 20/20 unabhängig re-verifiziert.**)*
 > **▶ Slice 3 (Doppelrollen, Niveau EK/FK) = ABGENOMMEN (Planer 6, 2026-06-07) ✅.** 6/6 Review-Punkte erfüllt, norm-konform/CL-belegt, EC-09/EC-10 gewahrt. Ein Minor-Finding (UI: „fk" auf echter Bewachungsrolle hebt auf FK — vertretbar, optional UI-Hinweis; kein Re-Bau) in `CODE_REVIEW.md`. URL-Fix `17f94cc` gegengecheckt = harmlos.
 > **▶ NÄCHSTER SCHRITT (Mark-Gate):** Mark hat **G4 = ja** (Anlege-Formular-Migration als eigener Slice) + **nächster Bau = Slice 3b** (Tally-Feldlücke) gewählt — Slice 3b ist auf Marks Tally-Arbeit gated. **G4-Slice plant Planer 7.**
-> **🐛 EXECUTOR-DONE (2026-06-07): Hydration-Mismatch Firmenname GEFIXT + committet (`01f720b`) ✅.** `companySlug` jetzt SSR-stabil (`useState(DEFAULT_COMPANY_SLUG)`; localStorage erst nach Mount im Bootstrap-`useEffect`). DoD grün: `tsc` 0 · Hydration-Warnung weg nach Firmenwechsel+Reload (Index + `?new=1`) · EC-09-ZIP `POST 200` · Switcher-Persistenz hält. Ergebnis-Eintrag unten „Von Cursor an Claude". Pre-existing, unabhängig von Slice 3. Slice 4 (Ampel-/Status, QFD #1) bleibt offener Faden.
+> **🐛 EXECUTOR-DONE (2026-06-07): Hydration-Mismatch Firmenname GEFIXT + committet (`01f720b`, Bridge-Doku `b76751f`) ✅.** `companySlug` jetzt SSR-stabil (`useState(DEFAULT_COMPANY_SLUG)`; localStorage erst nach Mount im Bootstrap-`useEffect`). DoD grün: `tsc` 0 · Hydration-Warnung weg nach Firmenwechsel+Reload (Index + `?new=1`) · EC-09-ZIP `POST 200` · Switcher-Persistenz hält.
+> **▶ G4-SESSION-STATUS (2026-06-08, Chat-Übergabe wegen vollem Kontext) — HIER WEITERMACHEN:** Mark hat live Slice 3 abgenommen (Browser-Demo Doppelrolle EK funktioniert) + Tally-Entscheid: **In-App-Erfassung, Tally entkoppeln, Slice 3b zurückgestellt, G4 zuerst, Slice 4 danach.** **G4-Bauauftrag = `hq/10_Bridge/CURSOR_G4_AUFTRAG.md`** (Anlege-Formular auf Requirement-Modell migrieren). **Marks G4-Gate-Entscheide (verbindlich):** (a) `roleType` (Engine) **und** `roleId` (Doku-Vorlage) **getrennt** erfassen; (b) **Ziel-Architektur**: Doc-Auswahl wandert in den **Generator-Tab** (Anlege-Formular schlank); (c) **Rollenliste vereinfachen** = Norm-Klassen **EK/FK/Verwaltung/Praktikant/Subunternehmer** primär + Org-Titel als Unterfeld; (d) **Einsatzleitung = FK** (Norm §4.2: Einsatzleitung enthält mind. 1 FK); (e) Alt-Felder „Training Hours" + Freitext-„Role Type" **raus**. Norm-Fundierung (DIN 77200-1 §3.10 EK / §3.11+§4.19.1 FK / §3.12 Einsatzleitung=Funktion) steht im Bauauftrag. **✅ `CURSOR_G4_AUFTRAG.md` = FINALISIERT (v2, 2026-06-08, Hintergrund-Agent)** mit allen Marks-Gate-Entscheiden (a–e) eingearbeitet. **⚠️ Scope-Warnung dokumentiert:** Entscheid (c)+(d)+(e) machen aus G4 mehr als Formular-UI → **Rollenmodell-Refactor** (neues `roleClass`-Feld EK/FK/Verwaltung/Praktikant/Sub als Engine-Input, `roleType`→Org-Titel) + **Daten-Migration** (alte roleType-Strings→roleClass) + **Engine-Umbau** (`requirement-engine.ts` klassifiziert nach `roleClass`) → **berührt die in Slice 3 abgenommene Engine → Engine-Suite muss umgestellt + re-getestet werden** (keine neuen CL/UE, nur Klassifikationsquelle). **Empfohlenes Phasing** (Risiko EC-09): Phase 1 = Modell/Engine/Migration/schlankes Formular (Doc-Auswahl bleibt vorerst); Phase 2 = Doc-Auswahl → Generator-Tab (Ziel-Architektur b). **✅ DREI G4-MINI-GATES ENTSCHIEDEN (Planer 7, 2026-06-08)** — `CURSOR_G4_AUFTRAG.md` jetzt **v3, baufertig (Phase 1)**: (a) Org-Titel = **Dropdown + Freitext-Option**; (b) **nur Einsatzleitung = FK** (DIN 77200), Objekt-/Schichtleitung **bleiben EK**; (c) **getrennt** → dieser Bauauftrag = **Phase 1** (Modell `roleClass` + Migration + Engine-Refactor + Tests + schlankes Anlege-Formular; **Doc-Auswahl bleibt vorerst, wo sie ist** → EC-09 minimal berührt). Phase 2 (Doc-Auswahl→Generator-Tab) = eigener Auftrag nach Phase-1-Abnahme. **▶ NÄCHSTER SCHRITT: Mark gibt „los für G4-Phase-1-Bau" → neuer Executor-Chat auf `main` baut `CURSOR_G4_AUFTRAG.md`.** **EC-09-kritisch:** `roleId`/Doc-Palette darf ZIP-Generator nicht brechen; Engine-Refactor berührt die in Slice 3 abgenommene Engine → Suite-Re-Test Pflicht. Slice 4 (Ampel-/Status, QFD #1) bleibt danach offener Faden.
 > **Nachtrag (Executor, 2026-06-07):** kleiner URL-Fix `17f94cc` — „Neue Person" setzt jetzt `?new=1` (Anlege-Ansicht teilbar). **+ FRAGE an Planer geloggt** (unten „Von Cursor an Claude"): Anlege-Formular nutzt noch das **alte Tool-1-Modell**; Migration auf das Requirement-Modell wäre ein eigener Slice (Architektur/Scope → Planer + Mark-Gate, vom Executor NICHT eingeplant).
 > **Letzte Commits:** `0d92ff2` (UE-Anzeige + Findings F1–F5) · `e81ca2c` (Planer-3-Prompt) · `47dcea1` (Planer-2-Review) · `22e0c7c` (Slice 2)
 > **✅ Planer 3: kombinierter Diff `22e0c7c..0d92ff2` FINAL ABGENOMMEN** (`CODE_REVIEW.md`, oben). UE-Anzeige (Variante C, `t.hint`/CL-27/Asyl-64 jetzt gerendert) + Findings F1–F5 norm-konform & CL-belegt. Unabhängig re-verifiziert: **`tsc` 0 · Engine-Suite 13/13 grün**. **Slice 2 komplett abgeschlossen.**
@@ -39,6 +41,32 @@
 > **Danach (Scope/Planung, NICHT Review):** Executor-FRAGE „**Anlege-Formular auf neues Requirement-Modell migrieren?**" (Legacy `EmployeeForm.tsx`/Tool-1-Modell vs. neues Akte-Modell) als **eigenen Slice** mit Mark abwägen. Plus offene Fäden: **Slice 3b** (Tally-Formular-Feldlücke, gated auf Marks Tally-Arbeit), **Slice 4** (Ampel-/Status-Ansicht, QFD #1), DEKRA (CL-60–62), Legal-Input (CL-70–73), Ist-UE-Auto-Summe.
 >
 > **Guardrails:** EC-09 (Generator/ZIP nie brechen), EC-10 (kein Freigabe-/Auditfähigkeitsstatus), keine erfundene Normpflicht (jede Regel `clauseId`). Verifikation im echten Browser, nicht per Skript. Mark = Gate. Nach stabilem Punkt: Übergabe-Takt + Abschluss-Eintrag.
+
+---
+
+## 🔚 ABSCHLUSS-EINTRAG — Planer 7: G4 — drei Mini-Gates entschieden, Bauauftrag v3 baufertig (Phase 1), 2026-06-08
+
+**Rolle:** Planer/Reviewer (Spur P, kein Produktivcode). Aufgabe: die drei offenen §7-Mini-Gates des G4-Bauauftrags mit Mark klären und den Auftrag baufertig machen.
+
+**Mark-Entscheide (verbindlich, mit Norm-Stütze):**
+- **a) Org-Titel-Feld → Dropdown + Freitext-Option.** Festes Dropdown (bekannte Titel, je mit Default→Norm-Klasse) **+** „andere (Freitext)". Norm-Klasse bleibt maßgeblicher Engine-Input.
+- **b) Objektleitung/Schichtleitung → bleiben EK.** Mark: „nur Einsatzleitung = FK nach DIN 77200." Default-Mapping: Einsatzleitung→`fk`, Objekt-/Schichtleitung→`ek`. **Keine titelgebundene FK-Quali-Pflicht erfunden** (FK hängt an §4.19.1-Quali; §3.12/§4.2 stützt nur Einsatzleitung=FK) → „keine erfundene Pflicht" gewahrt.
+- **c) Phasen-Schnitt → getrennt.** Dieser Bauauftrag = **Phase 1** (Datenmodell `roleClass` + Migration + Engine-Refactor + Tests + schlankes Anlege-Formular; Doc-Auswahl bleibt vorerst, wo sie ist → EC-09 minimal berührt). **Phase 2** (Doc-Auswahl→Generator-Tab) = eigener Auftrag nach Phase-1-Abnahme.
+
+**Fertig (nur Bridge-Doku, kein Code):**
+- `CURSOR_G4_AUFTRAG.md` auf **v3** gehoben: §7 von „offen" → „entschieden"; §0/§3/§4.4/§4.5/§6/§9 phasen- und gate-konsistent (Phase 1 = Erfassung, Doc-Auswahl bleibt; Phase 2 markiert). EC-09-DoD auf Phase 1 präzisiert.
+- HANDOFF HIER-STARTEN-Box: Gate-Status gekippt + nächster Schritt = Marks „los für G4-Phase-1-Bau".
+
+**Verdict:** **G4-Phase 1 ist baufertig.** Kein offenes Planer-Gate mehr für Phase 1.
+
+**Offen / nächster Schritt:**
+1. **Mark-Gate:** „los für G4-Phase-1-Bau" → neuer **Executor-Chat** auf `main` liest `CLAUDE.md` + HANDOFF (HIER STARTEN) + `CURSOR_G4_AUFTRAG.md`, baut Phase 1, hält `tsc`/Engine-Suite/EC-09 grün, committet mit Marks OK.
+2. **Planer (nach Bau):** G4-Phase-1-Review (Engine-Refactor + Migration besonders prüfen, Suite-Re-Test ggü. Slice 3).
+3. **Danach:** G4-Phase 2 planen (Doc-Auswahl→Generator-Tab); offene Fäden Slice 4 (Ampel/Status), DEKRA (CL-60–62), Legal-Input (CL-70–73).
+
+**Commit-Basis:** Produktivcode unverändert (`01f720b`). Diese Session = nur Bridge-Doku (`CURSOR_G4_AUFTRAG.md`, `HANDOFF.md`).
+
+✅ **Stabiler Punkt** — Gates geklärt, Bauauftrag v3 baufertig; guter Zeitpunkt für Bridge-Doku-Commit / Übergabe an Executor-Chat. Warten auf Marks „los für den Bau".
 
 ---
 
@@ -169,6 +197,24 @@
 ---
 
 ## 📥 Von Cursor an Claude (Fragen / Bitten)
+
+### 2026-06-07 — ❓ Executor relais an Planer 7: Mark-Richtungsentscheid „Tally entkoppeln, In-App-Erfassung priorisieren, Rollenliste revidieren"
+
+**Kontext:** Mark wurde live demonstriert (Browser :3001), dass Slice 3 funktioniert (Doppelrolle-Select recomputed das Pflicht-Set inkl. CL-01/03/04/05 live). Dabei Mark-Feedback (mündlich, hier protokolliert — vom Executor NICHT eigenmächtig eingeplant, gehört Spur P + Mark-Gate):
+
+**Mark-Aussage (sinngemäß, bitte mit Mark gegenprüfen):**
+1. **Tally als Erfassungsweg ist zu aufwändig / nicht praktikabel.** Mark will Daten **nicht** zwingend übers Tally-Formular eingeben müssen.
+2. **Die Rollenliste/Taxonomie muss ohnehin überarbeitet werden.**
+3. **„Ohne Tally-Anbindung" lösen** — Erfassung direkt in der App, von Tally entkoppelt.
+
+**Auswirkung auf die Planung (Einordnung, KEINE Executor-Entscheidung):**
+- **Slice 3b (Tally-Formular-Feldlücke, Option C Hybrid)** war genau der Weg „Felder im Tally-Formular `vGNvY0` anlegen" — den Mark jetzt als zu aufwändig ablehnt. → Slice 3b vermutlich **zurückstellen/neu denken**, nicht als nächstes bauen.
+- **G4 (Anlege-Formular auf Requirement-Modell migrieren)** rückt damit nach vorn = der In-App-Erfassungsweg ohne Tally-Abhängigkeit. Mark hatte G4 bereits „ja, eigener Slice".
+- **Rollenliste-Revision** als zusätzlicher Scope-Punkt (Taxonomie `ROLLE_TYPE_OPTIONS`/`GRUNDROLLE_CATALOG`) — Norm-Mapping/clauseId beachten, keine erfundene Pflicht.
+
+**Mark hat in dieser Session zusätzlich „dann mach das" zur nächsten sichtbaren Arbeit gesagt** (Auswahl stand zwischen Slice 4 Ampel-/Status-Ansicht und G4). Mit obigem Tally-Feedback tendiert die Richtung zu **G4 (In-App-Erfassung) + Rollenliste**. → **Planer 7 bitte: Reihenfolge G4 / Slice 4 / (3b zurückgestellt) mit Mark final klären und G4-Slice + Rollenliste-Revision als Bauauftrag planen** (Architektur/Scope/clauseId). Executor wartet auf Bauauftrag, baut nicht ungeplant.
+
+---
 
 ### 2026-06-07 — ✅ Executor: Hydration-Fix Firmenname gebaut + committet (`01f720b`)
 
@@ -387,7 +433,9 @@
 
 ## ❓ Offene Entscheidungen für Mark
 
-**G4 — Anlege-Formular-Migration (Planer 6, 2026-06-07) — ⏳ OFFEN, braucht Marks Richtungsentscheid:**
+**G4 — Phase-1-Mini-Gates (Planer 7, 2026-06-08) — ✅ ENTSCHIEDEN:** (a) Org-Titel = Dropdown + Freitext-Option; (b) nur Einsatzleitung = FK (DIN 77200), Objekt-/Schichtleitung bleiben EK; (c) getrennt → dieser Bauauftrag = Phase 1 (Doc-Auswahl bleibt vorerst, Phase 2 separat). `CURSOR_G4_AUFTRAG.md` v3 baufertig. **Nächstes Gate: Marks „los für G4-Phase-1-Bau".** *(Richtungs-/Architektur-Entscheide a–e von Mark wurden bereits in v2 eingearbeitet; G4 als eigener Slice = ja.)*
+
+**G4 — Anlege-Formular-Migration (Planer 6, 2026-06-07) — ✅ Richtung entschieden (eigener Slice, In-App, Tally-entkoppelt); Phase-1-Gates s. o.:**
 - **Kontext:** „Neue Person" zeigt zuerst das **alte Tool-1-Form** (`EmployeeForm.tsx`, `displayMode="master"`, engl. Labels, Altmodell `roleId`/`appointmentIds`/Freitext-`roleType` + Doc-Template-Auswahl für den Generator). Die **neuen Requirement-Felder** (Grundrolle-Enum, Doppelrolle, SDL/Geltungsbereich, Beschäftigungsart, Fristen, UE) leben erst **danach** in der Akte (`EmployeeFilePersonRolleEditTable.tsx` + Engine). Deckt sich mit Planer-4-UX-Notiz + Executor-FRAGE.
 - **Planer-6-Einordnung (Spur P, keine Eigenentscheidung):** Das ist eine **Architektur-/Scope-Änderung = eigener Slice** (C-10, Mark-Gate) — **nicht** in Slice 3 enthalten, vom Executor korrekt NICHT eingeplant. Berührt `EmployeeForm.tsx` (master) + `lib/validations/employee-form.ts` (Zod) + Verhältnis zur Doc-Template-Auswahl (bleibt im Anlege-Schritt oder wandert in den Generator?) + Verhältnis zur Tally-Feldlücke (Slice 3b).
 - **Frage an Mark (Gate):** (a) Anlege-Formular auf das neue Requirement-Modell **vereinheitlichen** (eigener Slice), oder (b) **vorerst belassen** (Legacy-Create + Nachpflege in der Akte, by design) und Slice 3b/4 vorziehen? → Planer 7 plant den Slice erst nach Marks Entscheid (Reihenfolge ggü. 3b/4).
