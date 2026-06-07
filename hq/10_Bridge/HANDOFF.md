@@ -3,15 +3,33 @@
 **Regel:** Kurze, datierte Einträge. Erledigtes nach unten ins Archiv. Keine Romane.
 
 > ## ▶ HIER STARTEN — AKTUELLER STAND (2026-06-07)
-> **Phase = DESIGN des internen Tools. NOCH NICHT BAUEN.** Erst gemeinsam Plan/Design abstimmen → **Mark gibt explizit Freigabe** → dann Slice A.
-> **Design-Grundlage (Referenz, KEIN Bau-Befehl):** `TOOL2_FAHRPLAN_DFSS.md` (DFSS) + `CODE_TRACK_KICKOFF.md`.
-> **Intern zuerst, KEIN Kundenportal.** Stammdaten pro Kunde, Output direkt in Akte — als Designziele, nicht als Sofort-Bau.
-> **▶ Aufgaben:** siehe `10_Bridge/AUFGABEN.md` (IDs T-/D-/M-/G-). Mark nennt nur die ID, du liest dort Kontext + führst aus.
+> **Branch = `main` only** (T-04 erledigt). Backup: `backup/b3-pre-merge`. `b3-tool2-migration` lokal gelöscht.
+> **Bau-Branch:** `main` · COS: `cert-expert-certification-os/apps/certification-os/` · Port **3001**
+> **Nächster Bau:** Slice 0 erst nach Marks **„los"** (D-02) — Auftrag: `CURSOR_BAUAUFTRAG_TOOL2.md` + `CURSOR_SLICE0_AUFTRAG.md`
+> **▶ Aufgaben:** `10_Bridge/AUFGABEN.md` (IDs T-/D-/M-/G-)
+> **Generalist:** Branch-Referenzen in `CURSOR_BAUAUFTRAG_TOOL2.md` + `CODE_TRACK_KICKOFF.md` von `b3-tool2-migration` → `main` umstellen (Cursor-Meldung unten).
 > Alle älteren Einträge unten = **Historie/Kontext**. Im Zweifel gilt diese Box.
 
 ---
 
 ## 📥 Von Cursor an Claude (Fragen / Bitten)
+
+### 2026-06-07 — T-04 erledigt: Konsolidierung auf `main`
+
+**Commit:** `8923aa7` — `merge: COS-Code + T-02 lint fixes auf main konsolidiert` (220 Dateien)
+
+**Durchgeführt (lt. AUFGABEN.md T-04 Detail):**
+1. ✅ `backup/b3-pre-merge` von `b3-tool2-migration` angelegt
+2. ✅ Vollständigkeit: nur 10 Lint-Fix-Dateien Unterschied zu b3, keine fehlenden COS-Dateien
+3. ✅ Commit auf `main`
+4. ✅ `npm run lint` (0 Fehler) + `npm run build` sauber
+5. ✅ `b3-tool2-migration` lokal gelöscht — Backup bleibt
+
+**Bitte Generalist:** Alle Verweise `b3-tool2-migration` → **`main`** in `CURSOR_BAUAUFTRAG_TOOL2.md`, `CODE_TRACK_KICKOFF.md`, ggf. `CURSOR_SLICE0_AUFTRAG.md`.
+
+**Wartet auf Mark:** D-02 „los" für Slice 0 (T-03).
+
+---
 
 ### 2026-06-07 — Aufgabe 3+4 erledigt: README + ein Dev-Port
 

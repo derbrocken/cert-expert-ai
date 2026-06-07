@@ -25,7 +25,6 @@
 
 | ID | Aufgabe | Owner | Fertig wenn | Status |
 |----|---------|-------|-------------|--------|
-| **T-04** | **Auf `main` konsolidieren** (Mark-Entscheidung 2026-06-07): COS-Code + T-02-Lint-Fixes auf EINEN Branch, Doppelung weg. **Sicher, mit Backup** — Schritte siehe unten „T-04 Detail". | T | nur noch `main`, b3 weg, Build+Lint sauber | OFFEN |
 | **T-03** | `/intern`-Tool bauen (Slice 0 ff. lt. `CURSOR_BAUAUFTRAG_TOOL2.md`) — **erst nach „los" (D-02) + T-04** | T | nach Freigabe, Bau startet | WARTET (auf D-02 + T-04) |
 | **D-02** | **„los"** geben → Cursor startet Slice 0 (Datenmodell). Bauauftrag steht in `CURSOR_BAUAUFTRAG_TOOL2.md` | M | du sagst „los" im Code-Track-Chat | WARTET (auf dich) |
 | **D-03** | Export-Format für Slice 4 festlegen: Audit-Übersicht als **XLSX** oder **PDF** | M | Format gewählt | WARTET (auf dich) |
@@ -43,6 +42,7 @@
 - **T-01** (2026-06-07) — Nested-Clone-Löschung. **Ordner existiert nicht mehr → Migration code-seitig abgeschlossen.** Verifiziert: kein zweiter `cert-expert-ai/` im Repo.
 - **T-02** (2026-06-07) — ESLint: 20 Fehler → 0. `npm run lint` + `npm run build` sauber (COS, Port 3001). Fixes: lazy localStorage-Hydration, Render-Sync statt setState-in-effect, UploadsPage-Typen, `tmp-upload-templates` ignoriert.
 - **D-01** (2026-06-07) — Design abgestimmt. Code-Track hat DFSS-Gold (inkl. VOC/CTS/KANO/QFD) + O2C-Prozess ausgewertet, Lücken + Reihenfolge festgelegt, Bauauftrag geschrieben. Entscheidungen gesperrt in `CURSOR_BAUAUFTRAG_TOOL2.md`.
+- **T-04** (2026-06-07) — Konsolidierung auf `main`. Commit `8923aa7`, Backup `backup/b3-pre-merge`, `b3-tool2-migration` lokal gelöscht. Lint+Build sauber. Generalist: Branch-Refs auf `main` umstellen.
 
 ---
 
