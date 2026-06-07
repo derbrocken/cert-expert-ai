@@ -398,7 +398,9 @@ function EmployeeAutomationPageContent() {
     setEditingEmployee(null);
     setIsCreatingNew(true);
     setEvidenceEditMode(false);
-    router.replace("/employee-automation", { scroll: false });
+    // ?new=1 macht die Anlege-Ansicht teilbar/bookmarkbar (wird beim Laden
+    // wieder ausgewertet, s. searchParams-Sync oben).
+    router.replace("/employee-automation?new=1", { scroll: false });
   }, [router]);
 
   const handleDeleteEmployee = useCallback(
