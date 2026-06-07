@@ -13,8 +13,8 @@
 > **Arbeitsmodell:** Planer/Claude führt (plant + reviewt) · Executor/Cursor baut · Ping-Pong über Bridge-Dateien (Mark, 2026-06-07). Planer rotiert seltener als Executor.
 > **▶ NÄCHSTER PLANER-CHAT: „Planer 3"** (Nachfolger). Folge-Planer fortlaufend nummerieren. *(Planer 2 (17:24) hat diese Session gemacht — Abschluss-Eintrag unten.)*
 > **Letzte Commits:** `a09461f` (Rollen-Kontrakt) · `92bb8d6` (Planer-3-Prompt) · `47dcea1` (Planer-2-Review) · `22e0c7c` (Slice 2)
-> **⏳ Executor-Working-Tree (uncommitted):** UE-Anzeige (Variante C, `EmployeeFileTrainingTargets.tsx`) + DB-Pfad-Fix + Ist-UE-Felder (`weiterbildungIstUE`/`einmaligIstUE` in type/schema/repo). **Planer 2 hat den Tree statisch reviewt: `tsc` 0, Lints 0, Variante C korrekt** (`CODE_REVIEW.md`). **Executor offen:** Browser-Akzeptanz + Commit + 1 Anzeige-Finding (`t.hint` rendern → CL-27-Anrechnungszeile).
-> **▶ Offen (Stand Planer 2):** (1) **UE-Anzeige Final-Abnahme** nach Executor-Commit + Browser. (2) **Findings 1+2 (+3/4/5)** → Auftrag liegt: `CURSOR_FINDINGS_1_2_AUFTRAG.md` (F1 q-34a `unvollständig`; F2 CL-08/CL-23-Doppelzeilen dedupen; F3 SDL-Soll gaten; F4 Leitungsrollen=EK/nur „Führungskraft"=FK; F5 Asyl-Label). **F3+F4 von Mark entschieden** (siehe „Offene Entscheidungen für Mark"). (3) **CL-74** (Beauftragung≠Schulung, Ausbilder-Befähigung) → Anbieter-Validierung = Slice 3/4. (4) Bulk-Gruppen-Scope (freigegeben, offen). (5) **Hetzner-Deploy** = eigener Schritt NACH Slice 2 (eigener „Von Claude an Cursor"-Eintrag + `HETZNER_DEPLOY.md`).
+> **▶ Nächster Executor: Builder 2** — baut `CURSOR_FINDINGS_1_2_AUFTRAG.md` **F1–F5** (F3/F4 Mark ✓, im Auftrag verdrahtet).
+> **⏳ Working Tree uncommitted (Basis `9cad207`):** UE-Anzeige Variante C + P2023-Fix — **offen:** Commit + Browser final + EC-09. (CL-74 · Bulk · Hetzner → unverändert, siehe unten.)
 > **Form:** https://tally.so/r/vGNvY0 · **Aufgaben:** `10_Bridge/AUFGABEN.md`
 
 ### ▶ Copy-Paste-Prompt für Planer 3
@@ -72,6 +72,14 @@
 ---
 
 ## 📥 Von Cursor an Claude (Fragen / Bitten)
+
+### 2026-06-07 — Stabiler Punkt → Übergabe Builder 2 (F1–F5)
+
+**Fertig:** UE-Anzeige (Variante C) + P2023-Fix im Working Tree; Planer-2-Pre-Commit (`CODE_REVIEW.md`, `tsc`/Lints 0). Auftrag `CURSOR_FINDINGS_1_2_AUFTRAG.md` F1–F5 freigegeben (F3/F4 Mark entschieden).
+**Offen:** UE Commit + Browser final + EC-09 · Builder 2 implementiert F1–F5.
+**Commit-Hash:** UE-Code **uncommitted** (Basis `9cad207`); HANDOFF-Update committed.
+
+---
 
 ### 2026-06-07 — ▶ Builder 1: UE-Anzeige (Punkt 3) gebaut + P2023-DB-Crash gefixt — UNCOMMITTED, Verify offen
 
