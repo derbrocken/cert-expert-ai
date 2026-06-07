@@ -18,6 +18,7 @@ import {
   ROLLE_STAMMDATEN_LABEL,
   ROLLE_TYPE_OPTIONS,
   SDL_SCOPE_CATALOG,
+  ZUSATZ_BEWACHUNG_OPTIONS,
 } from "./employee-stammdaten-options";
 import {
   joinFullName,
@@ -111,6 +112,7 @@ export const EmployeeFilePersonRolleEditTable: React.FC<
     label: string,
     control: React.ReactNode,
     hint?: string,
+    statusOverride?: RequirementRow["status"],
   ) => (
     <li
       key={id}
@@ -123,7 +125,7 @@ export const EmployeeFilePersonRolleEditTable: React.FC<
         ) : null}
       </div>
       <div className="min-w-0 flex-1">{control}</div>
-      <EmployeeFileStatusBadge status={statusForRow(rows, id)} />
+      <EmployeeFileStatusBadge status={statusOverride ?? statusForRow(rows, id)} />
     </li>
   );
 
@@ -141,6 +143,26 @@ export const EmployeeFilePersonRolleEditTable: React.FC<
           />
         </div>,
         "Aus Tally oder manuell — keine Pflicht-Ableitung in diesem Slice",
+      )}
+
+      {rowShell(
+        "zusatz-bewachung",
+        "Zusätzliche Bewachungstätigkeit (Doppelrolle)",
+        <div className={COMPACT_SELECT}>
+          <Select
+            options={[...ZUSATZ_BEWACHUNG_OPTIONS]}
+            value={employee.zusatzBewachungNiveau ?? ""}
+            onChange={(v) =>
+              patch({
+                zusatzBewachungNiveau:
+                  v === "ek" || v === "fk" ? v : undefined,
+              })
+            }
+            placeholder="— keine zusätzliche Bewachung"
+          />
+        </div>,
+        "Für Verwaltung/GF, der/die mit auf Schicht geht. Wendet das volle Bewachungs-Pflichtset an (CL-40); FK-Niveau treibt CL-20/25 + FK-Quali CL-10.",
+        employee.zusatzBewachungNiveau ? "vorhanden" : "nicht erforderlich",
       )}
 
       {rowShell(

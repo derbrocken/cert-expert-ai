@@ -44,6 +44,8 @@ export interface Employee {
   employeeIDNumber?: string;
   /** When true, GuardIDNumber is used as the Employee ID */
   useGuardAsEmployeeId?: boolean;
+  /** Doppelrolle: Person übt zusätzlich Bewachung aus, auf gewähltem Niveau. "ek" = Einsatzkraft/SMA, "fk" = Führungskraft. undefined = keine Doppelrolle. Trigger für CL-40-Pflichtset. */
+  zusatzBewachungNiveau?: "ek" | "fk";
   // Slice 2 — Requirement-Engine inputs
   /** SDL-Katalog-IDs (Geltungsbereich), in denen die Person eingesetzt ist */
   sdlScopes?: string[];

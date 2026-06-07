@@ -49,6 +49,7 @@ model EmployeeFile {
   guardIDNumber              String?
   employeeIDNumber           String?
   useGuardAsEmployeeId       Boolean?
+  zusatzBewachungNiveau      String?
   sdlScopes                  Json     @default("[]")
   drivesServiceVehicle       Boolean?
   ersteHilfeGueltigBis       String?

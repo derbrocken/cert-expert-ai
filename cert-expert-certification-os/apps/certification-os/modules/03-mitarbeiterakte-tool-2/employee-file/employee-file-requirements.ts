@@ -124,8 +124,12 @@ function fieldStatus(
  * Bewachungsrolle (Slice 2) — abgeleitet aus der echten Stammdatenrolle
  * (`Employee.roleType`), nicht mehr aus der Legacy-`roleId`-Heuristik.
  */
-function isSecurityRole(employee: Pick<Employee, "roleType">): boolean {
-  return isBewachungsrolle(employee.roleType);
+function isSecurityRole(
+  employee: Pick<Employee, "roleType" | "zusatzBewachungNiveau">,
+): boolean {
+  // Slice 3: Doppelrolle (zusätzliche Bewachung, Niveau EK/FK) gilt in den
+  // Anzeige-Rows ebenfalls als Bewachung — konsistent zum Engine-Pflichtset.
+  return isBewachungsrolle(employee.roleType) || !!employee.zusatzBewachungNiveau;
 }
 
 /**
@@ -214,6 +218,7 @@ export function buildRequirementContext(
 ): RequirementContext {
   return {
     roleType: employee.roleType,
+    zusatzBewachungNiveau: employee.zusatzBewachungNiveau,
     appointmentLabels: overlayFromAppointments(
       appointments,
       employee.appointmentIds,

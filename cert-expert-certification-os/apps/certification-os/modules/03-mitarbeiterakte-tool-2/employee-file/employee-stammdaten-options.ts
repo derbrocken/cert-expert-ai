@@ -15,6 +15,14 @@ export const ROLLE_TYPE_OPTIONS = [
   { id: "Praktikant / Azubi", name: "Praktikant / Azubi" },
 ] as const;
 
+/** Slice 3 — Doppelrolle: zusätzliche Bewachungstätigkeit auf Niveau EK/FK.
+ * Leer-Option (id "") erlaubt das Zurücksetzen auf „keine Doppelrolle". */
+export const ZUSATZ_BEWACHUNG_OPTIONS = [
+  { id: "", name: "— keine zusätzliche Bewachung" },
+  { id: "ek", name: "Ja — als Einsatzkraft / SMA (EK)" },
+  { id: "fk", name: "Ja — als Führungskraft (FK)" },
+] as const;
+
 export const BESCHAEFTIGUNGSART_OPTIONS = [
   { id: "Vollzeit", name: "Vollzeit" },
   { id: "Teilzeit", name: "Teilzeit" },

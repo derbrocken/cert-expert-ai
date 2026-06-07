@@ -36,6 +36,10 @@ function asStringArray(value: unknown): string[] {
   return value.filter((v): v is string => typeof v === "string");
 }
 
+function asNiveau(value: unknown): "ek" | "fk" | undefined {
+  return value === "ek" || value === "fk" ? value : undefined;
+}
+
 function asNumberRecord(value: unknown): Record<string, number> {
   if (!value || typeof value !== "object" || Array.isArray(value)) return {};
   const out: Record<string, number> = {};
@@ -62,6 +66,7 @@ export function employeeFileToEmployee(record: EmployeeFile): Employee {
     guardIDNumber: record.guardIDNumber ?? undefined,
     employeeIDNumber: record.employeeIDNumber ?? undefined,
     useGuardAsEmployeeId: record.useGuardAsEmployeeId ?? undefined,
+    zusatzBewachungNiveau: asNiveau(record.zusatzBewachungNiveau),
     sdlScopes: asStringArray(record.sdlScopes),
     drivesServiceVehicle: record.drivesServiceVehicle ?? undefined,
     ersteHilfeGueltigBis: record.ersteHilfeGueltigBis ?? undefined,
@@ -92,6 +97,7 @@ function employeeToUpsertData(
     guardIDNumber: employee.guardIDNumber ?? null,
     employeeIDNumber: employee.employeeIDNumber ?? null,
     useGuardAsEmployeeId: employee.useGuardAsEmployeeId ?? null,
+    zusatzBewachungNiveau: employee.zusatzBewachungNiveau ?? null,
     sdlScopes: employee.sdlScopes ?? [],
     drivesServiceVehicle: employee.drivesServiceVehicle ?? null,
     ersteHilfeGueltigBis: employee.ersteHilfeGueltigBis ?? null,
@@ -205,6 +211,7 @@ export async function upsertEmployeeFile(
       guardIDNumber: employee.guardIDNumber ?? null,
       employeeIDNumber: employee.employeeIDNumber ?? null,
       useGuardAsEmployeeId: employee.useGuardAsEmployeeId ?? null,
+      zusatzBewachungNiveau: employee.zusatzBewachungNiveau ?? null,
       sdlScopes: employee.sdlScopes ?? [],
       drivesServiceVehicle: employee.drivesServiceVehicle ?? null,
       ersteHilfeGueltigBis: employee.ersteHilfeGueltigBis ?? null,
@@ -253,6 +260,7 @@ export async function replaceEmployeeFilesForCompany(
           guardIDNumber: employee.guardIDNumber ?? null,
           employeeIDNumber: employee.employeeIDNumber ?? null,
           useGuardAsEmployeeId: employee.useGuardAsEmployeeId ?? null,
+          zusatzBewachungNiveau: employee.zusatzBewachungNiveau ?? null,
           sdlScopes: employee.sdlScopes ?? [],
           drivesServiceVehicle: employee.drivesServiceVehicle ?? null,
           ersteHilfeGueltigBis: employee.ersteHilfeGueltigBis ?? null,
@@ -583,6 +591,7 @@ export async function migrateFromLocalStoragePayload(
             guardIDNumber: employee.guardIDNumber ?? null,
             employeeIDNumber: employee.employeeIDNumber ?? null,
             useGuardAsEmployeeId: employee.useGuardAsEmployeeId ?? null,
+            zusatzBewachungNiveau: employee.zusatzBewachungNiveau ?? null,
             sdlScopes: employee.sdlScopes ?? [],
             drivesServiceVehicle: employee.drivesServiceVehicle ?? null,
             ersteHilfeGueltigBis: employee.ersteHilfeGueltigBis ?? null,

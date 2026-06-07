@@ -76,6 +76,8 @@ export interface RequirementResult {
 /** Normalisierter Bedingungs-Vektor — die einzige Engine-Eingabe. */
 export interface RequirementContext {
   roleType?: string;
+  /** Doppelrolle-Bewachungs-Niveau: "ek" | "fk". undefined = keine Doppelrolle. Hebt das F3-Gate; "fk" treibt zusätzlich den FK-Zweig (CL-10/CL-20/CL-25). */
+  zusatzBewachungNiveau?: "ek" | "fk";
   /** DE-Labels der Beauftragungen (Ersthelfer, Brandschutzhelfer, …). */
   appointmentLabels: string[];
   employmentType?: string;
@@ -272,11 +274,26 @@ export function deriveRequirements(ctx: RequirementContext): RequirementResult {
   const fristen: Deadline[] = [];
   const hinweise: string[] = [];
 
-  const bewachung = isBewachungsrolle(ctx.roleType);
-  const fuehrung = isFuehrungskraft(ctx.roleType);
+  // Slice 3 — Doppelrolle (Verwaltung/GF + zusätzlich Bewachung, Niveau EK/FK).
+  // Das additive Niveau-Feld hebt das F3-Gate (effektive Bewachung) und wählt
+  // das SDL-Niveau. Keine neue Normpflicht — nur Trigger/Niveau (CL-40 / CL-01).
+  const baseBewachung = isBewachungsrolle(ctx.roleType);
+  const doppelrolle = !!ctx.zusatzBewachungNiveau && !baseBewachung;
+  const bewachung = baseBewachung || !!ctx.zusatzBewachungNiveau; // effektiv
+  // FK-Niveau: echte Grundrolle Führungskraft (F4) ODER Doppelrolle "fk".
+  const fuehrung =
+    isFuehrungskraft(ctx.roleType) || ctx.zusatzBewachungNiveau === "fk";
   const verwaltung = isVerwaltung(ctx.roleType);
   const praktikant = isPraktikant(ctx.roleType);
   const subunternehmer = isSubunternehmer(ctx.roleType);
+  // CL-10-Gate (Mark 2026-06-07): FK-Quali-Posten nur bei DIN-SDL/Auftrag.
+  const hasDinSdl = ctx.sdlScopes.some(
+    (s) => s.startsWith("din1") || s.startsWith("din2"),
+  );
+  // §4.4 Transparenz: bei Doppelrolle lesbar machen, warum das Set greift.
+  const bewTrigger = doppelrolle
+    ? `Doppelrolle (${ctx.roleType} + Bewachung, ${ctx.zusatzBewachungNiveau?.toUpperCase()}-Niveau)`
+    : "Bewachungsrolle";
 
   const ref = parseIsoDate(ctx.referenceDate) ?? new Date();
   const sachkunde = hasSachkunde(ctx.qualification);
@@ -300,7 +317,7 @@ export function deriveRequirements(ctx: RequirementContext): RequirementResult {
       label: "Unterrichtung oder Sachkunde §34a GewO",
       clauseId: "CL-01",
       quelle: "DIN 77200-1 §4.1 b) 1)",
-      trigger: "Bewachungsrolle",
+      trigger: bewTrigger,
       // F1: nur Unterrichtung (ohne Sachkunde) = §34a teilerfüllt ⇒
       // "unvollständig" (nicht grün). Die 6-Monats-Sachkunde-Frist (CL-02)
       // fängt die Nachholpflicht zusätzlich in fristen[] ab.
@@ -322,7 +339,7 @@ export function deriveRequirements(ctx: RequirementContext): RequirementResult {
       label: "Einweisung in die Dienstanweisung",
       clauseId: "CL-03",
       quelle: "DIN 77200-1 §4.1 b) 3) → §4.12",
-      trigger: "Bewachungsrolle",
+      trigger: bewTrigger,
       status: "fehlt",
     });
 
@@ -332,7 +349,7 @@ export function deriveRequirements(ctx: RequirementContext): RequirementResult {
       label: "Datenschutzverpflichtungserklärung",
       clauseId: "CL-04",
       quelle: "DIN 77200-1 §4.1 b) 4)",
-      trigger: "Bewachungsrolle",
+      trigger: bewTrigger,
       status: "fehlt",
     });
 
@@ -342,7 +359,7 @@ export function deriveRequirements(ctx: RequirementContext): RequirementResult {
       label: "Verschwiegenheitsverpflichtung",
       clauseId: "CL-05",
       quelle: "DIN 77200-1 §4.1 b) 5)",
-      trigger: "Bewachungsrolle",
+      trigger: bewTrigger,
       status: "fehlt",
     });
 
@@ -352,7 +369,7 @@ export function deriveRequirements(ctx: RequirementContext): RequirementResult {
       label: "Profil-Mindestqualifikation (Stufe A)",
       clauseId: "CL-06",
       quelle: "DIN 77200-1 §4.19.1 + Anh. A Tab. A.1",
-      trigger: "Bewachungsrolle — Default Stufe A",
+      trigger: `${bewTrigger} — Default Stufe A`,
       status: "vorbereitet",
       hint: "Stufe B/C nur manueller Sonderfall (CL-07) → fachlich prüfen",
     });
@@ -363,19 +380,24 @@ export function deriveRequirements(ctx: RequirementContext): RequirementResult {
       label: "Erste Hilfe aktuell (Erneuerung alle 2 Jahre)",
       clauseId: "CL-08",
       quelle: "DIN 77200-1 §4.19.1",
-      trigger: "Bewachungsrolle",
+      trigger: bewTrigger,
       status: ersteHilfeStatus(ctx.ersteHilfeGueltigBis, ref),
     });
 
-    // q-fk-quali (CL-10) — nur Führungskraft
-    if (fuehrung) {
+    // q-fk-quali (CL-10) — FK-Niveau + DIN-SDL (Mark 2026-06-07: FK-Quali nur
+    // bei DIN-SDLs/Aufträgen). Greift für beide FK-Wege (echte Grundrolle
+    // Führungskraft + Doppelrolle "fk", da effektive `fuehrung`). non-din zählt
+    // nicht. Slice-2-Präzisierung: FK ohne SDL bekommt CL-10 nicht mehr.
+    if (fuehrung && hasDinSdl) {
       pflichtSet.push({
         id: "q-fk-quali",
         label:
           "Fachkraft/Servicekraft/GSSK/Werkschutzfachkraft + 2 J. Erfahrung",
         clauseId: "CL-10",
         quelle: "DIN 77200-1 §4.19.1",
-        trigger: "Rolle = Führungskraft",
+        trigger: doppelrolle
+          ? "Doppelrolle FK-Niveau · DIN-SDL"
+          : "Rolle = Führungskraft · DIN-SDL",
         status: "fachlich prüfen",
       });
     }
@@ -405,7 +427,10 @@ export function deriveRequirements(ctx: RequirementContext): RequirementResult {
   // -------------------------------------------------------------------------
   // B. Rollenabhängige Reduktion (Verwaltung / Praktikant)
   // -------------------------------------------------------------------------
-  if (verwaltung) {
+  // §4.3 Bei Doppelrolle liefert Abschnitt A bereits Datenschutz (CL-04),
+  // Verschwiegenheit (CL-05) + §34a (CL-01) als Pflicht — die Reduktions-Notiz
+  // (v-34a-na, clauseId null) würde nicht dedupt und widerspräche q-34a.
+  if (verwaltung && !doppelrolle) {
     pflichtSet.push({
       id: "v-datenschutz",
       label: "Datenschutzverpflichtungserklärung",
@@ -432,7 +457,7 @@ export function deriveRequirements(ctx: RequirementContext): RequirementResult {
     });
   }
 
-  if (praktikant) {
+  if (praktikant && !doppelrolle) {
     pflichtSet.push({
       id: "p-reduziert",
       label: "Bewachungsspezifische Anforderungen",
@@ -449,6 +474,17 @@ export function deriveRequirements(ctx: RequirementContext): RequirementResult {
     );
   }
 
+  // §4.4 Doppelrollen-Transparenz-Hinweis.
+  if (doppelrolle) {
+    const niveau = ctx.zusatzBewachungNiveau === "fk" ? "FK" : "EK";
+    let hinweis = `Doppelrolle erfasst: Grundrolle „${ctx.roleType}" + zusätzliche Bewachung auf ${niveau}-Niveau → volles Bewachungs-Pflichtset (CL-40) und niveau-richtiges SDL-Schulungssoll angewandt.`;
+    if (ctx.zusatzBewachungNiveau === "fk") {
+      hinweis +=
+        ' FK-Quali (CL-10) ist bei DIN-SDL als „fachlich prüfen" zu belegen.';
+    }
+    hinweise.push(hinweis);
+  }
+
   // -------------------------------------------------------------------------
   // C. SDL / Geltungsbereich → Scope-Nachweise + einmalige Schulung
   // -------------------------------------------------------------------------
@@ -457,11 +493,9 @@ export function deriveRequirements(ctx: RequirementContext): RequirementResult {
   // sonst entstünde ein "schwebendes" UE-Soll ohne Basis-Pflichtset.
   // Brandschutz-Pflichtnachweis (Objekte) sowie ÖPV/NON-DIN "fachlich prüfen"
   // bleiben davon unberührt (kein UE-Soll).
-  // 🟡 Modell-Grenze: Die Engine kennt pro Person nur EINE roleType. Eine
-  // Doppelrolle (Verwaltung/GF + zusätzlich Bewachung, z. B. GF, der mit auf
-  // Schicht geht) bekommt durch dieses Gate fälschlich kein SDL-Soll.
-  // Workaround bis Phase 2: solche Personen als Bewachungsrolle erfassen.
-  // Doppelrollen-Modellierung = Slice 3+ (Design-Notiz im HANDOFF).
+  // Slice 3: Die effektive `bewachung` schließt jetzt die Doppelrolle ein
+  // (Verwaltung/GF + zusätzliche Bewachung, Niveau EK/FK). Damit erhält auch
+  // eine GF-Bewachungs-Doppelrolle das niveau-richtige SDL-Soll.
   if (sdl.has("din2-veranstaltung") && bewachung) {
     if (fuehrung) {
       schulungsSoll.push({
