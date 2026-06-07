@@ -19,19 +19,24 @@
 > **✅ HETZNER-DEPLOY LIVE (2026-06-07).** App läuft öffentlich unter **https://cos.cert-expert.de** (HTTPS/Let's Encrypt, HTTP→HTTPS-Redirect). Deploy von Planer 4 **auf Marks Anweisung** durchgeführt (Server-Ops, **kein Produktivcode geändert** — deployter Commit `404d55d`). Server: Hetzner `cert-expert-01` / **167.233.63.98** (Ubuntu 26.04, Node 24, nginx, systemd-Unit `certification-os` auf :3001). **Tally-Webhook live umgestellt + end-to-end verifiziert:** echte Test-Submission (`responseId Eq16BYX`, 145 Felder) → Signatur OK → Akte „Test Person" erstellt. DB-Backup-Cron (täglich 3 Uhr, 14 Tage) aktiv. **EC-09-ZIP live verifiziert** (echter Klick ELC Security and Service: `POST /employee-automation` 200, ~135 KB ZIP, keine 5xx). **Live-Facts + Redeploy-Schritte:** `HETZNER_DEPLOY.md` (Abschnitt „LIVE-STAND") + Post-Deploy-Review in `CODE_REVIEW.md`. **Offen (nice-to-have):** Test-Akte ggf. löschen; Tally-API-Key rotieren (401, Tech-Debt); systemd-User härten.
 > **Form:** https://tally.so/r/vGNvY0 · **Aufgaben:** `10_Bridge/AUFGABEN.md`
 
-### ▶ Copy-Paste-Prompt für Planer 5
+### ▶ Copy-Paste-Prompt für Planer 6 (REVIEW-Chat)
 > **⚠️ Dies ist DEINE Arbeitsanweisung — kein Entwurf zum Kommentieren/Verbessern. Beginne sofort mit der Arbeit; frage nur bei echten Gate-Entscheidungen (Mark) zurück. Schreibe den Prompt NICHT um.**
 >
-> Du bist **Planer 5** — Nachfolger von Planer 4 (Code-Track, Spur P: Planer/Reviewer, **kein Produktivcode**). Lies zuerst `CLAUDE.md` (Rules) + `hq/10_Bridge/HANDOFF.md` (Box „▶ HIER STARTEN" + Abschluss-Eintrag „Planer 4" + Finding „Tally-Formular deckt Engine-Eingaben nur teilweise ab") + `CODE_REVIEW.md` (oberste 3 Einträge = Post-Deploy/Pre-Deploy/Slice-2-Final). Koordination nur über Bridge-Dateien.
+> Du bist **Planer 6** — Nachfolger von Planer 5 (Code-Track, Spur P: Planer/Reviewer, **kein Produktivcode**). Lies zuerst `CLAUDE.md` (Rules) + `hq/10_Bridge/HANDOFF.md` (Box „▶ HIER STARTEN" + Executor-Ergebnis-Eintrag „Slice 3 Doppelrollen `a276d38`" + Executor-FRAGE „Anlege-Formular-Migration") + `hq/10_Bridge/CURSOR_SLICE3_AUFTRAG.md` (der Bauauftrag, gegen den du reviewst) + `CODE_REVIEW.md` (oberste Einträge). Koordination nur über Bridge-Dateien.
 >
-> **Stand:** **Slice 2 abgeschlossen** (`0d92ff2`) **+ Hetzner-Deploy LIVE** unter **https://cos.cert-expert.de** (Commit `404d55d`; HTTPS/systemd/nginx/certbot, Tally-Webhook umgestellt + end-to-end grün, EC-09-ZIP live 200/~135 KB, DB-Backup-Cron). Server: `cert-expert-01`/167.233.63.98 — Live-Runbook + Redeploy in `HETZNER_DEPLOY.md` („LIVE-STAND"). Keine offenen Code-Tasks; offene Tech-Debt: Tally-REST-Key 401 rotieren, systemd-User härten, Test-Akte löschen.
+> **Deine Aufgabe = Slice 3 (Doppelrollen) REVIEWEN** — Diff `0680ca2..a276d38` (Feat) gegen `CURSOR_SLICE3_AUFTRAG.md` + `NORM_MATRIX_…v2` + `NORM_KLAUSEL_REGISTER_v1`. Befund nach `CODE_REVIEW.md` (neuer Eintrag oben) + Abschluss-Eintrag im HANDOFF.
+> **Konkrete Review-Punkte (jede Norm-Regel CL-belegt):**
+> 1. **Niveau-Modell:** `zusatzBewachungNiveau` „ek"/„fk" korrekt verdrahtet? Effektive `bewachung`/`fuehrung` greift in **allen** Gates (A-Set, C-SDL-Soll, E-Weiterbildung, Fristen)?
+> 2. **EK vs. FK:** EK → CL-21/CL-24 (16/40 UE), FK → CL-20/CL-25 (24/64 = 40+24 UE). FK baut auf EK-Basis auf (Asyl).
+> 3. **CL-10-Gate:** FK-Quali-Posten nur bei **DIN-SDL** (`din1-*`/`din2-*`), „fachlich prüfen" — für **beide** FK-Wege. Slice-2-Präzisierung (FK ohne SDL → kein CL-10) korrekt umgesetzt + getestet?
+> 4. **Reduktion unterdrückt:** Verwaltung/Praktikant + Doppelrolle → kein widersprüchliches `v-34a-na`/`p-reduziert` neben `q-34a`?
+> 5. **Keine erfundene Pflicht / EC-10:** keine neuen CL-IDs, keine neuen UE-Werte; keine Freigabe-/Auditfähigkeitsaussage.
+> 6. **Repository (5 Mapping-Stellen)** vollständig — Feld geht über Save/Load/Migration nicht verloren.
+> **Unabhängig re-verifizieren** (nicht nur Executor-Meldung): `tsc --noEmit` = 0, Engine-Suite (`tsx --test`) **20/20** grün; EC-09 + Doppelrolle-Browser = etabliertes Builder-Browser-Muster übernehmen.
+> **Mitnehmen (kein eigener Bau):** kleiner URL-Fix `17f94cc` (nur `?new=1`-Spiegelung — Planer 5 hat ihn als harmlos eingestuft, kurz gegenchecken).
+> **Danach (Scope/Planung, NICHT Review):** Executor-FRAGE „**Anlege-Formular auf neues Requirement-Modell migrieren?**" (Legacy `EmployeeForm.tsx`/Tool-1-Modell vs. neues Akte-Modell) als **eigenen Slice** mit Mark abwägen. Plus offene Fäden: **Slice 3b** (Tally-Formular-Feldlücke, gated auf Marks Tally-Arbeit), **Slice 4** (Ampel-/Status-Ansicht, QFD #1), DEKRA (CL-60–62), Legal-Input (CL-70–73), Ist-UE-Auto-Summe.
 >
-> **Nächster Schritt = Slice 3 planen** (nach Marks „weiter"). Erste zwei Lücken (zusammen abwägen):
-> 1. **Doppelrollen-Modellierung** (Verwaltung/GF + zusätzlich Bewachung — heute nur EINE `roleType`/Person; durch F3-Gate bekäme so jemand kein SDL-Soll). Lösung z. B. Flag „übt zusätzlich Bewachung aus" o. Mehrfach-`roleType`.
-> 2. **Tally-Formular-Feldlücke** (Engine braucht SDL-Scope/Dienstfahrzeug/Fristdaten/Beauftragungen/Eintrittsdatum — Formular fragt sie nicht; heute manuell in der Akte nachgepflegt). **Planer-4-Empfehlung = Option C (Hybrid):** eindeutige Felder ins Formular, erklärungsbedürftige manuell. Details im Finding.
-> Weitere Fäden: DEKRA-Klärung (Matrix §15 / CL-60–62), Legal-Input Mark (CL-70–73), Ist-UE-Auto-Summe aus Nachweisen.
->
-> Als Planer: gegen `NORM_MATRIX_…v2` + `NORM_KLAUSEL_REGISTER_v1` planen, jede Norm-Regel mit `clauseId`, Bauauftrag nach Bridge. **Guardrails:** EC-09 (Generator/ZIP nie brechen), EC-10 (kein Freigabe-/Auditfähigkeitsstatus). Verifikation im echten Browser, nicht per Skript. Mark = Gate. Nach stabilem Punkt: Übergabe-Takt + Abschluss-Eintrag.
+> **Guardrails:** EC-09 (Generator/ZIP nie brechen), EC-10 (kein Freigabe-/Auditfähigkeitsstatus), keine erfundene Normpflicht (jede Regel `clauseId`). Verifikation im echten Browser, nicht per Skript. Mark = Gate. Nach stabilem Punkt: Übergabe-Takt + Abschluss-Eintrag.
 
 ---
 
