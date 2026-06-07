@@ -34,17 +34,19 @@
 | **M-04** | Korrupten Wolf-Street-Entwurf in Outlook löschen | M | Entwurf weg | OFFEN |
 | **M-05** | Dummy "Max Mustermann" in COS löschen | M | weg | OFFEN |
 | **M-06** | Wolf-Street-Mail senden (Text steht in `Mail_Unterlagenliste_2026-06-07.md`) | M | Mail raus | OFFEN |
-| **M-15** | Design-Brief an Tarak senden (vor 18:00) — `04_Vertrieb/Marke_und_Website/Design_Brief_FOAOS_Website.md` | M | Brief raus | OFFEN |
+| **W-01** | **Warten auf Tarak:** Design-Vorschläge (Farbwelt, Typo, Hero) nach Auswertung von Leitbild/Strategie/10-Jahresplan/taktische Ziele. Tarak meldet sich. | extern | Tarak liefert Vorschläge | WARTET (auf Tarak) |
 | **D-05** | Website-**Primärclaim/Tagline** festlegen (inkl. Entscheid „PRÄZISION·TIMING·KONTROLLE" vs. dokumentierte Antithesen-Claims) | M | Tagline gewählt | WARTET (auf dich) |
 | **G-02** | Vision-Schärfung in kanonische `OneDrive QM/Strategie/Vision 2036.docx` einarbeiten + taktische Ziele auf schnelleren Horizont | G | eingearbeitet | OFFEN |
 | **M-16** | Airtable: Checkpoint Regional auf Stage „Angebot & KSA" zurücksetzen (Angebot noch nicht unterschrieben) | M | Stage korrekt | OFFEN |
 | **D-06** | Zertifikats-Daten (Issue/Expiry) der zertifizierten/Renewal-Kunden in Airtable nachtragen (= Renewal-Motor) — **später** | M | Daten drin | GEPARKT |
-| **M-17** | Code-Track → Claude Code in Cursor migrieren (Abschluss-HANDOFF + Übergabe) | M/T | neuer Bauer aktiv | OFFEN |
+| **M-17** | Code-Track → Claude Code in Cursor migrieren (Abschluss-HANDOFF + Übergabe) | M/T | neuer Bauer aktiv | ✅ erledigt |
+| **M-18** | **Kalender konsolidieren.** Ist: Outlook (Kalender ungenutzt) · iPhone (privater Apple-Account, **nicht** mit MacBook verbunden) mit **Google-Kalender** (mit Assistenz geteilt, „alles Audit-Relevante" drin, aber **nicht aktuell**). Ziel: **EINEN führenden Kalender** festlegen + aktualisieren. Audit-Termine kommen künftig aus **Airtable** (`Audit Date`) → kann den Kalender speisen. | M | ein führender, aktueller Kalender | OFFEN |
 
 ---
 
 ## Erledigt
 
+- **M-15 / Website-Session** (2026-06-07) — Design-Brief an Tarak raus + **Session gehalten**. Mark hat Tarak zusätzlich **Leitbild, Strategie, 10-Jahresplan, taktische Ziele** geschickt. Tarak wertet aus und meldet sich mit Design-Vorschlägen (→ W-01). Nächster Schritt unsererseits: kanonische Strategie-Doku aktuell halten (→ G-02).
 - **T-01** (2026-06-07) — Nested-Clone-Löschung. **Ordner existiert nicht mehr → Migration code-seitig abgeschlossen.** Verifiziert: kein zweiter `cert-expert-ai/` im Repo.
 - **T-02** (2026-06-07) — ESLint: 20 Fehler → 0. `npm run lint` + `npm run build` sauber (COS, Port 3001). Fixes: lazy localStorage-Hydration, Render-Sync statt setState-in-effect, UploadsPage-Typen, `tmp-upload-templates` ignoriert.
 - **D-01** (2026-06-07) — Design abgestimmt. Code-Track hat DFSS-Gold (inkl. VOC/CTS/KANO/QFD) + O2C-Prozess ausgewertet, Lücken + Reihenfolge festgelegt, Bauauftrag geschrieben. Entscheidungen gesperrt in `CURSOR_BAUAUFTRAG_TOOL2.md`.

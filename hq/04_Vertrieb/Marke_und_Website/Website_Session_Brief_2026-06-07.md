@@ -46,4 +46,12 @@ Leitprinzipien (aus deiner Philosophie): Intelligenz · Präzision · Ruhe/Kontr
 Komplett-Relaunch, Texte für alle Unterseiten, Ökosystem/Portal als Hauptbotschaft, Logo-Diskussion (das Mantis-Logo steht ja schon).
 
 ---
+
+## Ergebnis der Session (2026-06-07, nach dem Call)
+- Session mit Tarak gehalten.
+- Mark hat Tarak zusätzlich **Leitbild, Strategie, 10-Jahresplan, taktische Ziele** geschickt (über den Brief hinaus).
+- **Tarak:** wertet das aus, lässt es sacken, meldet sich mit Design-Vorschlägen (Farbwelt, Typo, Hero). → offen als **W-01** in `AUFGABEN.md`.
+- **Offen unsererseits:** kanonische Strategie-Doku aktuell halten (Vision 2036 + taktische Ziele auf realistischen Horizont) → **G-02**.
+
+---
 *Quellen: QM/Strategie (Vision 2036, Mission, Leitbild, Philosophie), FOAOS-Branding, aktuelle Seite cert-expert.com.*
