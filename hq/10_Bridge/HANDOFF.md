@@ -14,7 +14,7 @@
 > **▶ NÄCHSTER PLANER-CHAT: „Planer 4"** (Nachfolger). Folge-Planer fortlaufend nummerieren. *(Planer 3 hat den kombinierten Diff `22e0c7c..0d92ff2` final abgenommen — Abschluss-Eintrag unten.)*
 > **Letzte Commits:** `0d92ff2` (UE-Anzeige + Findings F1–F5) · `e81ca2c` (Planer-3-Prompt) · `47dcea1` (Planer-2-Review) · `22e0c7c` (Slice 2)
 > **✅ Planer 3: kombinierter Diff `22e0c7c..0d92ff2` FINAL ABGENOMMEN** (`CODE_REVIEW.md`, oben). UE-Anzeige (Variante C, `t.hint`/CL-27/Asyl-64 jetzt gerendert) + Findings F1–F5 norm-konform & CL-belegt. Unabhängig re-verifiziert: **`tsc` 0 · Engine-Suite 13/13 grün**. **Slice 2 komplett abgeschlossen.**
-> **▶ AKTIV = HETZNER-DEPLOY (Mark hat „los" gegeben, 2026-06-07).** Pre-Deploy-Gates für Executor: **`CURSOR_HETZNER_PREDEPLOY_AUFTRAG.md`** (Planer 3). DB-Pfad-Frage geklärt + entschieden (kanonisch `prisma/prisma/dev.db`); `HETZNER_DEPLOY.md` Doku-Bugs gefixt. **▶ Nächster: Builder/Executor** baut die Pre-Deploy-Gates (`next build` grün · EC-09-Prod-Smoke · Env-Check · `db:push`-Trockencheck), dann **Mark** deployt (DNS/systemd/nginx/Webhook-PATCH).
+> **▶ AKTIV = HETZNER-DEPLOY (Mark hat „los" gegeben, 2026-06-07).** Pre-Deploy-Gates für Executor: **`CURSOR_HETZNER_PREDEPLOY_AUFTRAG.md`** (Planer 3). DB-Pfad-Frage geklärt + entschieden (kanonisch `prisma/prisma/dev.db`); `HETZNER_DEPLOY.md` Doku-Bugs gefixt. **✅ Executor: alle 4 Pre-Deploy-Gates grün** (`next build` 0 Err · EC-09-Prod-ZIP grün/132 KB · `.env.example` vollständig · `db:push` nur `prisma/prisma/dev.db`) — **kein Code-Commit nötig** (Ergebnis-Eintrag unten „Von Cursor an Claude"). **▶ Nächster: Mark deployt** (DNS/`.env.production.local`/systemd/nginx/certbot/Webhook-PATCH/Backup), Runbook `HETZNER_DEPLOY.md`; danach Planer 4 reviewt.
 > **Form:** https://tally.so/r/vGNvY0 · **Aufgaben:** `10_Bridge/AUFGABEN.md`
 
 ### ▶ Copy-Paste-Prompt für Planer 4
@@ -99,6 +99,20 @@
 ---
 
 ## 📥 Von Cursor an Claude (Fragen / Bitten)
+
+### 2026-06-07 — ✅ Executor: Hetzner Pre-Deploy-Gates alle grün (kein Code-Commit nötig)
+
+**Bauauftrag `CURSOR_HETZNER_PREDEPLOY_AUFTRAG.md` abgearbeitet — alle 4 Gates grün:**
+1. **`npm run build` = 0 Errors.** `prisma generate` + `next build` (Next 16.1.1/Turbopack) sauber durch, TypeScript ok. ESLint zusätzlich separat (`npm run lint`): **0 Errors / 5 Warnings** (react-hooks/incompatible-library `watch()` ×2, exhaustive-deps ×1, unused `_appointments` ×1 — alle nicht blockierend). Keine Lint-Fixes nötig → **kein `ignoreDuringBuilds`**, kein Code-Commit.
+2. **EC-09-Smoke gegen Prod-Build (`npm run start -- -p 3001`) im echten Browser grün.** Person → Akte → Doc-Chips (Generator-Palette Core 4/4 + Overlay) → ZIP exportieren. Server-Action **200**, RSC-Body beginnt mit `UEsDBA…` (= `PK\x03\x04` ZIP-Magic), Client erzeugt **`application/zip`-Blob 132,8 KB** + Download-`a.click()`. **EC-10-Disclaimer** „…kein automatischer Freigabe- oder Zertifizierungsstatus" sichtbar. *(Hinweis: die zwei Test-Datensätze „Felix Balthasar Hochreither" haben keine Rolle → Engine liefert korrekt `{success:false, error:"Role \"\" not found…"}`. Reines Test-Daten-Artefakt, kein Build-/Code-Problem. Export mit valider Person „joe" = grün.)*
+3. **`.env.example` vollständig.** Alle zur Laufzeit gelesenen `process.env.*` abgedeckt: `HETZNER_S3_KEY/SECRET`, `HETZNER_BUCKET_NAME`, `HETZNER_S3_ENDPOINT/REGION` (S3×5), `INTERNAL_API_KEY`, `TALLY_WEBHOOK_SECRET`, `TALLY_API_KEY`, `DATABASE_URL`, optional `CEA_REGISTRY_PATH` (auskommentiert). `NODE_ENV` per systemd. **Keine fehlende Variable → keine Ergänzung nötig.**
+4. **`db:push`-Trockencheck grün.** `DATABASE_URL=file:./prisma/dev.db npm run db:push` → „database is already in sync", adressiert `dev.db at file:./prisma/dev.db` = real `prisma/prisma/dev.db`. **Kein zweites `prisma/dev.db` angelegt** (vorher/nachher nur das eine File, Größe/Timestamp unverändert).
+
+**Verifikation:** real im Browser (CDP-Netz-/Blob-Hooks zur Beweissicherung des ZIP-Streams), nicht per Skript-Fake.
+**Offen:** Mark deployt (DNS/`.env.production.local`/systemd/nginx/certbot/Webhook-PATCH/Backup-Cron) — Runbook `HETZNER_DEPLOY.md` + Bauauftrag „DANACH". Dann Planer 4 reviewt Pre-Deploy-Ergebnis.
+**Commit-Hash:** keiner — **kein Produktivcode geändert** (alle Gates ohne Fix grün); Basis bleibt `0d92ff2`. Diese HANDOFF-Notiz = Bridge-Doku.
+
+---
 
 ### 2026-06-07 — ✅ Builder 2: UE-Anzeige + Findings F1–F5 committet (`0d92ff2`)
 
