@@ -9,10 +9,10 @@
 
 > ## ▶ HIER STARTEN — AKTUELLER STAND (2026-06-07)
 > **Branch = `main`** · COS: `cert-expert-certification-os/apps/certification-os/` · Port **3001**
-> **Phase = Slice 2 (Requirement-Engine) gebaut + committet (`22e0c7c`) + Engine fachlich abgenommen (`96e9341`) ✅**
+> **Phase = Slice 3 (Doppelrollen, Niveau EK/FK) gebaut + committet (`a276d38`) ✅ — Review durch Planer 6 offen.**
 > **Arbeitsmodell:** Planer/Claude führt (plant + reviewt) · Executor/Cursor baut · Ping-Pong über Bridge-Dateien (Mark, 2026-06-07). Planer rotiert seltener als Executor.
 > **▶ NÄCHSTER PLANER-CHAT: „Planer 6"** (Nachfolger). Folge-Planer fortlaufend nummerieren. *(Planer 4 hat Pre-Deploy abgenommen + den Hetzner-Deploy live durchgeführt. **Planer 5 hat Slice 3 (Doppelrollen) geplant → Bauauftrag `CURSOR_SLICE3_AUFTRAG.md` steht; Bau gated auf Mark, 2 Gate-Entscheidungen G1/G2 in „Offene Entscheidungen".**)*
-> **▶ Slice 3 (Doppelrollen) = FREIGEGEBEN ZUM BAU (Mark, 2026-06-07 22:14).** **NÄCHSTER CHAT = EXECUTOR (Spur E)** → liest `CLAUDE.md` + diese Box + `CURSOR_SLICE3_AUFTRAG.md`, baut, hält EC-09+`tsc` grün, committet (Marks OK), hängt EINEN Ergebnis-Eintrag an + kippt diesen Status. Form-Feldlücke = Slice 3b (gated auf Marks Tally-Arbeit).
+> **▶ Slice 3 (Doppelrollen, Niveau EK/FK) = GEBAUT + COMMITTET (`a276d38`, Executor 2026-06-07) ✅.** Engine-Suite 20/20 (13 alt + 7 neu), `tsc` 0, EC-09-Smoke + Doppelrolle-Browser-Akzeptanz (GF+EK → volles Set/SDL-Soll/Hinweis; aus → Reduktion; Persistenz über Reload) grün. Ergebnis-Eintrag unten („Von Cursor an Claude", 2026-06-07). **NÄCHSTER CHAT:** Planer 6 reviewt Slice 3 (Diff `a276d38`). Danach Slice 3b (Tally-Formular-Feldlücke, gated auf Marks Tally-Arbeit) oder Slice 4 (Ampel-/Status-Ansicht).
 > **Letzte Commits:** `0d92ff2` (UE-Anzeige + Findings F1–F5) · `e81ca2c` (Planer-3-Prompt) · `47dcea1` (Planer-2-Review) · `22e0c7c` (Slice 2)
 > **✅ Planer 3: kombinierter Diff `22e0c7c..0d92ff2` FINAL ABGENOMMEN** (`CODE_REVIEW.md`, oben). UE-Anzeige (Variante C, `t.hint`/CL-27/Asyl-64 jetzt gerendert) + Findings F1–F5 norm-konform & CL-belegt. Unabhängig re-verifiziert: **`tsc` 0 · Engine-Suite 13/13 grün**. **Slice 2 komplett abgeschlossen.**
 > **✅ HETZNER-DEPLOY LIVE (2026-06-07).** App läuft öffentlich unter **https://cos.cert-expert.de** (HTTPS/Let's Encrypt, HTTP→HTTPS-Redirect). Deploy von Planer 4 **auf Marks Anweisung** durchgeführt (Server-Ops, **kein Produktivcode geändert** — deployter Commit `404d55d`). Server: Hetzner `cert-expert-01` / **167.233.63.98** (Ubuntu 26.04, Node 24, nginx, systemd-Unit `certification-os` auf :3001). **Tally-Webhook live umgestellt + end-to-end verifiziert:** echte Test-Submission (`responseId Eq16BYX`, 145 Felder) → Signatur OK → Akte „Test Person" erstellt. DB-Backup-Cron (täglich 3 Uhr, 14 Tage) aktiv. **EC-09-ZIP live verifiziert** (echter Klick ELC Security and Service: `POST /employee-automation` 200, ~135 KB ZIP, keine 5xx). **Live-Facts + Redeploy-Schritte:** `HETZNER_DEPLOY.md` (Abschnitt „LIVE-STAND") + Post-Deploy-Review in `CODE_REVIEW.md`. **Offen (nice-to-have):** Test-Akte ggf. löschen; Tally-API-Key rotieren (401, Tech-Debt); systemd-User härten.
@@ -136,6 +136,22 @@
 ---
 
 ## 📥 Von Cursor an Claude (Fragen / Bitten)
+
+### 2026-06-07 — ✅ Executor: Slice 3 Doppelrollen (Niveau EK/FK) gebaut + committet (`a276d38`)
+
+**Fertig (exakt nach `CURSOR_SLICE3_AUFTRAG.md`, kein Scope-Zusatz):**
+- **Datenmodell:** `EmployeeFile.zusatzBewachungNiveau String?` (Prisma, `db:push`+`generate`, nur `prisma/prisma/dev.db`) · `Employee.zusatzBewachungNiveau?: "ek"|"fk"` · Repository alle 5 Mapping-Stellen + Read-Normalisierung (`asNiveau`).
+- **Engine (4.1–4.5):** effektive `bewachung`/`fuehrung` (Doppelrolle hebt F3-Gate, „fk" treibt FK-Zweig) · CL-10 (`q-fk-quali`) jetzt DIN-SDL-gegatet (`hasDinSdl`) · Verwaltungs-/Praktikanten-Reduktion bei Doppelrolle unterdrückt · `bewTrigger`-Transparenztext + Doppelrollen-Hinweis. Keine neue CL/UE.
+- **Presenter:** `buildRequirementContext` reicht Feld durch · `isSecurityRole` doppelrollen-aware.
+- **UI:** Select „Zusätzliche Bewachungstätigkeit (Doppelrolle)" unter der Rolle-Zeile (`ZUSATZ_BEWACHUNG_OPTIONS`); inkl. Leer-Option „— keine zusätzliche Bewachung" (nötig, damit Headless-`Select` zurücksetzbar ist — die DoD-Forderung „Checkbox aus → Reduktion").
+- **Tests:** Engine-Suite **20/20** (13 alt grün + 7 neu D1–D7, inkl. CL-10-Gate D7).
+
+**Verifiziert:** `tsc --noEmit` 0 · `tsx --test` 20/20 · **EC-09-Smoke** im echten Browser (Person→Akte→Doc-Chips→ZIP `POST /employee-automation` 200, kein 5xx) · **Doppelrolle-Akzeptanz** live (Testperson GF+EK → volles Bewachungs-Set mit „Doppelrolle (Geschäftsführung + Bewachung, EK-Niveau)"-Trigger + UE-Soll + Hinweis; auf „keine" → zurück auf Verwaltungs-Reduktion; **Persistenz über Reload** bestätigt). **EC-10** gewahrt.
+
+**Offen / Frage an Planer:** (1) Slice-3-Review (Diff `a276d38`) gegen Norm-Matrix v2 + Klausel-Register. (2) FK-Niveau wurde im Browser nicht separat durchgeklickt — durch Unit-Tests D4/D7 abgedeckt; bei Bedarf live nachstellen. (3) Slice 3b (Tally-Feldlücke) bleibt gated auf Marks Tally-Arbeit.
+**Commit-Hash:** `a276d38` (8 Dateien). DB/.env nicht committet (DSGVO).
+
+---
 
 ### 2026-06-07 — ✅ Executor: Hetzner Pre-Deploy-Gates alle grün (kein Code-Commit nötig)
 
