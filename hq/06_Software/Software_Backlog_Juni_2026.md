@@ -71,3 +71,10 @@
 - **Nächster Schritt:** `docs/CHAT_HANDOFF.md`, Schutzritter-Referenzprojekt
 - **Erstellt:** 2026-06-03T12:00:00+02:00
 - **Rohinput:** Master Dump — EK Bot, SK Bot
+
+## Idee (PARKEN — später, nicht jetzt) — 2026-06-07
+**Tages-Dashboard: Monats-Umschalter.**
+Im Tagesbriefing einen Monat anklicken → es erscheint ein **Monatsplan**: alle Kunden + deren ToDos/Audits, die **in diesem Monat** anstehen. Einfache Leseansicht.
+- Quelle: Airtable (Audit-Datum, Stage, Next Action).
+- Abhängigkeit: setzt die Anbindung **Airtable → `build_dashboard.py`** voraus.
+- Priorität: niedrig / nach Tool-Bau.

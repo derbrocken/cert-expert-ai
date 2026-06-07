@@ -1,0 +1,14 @@
+{
+  "source": "Airtable — Cert Expert CRM & Revenue Pipeline / Clients (appEdxzBS6Ao5Z0RF / tblC6GOQXTLZcsGUC)",
+  "exported": "2026-06-07",
+  "note": "Auto-Quelle fürs Cockpit. 'stage' = neues Feld 'Checkpoint' (5-stufige Pipeline). Refresh: Airtable -> diese Datei -> build_dashboard.py.",
+  "customers": {
+    "TeamFlex":            {"display_name": "Teamflex Solutions GmbH",            "stage": "2 · Unterlagen-Sammlung", "ampel": "🟡", "audit_dates": ["12.06.2026"], "next_action": "Training-Nachweise senden"},
+    "Wolf_Street":         {"display_name": "WolfStreet GmbH",                    "stage": "3 · Audit-Vorbereitung",  "ampel": "🟡", "audit_dates": ["16.06.2026"], "next_action": "Unterlagenliste senden"},
+    "SecuGuard":           {"display_name": "SecuGuard GmbH",                     "stage": "3 · Audit-Vorbereitung",  "ampel": "🟡", "audit_dates": [],             "next_action": ""},
+    "Schutzritter":        {"display_name": "Schutzritter Sicherheitsdienste GmbH","stage": "2 · Unterlagen-Sammlung","ampel": "🔴", "audit_dates": [],             "next_action": "To-do-Mail mit offenen Punkten senden"},
+    "Checkpoint_Regional": {"display_name": "Checkpoint Regional GmbH",           "stage": "2 · Unterlagen-Sammlung", "ampel": "🔴", "audit_dates": ["24.06.2026"], "next_action": "Welcome-Video-Call"},
+    "ZT_Security":         {"display_name": "ZT Security & Service GmbH",         "stage": "3 · Audit-Vorbereitung",  "ampel": "🟡", "audit_dates": ["08.07.2026"], "next_action": ""},
+    "LC_Security":         {"display_name": "ELC Security & Service GmbH",        "stage": "3 · Audit-Vorbereitung",  "ampel": "🟡", "audit_dates": [],             "next_action": ""}
+  }
+}

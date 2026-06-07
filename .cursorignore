@@ -1,0 +1,20 @@
+# Cursor soll diese Ordner NICHT indexieren (verhindert Abstürze durch Repo-Größe)
+
+# Python virtual environments (~200 MB Binaries)
+.venv/
+.venv-dfss/
+.venv-pdf/
+.venv_pdf/
+venv/
+
+# Generierte Outputs (kein Quellcode)
+outputs/
+_dfss_tmp/
+
+# Node
+**/node_modules/
+
+# macOS / Editor-Krempel
+.DS_Store
+**/.DS_Store
+.obsidian/

@@ -13,6 +13,17 @@ HQ = Path(__file__).resolve().parents[1]
 DASH = HQ / "00_Dashboard"
 KP = HQ / "03_Kundenprojekte"
 REGISTRY = KP / "_registry.json"
+AIRTABLE_CACHE = KP / "_airtable_cache.json"
+
+
+def _load_airtable() -> dict:
+    """Kundenstatus aus Airtable-Cache (System of Record). Leer = Fallback auf Status.md."""
+    if AIRTABLE_CACHE.exists():
+        try:
+            return json.loads(AIRTABLE_CACHE.read_text(encoding="utf-8")).get("customers", {})
+        except Exception:
+            return {}
+    return {}
 
 TODO_BLOCK = re.compile(r"^## (TODO-[^\s]+)\s*$", re.M)
 FIELD = re.compile(r"^- \*\*([^*]+):\*\*\s*(.*)$", re.M)
@@ -305,21 +316,24 @@ def _build_overview(customers: list[dict], customer_todos: list[TodoItem]) -> st
     lines = [
         "# Kundenübersicht — HQ",
         "",
-        f"**Stand:** {date.today().isoformat()} (auto)",
+        f"**Stand:** {date.today().isoformat()} (auto)  ",
+        "**Quelle:** Airtable (CRM = System of Record) via `_airtable_cache.json` · Fallback `Status.md`",
         "",
         "Visuelle Einstiegsseite — springe in Status (1 Seite) statt in Roh-To-dos.",
         "",
-        "| Kunde | Ampel | Nächste Termine | Offen | |",
-        "|-------|-------|-----------------|-------|---|",
+        "| Kunde | Ampel | Stage | Nächste Termine | Nächste Aktion | Offen | |",
+        "|-------|-------|-------|-----------------|----------------|-------|---|",
     ]
     for c in customers:
         slug = c["slug"]
         n = len([t for t in customer_todos if f"/{slug}/" in t.file_path.replace("\\", "/")])
         terms = ", ".join(c["meta"]["audit_dates"][:2]) or "—"
+        stage = c["meta"].get("stage", "") or "—"
+        nxt = c["meta"].get("next_action", "") or "—"
         s = c["meta"]["status_link"]
         a = f"../03_Kundenprojekte/{slug}/Audit_2026.md"
         lines.append(
-            f"| **{c['display_name']}** | {c['meta']['ampel']} | {terms} | {n} | "
+            f"| **{c['display_name']}** | {c['meta']['ampel']} | {stage} | {terms} | {nxt} | {n} | "
             f"[Status]({s}) · [Audit]({a}) |"
         )
     lines.extend(
@@ -336,13 +350,26 @@ def _build_overview(customers: list[dict], customer_todos: list[TodoItem]) -> st
 
 def main() -> None:
     reg = json.loads(REGISTRY.read_text(encoding="utf-8"))
+    airtable = _load_airtable()
     customers = []
     for p in reg["projects"]:
+        meta = _customer_meta(p["slug"])
+        meta["stage"] = ""
+        meta["next_action"] = ""
+        # Airtable = System of Record für Kunden-Zustand: überschreibt Status.md
+        at = airtable.get(p["slug"])
+        if at:
+            if at.get("ampel"):
+                meta["ampel"] = at["ampel"]
+            if at.get("audit_dates"):
+                meta["audit_dates"] = at["audit_dates"]
+            meta["stage"] = at.get("stage", "")
+            meta["next_action"] = at.get("next_action", "")
         customers.append(
             {
                 "slug": p["slug"],
                 "display_name": p["display_name"],
-                "meta": _customer_meta(p["slug"]),
+                "meta": meta,
             }
         )
 
