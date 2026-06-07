@@ -14,6 +14,19 @@
 > **▶ Offen (Stand Planer 2):** (1) **UE-Anzeige Final-Abnahme** nach Executor-Commit + Browser. (2) **Findings 1+2 (+5)** → Auftrag liegt: `CURSOR_FINDINGS_1_2_AUFTRAG.md` (q-34a `unvollständig`; CL-08/CL-23-Doppelzeilen dedupen; Asyl-Label). (3) **Findings 3+4 = Marks normative Entscheidung** → siehe „Offene Entscheidungen für Mark" (SDL-Soll an Bewachung gaten? Schichtleitung = FK?). (4) **CL-74** (Beauftragung≠Schulung, Ausbilder-Befähigung) → Anbieter-Validierung = Slice 3/4. (5) Bulk-Gruppen-Scope (freigegeben, offen). (6) **Hetzner-Deploy** = eigener Schritt NACH Slice 2 — gerahmt im „Von Claude an Cursor"-Eintrag + `HETZNER_DEPLOY.md`.
 > **Form:** https://tally.so/r/vGNvY0 · **Aufgaben:** `10_Bridge/AUFGABEN.md`
 
+### ▶ Copy-Paste-Prompt für Planer 3
+> Du bist **Planer 3** — Nachfolger von Planer 2 (Code-Track, Spur P: Planer/Reviewer, **kein Produktivcode**). Lies zuerst `CLAUDE.md` (Rules) + `hq/10_Bridge/HANDOFF.md` (Box „▶ HIER STARTEN" + Abschluss-Eintrag „Planer 2"). Koordination nur über Bridge-Dateien.
+>
+> **Stand (committet + gepusht, `47dcea1`):** Slice-2-Engine abgenommen (`22e0c7c`). UE-Anzeige (Variante C) von Planer 2 **statisch** abgenommen (`CODE_REVIEW.md`): `tsc` 0, Lints 0 — Code liegt **uncommitted** im Working Tree beim Executor. Findings 1–5 alle entschieden + in `hq/10_Bridge/CURSOR_FINDINGS_1_2_AUFTRAG.md` (F1 q-34a `unvollständig`, F2 CL-08/CL-23 Doppelzeilen-Dedup, F3 SDL-Soll gaten, F4 Leitungsrollen=EK/nur „Führungskraft"=FK, F5 Asyl-Label).
+>
+> **Aufgaben (in Reihenfolge):**
+> 1. **Prüfen, was der Executor gemacht hat** (`git log`, Working Tree): UE-Anzeige committet? Findings 1–5 gebaut?
+> 2. **Final-Abnahme UE-Anzeige** nach Executor-Commit + dessen Browser-Verifikation → `CODE_REVIEW.md` (offen war: `t.hint` rendern → CL-27-Anrechnungszeile + Asyl-„64 UE"-Hinweis).
+> 3. **Review Findings 1–5** gegen `knowledge/NORM_MATRIX_Mitarbeiternachweise_v2.md` + `NORM_KLAUSEL_REGISTER_v1.md`: jede `clauseId` belegt; F4 korrekt (SL=16 UE, kein Auto-FK-Quali; EL/OL/SL bleiben Bewachung); **F4 roleType-String-Matching** Katalog (`"SMA / Sicherheitsmitarbeiter"`) vs. Engine (`"Sicherheitsmitarbeiter"`) — möglicher realer Bug, explizit verifizieren; F3 gaten + Doppelrollen-Kommentar drin.
+> 4. **Offene Fäden:** Doppelrollen-Design-Lücke (Verwaltung+Bewachung) → Slice 3+. **Hetzner-Deploy** als eigener Schritt (Pre-Deploy-Checkliste in HANDOFF + `HETZNER_DEPLOY.md`) — erst nach Marks „los".
+>
+> **Guardrails:** EC-09 (Generator/ZIP nie brechen), EC-10 (kein Freigabe-/Auditfähigkeitsstatus), jede Norm-Regel mit CL-ID. Verifikation im echten Browser, nicht per Skript. Mark = Gate. Nach stabilem Punkt: Übergabe-Takt + Abschluss-Eintrag.
+
 ---
 
 ## 🔚 ABSCHLUSS-EINTRAG — Planer 2 (17:24): UE-Anzeige-Review + Findings verteilt, 2026-06-07
