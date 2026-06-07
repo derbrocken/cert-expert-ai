@@ -8,6 +8,23 @@
 - **Mark entscheidet & gibt frei.** Kein Slice/keine Architekturänderung ohne seine Freigabe.
 - **Review-Takt bewusst halten:** Executor-Output wird gegengeprüft (Planer + Mark als Gate), nicht selbst durchgewunken.
 
+## Zwei-Spuren-Betrieb (Planer ↔ Executor)
+
+Jeder Chat hat genau **EINE** Rolle. Mark sagt sie in der ersten Nachricht an; ist sie nicht angesagt → **nachfragen, nicht raten**.
+
+**Spur P — Planer/Reviewer** (schreibt **KEINEN** Produktivcode):
+- Plant den nächsten Slice gegen `NORM_MATRIX_…v2` + `KLAUSEL_REGISTER` → schreibt Bauauftrag nach `hq/10_Bridge/CURSOR_SLICEx_AUFTRAG.md` (Was-kann-Mark-am-Ende, DoD, betroffene Dateien, jede Norm-Regel mit `clauseId`).
+- Reviewt den Executor-Code: liest letzten Commit/Diff → Befund nach `hq/10_Bridge/CODE_REVIEW.md`.
+- Läuft episodisch, brennt wenig Kontext.
+
+**Spur E — Executor** (baut):
+- Liest `CLAUDE.md` + `HANDOFF` + den passenden `CURSOR_SLICEx_AUFTRAG.md`.
+- Baut den Slice, hält EC-09-Smoke + `tsc --noEmit` grün, committet (mit Marks OK), schreibt Ergebnis + offene Punkte nach `HANDOFF.md`. Faustregel ~1 Slice pro Chat.
+
+**Mark — Gate:** entscheidet, gibt frei, dirigiert; schreibt selbst keinen Code.
+
+Koordination **NUR über Dateien** (Bauauftrag → HANDOFF → CODE_REVIEW), nicht über Kontext-Hin-und-Her. Beide Spuren folgen dem **Übergabe-Takt**.
+
 ## Guardrails (nicht verhandelbar)
 - **EC-09:** Person → Akte → Doc-Chips → ZIP-Generator darf NIE brechen. Vor/nach Änderung Smoke grün.
 - **EC-10:** keine automatische Freigabe-/Auditfähigkeits-/Zertifizierungsaussage. Eingehende Nachweise = `unchecked`. „grün/qualifiziert" ≠ „einsatzbereit".
