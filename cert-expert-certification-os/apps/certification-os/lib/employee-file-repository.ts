@@ -1,4 +1,8 @@
-import type { Employee, GlobalProperties } from "@/lib/types/employee";
+import type {
+  Employee,
+  GlobalProperties,
+  TrainingPlanItem,
+} from "@/lib/types/employee";
 import type { EmployeeFile, EvidenceItem, Prisma } from "@prisma/client";
 import {
   buildCompanyLogoKey,
@@ -69,6 +73,36 @@ function asNumberRecord(value: unknown): Record<string, number> {
   return out;
 }
 
+/**
+ * Queue C — robuste Read-Normalisierung des `trainingPlan`-Json (analog
+ * `sdlScopes`/`einmaligIstUE`). Nur valide Plan-Einträge übernehmen, unbekannte
+ * Felder verwerfen, `source` auf Enum prüfen. Müll/Legacy/null → []. Idempotent.
+ */
+function asTrainingPlan(value: unknown): TrainingPlanItem[] {
+  if (!Array.isArray(value)) return [];
+  const out: TrainingPlanItem[] = [];
+  for (const raw of value) {
+    if (!raw || typeof raw !== "object") continue;
+    const r = raw as Record<string, unknown>;
+    if (typeof r.id !== "string" || r.id.length === 0) continue;
+    if (r.source !== "katalog" && r.source !== "soll-posten") continue;
+    if (typeof r.refId !== "string") continue;
+    if (typeof r.label !== "string") continue;
+    out.push({
+      id: r.id,
+      source: r.source,
+      refId: r.refId,
+      label: r.label,
+      ue: typeof r.ue === "number" && Number.isFinite(r.ue) ? r.ue : null,
+      clauseId: typeof r.clauseId === "string" ? r.clauseId : null,
+      plannedDate: typeof r.plannedDate === "string" ? r.plannedDate : undefined,
+      validUntil: typeof r.validUntil === "string" ? r.validUntil : undefined,
+      note: typeof r.note === "string" ? r.note : undefined,
+    });
+  }
+  return out;
+}
+
 export function employeeFileToEmployee(record: EmployeeFile): Employee {
   return {
     id: record.id,
@@ -107,6 +141,7 @@ export function employeeFileToEmployee(record: EmployeeFile): Employee {
     brandschutzGueltigBis: record.brandschutzGueltigBis ?? undefined,
     weiterbildungIstUE: record.weiterbildungIstUE ?? undefined,
     einmaligIstUE: asNumberRecord(record.einmaligIstUE),
+    trainingPlan: asTrainingPlan(record.trainingPlan),
   };
 }
 
@@ -140,6 +175,7 @@ function employeeToUpsertData(
     brandschutzGueltigBis: employee.brandschutzGueltigBis ?? null,
     weiterbildungIstUE: employee.weiterbildungIstUE ?? null,
     einmaligIstUE: employee.einmaligIstUE ?? {},
+    trainingPlan: (employee.trainingPlan ?? []) as unknown as Prisma.InputJsonValue,
   };
 }
 
@@ -256,6 +292,7 @@ export async function upsertEmployeeFile(
       brandschutzGueltigBis: employee.brandschutzGueltigBis ?? null,
       weiterbildungIstUE: employee.weiterbildungIstUE ?? null,
       einmaligIstUE: employee.einmaligIstUE ?? {},
+      trainingPlan: (employee.trainingPlan ?? []) as unknown as Prisma.InputJsonValue,
     },
   });
   return employeeFileToEmployee(row);
@@ -307,6 +344,7 @@ export async function replaceEmployeeFilesForCompany(
           brandschutzGueltigBis: employee.brandschutzGueltigBis ?? null,
           weiterbildungIstUE: employee.weiterbildungIstUE ?? null,
           einmaligIstUE: employee.einmaligIstUE ?? {},
+          trainingPlan: (employee.trainingPlan ?? []) as unknown as Prisma.InputJsonValue,
         },
       });
     }
@@ -640,6 +678,7 @@ export async function migrateFromLocalStoragePayload(
             brandschutzGueltigBis: employee.brandschutzGueltigBis ?? null,
             weiterbildungIstUE: employee.weiterbildungIstUE ?? null,
             einmaligIstUE: employee.einmaligIstUE ?? {},
+            trainingPlan: (employee.trainingPlan ?? []) as unknown as Prisma.InputJsonValue,
             migratedFromLocalStorageAt: new Date(),
           },
         });

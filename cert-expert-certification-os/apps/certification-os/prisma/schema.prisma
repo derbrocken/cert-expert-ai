@@ -58,6 +58,7 @@ model EmployeeFile {
   brandschutzGueltigBis      String?
   weiterbildungIstUE         Int?
   einmaligIstUE              Json?
+  trainingPlan               Json?
   evidenceItems              EvidenceItem[]
   migratedFromLocalStorageAt DateTime?
   createdAt                  DateTime @default(now())

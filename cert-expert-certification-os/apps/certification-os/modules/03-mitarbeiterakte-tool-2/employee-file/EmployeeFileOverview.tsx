@@ -27,6 +27,9 @@ import {
 import { EmployeeFileStatusBadge } from "./EmployeeFileStatusBadge";
 import { EmployeeFilePflichtStatusPanel } from "./EmployeeFilePflichtStatusPanel";
 import { EmployeeFileTrainingTargets } from "./EmployeeFileTrainingTargets";
+import { EmployeeFileTrainingPlan } from "./EmployeeFileTrainingPlan";
+import { buildPlanDeadlineRows } from "./training-plan";
+import type { EmployeeEvidenceMap } from "./employee-evidence-storage";
 
 /**
  * Read-only Akte-/Vorzeige-Übersicht (Queue B / Pt 1).
@@ -43,6 +46,8 @@ export interface EmployeeFileOverviewProps {
   roles: Role[];
   appointments: Appointment[];
   companyName?: string;
+  /** Nachweis-Slots (read-only) — für korrekten Plan-Status in der Ampel. */
+  evidenceFiles?: EmployeeEvidenceMap;
 }
 
 function formatValue(value: string | undefined): string {
@@ -155,6 +160,7 @@ export const EmployeeFileOverview: React.FC<EmployeeFileOverviewProps> = ({
   roles,
   appointments,
   companyName = "",
+  evidenceFiles = {},
 }) => {
   const role = roles.find((r) => r.id === employee.roleId);
   const apiRoleName = role?.name ?? employee.roleId;
@@ -166,6 +172,13 @@ export const EmployeeFileOverview: React.FC<EmployeeFileOverviewProps> = ({
     companyName,
     roleLabelDe(employee.roleId, apiRoleName),
   );
+
+  // Queue C — Plan-Fristen operativ in die Ampel mergen (read-only).
+  const planDeadlineRows = buildPlanDeadlineRows(
+    employee.trainingPlan ?? [],
+    (evidenceId) => Boolean(evidenceFiles[evidenceId]),
+  );
+  const mergedFristen = [...summary.fristen, ...planDeadlineRows];
 
   const roleClasses = resolveRoleClasses({
     roleClasses: employee.roleClasses,
@@ -231,7 +244,7 @@ export const EmployeeFileOverview: React.FC<EmployeeFileOverviewProps> = ({
 
       <EmployeeFilePflichtStatusPanel
         pflichtSet={summary.pflichtSet}
-        fristen={summary.fristen}
+        fristen={mergedFristen}
       />
 
       <div className="grid gap-0 divide-y divide-[#e5e7eb]">
@@ -307,6 +320,17 @@ export const EmployeeFileOverview: React.FC<EmployeeFileOverviewProps> = ({
               <EmployeeFileTrainingTargets
                 targets={summary.schulungsSoll}
                 employee={employee}
+              />
+            </div>
+          ) : null}
+
+          {summary.schulungsSoll.length > 0 ? (
+            <div className="mt-6">
+              {/* read-only — kein onSave/Upload/Remove (Queue C / B). */}
+              <EmployeeFileTrainingPlan
+                targets={summary.schulungsSoll}
+                employee={employee}
+                evidenceFiles={evidenceFiles}
               />
             </div>
           ) : null}

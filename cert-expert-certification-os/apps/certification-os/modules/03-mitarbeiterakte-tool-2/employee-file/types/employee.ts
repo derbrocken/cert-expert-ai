@@ -73,6 +73,35 @@ export interface Employee {
   weiterbildungIstUE?: number;
   /** Manuell erfasste Ist-UE je einmaligem/laufendem SDL-Posten (Posten-ID → UE) */
   einmaligIstUE?: Record<string, number>;
+  /** Termin-Planung Schulungen (Queue C) — gezielte gap-fill-Zuweisungen. */
+  trainingPlan?: TrainingPlanItem[];
+}
+
+/**
+ * Termin-Planung Schulungen (Queue C) — ein gezielt zugewiesener Plan-Eintrag
+ * (gap-filler). Operative Planungsschicht: KEIN Norm-Soll, kein Auto-Ist. Der
+ * `ue`-Wert ist informativ (Katalog-Lehrbaustein bzw. Soll-Posten-Snapshot) und
+ * wird NIE automatisch zum Jahres-Soll/Ist aufsummiert.
+ */
+export interface TrainingPlanItem {
+  /** Stabile UID (crypto.randomUUID() bzw. `tp-${Date.now()}-${i}`). */
+  id: string;
+  /** Herkunft: Katalog-Modul (Gap-Filler) oder Referenz auf einen Engine-Soll-Posten. */
+  source: "katalog" | "soll-posten";
+  /** Katalog-Modul-ID (bei "katalog") bzw. Soll-Posten-ID (bei "soll-posten"). */
+  refId: string;
+  /** Snapshot-Label für Anzeige (vom Katalog/Posten übernommen). */
+  label: string;
+  /** Informativer UE-Wert — KEIN Norm-Soll, nur Anzeige. `null` erlaubt. */
+  ue: number | null;
+  /** Snapshot der CL (informativ). */
+  clauseId: string | null;
+  /** Geplantes Datum (ISO YYYY-MM-DD). */
+  plannedDate?: string;
+  /** Optionale Gültigkeit (ISO) — Zukunfts-Hook (Brandschutz/EH-Muster). */
+  validUntil?: string;
+  /** Freitext-Notiz (optional). */
+  note?: string;
 }
 
 export interface GlobalProperties {

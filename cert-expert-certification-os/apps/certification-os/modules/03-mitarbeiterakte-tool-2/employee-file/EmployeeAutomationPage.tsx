@@ -645,6 +645,7 @@ function EmployeeAutomationPageContent() {
                 roles={roles}
                 appointments={appointments}
                 companyName={globalProps.companyName}
+                evidenceFiles={focusEmployeeId ? evidenceFiles : {}}
               />
             ) : (
               <EmployeeFileDossierView

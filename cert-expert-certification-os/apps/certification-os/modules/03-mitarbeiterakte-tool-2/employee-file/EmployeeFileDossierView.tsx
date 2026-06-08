@@ -27,6 +27,8 @@ import { EmployeeFilePflichtStatusPanel } from "./EmployeeFilePflichtStatusPanel
 import { EmployeeFileEvidenceRow } from "./EmployeeFileEvidenceRow";
 import { EmployeeFilePersonRolleEditTable } from "./EmployeeFilePersonRolleEditTable";
 import { EmployeeFileTrainingTargets } from "./EmployeeFileTrainingTargets";
+import { EmployeeFileTrainingPlan } from "./EmployeeFileTrainingPlan";
+import { buildPlanDeadlineRows } from "./training-plan";
 import type { EmployeeEvidenceMap } from "./employee-evidence-storage";
 
 export interface EmployeeFileDossierViewProps {
@@ -246,6 +248,13 @@ export const EmployeeFileDossierView: React.FC<EmployeeFileDossierViewProps> = (
     employee.selectedRoleDocIds.length +
     employee.selectedAppointmentDocIds.length;
 
+  // Queue C — Plan-Fristen operativ in die Ampel mergen (Engine unberührt).
+  const planDeadlineRows = buildPlanDeadlineRows(
+    employee.trainingPlan ?? [],
+    (evidenceId) => Boolean(evidenceFiles[evidenceId]),
+  );
+  const mergedFristen = [...summary.fristen, ...planDeadlineRows];
+
   return (
     <div className="overflow-hidden rounded-xl border border-[#e5e7eb] bg-white shadow-sm">
       <div className="border-b border-[#e5e7eb] bg-linear-to-r from-[rgba(227,6,19,0.06)] to-white px-5 py-4">
@@ -310,7 +319,7 @@ export const EmployeeFileDossierView: React.FC<EmployeeFileDossierViewProps> = (
       {!evidenceEditMode ? (
         <EmployeeFilePflichtStatusPanel
           pflichtSet={summary.pflichtSet}
-          fristen={summary.fristen}
+          fristen={mergedFristen}
         />
       ) : null}
 
@@ -465,6 +474,19 @@ export const EmployeeFileDossierView: React.FC<EmployeeFileDossierViewProps> = (
                 targets={summary.schulungsSoll}
                 employee={employee}
                 onSave={onSavePerson}
+              />
+            </div>
+          ) : null}
+
+          {summary.schulungsSoll.length > 0 ? (
+            <div className="mt-6">
+              <EmployeeFileTrainingPlan
+                targets={summary.schulungsSoll}
+                employee={employee}
+                evidenceFiles={evidenceFiles}
+                onSave={onSavePerson}
+                onEvidenceUpload={onEvidenceUpload}
+                onEvidenceRemove={onEvidenceRemove}
               />
             </div>
           ) : null}
