@@ -1,6 +1,8 @@
 # CURSOR_G4_PHASE2_AUFTRAG — Doc-Auswahl → Generator-Tab (Phase 2)
 
-> **Status (2026-06-08, Executor autonomer Lauf):** ⏸️ **GEPARKT — Befund: Ziel scheint bereits erfüllt.** Vor einem Bau in den EC-09-kritischen Generator braucht es eine Mark-/Planer-Bestätigung des konkreten Rest-Deltas (unten). Kein Bau ohne klares, reviewtes Ziel (EC-09 = Hauptrisiko).
+> **Status (2026-06-08): ✅ ABGESCHLOSSEN — Mark-Entscheid = Option A.** Das Phase-2-Ziel (Doc-Auswahl im Generator-Tab) ist durch die bestehende `displayMode="documents"`-Architektur + G4 Phase 1 **bereits erfüllt**. **Kein Rest-Delta, kein weiterer Bau.** Queue rückt auf Slice 4 / die übrigen offenen Fäden. (Hinweis bleibt: unabhängiger Planer-Review von Phase 1 `047878c` ist noch ausstehend — entkoppelt von Phase 2.)
+>
+> ~~**Status (2026-06-08, Executor autonomer Lauf):** ⏸️ GEPARKT — Befund: Ziel scheint bereits erfüllt.~~ (überholt durch Mark-Entscheid A)
 
 ## 1. Auftrag laut Run-Order §4.3
 Doc-Auswahl (Core aus `roleId`→`selectedRole.documents`, Overlay aus `appointmentIds`) **in den Generator-Tab verlagern**, `displayMode="documents"`-Logik wiederverwenden, Default-Vorauswahl, Select-All/Deselect. EC-09 = Hauptrisiko.

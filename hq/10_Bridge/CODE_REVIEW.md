@@ -4,6 +4,28 @@
 
 ---
 
+## 2026-06-08 — Queue C: lücken-getriebene Termin-Planung Schulungen, Commit `fbe1980` — **Planer-Review (unabhängig) → ABGENOMMEN**
+
+**Methode:** Unabhängiger Review des Feat-Commits `fbe1980` (10 Dateien) gegen `CURSOR_C_TERMINPLANUNG_AUFTRAG.md` (§3–§8) + `NORM_CROSSCHECK_SCHULUNGSKATALOG.md` + `CURSOR_SCHULUNGSKATALOG_PLANUNG.md` §9. Diff-Inspektion aller 10 Dateien + **eigenständige Re-Verifikation** (nicht nur Executor-Meldung): `tsc --noEmit` = **0**; `tsx --test` über die drei Suiten = **49/49 grün** (training-plan **12** + requirement-engine **27** + compliance-status **10**). Browser-Akzeptanz (geplant/überfällig/Ampel/Persistenz) = Executor-Verifikation nach etabliertem Muster übernommen.
+
+### Verdict
+**ABGENOMMEN (Queue C).** Rein operative/additive Planungsschicht; Engine + UE-Werte nachweislich unberührt; norm-neutral (Cross-Check-konform); EC-09/EC-10 gewahrt. **Keine Blocker, kein Re-Bau.** Ein nicht-blockierender Live-Hinweis (unten).
+
+### Review-Punkte
+1. **Engine/UE wirklich unberührt ✅.** `requirement-engine.ts` ist **nicht** im Diff; Suite 27/27 unverändert. Soll-Werte (CL-11 40/24, CL-20/21/24/25) kommen weiter ausschließlich aus der Engine; C liest sie nur (`computeTrainingGaps`).
+2. **Keine erfundene Pflicht / Module = Lehrbausteine ✅.** `training-catalog.ts`: DIN-1-Module 1–8 (4 UE) + 9 (FK 8 UE) exakt aus §3, jedes mit `clauseId:"CL-11"` + Pflicht-`hinweis` „Lehrbaustein … kein eigener Norm-UE-Wert". Modul-UE rein informativ, **nirgends** zu Soll/Ist aufsummiert. ÖPV (§2.4) + Veranstaltung-FK-16 (§2.3) bewusst **nicht** aufgenommen — korrekt.
+3. **Kein Auto-Ist ✅.** Plan-Status (`derivePlanItemStatus`) und Ist-UE sind entkoppelt; kein Pfad schreibt `weiterbildungIstUE`/`einmaligIstUE` aus Plan-Einträgen. Lücke = rein rechnerisch `max(soll−ist,0)`, `soll===null ⇒ rest===null`.
+4. **Datenmodell SQLite-sicher ✅.** `EmployeeFile.trainingPlan Json?` **ohne `@default`** (P2023-Lehre); Repository: tolerante Read-Normalisierung `asTrainingPlan` (validiert `id`/`source`-Enum/`refId`/`label`, verwirft Müll → `[]`) + Schreibe-Mapping in **allen 4** Pfaden (`employeeToUpsertData`, `upsertEmployeeFile`, `replaceEmployeeFilesForCompany`, `migrateFromLocalStoragePayload`). Bestandsakten ohne Feld → `[]`.
+5. **Plan→Ampel operativ, `compliance-status.ts` unverändert ✅.** Merge passiert an der Aufrufstelle (`mergedFristen = [...summary.fristen, ...buildPlanDeadlineRows()]`) in Dossier **und** read-only Overview. `planStatusToWorkingItemStatus` nutzt nur bestehende Stati (geplant→beantragt/offen, überfällig→abgelaufen/kritisch, Nachweis→vorhanden/erfüllt) → erschöpfender Switch mit never-Guard. EC-10: Plan hebt höchstens auf „in Arbeit"/„offen", Nachweis nur „erfüllt" — nie „freigegeben".
+6. **EC-09 unberührt ✅.** Generator/ZIP-Action nicht im Diff; Executor-ZIP `POST /employee-automation` 200. UI-Änderungen rein additiv unter `EmployeeFileTrainingTargets`.
+7. **Nachweis-Slot über bestehende Evidence-Infra ✅.** Konvention `training-plan:{id}` (`planEvidenceId`), kein neues Storage-/`EvidenceItem`-Modell; Status bleibt `unchecked`. Read-only Overview bekommt `evidenceFiles` durchgereicht (Page-Diff) → korrekter Plan-Status auch in der Vorzeige-Ansicht.
+
+### Minor (Beobachtung, kein Blocker)
+- **Live-Klick-Abnahme des Uploads offen:** der Nachweis-Upload öffnet einen OS-Dateidialog, den das Browser-Harness nicht bedienen kann. Die „Nachweis → grün"-Logik ist unit-getestet und nutzt die identische, früher browser-verifizierte Evidence-Infra → vertretbar; eine manuelle Klick-Abnahme durch Mark wäre optional.
+- **Plan-Beiträge sind nicht CL-belegt im Ampel-Sinn** (operative Fristen, `clauseId` = Snapshot/informativ) — bewusst, da Planung ≠ Norm-Pflicht; deckt sich mit der Slice-4-Linie (Ampel aggregiert Stati, nicht Norm-Werte).
+
+---
+
 ## 2026-06-08 — Slice 4: rechnerischer Pflicht-Status (Ampel), Commit `2261d26` — **Executor-Selbst-Review** (autonomer Lauf)
 
 **Methode:** Eigen-Review von `2261d26` (4 Dateien) gegen Run-Order §4.4 (Slice 4) + EC-10. `tsc` 0; neue Suite `compliance-status.test.ts` **10/10**; Engine-Suite **24/24** (keine Regression); **EC-09-ZIP `POST /employee-automation` 200** (375 ms, Generator unberührt); Browser: Panel rendert auf blubermann-Akte (rot „Offen — kritische Posten", 2 kritisch).

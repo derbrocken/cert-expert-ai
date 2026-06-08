@@ -31,8 +31,10 @@
 | CL-24 | SDL Flüchtling/Asyl — **EK: 40 UE einmalig** (interkult. A.1 + Deeskalation B + Brandschutz) | §8.3 | belegt |
 | CL-25 | SDL Flüchtling/Asyl — **FK: +24 UE (=64) einmalig**; *sollte* Fremdsprache (Soll, keine UE) | §8.4 | belegt |
 | CL-26 | Flüchtling/Asyl — **Personalschlüssel**: bis 75 Bew. = 2 SMA/Schicht, je +75 = +1 | §8.2 | belegt |
-| CL-27 | Anrechnung Einmalschulung auf Jahres-Weiterbildung (§4.19.2) im Erwerbsjahr | §5.3/5.4/8.4 | belegt |
+| CL-27 | Anrechnung Einmalschulung auf Jahres-Weiterbildung (§4.19.2) im Erwerbsjahr | §5.3/5.4/6.4/8.4 | belegt |
 | CL-28 | Anforderungsprofile je Leistungsbereich (Tab. C.1–C.4) | Anh. C | belegt |
+| CL-29 | SDL ÖPV — **EK: 40 UE einmalig** (vor erstem Einsatz; einsatzspez. Inhalte), anrechenbar §4.19.2 | §6.4 | belegt |
+| CL-30 | SDL ÖPV — **FK: +16 UE einmalig** (zusätzlich zur EK-Schulung §6.4 → **56 gesamt**; baut auf EK-Basis auf, analog Asyl CL-24/25) | §6.3 | belegt |
 
 ## DIN 77200-3 (Zertifizierung)
 | ID | Anforderung | Fundstelle | Status |

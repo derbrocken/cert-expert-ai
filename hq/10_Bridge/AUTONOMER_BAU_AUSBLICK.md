@@ -13,10 +13,11 @@
 - **`tsc --noEmit` = 0** + **EC-09-Smoke** grün (Person → Akte → Doc-Chips → ZIP).
 - Das ist ohnehin harte Regel — kostet fast nichts, bremst nicht.
 
-**Pro Slice (nicht pro Commit): echter Norm-Review.**
+**Nachgelagerter Norm-Review (Batch, blockiert den Bau NICHT):**
 - Gegen `NORM_MATRIX_Mitarbeiternachweise_v2.md` + `NORM_KLAUSEL_REGISTER_v1.md`.
-- **Macht der Generalist von hier** (liest Commits/Diffs per git, schreibt Befund nach `CODE_REVIEW.md`). Kein langsamer Superagent pro Commit nötig.
-- Ablauf: Slice fertig → Executor committet + schreibt HANDOFF-Eintrag „Von Cursor an Claude: Slice X fertig, Commit `hash`" → Mark pingt den Generalist → Generalist reviewt → `CODE_REVIEW.md`.
+- **Wichtig:** Executor und Generalist sind getrennte Agenten ohne Live-Gedächtnis. Der Executor **wartet NICHT** auf einen Review und pingt niemanden.
+- Ablauf: Executor committet jeden Slice + schreibt einen HANDOFF-Eintrag „Slice X fertig, Commit `hash`, offene Punkte: …". **Später** (wenn Mark den Generalist reinholt) liest der Generalist **alle Commits auf einmal** per git-Diff und schreibt den Befund nach `CODE_REVIEW.md`.
+- Sicher, weil **EC-10**: nichts ist automatisch „freigegeben/zertifiziert" (alles `unchecked`). Der Review gated „annehmen/deployen", nicht „bauen".
 
 ---
 
@@ -30,15 +31,14 @@
 
 ---
 
-## Stop-Regel (hart — sonst bläht der Bau auf)
+## Regel „Parken & Weiter" (NICHT auf den Generalist warten)
 
-**STOPP und als Frage in den HANDOFF schreiben (nicht selbst entscheiden/erweitern), wenn:**
-- die Queue leer ist, **oder**
-- eine Scope-/Architektur-/Norm-Frage auftaucht, **oder**
-- ein Norm-Wert ohne belegte `clauseId` gebraucht würde (→ „fachlich prüfen"), **oder**
-- ein Slice mehr als den Auftrag berührt.
+Der Executor blockiert nie auf einen Review. Bei einer Scope-/Architektur-/Norm-Frage:
+1. **Parken:** Punkt als „OFFENE FRAGE" in den HANDOFF schreiben (kurz, datiert).
+2. **Weiter:** mit dem **nächsten machbaren** Queue-Item fortfahren.
+3. **Hard-Stop nur,** wenn *alles* blockiert ist **oder** er sonst eine Guardrail verletzen müsste (Normwert ohne `clauseId`, EC-09, EC-10). Dann committen, Stand in HANDOFF, anhalten.
 
-Planung/Review/Norm-Mapping = ausschließlich Spur P (Planer/Generalist). Der Executor baut den Auftrag, committet, meldet — er plant nicht neu.
+Planung/Review/Norm-Mapping = ausschließlich Spur P (Planer/Generalist). Der Executor baut den Auftrag, committet, meldet, parkt offene Fragen — **er plant nicht neu und erfindet keine Normwerte.**
 
 ## Guardrails (unverändert)
 EC-09 (Generator/ZIP nie brechen) · EC-10 (kein Freigabe-/Auditfähigkeits-Status) · keine erfundenen Normpflichten · DSGVO (keine `.db`/`.env` committen) · **im echten Browser verifizieren**, nicht per Skript · Mark = Gate.

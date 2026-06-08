@@ -26,7 +26,8 @@
 - **DoD:** `tsc` 0 · EC-09-ZIP 200 unberührt · Browser: Ansicht rendert je Person korrekt (Bewachung + Verwaltung) · keine Engine-Datei geändert.
 - **Tie-in (später, eigener Punkt):** dieselbe Info als Audit-Export-Datei.
 
-## C. DANACH (Empfehlung #2) — Termin-Planung Schulungen/Unterweisungen (Pt 3)
+## C. DANACH (Empfehlung #2) — Termin-Planung Schulungen/Unterweisungen (Pt 3) — ✅ FERTIG + PLANER-ABGENOMMEN
+**▶ Detail-Bauauftrag = `CURSOR_C_TERMINPLANUNG_AUFTRAG.md` — gebaut `fbe1980`, Planer-abgenommen (`CODE_REVIEW.md`, unabhängig re-verifiziert: tsc 0 / 49 Tests / Engine+UE unberührt / EC-09 200). Offener Minor: Live-Klick-Abnahme Upload (optional, Mark).**
 **Füllt die echte Lücke (§7): heute nur Sammel-Slots, kein Datum pro Einzelschulung.**
 - **Was kann Mark am Ende:** pro Person/Schulungs-Posten ein **geplantes Datum**; **Sammel-Datum für alle + einzeln überschreibbar**; verortet im Generator-/Planungsbereich. Speist die Ampel: geplant = gelb, überfällig = rot.
 - **Scope:** operative Schicht (Datums-/Planungsdaten), **kein Norm-Erfinden**. Neues Datenmodell: Slot/Feld je Katalog-Schulung mit `plannedDate` (+ später Gültigkeit). Bulk-Set + Per-Item-Override.
