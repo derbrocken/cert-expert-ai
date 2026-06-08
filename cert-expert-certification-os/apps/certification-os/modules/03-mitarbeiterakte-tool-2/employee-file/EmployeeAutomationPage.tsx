@@ -22,6 +22,7 @@ import type {
   Appointment,
 } from "@/lib/types/employee";
 import { loadCompaniesForSwitcher } from "./load-companies-client";
+import { createCompanyAction } from "@/app/actions/employee-file-actions";
 import {
   getActiveCompanySlug,
   setActiveCompanySlug,
@@ -40,6 +41,7 @@ import {
   type EmployeeEvidenceMap,
 } from "./employee-evidence-storage";
 import { CompanySwitcher } from "./CompanySwitcher";
+import { CompanyCreateDialog } from "./CompanyCreateDialog";
 
 type DossierTab = "akte" | "generator";
 
@@ -400,6 +402,22 @@ function EmployeeAutomationPageContent() {
       router.replace("/employee-automation", { scroll: false });
     },
     [router],
+  );
+
+  // „Firma anlegen" — Server-Action legt die Company-Row an, dann Switcher-
+  // Liste neu laden + auf die neue Firma wechseln. Keine Norm-/Engine-Logik.
+  const handleCreateCompany = useCallback(
+    async (displayName: string) => {
+      const created = await createCompanyAction(displayName);
+      const list = await loadCompaniesForSwitcher();
+      setCompanies(list);
+      handleCompanyChange(created.slug);
+      setToast({
+        message: `Firma „${created.displayName}" angelegt`,
+        type: "success",
+      });
+    },
+    [handleCompanyChange],
   );
 
   const handleSelectEmployee = useCallback(
@@ -887,11 +905,14 @@ function EmployeeAutomationPageContent() {
 
   const companySwitcherToolbar =
     companies.length > 0 ? (
-      <CompanySwitcher
-        companies={companies}
-        value={companySlug}
-        onChange={handleCompanyChange}
-      />
+      <div className="flex items-center gap-2">
+        <CompanySwitcher
+          companies={companies}
+          value={companySlug}
+          onChange={handleCompanyChange}
+        />
+        <CompanyCreateDialog onCreate={handleCreateCompany} />
+      </div>
     ) : companiesLoaded ? (
       <p className="text-sm text-red-700">
         Kundenliste konnte nicht geladen werden — Dev-Konsole prüfen.

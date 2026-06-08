@@ -249,6 +249,49 @@ export async function listCompanies() {
   });
 }
 
+/**
+ * ASCII-sicherer Slug aus einem Firmen-Anzeigenamen. Der Slug wird als DB-`@id`
+ * UND als S3-Schlüssel-Präfix (`cea/companies/{slug}/…`) verwendet → keine
+ * Umlaute/Leerzeichen/Sonderzeichen. „Müller Security GmbH" → „Muller_Security_GmbH".
+ */
+function slugifyCompanyName(name: string): string {
+  const slug = name
+    .normalize("NFKD")
+    .replace(/[̀-ͯ]/g, "")
+    .replace(/ß/g, "ss")
+    .replace(/[^a-zA-Z0-9]+/g, "_")
+    .replace(/^_+|_+$/g, "");
+  return slug || "Firma";
+}
+
+/**
+ * Legt eine neue Firma manuell an (UI „Firma anlegen"). Erzeugt einen
+ * eindeutigen Slug und eine aktive `Company`-Row. Keine Registry-/Tally-Kopplung:
+ * Mitarbeiter werden manuell oder — bei passendem Registry-Alias — per Tally
+ * zugeordnet. Idempotent über die Eindeutigkeits-Schleife.
+ */
+export async function createCompany(
+  displayName: string,
+): Promise<{ slug: string; displayName: string }> {
+  const name = displayName.trim();
+  if (!name) {
+    throw new Error("Firmenname darf nicht leer sein");
+  }
+  await ensureCompaniesSeeded();
+
+  const baseSlug = slugifyCompanyName(name);
+  let slug = baseSlug;
+  let suffix = 2;
+  while (await prisma.company.findUnique({ where: { slug } })) {
+    slug = `${baseSlug}_${suffix++}`;
+  }
+
+  const row = await prisma.company.create({
+    data: { slug, displayName: name, active: true },
+  });
+  return { slug: row.slug, displayName: row.displayName };
+}
+
 export async function listEmployeeFiles(companySlug: string): Promise<Employee[]> {
   await ensureCompaniesSeeded();
   const rows = await prisma.employeeFile.findMany({

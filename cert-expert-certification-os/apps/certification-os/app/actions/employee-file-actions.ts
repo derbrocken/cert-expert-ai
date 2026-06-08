@@ -2,6 +2,7 @@
 
 import type { Employee, GlobalProperties } from "@/lib/types/employee";
 import {
+  createCompany,
   deleteEmployeeFile,
   getExportSettings,
   listCompanies,
@@ -25,6 +26,12 @@ export async function fetchCompaniesAction() {
     slug: company.slug,
     displayName: company.displayName,
   }));
+}
+
+export async function createCompanyAction(displayName: string) {
+  const created = await createCompany(displayName);
+  console.info("[createCompanyAction]", created.slug);
+  return created;
 }
 
 export async function fetchEmployeeFilesAction(
