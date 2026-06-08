@@ -168,7 +168,7 @@ export const SDL_SCOPE_CATALOG: SdlScopeOption[] = [
     id: "din2-oepv",
     name: "Öffentlicher Personenverkehr (ÖPV)",
     geltungsbereich: "DIN 77200-2 §6",
-    hint: "Scope-Nachweis — UE fachlich prüfen",
+    hint: "40 / 56 UE einmalig (CL-29/30)",
   },
   {
     id: "non-din",
@@ -647,15 +647,28 @@ export function deriveRequirements(ctx: RequirementContext): RequirementResult {
     );
   }
 
-  if (sdl.has("din2-oepv")) {
-    pflichtSet.push({
-      id: "sdl-oepv",
-      label: "ÖPV — scope-bezogene Unterweisung",
-      clauseId: null,
-      trigger: "SDL Öffentlicher Personenverkehr (§6)",
-      status: "fachlich prüfen",
-      hint: "Kein belegter UE-Wert in Norm-Matrix v2",
+  if (sdl.has("din2-oepv") && bewachung) {
+    schulungsSoll.push({
+      id: "sdl-oepv-base",
+      label: "ÖPV — Einsatzkräfte 40 UE einmalig (§6.4)",
+      clauseId: "CL-29",
+      ue: 40,
+      period: "einmalig",
+      trigger: "SDL Öffentlicher Personenverkehr",
+      status: "fehlt",
     });
+    if (fuehrung) {
+      schulungsSoll.push({
+        id: "sdl-oepv-fk",
+        label: "ÖPV — Führungskraft: +16 UE (= 56) einmalig (§6.3)",
+        clauseId: "CL-30",
+        ue: 16,
+        period: "einmalig",
+        trigger: "SDL ÖPV · Rolle FK",
+        status: "fehlt",
+        hint: "Gesamt 56 UE (40 Basis + 16 FK-Aufschlag)",
+      });
+    }
   }
 
   if (sdl.has("non-din")) {
