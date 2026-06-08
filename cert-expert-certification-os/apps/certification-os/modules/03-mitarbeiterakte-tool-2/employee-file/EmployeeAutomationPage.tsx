@@ -6,6 +6,7 @@ import { EmployeeForm } from "@/components/employee";
 import { EmployeeFileWorkspaceLayout } from "./EmployeeFileWorkspaceLayout";
 import { EmployeeFileIndex } from "./EmployeeFileIndex";
 import { EmployeeFileDossierView } from "./EmployeeFileDossierView";
+import { EmployeeFileOverview } from "./EmployeeFileOverview";
 import { EmployeeFileOnboardingPanel } from "./EmployeeFileOnboardingPanel";
 import { EmployeeFileOverviewIntro } from "./EmployeeFileOverviewIntro";
 import { Button } from "@/components/ui";
@@ -61,6 +62,12 @@ function EmployeeAutomationPageContent() {
   );
   const [isCreatingNew, setIsCreatingNew] = useState(false);
   const [dossierTab, setDossierTab] = useState<DossierTab>("akte");
+  // Bearbeiten ↔ Übersicht (read-only Vorzeige-Ansicht). Default = Bearbeiten
+  // (kein Verhaltensbruch). SSR-stabil: konstanter Initialwert, kein
+  // localStorage im ersten Render (Hydration-Lehre `01f720b`).
+  const [akteViewMode, setAkteViewMode] = useState<"bearbeiten" | "uebersicht">(
+    "bearbeiten",
+  );
   const [evidenceEditMode, setEvidenceEditMode] = useState(false);
   const [evidenceFiles, setEvidenceFiles] = useState<EmployeeEvidenceMap>({});
   const [batchSelectedIds, setBatchSelectedIds] = useState<Set<string>>(
@@ -600,22 +607,64 @@ function EmployeeAutomationPageContent() {
 
       <div className="mx-auto max-w-3xl space-y-4 p-4 sm:p-6">
         {dossierTab === "akte" ? (
-          <EmployeeFileDossierView
-            employee={focusEmployee}
-            roles={roles}
-            appointments={appointments}
-            companyName={globalProps.companyName}
-            evidenceEditMode={evidenceEditMode}
-            onToggleEvidenceEdit={() => setEvidenceEditMode((v) => !v)}
-            evidenceFiles={focusEmployeeId ? evidenceFiles : {}}
-            onEvidenceUpload={handleEvidenceUpload}
-            onEvidenceRemove={handleEvidenceRemove}
-            onSavePerson={handleSavePerson}
-            onOpenGenerator={() => {
-              setEvidenceEditMode(false);
-              setDossierTab("generator");
-            }}
-          />
+          <>
+            <div
+              className="inline-flex items-center gap-1 rounded-lg border border-[#e5e7eb] bg-white p-1"
+              role="group"
+              aria-label="Ansicht umschalten"
+            >
+              {(
+                [
+                  ["bearbeiten", "Bearbeiten"],
+                  ["uebersicht", "Übersicht"],
+                ] as const
+              ).map(([mode, label]) => (
+                <button
+                  key={mode}
+                  type="button"
+                  onClick={() => {
+                    setAkteViewMode(mode);
+                    if (mode === "uebersicht") setEvidenceEditMode(false);
+                  }}
+                  aria-pressed={akteViewMode === mode}
+                  className={cn(
+                    "rounded-md px-3 py-1.5 text-xs font-semibold transition-colors",
+                    akteViewMode === mode
+                      ? "bg-[rgba(227,6,19,0.08)] text-[#b80510]"
+                      : "text-[#6b7280] hover:text-[#111827]",
+                  )}
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
+
+            {akteViewMode === "uebersicht" ? (
+              <EmployeeFileOverview
+                employee={focusEmployee}
+                roles={roles}
+                appointments={appointments}
+                companyName={globalProps.companyName}
+              />
+            ) : (
+              <EmployeeFileDossierView
+                employee={focusEmployee}
+                roles={roles}
+                appointments={appointments}
+                companyName={globalProps.companyName}
+                evidenceEditMode={evidenceEditMode}
+                onToggleEvidenceEdit={() => setEvidenceEditMode((v) => !v)}
+                evidenceFiles={focusEmployeeId ? evidenceFiles : {}}
+                onEvidenceUpload={handleEvidenceUpload}
+                onEvidenceRemove={handleEvidenceRemove}
+                onSavePerson={handleSavePerson}
+                onOpenGenerator={() => {
+                  setEvidenceEditMode(false);
+                  setDossierTab("generator");
+                }}
+              />
+            )}
+          </>
         ) : null}
 
         {dossierTab === "generator" ? (
