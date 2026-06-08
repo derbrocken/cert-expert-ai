@@ -13,7 +13,6 @@ import {
   type V1Subtopic,
   type V1SubtopicStatus,
 } from "./module-overview-data";
-import { EmployeeFileDashboardHub } from "./EmployeeFileDashboardHub";
 
 function areaStatusBadge(status: V1MainArea["status"]) {
   switch (status) {
@@ -138,7 +137,20 @@ function OutputPanel({ area }: { area: V1MainArea }) {
             </span>
           </div>
         </div>
-        <EmployeeFileDashboardHub />
+        <div className="flex flex-1 flex-col items-start justify-center gap-4 px-6 py-12">
+          <p className="max-w-md text-sm text-[#6b7280]">
+            Wähle in der Mitarbeiterakte zuerst eine Firma (Kunden-/Mitarbeiterpool)
+            und öffne dann die Akten der jeweiligen Firma — oder lege eine neue
+            Firma an.
+          </p>
+          <Link
+            href="/employee-automation"
+            className="inline-flex items-center gap-2 rounded-lg border border-[#e30613] bg-[#e30613] px-4 py-2 text-sm font-medium text-white hover:brightness-105"
+          >
+            Mitarbeiterakte öffnen
+            <ArrowRight className="h-4 w-4" />
+          </Link>
+        </div>
       </div>
     );
   }

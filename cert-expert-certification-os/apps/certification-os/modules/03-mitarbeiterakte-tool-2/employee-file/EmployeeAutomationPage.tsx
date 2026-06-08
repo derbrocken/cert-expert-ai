@@ -13,7 +13,7 @@ import { Button } from "@/components/ui";
 import { Toast } from "@/components/ui/Toast";
 import { generateEmployeeDocs } from "@/app/actions/generate-employee-docs";
 import { generateAuditExport } from "@/app/actions/generate-audit-export";
-import { Download, FileSpreadsheet, FileText, Loader2 } from "lucide-react";
+import { ArrowLeft, Download, FileSpreadsheet, FileText, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type {
   Employee,
@@ -22,6 +22,10 @@ import type {
   Appointment,
 } from "@/lib/types/employee";
 import { loadCompaniesForSwitcher } from "./load-companies-client";
+import {
+  createCompanyAction,
+  fetchEmployeeCountsAction,
+} from "@/app/actions/employee-file-actions";
 import {
   getActiveCompanySlug,
   setActiveCompanySlug,
@@ -40,6 +44,8 @@ import {
   type EmployeeEvidenceMap,
 } from "./employee-evidence-storage";
 import { CompanySwitcher } from "./CompanySwitcher";
+import { CompanyCreateDialog } from "./CompanyCreateDialog";
+import { CompanyHubView } from "./CompanyHubView";
 
 type DossierTab = "akte" | "generator";
 
@@ -55,6 +61,11 @@ function EmployeeAutomationPageContent() {
   // (getActiveCompanySlug → setCompanySlug) gesetzt → kein Hydration-Mismatch.
   const [companySlug, setCompanySlug] = useState(DEFAULT_COMPANY_SLUG);
   const [companiesLoaded, setCompaniesLoaded] = useState(false);
+  // Einstieg = Firmen-Übersicht ("hub"); eine gewählte Firma betritt den Pool.
+  const [view, setView] = useState<"hub" | "pool">("hub");
+  const [employeeCounts, setEmployeeCounts] = useState<Record<string, number>>(
+    {},
+  );
   const [employees, setEmployees] = useState<Employee[]>([]);
   const [queueHydrated, setQueueHydrated] = useState(false);
   const [editingEmployee, setEditingEmployee] = useState<Employee | null>(null);
@@ -401,6 +412,48 @@ function EmployeeAutomationPageContent() {
     },
     [router],
   );
+
+  // „Firma anlegen" — Server-Action legt die Company-Row an, dann Switcher-
+  // Liste neu laden + auf die neue Firma wechseln. Keine Norm-/Engine-Logik.
+  const handleCreateCompany = useCallback(
+    async (displayName: string) => {
+      const created = await createCompanyAction(displayName);
+      const list = await loadCompaniesForSwitcher();
+      setCompanies(list);
+      handleCompanyChange(created.slug);
+      setView("pool");
+      setToast({
+        message: `Firma „${created.displayName}" angelegt`,
+        type: "success",
+      });
+    },
+    [handleCompanyChange],
+  );
+
+  // Firma aus der Übersicht betreten → Pool-Ansicht.
+  const handleEnterCompany = useCallback(
+    (slug: string) => {
+      handleCompanyChange(slug);
+      setView("pool");
+    },
+    [handleCompanyChange],
+  );
+
+  // Mitarbeiterzahlen für die Übersicht laden (nur im Hub, eine groupBy-Query).
+  useEffect(() => {
+    if (view !== "hub" || !companiesLoaded) return;
+    let cancelled = false;
+    void fetchEmployeeCountsAction()
+      .then((counts) => {
+        if (!cancelled) setEmployeeCounts(counts);
+      })
+      .catch((err) => {
+        console.warn("[EmployeeAutomationPage] employee counts failed:", err);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [view, companiesLoaded]);
 
   const handleSelectEmployee = useCallback(
     (employeeId: string) => {
@@ -887,11 +940,23 @@ function EmployeeAutomationPageContent() {
 
   const companySwitcherToolbar =
     companies.length > 0 ? (
-      <CompanySwitcher
-        companies={companies}
-        value={companySlug}
-        onChange={handleCompanyChange}
-      />
+      <div className="flex items-center gap-2">
+        <Button
+          type="button"
+          variant="secondary"
+          size="sm"
+          onClick={() => setView("hub")}
+          leftIcon={<ArrowLeft className="h-4 w-4" />}
+        >
+          Alle Firmen
+        </Button>
+        <CompanySwitcher
+          companies={companies}
+          value={companySlug}
+          onChange={handleCompanyChange}
+        />
+        <CompanyCreateDialog onCreate={handleCreateCompany} />
+      </div>
     ) : companiesLoaded ? (
       <p className="text-sm text-red-700">
         Kundenliste konnte nicht geladen werden — Dev-Konsole prüfen.
@@ -899,6 +964,26 @@ function EmployeeAutomationPageContent() {
     ) : (
       <p className="text-sm text-[#6b7280]">Kunden laden…</p>
     );
+
+  if (view === "hub") {
+    return (
+      <>
+        <CompanyHubView
+          companies={companies}
+          counts={employeeCounts}
+          onEnter={handleEnterCompany}
+          onCreate={handleCreateCompany}
+        />
+        {toast ? (
+          <Toast
+            message={toast.message}
+            type={toast.type}
+            onClose={() => setToast(null)}
+          />
+        ) : null}
+      </>
+    );
+  }
 
   return (
     <>
