@@ -4,7 +4,31 @@
 
 ---
 
-## 2026-06-07 — Slice 3: Doppelrollen-Modellierung (Niveau EK/FK), Diff `0680ca2..a276d38` — Planer 6
+## 2026-06-08 — G4 Phase 1: roleClass-Modell + Migration + Engine-Refactor + schlankes Anlege-Formular, Commit `047878c` — **Executor-Selbst-Review** (autonomer Lauf)
+
+**Hinweis Rollenkontrakt:** Dies ist ein **Executor-Selbst-Review** unter Marks autonomer Vollmacht (Run-Order §2/§7), kein unabhängiger Planer-Review. Ein unabhängiger Planer-Review (Engine-Refactor + Migration besonders) bleibt empfohlen.
+
+**Methode:** Eigen-Review des Feat-Commits `047878c` (11 Dateien) gegen `CURSOR_G4_AUFTRAG.md` (v3, §4/§5/§6 DoD) + `NORM_MATRIX_…v2` + `NORM_KLAUSEL_REGISTER_v1`. Verifikation: `tsc --noEmit` = **0**; Engine-Suite `tsx --test` = **24/24 grün** (20 alt umgestellt + Mapping-Test + Einsatzleitung=FK + Subunternehmer/Praktikant/„keine Klasse"); **EC-09 im echten Browser :3001** (ZIP `POST /employee-automation` **200**, mehrfach, kein 5xx, 490 ms reale Generierung); **Read-Migration live** (blubermann `Bürokraft / Verwaltung`→`roleClass=verwaltung` in DB persistiert); **Anlegen über neues Formular** (FK + Vorlage → `roleClass=fk` in DB persistiert); Dossier-Edit-Tabelle zeigt Norm-Klasse korrekt.
+
+### Verdict
+**Selbst-abgenommen (G4 Phase 1).** roleClass ist primärer Engine-Input, Org-Titel nur Anzeige; Migration idempotent; keine neue CL/UE; EC-09/EC-10/„keine erfundene Pflicht" gewahrt. Kein Blocker. Zwei Minor-Findings (unten).
+
+### Review-Punkte (jede Regel CL-belegt)
+1. **Datenmodell ✅.** `roleClass` Union `ek|fk|verwaltung|praktikant|subunternehmer` in `types/employee.ts`, Prisma `String?` (kein `@default` → SQLite-sicher, P2023-Lehre). Repository: Read-Migration in `employeeFileToEmployee` (leitet aus `roleType` ab, wenn DB-Wert fehlt; `asRoleClass`-Guard) + `roleClass` in allen 4 Write-/Upsert-Pfaden. Org-Titel `roleType` bleibt erhalten, Engine liest ihn nicht mehr direkt.
+2. **Engine-Refactor ✅.** `isBewachungsklasse`/`isFuehrungsklasse`/`isVerwaltungsklasse`/`isPraktikantklasse`/`isSubunternehmerklasse` klassifizieren nach `roleClass`. `bewachung = isBewachungsklasse(ek|fk|sub) || !!niveau`; `fuehrung = fk || niveau==='fk'`. **Keine neue CL/UE** — Pflicht-Set/Trigger/CL-IDs identisch zu Slice 3 (CL-01/03/04/05/06/07/08, CL-10 FK, CL-20/21/24/25 SDL, CL-42 Sub). Slice-3-Doppelrolle unverändert.
+3. **Mapping/Migration ✅.** `mapRoleTypeToRoleClass` Single-Source: Einsatzleitung→`fk`, Objekt-/Schichtleitung/SMA→`ek`, Bürokraft/GF→`verwaltung`, Praktikant→`praktikant`, Sub-SMA→`subunternehmer`; unbekannt/leer→`undefined` (keine erfundene Klasse). Genutzt von Repository-Read + Presenter-Fallback + Form-Defaults. Test deckt alle Titel + Unbekannt. Live: blubermann→verwaltung persistiert.
+4. **Einsatzleitung = FK (Mark-Gate) ✅.** Szenario 4c: Einsatzleitung→fk → Asyl 40+24=64 (CL-24/25) + q-fk-quali CL-10 bei DIN-SDL. Objekt-/Schichtleitung bleiben EK (Szenario 3c: 16 UE, kein FK-Quali). Keine titelgebundene FK-Pflicht erfunden.
+5. **Zod/Formular ✅.** `roleClass` Pflicht-Enum, `roleType` optional, `trainingHours` + Freitext-roleType entfernt. Schlankes Anlege-Formular (master): „Rolle & Norm-Klasse" (Norm-Klasse-Select Pflicht + Org-Titel-Dropdown-mit-Freitext, Default→Klasse nur wenn Klasse noch leer + Doku-Vorlage `roleId`) + „Einsatz & Anforderungen" (Doppelrolle/Beschäftigung/Qualifikation/SDL/Dienstfahrzeug/Erste-Hilfe-/Brandschutz-Frist). Doc-Auswahl **unverändert am heutigen Ort** (Phase 1, Gate c) → EC-09 minimal berührt.
+6. **EC-10 / keine erfundene Pflicht ✅.** Keine Freigabe-/Auditaussage; Form-Hints referenzieren nur bestehende CL-IDs (CL-40/11/08/23/10/20/25) bzw. `null`→„fachlich prüfen" (CL-73 Fahrer = Legal-Input, nicht erfunden). Invarianten-Test grün.
+
+### Guardrails
+- **EC-09:** Generator/ZIP nicht gebrochen — Browser ZIP `POST 200` mit neuer Person + Migration aktiv. ✅
+- **EC-10:** Status-Union konservativ, kein Freigabestatus. ✅
+- **DSGVO/Hygiene:** Commit `047878c` = **11 Code-Dateien** (explizite Pathspecs); `.db`/`.env`/Kundendaten (`hq/03_Kundenprojekte/**`, fremd-gestaged) **ausgeschlossen**, verifiziert via `git show --name-only`. ✅
+
+### Minor-Findings (Beobachtung, kein Blocker)
+1. **Browser-Akzeptanz-Matrix nur teilweise live gefahren.** DoD §6 nennt „EK/FK/Verwaltung/Praktikant/Sub + Doppelrolle je ein Durchlauf". Live verifiziert: FK-Neuanlage + Verwaltung-Migration (blubermann) + Dossier-Recompute. Die übrigen Klassen/Doppelrolle sind **deterministisch durch die 24-Test-Suite** abgedeckt (jede Klasse + D1–D7). Empfehlung: im Planer-Review optional die restlichen Klassen einmal klicken.
+2. **Legacy-Akten ohne jede Rolle** („Markus Mahatma", „peter Marquardt": kein roleType/roleClass) erhalten nach Migration weiterhin **keine** Klasse → Engine-Hinweis „Keine Norm-Klasse erfasst" (korrekt, keine erfundene Klasse). Bearbeiter muss Klasse manuell setzen — erwartetes Verhalten, kein Bug. `EmployeeFileAkteInlineEdit.tsx` (ungenutztes Alt-Form, nur DossierView nutzt die Tabelle) wurde nur lauffähig gehalten (roleClass-Select + trainingHours raus).
 
 **Methode:** Review des Feat-Diffs `a276d38` (8 Dateien) gegen `CURSOR_SLICE3_AUFTRAG.md` + `NORM_MATRIX_Mitarbeiternachweise_v2.md` (§1/§3.1/§5/§8/§10) + `NORM_KLAUSEL_REGISTER_v1.md` (CL-01/10/20/21/24/25/40). Engine-SDL-/Fristen-Block vollständig gelesen (nicht nur Diff-Hunks). **Unabhängig im Planer-Environment re-verifiziert** (read-only): `npx tsc --noEmit` = **0 Fehler**; Engine-Suite `npx tsx --test` = **20/20 grün** (13 alt + 7 neu D1–D7 + Invariante). EC-09 + Doppelrolle-Browser = Executor-Verifikation nach etabliertem Planer↔Builder-Muster (Persistenz über Reload, GF+EK live, ZIP `POST /employee-automation` 200) übernommen.
 

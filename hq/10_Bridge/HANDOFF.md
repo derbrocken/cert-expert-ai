@@ -9,6 +9,7 @@
 
 > ## ▶ HIER STARTEN — AKTUELLER STAND (2026-06-07)
 > **Branch = `main`** · COS: `cert-expert-certification-os/apps/certification-os/` · Port **3001**
+> **▶ AUTONOMER LAUF WIEDER AKTIV (2026-06-08 ~02:25, „Run Everything").** **G4 Phase 1 = FERTIG + COMMITTET `047878c`** (tsc 0 ✅ / Engine-Suite 24/24 ✅ / **EC-09-ZIP browser-verifiziert: `POST /employee-automation` 200** ✅ / Read-Migration live: blubermann→verwaltung, Neuanlage FK→`roleClass=fk` persistiert ✅). Selbst-Review in `CODE_REVIEW.md` (oben). **Nächster Queue-Punkt: G4 Phase 2** (Doc-Auswahl→Generator-Tab, EC-09-Hauptrisiko) → dann Slice 4 (Ampel/Status, EC-10 nur rechnerisch) → Resttechnik. Details: unten „Von Cursor an Claude", Eintrag 2026-06-08.
 > **🤖 AUTONOMER DAUERLAUF AKTIV (Mark-Vollmacht, 2026-06-08, bis Montagnachmittag):** Betriebsanleitung = **`hq/10_Bridge/CURSOR_AUTONOMOUS_RUN_ORDER.md`**. Ein Executor baut die Queue (G4 P1 → P1-Review → G4 P2 → Slice 4 → Resttechnik) **eigenständig**, reviewt sich selbst, **committet autonom** nach grüner Verifikation (tsc 0 / Suite / EC-09-ZIP 200). Harte Grenzen bleiben: EC-09/EC-10/keine erfundene Normpflicht/kein `.env`/`.db`/Kundendaten-Commit. **Frischer Chat: lies zuerst den Run-Order + Kickoff-Prompt dort.** Bug-Fixer läuft parallel (rebase, kein force).
 > **Phase = Slice 3 (Doppelrollen, Niveau EK/FK) gebaut + committet (`a276d38`) ✅ — von Planer 6 REVIEWT + ABGENOMMEN ✅.**
 > **Arbeitsmodell:** Planer/Claude führt (plant + reviewt) · Executor/Cursor baut · Ping-Pong über Bridge-Dateien (Mark, 2026-06-07). Planer rotiert seltener als Executor.
@@ -197,6 +198,26 @@
 ---
 
 ## 📥 Von Cursor an Claude (Fragen / Bitten)
+
+### 2026-06-08 — ✅ Executor: G4 Phase 1 FERTIG + COMMITTET `047878c` + Selbst-Review (autonomer Lauf, „Run Everything")
+
+**Erledigt (Queue 1 + 2):** roleClass-Norm-Klasse-Modell + idempotente Read-Migration + Engine-Refactor + schlankes Anlege-Formular + Tests. **Commit `047878c`** (11 Code-Dateien, explizite Pathspecs — `.db`/`.env`/`hq/03_Kundenprojekte/**` ausgeschlossen, via `git show --name-only` verifiziert). **Selbst-Review:** `CODE_REVIEW.md` (oberster Eintrag).
+
+**Verifikations-Gate — alle grün:**
+- `tsc --noEmit` = **0**.
+- Engine-Suite `tsx --test` = **24/24** (20 alt umgestellt + Org-Titel→Klasse-Mapping + Einsatzleitung=FK (4c) + Subunternehmer (7) + Praktikant (8) + „keine Norm-Klasse" (9)).
+- **EC-09 echter Browser :3001:** ZIP `POST /employee-automation` **200** (mehrfach, kein 5xx, 490 ms reale Generierung mit aktiver Migration). Neuanlage über neues Formular (FK + Vorlage) → DB `roleClass=fk`. Read-Migration live: blubermann (`Bürokraft / Verwaltung`) → DB `roleClass=verwaltung` persistiert. Dossier-Edit-Tabelle zeigt Norm-Klasse + recomputed.
+- Test-Akte „G4 Testperson" nach Verifikation aus Dev-DB entfernt (Hygiene; DB ist gitignored).
+
+**Selbst-Review-Befund:** norm-konform, jede Regel CL-belegt, **keine neue CL/UE**, EC-09/EC-10 gewahrt. Minor (kein Blocker): (1) Live-Browser-Matrix nur teilweise gefahren (FK-Neuanlage + Verwaltung-Migration) — restliche Klassen/Doppelrolle deterministisch durch die 24-Test-Suite abgedeckt; (2) Legacy-Akten ganz ohne Rolle behalten „Keine Norm-Klasse" (korrekt). `EmployeeFileAkteInlineEdit.tsx` ist Alt-Form (nur DossierView nutzt die Tabelle) → nur lauffähig gehalten.
+
+**❓ FRAGE an Planer (Rollenkontrakt):** Dies ist ein **Executor-Selbst-Review** unter Marks autonomer Vollmacht, kein unabhängiger Planer-Review. **Empfehlung:** Planer reviewt `047878c` unabhängig (Engine-Refactor + Migration besonders) bevor Phase 2 abgenommen wird.
+
+**Prisma-Hinweis:** `prisma generate` + `db push` gelaufen (`DATABASE_URL=file:./prisma/dev.db` → Runtime-DB `prisma/prisma/dev.db` hat `roleClass`-Spalte). Schema-Migration committet; DB selbst nicht (gitignored).
+
+**▶ NÄCHSTER SCHRITT (laufender Lauf):** Queue 3 = **G4 Phase 2** (Doc-Auswahl Core/Overlay-Chips → Generator-Tab, `displayMode="documents"` wiederverwenden, EC-09 = Hauptrisiko) → Queue 4 Slice 4 (Ampel/Status, **EC-10 hart: nur rechnerischer Status, kein Freigabestatus**) → Queue 5 Resttechnik. End-of-Run-Summary folgt am Ende.
+
+---
 
 ### 2026-06-07 — ❓ Executor relais an Planer 7: Mark-Richtungsentscheid „Tally entkoppeln, In-App-Erfassung priorisieren, Rollenliste revidieren"
 
