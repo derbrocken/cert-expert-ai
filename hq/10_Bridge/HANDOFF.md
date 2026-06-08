@@ -497,7 +497,7 @@
 #### Koordinations-Modell (Ordner/Branches — Planer-Entscheid 2026-06-08)
 **Cursor-Background-Agents isolieren sich selbst** (eigener Checkout + eigener `cursor/*`-Branch je Bot) → **keine geteilten Working Trees, keine manuellen Worktrees nötig.**
 - **Planer** bleibt im Main-Checkout auf `main`.
-- **Jeder Bot** branched ab **`main@5263a04`**, baut auf seinem `cursor/*`-Branch, committet, pusht **seinen Branch** (NICHT direkt auf `main`).
+- **Jeder Bot** branched ab **`main@c5eb583`** (= aktuelles `main == origin/main`; der ältere Wert `5263a04` ist überholt — `c5eb583` ist nur ein Bridge-Doku-Commit drüber, kein Produktivcode, und trägt diese Dispatch-Tabelle live), baut auf seinem `cursor/*`-Branch, committet, pusht **seinen Branch** (NICHT direkt auf `main`).
 - **Merge-Gate = Planer:** Planer pullt den Branch, reviewt den Diff gegen diese Dispatch-Tabelle (disjunkt eingehalten? EC-09/EC-10? CL-belegt?), **mergt dann nach `main`**. Disjunkte Write-Sets → Lane A + Lane B mergen **konfliktfrei** in beliebiger Reihenfolge.
 - **Laufzeit-Dateien:** `.env.local` + Dev-DB sind gitignored (nicht im Branch). Build/Test: `DATABASE_URL=file:./prisma/dev.db` (CLAUDE.md; DB-Doppelpfad `prisma/dev.db` + `prisma/prisma/dev.db` = bekanntes Tech-Debt, kanonisch `prisma/dev.db`).
 
@@ -506,7 +506,21 @@
 2. **Lane B** → `CURSOR_AUDIT_EXPORT_AUFTRAG.md` → dann `…PT2_AUFTRAG.md` (1 Bot, sequenziell) → `EmployeeAutomationPage.tsx` + `EmployeeFileOverview.tsx` + neue `audit-export-*`/`CopyButton`/Action + `package.json`.
 3. **Gates intakt:** C-10 (Mark) · EC-09 (ZIP 200) · EC-10 (kein Freigabe-Wording) · jede Norm-Regel `clauseId` · keine Personendaten/`.env`/`.db` auf Git. Watcher-Baseline `e7ed92e`, disjunkte Write-Sets ✓.
 
-> **Hinweis Planer:** Diese 3 Bridge-Dateien (`HANDOFF.md`, `CODE_REVIEW.md`, `CURSOR_AUDIT_EXPORT_PT2_AUFTRAG.md`) sind noch **uncommitted** (Working Tree auf `e7ed92e`). Der Watcher feuert erst nach dem Commit. → Bridge-Doku committen, bevor die Bots starten, damit die Dispatch-Tabelle live im Repo steht.
+#### ⚠️ BEGRIFFS-KLÄRUNG „ZWEI BOTS" (Planer 8, 2026-06-08) — verbindlich für den Dispatch-Agent
+
+**„Zwei Bots" = zwei Lanes (A + B), NICHT zwei Bots pro Lane.** Wer den Dispatch-Prompt ausführt, startet **genau zwei** Cursor-Background-Agents:
+
+| Bot | = Lane | Bauauftrag (in dieser Reihenfolge) | Branch ab `main@c5eb583` | schreibt NUR (Dispatch-Tabelle) |
+|-----|--------|-----------------------------------|--------------------------|---------------------------------|
+| **Bot A** | A — ÖPV-Engine | `CURSOR_OEPV_ENGINE_AUFTRAG.md` | eigener `cursor/*` | `requirement-engine.ts` + `requirement-engine.test.ts` |
+| **Bot B** | B — Audit-Export | `CURSOR_AUDIT_EXPORT_AUFTRAG.md` **DANN** `CURSOR_AUDIT_EXPORT_PT2_AUFTRAG.md` | eigener `cursor/*` | `EmployeeAutomationPage.tsx` · `EmployeeFileOverview.tsx` · NEU `CopyButton`/`generate-audit-export`/`audit-export-{xlsx,pdf}` (+Tests) · `package.json/-lock` |
+
+- **Bot B ist EIN Bot, sequenziell** (Pt 1 committen → dann Pt 2). **NICHT** in zwei parallele B-Bots aufsplitten — Pt 1 und Pt 2 bearbeiten denselben Export-View und würden mit sich selbst kollidieren (s. Disjunktheits-Notiz oben).
+- **Also: A = 1 Bot, B = 1 Bot → 2 Bots total.** Nicht 3, nicht 4.
+- **Branch-Basis = `c5eb583`** (aktuelles `main`), nicht `5263a04`.
+- Jeder Bot pusht **seinen** `cursor/*`-Branch (nie direkt `main`). **Planer = Merge-Gate** (pullt, reviewt gegen Dispatch-Tabelle + Norm/Klausel-Register, re-verifiziert `tsc`/Suite, mergt nach `main` mit Marks OK).
+
+> **Status (Planer 8, 2026-06-08):** Bridge-Doku ist **committet** (`main == origin/main == c5eb583`, gepusht) → Dispatch-Tabelle steht live, Watcher feuert. Alle drei Bauaufträge liegen baufrei vor. **Bisher kein Lane-Branch gepusht** (vorhandene `cursor/din-77200-…` + `cursor/hq-*` = alte HQ/DFSS-Arbeit, berühren keine Lane-Datei). Planer pollt jetzt per `git fetch`; meldet sich, sobald ein Lane-Branch eintrifft.
 
 ### 2026-06-08 — ✅ Planer: G4-P1-Review (`047878c`) ABGENOMMEN + Sanity-Check ÖPV-/Audit-Export-Bauaufträge
 
