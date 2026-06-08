@@ -30,6 +30,7 @@ import { EmployeeFileTrainingTargets } from "./EmployeeFileTrainingTargets";
 import { EmployeeFileTrainingPlan } from "./EmployeeFileTrainingPlan";
 import { buildPlanDeadlineRows } from "./training-plan";
 import type { EmployeeEvidenceMap } from "./employee-evidence-storage";
+import { CopyButton } from "./CopyButton";
 
 /**
  * Read-only Akte-/Vorzeige-Übersicht (Queue B / Pt 1).
@@ -90,9 +91,15 @@ function RequirementTable({ rows }: { rows: RequirementRow[] }) {
               <ClauseBadge clauseId={row.clauseId} />
             </div>
             {row.value ? (
-              <p className="mt-0.5 text-xs text-[#374151]">
-                {formatValue(row.value)}
-              </p>
+              <div className="mt-0.5 flex items-start gap-1.5">
+                <p className="min-w-0 break-words text-xs text-[#374151]">
+                  {formatValue(row.value)}
+                </p>
+                <CopyButton
+                  value={formatValue(row.value)}
+                  ariaLabel={`${row.label} kopieren`}
+                />
+              </div>
             ) : null}
             {row.trigger ? (
               <p className="mt-0.5 text-[10px] text-[#9ca3af]">
@@ -155,6 +162,43 @@ const ROLE_CLASS_LABELS: Record<string, string> = Object.fromEntries(
   ]),
 );
 
+/**
+ * „Alles kopieren" je Akte (§5-Default: „Label: Wert"-Liste). Reine Text-
+ * Serialisierung der bereits berechneten Summary — keine Neu-Berechnung.
+ */
+function buildCopyAllText(args: {
+  name: string;
+  roleName: string;
+  roleType?: string;
+  roleClassLabels: string[];
+  sections: { title: string; rows: RequirementRow[] }[];
+}): string {
+  const lines: string[] = [];
+  lines.push(`Name: ${args.name || "—"}`);
+  lines.push(`Grundrolle: ${args.roleName || "—"}`);
+  if (args.roleType) lines.push(`Org-Titel: ${args.roleType}`);
+  if (args.roleClassLabels.length > 0) {
+    lines.push(`Norm-Klasse(n): ${args.roleClassLabels.join(", ")}`);
+  }
+
+  for (const section of args.sections) {
+    if (section.rows.length === 0) continue;
+    lines.push("");
+    lines.push(`# ${section.title}`);
+    for (const row of section.rows) {
+      const value = row.value ? formatValue(row.value) : row.status;
+      const cl = row.clauseId ? ` [${row.clauseId}]` : "";
+      lines.push(`${row.label}: ${value}${cl}`);
+    }
+  }
+
+  lines.push("");
+  lines.push(
+    "Rechnerischer Stand · kein Freigabe-/Auditfähigkeits-/Zertifizierungsstatus · eingehende Nachweise gelten als ungeprüft.",
+  );
+  return lines.join("\n");
+}
+
 export const EmployeeFileOverview: React.FC<EmployeeFileOverviewProps> = ({
   employee,
   roles,
@@ -186,6 +230,23 @@ export const EmployeeFileOverview: React.FC<EmployeeFileOverviewProps> = ({
     zusatzBewachungNiveau: employee.zusatzBewachungNiveau,
     roleType: employee.roleType,
   });
+  const roleClassLabels = roleClasses.map((rc) => ROLE_CLASS_LABELS[rc] ?? rc);
+
+  const copyAllText = buildCopyAllText({
+    name: employee.fullName || "Unbenannt",
+    roleName: summary.roleName,
+    roleType: employee.roleType,
+    roleClassLabels,
+    sections: [
+      { title: "Person & Rolle", rows: summary.personUndRollePflichtangaben },
+      { title: "Pflichtnachweise", rows: summary.pflichtnachweise },
+      { title: "Schulung & Unterweisung", rows: summary.schulungUnterweisung },
+      { title: "Geltungsbereich / Einsatzkontext", rows: summary.geltungsbereich },
+      { title: "Pflicht-Set (abgeleitet)", rows: summary.pflichtSet },
+      { title: "Fristen / Termine", rows: mergedFristen },
+      { title: "Offene Punkte / Prüfbedarf", rows: summary.openIssues },
+    ],
+  });
 
   return (
     <div className="overflow-hidden rounded-xl border border-[#e5e7eb] bg-white shadow-sm">
@@ -195,9 +256,15 @@ export const EmployeeFileOverview: React.FC<EmployeeFileOverviewProps> = ({
             <p className="text-[0.65rem] font-semibold uppercase tracking-[0.14em] text-[#e30613]">
               Mitarbeiterakte · Übersicht
             </p>
-            <h2 className="mt-1 text-xl font-bold text-[#111827]">
-              {employee.fullName || "Unbenannt"}
-            </h2>
+            <div className="mt-1 flex items-center gap-2">
+              <h2 className="text-xl font-bold text-[#111827]">
+                {employee.fullName || "Unbenannt"}
+              </h2>
+              <CopyButton
+                value={employee.fullName || ""}
+                ariaLabel="Name kopieren"
+              />
+            </div>
             <p className="mt-1 text-sm text-[#6b7280]">
               {summary.roleName}
               {employee.roleType ? ` · ${employee.roleType}` : ""}
@@ -215,10 +282,15 @@ export const EmployeeFileOverview: React.FC<EmployeeFileOverviewProps> = ({
               </div>
             ) : null}
           </div>
-          <span className="inline-flex shrink-0 items-center gap-1.5 rounded-md border border-[#e5e7eb] bg-[#fafbfc] px-2.5 py-1 text-[10px] font-medium uppercase tracking-wide text-[#6b7280]">
-            <ShieldCheck className="h-3.5 w-3.5" />
-            rechnerisch · kein Freigabestatus
-          </span>
+          <div className="flex shrink-0 flex-col items-end gap-1.5">
+            <span className="inline-flex items-center gap-1.5 rounded-md border border-[#e5e7eb] bg-[#fafbfc] px-2.5 py-1 text-[10px] font-medium uppercase tracking-wide text-[#6b7280]">
+              <ShieldCheck className="h-3.5 w-3.5" />
+              rechnerisch · kein Freigabestatus
+            </span>
+            <CopyButton value={copyAllText} ariaLabel="Ganze Akte kopieren">
+              Alles kopieren
+            </CopyButton>
+          </div>
         </div>
         <dl className="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-xs text-[#6b7280]">
           <div>

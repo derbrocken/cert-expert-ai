@@ -12,7 +12,8 @@ import { EmployeeFileOverviewIntro } from "./EmployeeFileOverviewIntro";
 import { Button } from "@/components/ui";
 import { Toast } from "@/components/ui/Toast";
 import { generateEmployeeDocs } from "@/app/actions/generate-employee-docs";
-import { Download, Loader2 } from "lucide-react";
+import { generateAuditExport } from "@/app/actions/generate-audit-export";
+import { Download, FileSpreadsheet, FileText, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type {
   Employee,
@@ -74,6 +75,11 @@ function EmployeeAutomationPageContent() {
     () => new Set(),
   );
   const [isGenerating, setIsGenerating] = useState(false);
+  // Lane B / Pt 1 — read-only Batch-Vorzeige-/Audit-Ansicht (je gewählter
+  // Person die `EmployeeFileOverview` mit Feld-Kopieren). Eigenständig; fasst
+  // den EC-09-ZIP-Generator NICHT an.
+  const [showExportView, setShowExportView] = useState(false);
+  const [isAuditExporting, setIsAuditExporting] = useState(false);
   const [toast, setToast] = useState<{
     message: string;
     type: "success" | "error";
@@ -526,6 +532,82 @@ function EmployeeAutomationPageContent() {
     }
   };
 
+  // Browser-Download aus base64 — exakt das `handleGenerate`-Muster
+  // (atob → Uint8Array → Blob → <a download>); kein neuer Infra-Teil.
+  const downloadBase64 = (base64: string, mime: string, filename: string) => {
+    const byteCharacters = atob(base64);
+    const byteNumbers = new Array(byteCharacters.length);
+    for (let i = 0; i < byteCharacters.length; i++) {
+      byteNumbers[i] = byteCharacters.charCodeAt(i);
+    }
+    const byteArray = new Uint8Array(byteNumbers);
+    const blob = new Blob([byteArray], { type: mime });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
+  // Lane B / Pt 2 — Audit-Datei (XLSX + PDF) als Browser-Download. Nutzt die
+  // gewählte Batch-Menge (batchSelectedIds) — NICHT den ZIP-Generator-Action.
+  const handleAuditExport = async () => {
+    const exportList = employees.filter((e) => batchSelectedIds.has(e.id));
+    if (exportList.length === 0) {
+      setToast({
+        message: "Mindestens eine Person für den Export auswählen.",
+        type: "error",
+      });
+      return;
+    }
+    setIsAuditExporting(true);
+    try {
+      const result = await generateAuditExport({
+        employees: exportList,
+        appointments,
+        roles,
+        companyName: globalProps.companyName,
+        companySlug,
+        format: "both",
+      });
+      if (!result.success) {
+        setToast({
+          message: result.error || "Audit-Export fehlgeschlagen.",
+          type: "error",
+        });
+        return;
+      }
+      const stamp = Date.now();
+      if (result.xlsxBase64) {
+        downloadBase64(
+          result.xlsxBase64,
+          "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+          `audit-export-${stamp}.xlsx`,
+        );
+      }
+      if (result.pdfBase64) {
+        downloadBase64(
+          result.pdfBase64,
+          "application/pdf",
+          `audit-export-${stamp}.pdf`,
+        );
+      }
+      setToast({
+        message: `Audit-Datei (XLSX + PDF) für ${exportList.length} Person(en) erzeugt.`,
+        type: "success",
+      });
+    } catch {
+      setToast({
+        message: "Unerwarteter Fehler beim Audit-Export.",
+        type: "error",
+      });
+    } finally {
+      setIsAuditExporting(false);
+    }
+  };
 
   const activeCompanyName = useMemo(
     () =>
@@ -693,6 +775,74 @@ function EmployeeAutomationPageContent() {
 
   const exportCount = batchSelectedIds.size;
 
+  const selectedEmployees = useMemo(
+    () => employees.filter((e) => batchSelectedIds.has(e.id)),
+    [employees, batchSelectedIds],
+  );
+
+  const exportViewContent = (
+    <div className="mx-auto max-w-3xl space-y-4 p-4 sm:p-6">
+      <div className="flex flex-col gap-3 rounded-lg border border-[#e5e7eb] bg-white px-4 py-4 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <p className="text-[0.65rem] font-semibold uppercase tracking-[0.14em] text-[#e30613]">
+            Vorzeige-/Audit-Ansicht
+          </p>
+          <h2 className="mt-1 text-lg font-bold text-[#111827]">
+            {selectedEmployees.length} ausgewählte Akte(n)
+          </h2>
+          <p className="mt-1 text-xs text-[#6b7280]">
+            Read-only Übersicht je gewählter Person — Feld-Kopieren über die
+            Kopier-Buttons. Rechnerischer Stand, kein Freigabestatus.
+          </p>
+        </div>
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
+          <Button
+            type="button"
+            variant="primary"
+            size="sm"
+            onClick={handleAuditExport}
+            isLoading={isAuditExporting}
+            disabled={selectedEmployees.length === 0}
+            leftIcon={
+              isAuditExporting ? undefined : (
+                <FileSpreadsheet className="h-4 w-4" />
+              )
+            }
+            className="w-full sm:w-auto"
+          >
+            {isAuditExporting ? "Erzeuge…" : "Audit-Datei erzeugen (XLSX + PDF)"}
+          </Button>
+          <Button
+            type="button"
+            variant="secondary"
+            size="sm"
+            onClick={() => setShowExportView(false)}
+            className="w-full sm:w-auto"
+          >
+            Zurück zum Index
+          </Button>
+        </div>
+      </div>
+
+      {selectedEmployees.length === 0 ? (
+        <p className="rounded-lg border border-dashed border-[#e5e7eb] bg-white px-4 py-8 text-center text-sm text-[#6b7280]">
+          Keine Person ausgewählt — im Index Akten für den Export anwählen.
+        </p>
+      ) : (
+        selectedEmployees.map((emp) => (
+          <EmployeeFileOverview
+            key={emp.id}
+            employee={emp}
+            roles={roles}
+            appointments={appointments}
+            companyName={globalProps.companyName}
+            evidenceFiles={{}}
+          />
+        ))
+      )}
+    </div>
+  );
+
   const generateBar =
     employees.length > 0 ? (
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -705,20 +855,33 @@ function EmployeeAutomationPageContent() {
             Firmendaten für {activeCompanyName}.
           </p>
         </div>
-        <Button
-          type="button"
-          variant="primary"
-          size="lg"
-          onClick={handleGenerate}
-          isLoading={isGenerating}
-          disabled={exportCount === 0}
-          leftIcon={
-            isGenerating ? undefined : <Download className="h-5 w-5" />
-          }
-          className="w-full sm:w-auto"
-        >
-          {isGenerating ? "Erzeuge…" : "ZIP exportieren"}
-        </Button>
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
+          <Button
+            type="button"
+            variant="secondary"
+            size="lg"
+            onClick={() => setShowExportView((v) => !v)}
+            disabled={exportCount === 0}
+            leftIcon={<FileText className="h-5 w-5" />}
+            className="w-full sm:w-auto"
+          >
+            {showExportView ? "Ansicht schließen" : "Vorzeige-/Audit-Ansicht"}
+          </Button>
+          <Button
+            type="button"
+            variant="primary"
+            size="lg"
+            onClick={handleGenerate}
+            isLoading={isGenerating}
+            disabled={exportCount === 0}
+            leftIcon={
+              isGenerating ? undefined : <Download className="h-5 w-5" />
+            }
+            className="w-full sm:w-auto"
+          >
+            {isGenerating ? "Erzeuge…" : "ZIP exportieren"}
+          </Button>
+        </div>
       </div>
     ) : null;
 
@@ -759,7 +922,7 @@ function EmployeeAutomationPageContent() {
             onToggleAllBatch={handleToggleAllBatch}
           />
         }
-        dossier={dossierContent}
+        dossier={showExportView ? exportViewContent : dossierContent}
         generateBar={generateBar}
       />
 
