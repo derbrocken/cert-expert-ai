@@ -492,8 +492,14 @@
 | **B — Audit-Export** | Bot B (1 Bot, **sequenziell**: Pt 1 → Pt 2) | `CURSOR_AUDIT_EXPORT_AUFTRAG.md` **dann** `CURSOR_AUDIT_EXPORT_PT2_AUFTRAG.md` | `…/employee-file/EmployeeAutomationPage.tsx` (Export-Toggle + `handleAuditExport` + Download; **ZIP-`handleGenerate` nicht umschreiben**) · `…/employee-file/EmployeeFileOverview.tsx` (CopyButton) · **NEU** `…/employee-file/CopyButton.tsx` · **NEU** `app/actions/generate-audit-export.ts` · **NEU** `…/employee-file/audit-export-xlsx.ts` · **NEU** `…/employee-file/audit-export-pdf.ts` · **NEU** `…/employee-file/audit-export-*.test.ts` · `package.json` + `package-lock.json` (Pt 2: `exceljs`, `pdf-lib`) · optional NEU Print-Route/-Hülle | `requirement-engine.ts` · `employee-file-requirements.ts` (`getEmployeeFileSummary` = Single Source) · `generate-employee-docs.ts` (ZIP-Generator) · `EmployeeForm.tsx` |
 
 **Disjunktheit belegt (am HEAD geprüft):** A-Schreibmenge `{requirement-engine.ts, requirement-engine.test.ts}` ∩ B-Schreibmenge `{EmployeeAutomationPage.tsx, EmployeeFileOverview.tsx, CopyButton.tsx, generate-audit-export.ts, audit-export-*.ts, package.json, package-lock.json}` = **∅**. B liest `requirement-engine.ts` nur transitiv (über `getEmployeeFileSummary`), schreibt sie nie → bei Rebase beider auf `main` **kein Datei-Merge-Konflikt**.
-**Annahme:** Jede Lane in eigenem Checkout/Worktree **oder** auf demselben Tree serialisiert. Beide pushen auf `main` → zweiter Commit **rebaset** (kein `--force`).
 **Pt-1↔Pt-2 = derselbe Export-View → EIN Bot, sequenziell** (NICHT zwei parallele B-Bots — das ist die einzige Stelle, wo B mit sich selbst kollidieren würde).
+
+#### Koordinations-Modell (Ordner/Branches — Planer-Entscheid 2026-06-08)
+**Cursor-Background-Agents isolieren sich selbst** (eigener Checkout + eigener `cursor/*`-Branch je Bot) → **keine geteilten Working Trees, keine manuellen Worktrees nötig.**
+- **Planer** bleibt im Main-Checkout auf `main`.
+- **Jeder Bot** branched ab **`main@5263a04`**, baut auf seinem `cursor/*`-Branch, committet, pusht **seinen Branch** (NICHT direkt auf `main`).
+- **Merge-Gate = Planer:** Planer pullt den Branch, reviewt den Diff gegen diese Dispatch-Tabelle (disjunkt eingehalten? EC-09/EC-10? CL-belegt?), **mergt dann nach `main`**. Disjunkte Write-Sets → Lane A + Lane B mergen **konfliktfrei** in beliebiger Reihenfolge.
+- **Laufzeit-Dateien:** `.env.local` + Dev-DB sind gitignored (nicht im Branch). Build/Test: `DATABASE_URL=file:./prisma/dev.db` (CLAUDE.md; DB-Doppelpfad `prisma/dev.db` + `prisma/prisma/dev.db` = bekanntes Tech-Debt, kanonisch `prisma/dev.db`).
 
 #### ▶ BOTS READY
 1. **Lane A** → `CURSOR_OEPV_ENGINE_AUFTRAG.md` → schreibt **nur** `requirement-engine.ts` + `requirement-engine.test.ts`.
