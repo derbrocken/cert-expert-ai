@@ -12,7 +12,8 @@ import { EmployeeFileOverviewIntro } from "./EmployeeFileOverviewIntro";
 import { Button } from "@/components/ui";
 import { Toast } from "@/components/ui/Toast";
 import { generateEmployeeDocs } from "@/app/actions/generate-employee-docs";
-import { Download, FileText, Loader2 } from "lucide-react";
+import { generateAuditExport } from "@/app/actions/generate-audit-export";
+import { Download, FileSpreadsheet, FileText, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type {
   Employee,
@@ -78,6 +79,7 @@ function EmployeeAutomationPageContent() {
   // Person die `EmployeeFileOverview` mit Feld-Kopieren). Eigenständig; fasst
   // den EC-09-ZIP-Generator NICHT an.
   const [showExportView, setShowExportView] = useState(false);
+  const [isAuditExporting, setIsAuditExporting] = useState(false);
   const [toast, setToast] = useState<{
     message: string;
     type: "success" | "error";
@@ -530,6 +532,82 @@ function EmployeeAutomationPageContent() {
     }
   };
 
+  // Browser-Download aus base64 — exakt das `handleGenerate`-Muster
+  // (atob → Uint8Array → Blob → <a download>); kein neuer Infra-Teil.
+  const downloadBase64 = (base64: string, mime: string, filename: string) => {
+    const byteCharacters = atob(base64);
+    const byteNumbers = new Array(byteCharacters.length);
+    for (let i = 0; i < byteCharacters.length; i++) {
+      byteNumbers[i] = byteCharacters.charCodeAt(i);
+    }
+    const byteArray = new Uint8Array(byteNumbers);
+    const blob = new Blob([byteArray], { type: mime });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
+  // Lane B / Pt 2 — Audit-Datei (XLSX + PDF) als Browser-Download. Nutzt die
+  // gewählte Batch-Menge (batchSelectedIds) — NICHT den ZIP-Generator-Action.
+  const handleAuditExport = async () => {
+    const exportList = employees.filter((e) => batchSelectedIds.has(e.id));
+    if (exportList.length === 0) {
+      setToast({
+        message: "Mindestens eine Person für den Export auswählen.",
+        type: "error",
+      });
+      return;
+    }
+    setIsAuditExporting(true);
+    try {
+      const result = await generateAuditExport({
+        employees: exportList,
+        appointments,
+        roles,
+        companyName: globalProps.companyName,
+        companySlug,
+        format: "both",
+      });
+      if (!result.success) {
+        setToast({
+          message: result.error || "Audit-Export fehlgeschlagen.",
+          type: "error",
+        });
+        return;
+      }
+      const stamp = Date.now();
+      if (result.xlsxBase64) {
+        downloadBase64(
+          result.xlsxBase64,
+          "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+          `audit-export-${stamp}.xlsx`,
+        );
+      }
+      if (result.pdfBase64) {
+        downloadBase64(
+          result.pdfBase64,
+          "application/pdf",
+          `audit-export-${stamp}.pdf`,
+        );
+      }
+      setToast({
+        message: `Audit-Datei (XLSX + PDF) für ${exportList.length} Person(en) erzeugt.`,
+        type: "success",
+      });
+    } catch {
+      setToast({
+        message: "Unerwarteter Fehler beim Audit-Export.",
+        type: "error",
+      });
+    } finally {
+      setIsAuditExporting(false);
+    }
+  };
 
   const activeCompanyName = useMemo(
     () =>
@@ -717,15 +795,33 @@ function EmployeeAutomationPageContent() {
             Kopier-Buttons. Rechnerischer Stand, kein Freigabestatus.
           </p>
         </div>
-        <Button
-          type="button"
-          variant="secondary"
-          size="sm"
-          onClick={() => setShowExportView(false)}
-          className="w-full sm:w-auto"
-        >
-          Zurück zum Index
-        </Button>
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
+          <Button
+            type="button"
+            variant="primary"
+            size="sm"
+            onClick={handleAuditExport}
+            isLoading={isAuditExporting}
+            disabled={selectedEmployees.length === 0}
+            leftIcon={
+              isAuditExporting ? undefined : (
+                <FileSpreadsheet className="h-4 w-4" />
+              )
+            }
+            className="w-full sm:w-auto"
+          >
+            {isAuditExporting ? "Erzeuge…" : "Audit-Datei erzeugen (XLSX + PDF)"}
+          </Button>
+          <Button
+            type="button"
+            variant="secondary"
+            size="sm"
+            onClick={() => setShowExportView(false)}
+            className="w-full sm:w-auto"
+          >
+            Zurück zum Index
+          </Button>
+        </div>
       </div>
 
       {selectedEmployees.length === 0 ? (
