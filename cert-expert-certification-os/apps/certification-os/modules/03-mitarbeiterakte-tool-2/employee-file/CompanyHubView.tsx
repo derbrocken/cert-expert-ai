@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { ArrowRight, Building2, Users } from "lucide-react";
+import { ArrowLeft, ArrowRight, Building2, Users } from "lucide-react";
 import { CompanyCreateDialog } from "./CompanyCreateDialog";
 
 export interface CompanyHubCompany {
@@ -21,6 +21,8 @@ export interface CompanyHubViewProps {
   counts: Record<string, number>;
   onEnter: (slug: string) => void;
   onCreate: (displayName: string) => Promise<void>;
+  /** Optional: „Zur Übersicht"-Zurück (z. B. zum Haupt-Dashboard). */
+  onBack?: () => void;
 }
 
 export const CompanyHubView: React.FC<CompanyHubViewProps> = ({
@@ -28,9 +30,20 @@ export const CompanyHubView: React.FC<CompanyHubViewProps> = ({
   counts,
   onEnter,
   onCreate,
+  onBack,
 }) => {
   return (
     <div className="mx-auto w-full max-w-5xl px-4 py-8 sm:px-6">
+      {onBack ? (
+        <button
+          type="button"
+          onClick={onBack}
+          className="mb-4 inline-flex items-center gap-1.5 text-sm font-medium text-[#6b7280] hover:text-[#111827]"
+        >
+          <ArrowLeft className="h-4 w-4" aria-hidden />
+          Zur Übersicht
+        </button>
+      ) : null}
       <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
         <div>
           <p className="text-[0.65rem] font-semibold uppercase tracking-[0.14em] text-[#e30613]">

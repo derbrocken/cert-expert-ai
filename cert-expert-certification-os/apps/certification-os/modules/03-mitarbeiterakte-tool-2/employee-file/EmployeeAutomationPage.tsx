@@ -455,6 +455,17 @@ function EmployeeAutomationPageContent() {
     };
   }, [view, companiesLoaded]);
 
+  // Deep-Link aus der Haupt-Übersicht: ?company=slug öffnet direkt den Pool.
+  useEffect(() => {
+    if (!companiesLoaded) return;
+    const param = searchParams.get("company");
+    if (param) {
+      setActiveCompanySlug(param);
+      setCompanySlug(param);
+      setView("pool");
+    }
+  }, [companiesLoaded, searchParams]);
+
   const handleSelectEmployee = useCallback(
     (employeeId: string) => {
       const employee = employees.find((e) => e.id === employeeId);
@@ -945,10 +956,10 @@ function EmployeeAutomationPageContent() {
           type="button"
           variant="secondary"
           size="sm"
-          onClick={() => setView("hub")}
+          onClick={() => router.push("/")}
           leftIcon={<ArrowLeft className="h-4 w-4" />}
         >
-          Alle Firmen
+          Zur Übersicht
         </Button>
         <CompanySwitcher
           companies={companies}
@@ -973,6 +984,7 @@ function EmployeeAutomationPageContent() {
           counts={employeeCounts}
           onEnter={handleEnterCompany}
           onCreate={handleCreateCompany}
+          onBack={() => router.push("/")}
         />
         {toast ? (
           <Toast
