@@ -68,5 +68,24 @@ Diese drei Stränge gehören in die Rest-Tour (interne MVP-Vollendung) **nach** 
 ## 8. „Grüne Trainings-Übersicht ist weg" (Mark) — Regression prüfen
 - Mark vermisst die Ansicht, die **grün/nicht-grün je nach genug Schulung (UE Soll vs. Ist)** zeigt — vermutlich `EmployeeFileTrainingTargets.tsx` (UE-Anzeige Variante C, Soll/Ist-Balken). **Prüfen, ob G4/Slice 4 sie verdeckt/entfernt hat → wiederherstellen** (read-only Sicht), **ohne UE-Werte zu ändern** (UE-Werte erst nach Cross-Check §4). Gehört zur „fertigen Übersicht" (§5 Pt 1).
 
+## 9. 🔑 Geschäftslogik Ist-UE / modulare Schulungen (Mark-Input 2026-06-08) — treibt C (Termin-Planung)
+**Realität:** Firmen kommen mit **unterschiedlichem Vorbestand** zur (Re-)Zertifizierung. Manche haben die **40 UE Jahres-Weiterbildung schon voll**, manche nur **30 UE**, manche nur die **Basis-Schulung** und brauchen nur **Teil 2**, manche fehlt überall etwas.
+
+**Cert-Expert-Doppelaufgabe je Person:**
+1. **Nachweisen/prüfen, dass das Soll erfüllt ist** (Ist-UE ≥ Soll-UE, Soll = CL-11 40/24). → das ist die rechnerische Ampel.
+2. **Wenn nicht: nachschulen** — Cert-Expert liefert die **fehlenden** Schulungen als Nachweise. Genau dafür existieren die **modularen Schulungen** (§3, 9×4 UE + FK 8 UE): sie sind die **Lückenfüller-Einheiten**, die Mark gezielt zuweist.
+
+**Beispiele (Mark wörtlich, sinngemäß):**
+- „Die haben schon 30 UE → geben wir ihnen dieses und jenes Modul dazu" (gezielte Modul-Zuweisung bis Soll erreicht).
+- „Die haben die Basis-Schulung → brauchen nur noch Teil 2."
+
+**Konsequenz fürs Produkt (C / Termin-Planung + Ist-UE):**
+- **Ist-UE pro Person tracken** (ist als manuelles Feld aus Slice 2 vorhanden: `weiterbildungIstUE`/`einmaligIstUE`) → **Lücke = Soll − Ist** sichtbar machen.
+- **Gezielte Modul-/Schulungs-Zuweisung:** Mark wählt aus dem Katalog (§3) konkrete Module/Teile, um die Lücke zu schließen, je mit **geplantem Datum** (C: Bulk + Override). Speist die Ampel: geplant = gelb, durchgeführt/Nachweis da = grün, überfällig = rot.
+- **Norm-Leitplanke bleibt (Cross-Check `NORM_CROSSCHECK_SCHULUNGSKATALOG.md`):** Soll = CL-11 (40/24); Module **ändern das Soll nicht**, sie **füllen** es. Modul-UE nicht automatisch als Soll setzen. Anrechnung der Einmalschulungen auf das Jahres-Soll = CL-27 (im Erwerbsjahr). EC-10: alles rechnerisch, kein Freigabestatus.
+- **Tie-in Uploads (§7):** pro zugewiesener Einzelschulung ein eigener Nachweis-Slot mit Datum/Gültigkeit (heute nur Sammel-Slot — die echte Lücke). → C-Bauauftrag muss das Datenmodell dafür mitdenken.
+
+→ **C wird damit „gap-getrieben":** nicht nur Termine setzen, sondern Soll/Ist/Lücke je Person + gezielte Modul-Zuweisung zum Schließen der Lücke. Detaillierter C-Bauauftrag berücksichtigt das (eigener Auftrag nach B-Abnahme).
+
 ---
 **Guardrails:** keine erfundene Normpflicht (jede UE/Pflicht CL-belegt), EC-09/EC-10, kein Commit von `.env`/`.db`/Kundendaten. Verifikation im echten Browser.
