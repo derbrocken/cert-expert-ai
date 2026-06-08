@@ -1,18 +1,22 @@
 /**
- * Unit-Tests für die Slice-2/3 + G4 Requirement-Engine (DoD-Szenarien).
+ * Unit-Tests für die Slice-2/3 + G4 + EK/FK-Refinement Requirement-Engine.
  * Lauffähig ohne Test-Framework via Node-Builtin:
  *   npx tsx --test modules/03-mitarbeiterakte-tool-2/employee-file/requirement-engine.test.ts
  *
- * G4: Die Engine klassifiziert nach `roleClass` (Norm-Klasse), nicht mehr nach
- * Org-Titel-Strings. Org-Titel → Klasse läuft über `mapRoleTypeToRoleClass`.
+ * EK/FK-Refinement: Die Engine klassifiziert nach dem Norm-Klassen-Set
+ * (`roleClasses`, EK + FK frei kombinierbar). Das frühere Einfachfeld
+ * `roleClass` + das Doppelrolle-Niveau `zusatzBewachungNiveau` werden über
+ * `resolveRoleClasses` idempotent in das Set migriert.
  */
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import {
   deriveRequirements,
   mapRoleTypeToRoleClass,
+  resolveRoleClasses,
   type EngineRule,
   type RequirementContext,
+  type RoleClass,
   type TrainingTarget,
 } from "./requirement-engine";
 
@@ -20,6 +24,7 @@ const REF = "2026-06-07";
 
 function baseCtx(partial: Partial<RequirementContext>): RequirementContext {
   return {
+    roleClasses: [],
     appointmentLabels: [],
     sdlScopes: [],
     referenceDate: REF,
@@ -36,6 +41,11 @@ function target(
   id: string,
 ): TrainingTarget | undefined {
   return targets.find((t) => t.id === id);
+}
+
+function classesFromTitle(title: string): RoleClass[] {
+  const c = mapRoleTypeToRoleClass(title);
+  return c ? [c] : [];
 }
 
 // ---------------------------------------------------------------------------
@@ -58,11 +68,72 @@ test("G4-Mapping — Org-Titel → roleClass (Einsatzleitung = FK, Mark-Gate)", 
   assert.equal(mapRoleTypeToRoleClass(undefined), undefined);
 });
 
+// ---------------------------------------------------------------------------
+// EK/FK-Refinement — Migration: Einfach-roleClass + zusatzBewachungNiveau → Set
+// ---------------------------------------------------------------------------
+test("Migration resolveRoleClasses — Einfach-roleClass → Set", () => {
+  assert.deepEqual(resolveRoleClasses({ roleClass: "ek" }), ["ek"]);
+  assert.deepEqual(resolveRoleClasses({ roleClass: "fk" }), ["fk"]);
+  assert.deepEqual(resolveRoleClasses({ roleClass: "verwaltung" }), [
+    "verwaltung",
+  ]);
+  assert.deepEqual(resolveRoleClasses({ roleClass: "praktikant" }), [
+    "praktikant",
+  ]);
+  assert.deepEqual(resolveRoleClasses({ roleClass: "subunternehmer" }), [
+    "subunternehmer",
+  ]);
+});
+
+test("Migration resolveRoleClasses — altes Doppelrolle-Niveau einmischen", () => {
+  // Verwaltung + zusätzliche Bewachung EK → ["verwaltung","ek"] (alter Fall;
+  // Einfach-Klasse zuerst, Doppelrolle-Niveau danach, Reihenfolge = Insertion).
+  assert.deepEqual(
+    resolveRoleClasses({ roleClass: "verwaltung", zusatzBewachungNiveau: "ek" }),
+    ["verwaltung", "ek"],
+  );
+  // EK + Niveau FK → ["ek","fk"].
+  assert.deepEqual(
+    resolveRoleClasses({ roleClass: "ek", zusatzBewachungNiveau: "fk" }).sort(),
+    ["ek", "fk"],
+  );
+  // Praktikant + FK-Niveau → ["praktikant","fk"].
+  assert.deepEqual(
+    resolveRoleClasses({
+      roleClass: "praktikant",
+      zusatzBewachungNiveau: "fk",
+    }).sort(),
+    ["fk", "praktikant"],
+  );
+});
+
+test("Migration resolveRoleClasses — Org-Titel-Fallback, Idempotenz, Dedup, Unbekanntes", () => {
+  // Kein roleClass, aber Org-Titel → abgeleitet.
+  assert.deepEqual(resolveRoleClasses({ roleType: "Einsatzleitung" }), ["fk"]);
+  // Bereits gefülltes Set gewinnt (idempotent, keine erneute Einmischung).
+  assert.deepEqual(
+    resolveRoleClasses({
+      roleClasses: ["fk"],
+      roleClass: "ek",
+      zusatzBewachungNiveau: "ek",
+    }),
+    ["fk"],
+  );
+  // Dedup + stabile Ordnung.
+  assert.deepEqual(resolveRoleClasses({ roleClasses: ["ek", "ek", "fk"] }), [
+    "ek",
+    "fk",
+  ]);
+  // Unbekannte Werte werden verworfen (keine erfundene Klasse).
+  assert.deepEqual(resolveRoleClasses({ roleClass: "hausmeister" }), []);
+  assert.deepEqual(resolveRoleClasses({}), []);
+});
+
 // 1. EK Vollzeit, Sachkunde, DIN 77200-1
 test("Szenario 1 — EK Vollzeit + Sachkunde + DIN 77200-1: §4.1b-Set, 40 UE, keine Teil-2-Schulung", () => {
   const res = deriveRequirements(
     baseCtx({
-      roleClass: "ek",
+      roleClasses: ["ek"],
       employmentType: "Vollzeit",
       qualification: "Sachkundeprüfung nach § 34a GewO",
       sdlScopes: ["din1-grunddienste"],
@@ -77,7 +148,6 @@ test("Szenario 1 — EK Vollzeit + Sachkunde + DIN 77200-1: §4.1b-Set, 40 UE, k
   assert.equal(wb?.clauseId, "CL-11");
   assert.equal(target(res.schulungsSoll, "sdl-veranstaltung-ek"), undefined);
   assert.equal(target(res.schulungsSoll, "sdl-veranstaltung-fk"), undefined);
-  // keine offene Sachkunde-Frist, da Sachkunde vorhanden
   assert.equal(res.fristen.find((f) => f.id === "frist-sachkunde"), undefined);
 });
 
@@ -85,17 +155,16 @@ test("Szenario 1 — EK Vollzeit + Sachkunde + DIN 77200-1: §4.1b-Set, 40 UE, k
 test("Szenario 2 — EK Teilzeit + Unterrichtung + Eintritt vor 5 Mt.: 6-Monats-Frist offen (gelb), 24 UE", () => {
   const res = deriveRequirements(
     baseCtx({
-      roleClass: "ek",
+      roleClasses: ["ek"],
       employmentType: "Teilzeit",
       qualification: "Unterrichtung nach §34a",
-      startDate: "2026-01-07", // 5 Monate vor REF
+      startDate: "2026-01-07",
       sdlScopes: ["din1-grunddienste"],
     }),
   );
-  // F1: reine Unterrichtung (ohne Sachkunde) ⇒ §34a "unvollständig" (nicht grün)
   assert.equal(rule(res.pflichtSet, "q-34a")?.status, "unvollständig");
   const frist = res.fristen.find((f) => f.id === "frist-sachkunde");
-  assert.equal(frist?.status, "beantragt"); // noch nicht überschritten
+  assert.equal(frist?.status, "beantragt");
   assert.equal(frist?.clauseId, "CL-02");
   assert.equal(frist?.dueDate, "2026-07-07");
   assert.equal(target(res.schulungsSoll, "jahres-weiterbildung")?.ue, 24);
@@ -104,10 +173,10 @@ test("Szenario 2 — EK Teilzeit + Unterrichtung + Eintritt vor 5 Mt.: 6-Monats-
 test("Szenario 2b — Eintritt vor 8 Monaten: Sachkunde-Frist abgelaufen (rot)", () => {
   const res = deriveRequirements(
     baseCtx({
-      roleClass: "ek",
+      roleClasses: ["ek"],
       employmentType: "Teilzeit",
       qualification: "Unterrichtung",
-      startDate: "2025-10-07", // 8 Monate vor REF
+      startDate: "2025-10-07",
       sdlScopes: ["din1-grunddienste"],
     }),
   );
@@ -121,7 +190,7 @@ test("Szenario 2b — Eintritt vor 8 Monaten: Sachkunde-Frist abgelaufen (rot)",
 test("Szenario 3 — EK Veranstaltung bes. SR: 16 UE einmalig (CL-21) + WB", () => {
   const res = deriveRequirements(
     baseCtx({
-      roleClass: "ek",
+      roleClasses: ["ek"],
       employmentType: "Vollzeit",
       qualification: "Sachkunde",
       sdlScopes: ["din2-veranstaltung"],
@@ -137,7 +206,7 @@ test("Szenario 3 — EK Veranstaltung bes. SR: 16 UE einmalig (CL-21) + WB", () 
 test("Szenario 3b — FK Veranstaltung bes. SR: 24 UE einmalig (CL-20) + FK-Quali", () => {
   const res = deriveRequirements(
     baseCtx({
-      roleClass: "fk",
+      roleClasses: ["fk"],
       sdlScopes: ["din2-veranstaltung"],
     }),
   );
@@ -147,19 +216,42 @@ test("Szenario 3b — FK Veranstaltung bes. SR: 24 UE einmalig (CL-20) + FK-Qual
   assert.ok(rule(res.pflichtSet, "q-fk-quali")); // CL-10
 });
 
+// EK/FK-Refinement: EK + FK kombiniert = FK-Set (FK ⊇ EK, keine neue Pflicht)
+test("Szenario 3d — EK + FK kombiniert: ergibt exakt das FK-Set (24 UE Veranstaltung, q-fk-quali, kein EK-Posten)", () => {
+  const ekfk = deriveRequirements(
+    baseCtx({ roleClasses: ["ek", "fk"], sdlScopes: ["din2-veranstaltung"] }),
+  );
+  const fkOnly = deriveRequirements(
+    baseCtx({ roleClasses: ["fk"], sdlScopes: ["din2-veranstaltung"] }),
+  );
+  // Pflicht-Set + Schulungs-Soll identisch zu reinem FK.
+  assert.deepEqual(
+    ekfk.pflichtSet.map((r) => r.id).sort(),
+    fkOnly.pflichtSet.map((r) => r.id).sort(),
+  );
+  assert.deepEqual(
+    ekfk.schulungsSoll.map((t) => t.id).sort(),
+    fkOnly.schulungsSoll.map((t) => t.id).sort(),
+  );
+  assert.equal(target(ekfk.schulungsSoll, "sdl-veranstaltung-fk")?.ue, 24);
+  assert.equal(target(ekfk.schulungsSoll, "sdl-veranstaltung-ek"), undefined);
+  assert.equal(rule(ekfk.pflichtSet, "q-fk-quali")?.clauseId, "CL-10");
+  // EK+FK ist KEINE Doppelrolle (keine Nicht-Bewachungs-Klasse dabei).
+  assert.equal(ekfk.hinweise.some((h) => /Doppelrolle erfasst/.test(h)), false);
+});
+
 // Org-Titel Schichtleitung → ek (16 UE), KEIN Auto-FK, aber Bewachungsrolle
 test("Szenario 3c — Schichtleitung (→ek) Veranstaltung bes. SR: 16 UE (EK, nicht 24), kein FK-Quali, Basis-Set", () => {
   const res = deriveRequirements(
     baseCtx({
-      roleClass: mapRoleTypeToRoleClass("Schichtleitung"),
+      roleClasses: classesFromTitle("Schichtleitung"),
       roleType: "Schichtleitung",
       sdlScopes: ["din2-veranstaltung"],
     }),
   );
   assert.equal(target(res.schulungsSoll, "sdl-veranstaltung-ek")?.ue, 16);
   assert.equal(target(res.schulungsSoll, "sdl-veranstaltung-fk"), undefined);
-  assert.equal(rule(res.pflichtSet, "q-fk-quali"), undefined); // kein CL-10
-  // bleibt Bewachungsrolle ⇒ Basis-Pflichtset vorhanden
+  assert.equal(rule(res.pflichtSet, "q-fk-quali"), undefined);
   assert.ok(rule(res.pflichtSet, "q-34a"));
   assert.ok(rule(res.pflichtSet, "q-datenschutz"));
 });
@@ -168,7 +260,7 @@ test("Szenario 3c — Schichtleitung (→ek) Veranstaltung bes. SR: 16 UE (EK, n
 test("Szenario 4 — EK Flüchtling/Asyl: 40 UE (CL-24) + Personalschlüssel-Hinweis", () => {
   const res = deriveRequirements(
     baseCtx({
-      roleClass: "ek",
+      roleClasses: ["ek"],
       sdlScopes: ["din2-fluechtling-asyl"],
     }),
   );
@@ -182,7 +274,7 @@ test("Szenario 4 — EK Flüchtling/Asyl: 40 UE (CL-24) + Personalschlüssel-Hin
 test("Szenario 4b — FK Flüchtling/Asyl: +24 UE (= 64) (CL-25)", () => {
   const res = deriveRequirements(
     baseCtx({
-      roleClass: "fk",
+      roleClasses: ["fk"],
       sdlScopes: ["din2-fluechtling-asyl"],
     }),
   );
@@ -195,7 +287,7 @@ test("Szenario 4b — FK Flüchtling/Asyl: +24 UE (= 64) (CL-25)", () => {
 test("Szenario 4c — Einsatzleitung (→fk, G4) Flüchtling/Asyl: 40 + 24 (= 64) UE + FK-Quali (CL-10)", () => {
   const res = deriveRequirements(
     baseCtx({
-      roleClass: mapRoleTypeToRoleClass("Einsatzleitung"),
+      roleClasses: classesFromTitle("Einsatzleitung"),
       roleType: "Einsatzleitung",
       sdlScopes: ["din2-fluechtling-asyl"],
     }),
@@ -210,7 +302,7 @@ test("Szenario 4c — Einsatzleitung (→fk, G4) Flüchtling/Asyl: 40 + 24 (= 64
 test("Szenario 5 — Verwaltung: kein §34a-Set, Datenschutz/Verschwiegenheit aktiv", () => {
   const res = deriveRequirements(
     baseCtx({
-      roleClass: "verwaltung",
+      roleClasses: ["verwaltung"],
       employmentType: "Vollzeit",
       sdlScopes: [],
     }),
@@ -226,7 +318,7 @@ test("Szenario 5 — Verwaltung: kein §34a-Set, Datenschutz/Verschwiegenheit ak
 test("Szenario 5b — Verwaltung + SDL Veranstaltung/Objekt/Asyl: kein UE-Schulungssoll (F3-Gate)", () => {
   const res = deriveRequirements(
     baseCtx({
-      roleClass: "verwaltung",
+      roleClasses: ["verwaltung"],
       sdlScopes: ["din2-veranstaltung", "din2-objekte", "din2-fluechtling-asyl"],
     }),
   );
@@ -234,15 +326,14 @@ test("Szenario 5b — Verwaltung + SDL Veranstaltung/Objekt/Asyl: kein UE-Schulu
   assert.equal(target(res.schulungsSoll, "sdl-veranstaltung-ek"), undefined);
   assert.equal(target(res.schulungsSoll, "sdl-objekt-zusatz"), undefined);
   assert.equal(target(res.schulungsSoll, "sdl-asyl-base"), undefined);
-  // Brandschutz-Pflichtnachweis aus SDL Objekte bleibt ungated (kein UE-Soll)
   assert.ok(rule(res.pflichtSet, "sdl-objekt-brandschutz"));
 });
 
-// 6. drivesServiceVehicle = true → Fahrer-/UVV-Zeile "fachlich prüfen" (CL-73 legal-input → clauseId null)
+// 6. drivesServiceVehicle = true → Fahrer-/UVV-Zeile "fachlich prüfen"
 test("Szenario 6 — fährt Dienstfahrzeug: Fahrer-/UVV-Zeile fachlich prüfen", () => {
   const res = deriveRequirements(
     baseCtx({
-      roleClass: "ek",
+      roleClasses: ["ek"],
       drivesServiceVehicle: true,
       sdlScopes: ["din1-grunddienste"],
     }),
@@ -256,7 +347,7 @@ test("Szenario 6 — fährt Dienstfahrzeug: Fahrer-/UVV-Zeile fachlich prüfen",
 test("Szenario 7 — Subunternehmer: Bewachungs-Set + CL-42-Firmenquote-Hinweis, kein FK-Quali", () => {
   const res = deriveRequirements(
     baseCtx({
-      roleClass: "subunternehmer",
+      roleClasses: ["subunternehmer"],
       sdlScopes: ["din1-grunddienste"],
     }),
   );
@@ -268,7 +359,7 @@ test("Szenario 7 — Subunternehmer: Bewachungs-Set + CL-42-Firmenquote-Hinweis,
 
 // G4: Praktikant ohne Doppelrolle → reduziertes Set
 test("Szenario 8 — Praktikant: reduziertes Set (p-reduziert, fachlich prüfen), kein §34a-Set", () => {
-  const res = deriveRequirements(baseCtx({ roleClass: "praktikant" }));
+  const res = deriveRequirements(baseCtx({ roleClasses: ["praktikant"] }));
   assert.equal(rule(res.pflichtSet, "p-reduziert")?.status, "fachlich prüfen");
   assert.equal(rule(res.pflichtSet, "q-34a"), undefined);
 });
@@ -281,16 +372,15 @@ test("Szenario 9 — keine Norm-Klasse: Hinweis 'Keine Norm-Klasse', kein Pflich
 });
 
 // ---------------------------------------------------------------------------
-// Slice 3 — Doppelrolle (zusatzBewachungNiveau EK/FK)
+// EK/FK-Refinement — Doppelrolle als Set (Verwaltung/Praktikant + EK/FK)
 // ---------------------------------------------------------------------------
 
-// D1: Verwaltung + EK-Niveau → volles Bewachungs-Set, keine Verwaltungs-Reduktion, kein FK-Quali
-test("Szenario D1 — Verwaltung + zusatzBewachungNiveau 'ek': volles Bewachungs-Set, kein v-34a-na/v-datenschutz, kein q-fk-quali, Doppelrollen-Hinweis", () => {
+// D1: Verwaltung + EK → volles Bewachungs-Set, keine Verwaltungs-Reduktion, kein FK-Quali
+test("Szenario D1 — ['verwaltung','ek']: volles Bewachungs-Set, kein v-34a-na/v-datenschutz, kein q-fk-quali, Doppelrollen-Hinweis", () => {
   const res = deriveRequirements(
     baseCtx({
-      roleClass: "verwaltung",
+      roleClasses: ["verwaltung", "ek"],
       roleType: "Geschäftsführung",
-      zusatzBewachungNiveau: "ek",
     }),
   );
   assert.equal(rule(res.pflichtSet, "q-34a")?.clauseId, "CL-01");
@@ -307,11 +397,11 @@ test("Szenario D1 — Verwaltung + zusatzBewachungNiveau 'ek': volles Bewachungs
   assert.ok(res.hinweise.some((h) => /Doppelrolle erfasst/.test(h)));
 });
 
-// D2: Verwaltung ohne Niveau (Regression) → nur Verwaltungs-Reduktion, kein §34a-Set
-test("Szenario D2 — Verwaltung ohne Niveau (Regression): v-datenschutz/v-verschwiegenheit/v-34a-na, kein q-34a/jahres-weiterbildung", () => {
+// D2: Verwaltung ohne Bewachung (Regression) → nur Verwaltungs-Reduktion
+test("Szenario D2 — ['verwaltung'] ohne Bewachung (Regression): v-datenschutz/v-verschwiegenheit/v-34a-na, kein q-34a/jahres-weiterbildung", () => {
   const res = deriveRequirements(
     baseCtx({
-      roleClass: "verwaltung",
+      roleClasses: ["verwaltung"],
       roleType: "Geschäftsführung",
     }),
   );
@@ -324,11 +414,10 @@ test("Szenario D2 — Verwaltung ohne Niveau (Regression): v-datenschutz/v-versc
 });
 
 // D3: Verwaltung + EK + Veranstaltung → 16 UE (EK), kein FK, kein FK-Quali
-test("Szenario D3 — Verwaltung + 'ek' + Veranstaltung bes. SR: sdl-veranstaltung-ek (16 UE, CL-21), kein FK", () => {
+test("Szenario D3 — ['verwaltung','ek'] + Veranstaltung bes. SR: sdl-veranstaltung-ek (16 UE, CL-21), kein FK", () => {
   const res = deriveRequirements(
     baseCtx({
-      roleClass: "verwaltung",
-      zusatzBewachungNiveau: "ek",
+      roleClasses: ["verwaltung", "ek"],
       sdlScopes: ["din2-veranstaltung"],
     }),
   );
@@ -339,11 +428,10 @@ test("Szenario D3 — Verwaltung + 'ek' + Veranstaltung bes. SR: sdl-veranstaltu
 });
 
 // D4: Verwaltung + FK + Veranstaltung + Asyl → 24 UE FK + Asyl 40+24=64 + FK-Quali (DIN-SDL)
-test("Szenario D4 — Verwaltung + 'fk' + Veranstaltung + Asyl: sdl-veranstaltung-fk (24, CL-20) + sdl-asyl-base (40) + sdl-asyl-fk (24, CL-25) + q-fk-quali (CL-10)", () => {
+test("Szenario D4 — ['verwaltung','fk'] + Veranstaltung + Asyl: sdl-veranstaltung-fk (24, CL-20) + sdl-asyl-base (40) + sdl-asyl-fk (24, CL-25) + q-fk-quali (CL-10)", () => {
   const res = deriveRequirements(
     baseCtx({
-      roleClass: "verwaltung",
-      zusatzBewachungNiveau: "fk",
+      roleClasses: ["verwaltung", "fk"],
       sdlScopes: ["din2-veranstaltung", "din2-fluechtling-asyl"],
     }),
   );
@@ -357,43 +445,11 @@ test("Szenario D4 — Verwaltung + 'fk' + Veranstaltung + Asyl: sdl-veranstaltun
   assert.equal(rule(res.pflichtSet, "q-fk-quali")?.status, "fachlich prüfen");
 });
 
-// D5: EK + EK-Niveau = idempotent (echte Bewachungsklasse, Niveau ist No-op)
-test("Szenario D5 — EK + 'ek': identisch zu EK ohne Niveau (Idempotenz, kein doppeltes Set)", () => {
-  const withNiveau = deriveRequirements(
-    baseCtx({
-      roleClass: "ek",
-      employmentType: "Vollzeit",
-      qualification: "Sachkunde",
-      sdlScopes: ["din1-grunddienste"],
-      zusatzBewachungNiveau: "ek",
-    }),
-  );
-  const without = deriveRequirements(
-    baseCtx({
-      roleClass: "ek",
-      employmentType: "Vollzeit",
-      qualification: "Sachkunde",
-      sdlScopes: ["din1-grunddienste"],
-    }),
-  );
-  assert.equal(
-    withNiveau.pflichtSet.map((r) => r.id).sort().join(","),
-    without.pflichtSet.map((r) => r.id).sort().join(","),
-  );
-  assert.equal(
-    withNiveau.schulungsSoll.map((t) => t.id).sort().join(","),
-    without.schulungsSoll.map((t) => t.id).sort().join(","),
-  );
-  // EK ist baseBewachung ⇒ keine Doppelrolle (kein Doppelrollen-Hinweis)
-  assert.equal(withNiveau.hinweise.some((h) => /Doppelrolle erfasst/.test(h)), false);
-});
-
 // D6: Praktikant + EK → volles Bewachungs-Set, kein p-reduziert
-test("Szenario D6 — Praktikant + 'ek': volles Bewachungs-Set, kein p-reduziert", () => {
+test("Szenario D6 — ['praktikant','ek']: volles Bewachungs-Set, kein p-reduziert", () => {
   const res = deriveRequirements(
     baseCtx({
-      roleClass: "praktikant",
-      zusatzBewachungNiveau: "ek",
+      roleClasses: ["praktikant", "ek"],
     }),
   );
   assert.ok(rule(res.pflichtSet, "q-34a"));
@@ -403,20 +459,14 @@ test("Szenario D6 — Praktikant + 'ek': volles Bewachungs-Set, kein p-reduziert
 
 // D7: CL-10-Gate — FK-Quali nur bei DIN-SDL (beide FK-Wege)
 test("Szenario D7 — CL-10-Gate: FK/Doppelrolle-fk ohne DIN-SDL ⇒ kein q-fk-quali", () => {
-  // (a) Norm-Klasse FK ohne SDL
-  const fkNoSdl = deriveRequirements(baseCtx({ roleClass: "fk" }));
+  const fkNoSdl = deriveRequirements(baseCtx({ roleClasses: ["fk"] }));
   assert.equal(rule(fkNoSdl.pflichtSet, "q-fk-quali"), undefined);
-  // (a') FK nur mit non-din (kein DIN)
   const fkNonDin = deriveRequirements(
-    baseCtx({ roleClass: "fk", sdlScopes: ["non-din"] }),
+    baseCtx({ roleClasses: ["fk"], sdlScopes: ["non-din"] }),
   );
   assert.equal(rule(fkNonDin.pflichtSet, "q-fk-quali"), undefined);
-  // (b) Doppelrolle-fk ohne DIN-SDL
   const doppelNoSdl = deriveRequirements(
-    baseCtx({
-      roleClass: "verwaltung",
-      zusatzBewachungNiveau: "fk",
-    }),
+    baseCtx({ roleClasses: ["verwaltung", "fk"] }),
   );
   assert.equal(rule(doppelNoSdl.pflichtSet, "q-fk-quali"), undefined);
 });
@@ -424,12 +474,14 @@ test("Szenario D7 — CL-10-Gate: FK/Doppelrolle-fk ohne DIN-SDL ⇒ kein q-fk-q
 // Invariante: keine erfundene Pflicht — clauseId null ⇒ status fachlich prüfen / nicht erforderlich
 test("Invariante — jede Regel ohne clauseId ist 'fachlich prüfen' oder 'nicht erforderlich'", () => {
   const scenarios: RequirementContext[] = [
-    baseCtx({ roleClass: "ek", sdlScopes: ["din1-grunddienste"] }),
-    baseCtx({ roleClass: "fk", sdlScopes: ["din2-veranstaltung", "din2-objekte"] }),
-    baseCtx({ roleClass: "ek", sdlScopes: ["din2-fluechtling-asyl", "din2-oepv", "non-din"], drivesServiceVehicle: true, appointmentLabels: ["SiBe / Sicherheitsbeauftragter"] }),
-    baseCtx({ roleClass: "verwaltung" }),
-    baseCtx({ roleClass: "praktikant" }),
-    baseCtx({ roleClass: "subunternehmer", appointmentLabels: ["Ersthelfer", "Brandschutzhelfer", "Interventionskraft"] }),
+    baseCtx({ roleClasses: ["ek"], sdlScopes: ["din1-grunddienste"] }),
+    baseCtx({ roleClasses: ["fk"], sdlScopes: ["din2-veranstaltung", "din2-objekte"] }),
+    baseCtx({ roleClasses: ["ek", "fk"], sdlScopes: ["din2-objekte"] }),
+    baseCtx({ roleClasses: ["ek"], sdlScopes: ["din2-fluechtling-asyl", "din2-oepv", "non-din"], drivesServiceVehicle: true, appointmentLabels: ["SiBe / Sicherheitsbeauftragter"] }),
+    baseCtx({ roleClasses: ["verwaltung"] }),
+    baseCtx({ roleClasses: ["verwaltung", "ek"] }),
+    baseCtx({ roleClasses: ["praktikant"] }),
+    baseCtx({ roleClasses: ["subunternehmer"], appointmentLabels: ["Ersthelfer", "Brandschutzhelfer", "Interventionskraft"] }),
   ];
   for (const ctx of scenarios) {
     const res = deriveRequirements(ctx);

@@ -4,18 +4,21 @@ export const ROLLE_STAMMDATEN_LABEL =
   "Rolle (Sicherheitsmitarbeiter / Führungskraft)";
 
 /**
- * G4 — Norm-Klasse (primärer Engine-Input). DIN 77200 kennt EK (§3.10) vs.
- * FK (§3.11/§4.19.1); Verwaltung/Praktikant/Subunternehmer ergänzen die
- * Markt-Realität. Quelle der Klassifikation: requirement-engine `RoleClass`.
+ * EK/FK-Refinement — Norm-Klasse als Mehrfachauswahl. Bewachung: EK + FK frei
+ * kombinierbar (FK baut auf EK auf; EK+FK = FK-Pflichtset). Nicht-Bewachung:
+ * untereinander exklusiv, aber mit EK/FK kombinierbar (Doppelrolle-Fall).
  */
-export const ROLE_CLASS_LABEL = "Norm-Klasse (steuert das Pflicht-Set)";
+export const ROLE_CLASS_LABEL_MULTI = "Norm-Klasse (steuert das Pflicht-Set — Mehrfachauswahl)";
 
-export const ROLE_CLASS_OPTIONS = [
-  { id: "ek", name: "Einsatzkraft (EK) — Bewachung" },
-  { id: "fk", name: "Führungskraft (FK) — Bewachung + Führung" },
-  { id: "verwaltung", name: "Verwaltung / Geschäftsführung — keine Bewachung" },
-  { id: "praktikant", name: "Praktikant / Azubi" },
-  { id: "subunternehmer", name: "Subunternehmer" },
+export const BEWACHUNG_CLASS_OPTIONS = [
+  { id: "ek", name: "Einsatzkraft (EK)", hint: "Bewachung (§3.10)" },
+  { id: "fk", name: "Führungskraft (FK)", hint: "Bewachung + Führung (§3.11/§4.19.1)" },
+] as const;
+
+export const NICHT_BEWACHUNG_CLASS_OPTIONS = [
+  { id: "verwaltung", name: "Verwaltung / Geschäftsführung", hint: "keine Bewachung (§4.1 b)" },
+  { id: "praktikant", name: "Praktikant / Azubi", hint: "reduziertes Set" },
+  { id: "subunternehmer", name: "Subunternehmer", hint: "Bewachung + fachlich prüfen (§4.13)" },
 ] as const;
 
 /**
@@ -48,14 +51,6 @@ export const ROLLE_TYPE_OPTIONS = [
   { id: "Schichtleitung", name: "Schichtleitung" },
   { id: "Subunternehmer-SMA", name: "Subunternehmer-SMA" },
   { id: "Praktikant / Azubi", name: "Praktikant / Azubi" },
-] as const;
-
-/** Slice 3 — Doppelrolle: zusätzliche Bewachungstätigkeit auf Niveau EK/FK.
- * Leer-Option (id "") erlaubt das Zurücksetzen auf „keine Doppelrolle". */
-export const ZUSATZ_BEWACHUNG_OPTIONS = [
-  { id: "", name: "— keine zusätzliche Bewachung" },
-  { id: "ek", name: "Ja — als Einsatzkraft / SMA (EK)" },
-  { id: "fk", name: "Ja — als Führungskraft (FK)" },
 ] as const;
 
 export const BESCHAEFTIGUNGSART_OPTIONS = [

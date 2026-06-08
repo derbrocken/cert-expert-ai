@@ -84,12 +84,16 @@ export type RoleClass = "ek" | "fk" | "verwaltung" | "praktikant" | "subunterneh
 
 /** Normalisierter Bedingungs-Vektor — die einzige Engine-Eingabe. */
 export interface RequirementContext {
-  /** Norm-Klasse (G4) — primärer Engine-Input für die Klassifikation. */
-  roleClass?: RoleClass;
+  /**
+   * Norm-Klassen-Set (EK/FK-Refinement) — primärer Engine-Input. EK und FK sind
+   * frei kombinierbar; Verwaltung/Praktikant/Subunternehmer sind mit EK/FK
+   * kombinierbar (der frühere Doppelrolle-Fall). Pflicht-Set = Vereinigung der
+   * gewählten Klassen. Da FK ⊇ EK ergibt „EK+FK" exakt das FK-Set → keine neue
+   * CL/UE, keine erfundene Pflicht.
+   */
+  roleClasses: RoleClass[];
   /** Org-Titel (Anzeige/Org-Chart), z. B. "Einsatzleitung". Nur für Trigger-Klartext, keine Engine-Wirkung. */
   roleType?: string;
-  /** Doppelrolle-Bewachungs-Niveau: "ek" | "fk". undefined = keine Doppelrolle. Hebt das F3-Gate; "fk" treibt zusätzlich den FK-Zweig (CL-10/CL-20/CL-25). */
-  zusatzBewachungNiveau?: "ek" | "fk";
   /** DE-Labels der Beauftragungen (Ersthelfer, Brandschutzhelfer, …). */
   appointmentLabels: string[];
   employmentType?: string;
@@ -213,20 +217,20 @@ export function mapRoleTypeToRoleClass(roleType?: string): RoleClass | undefined
   return ORG_TITLE_TO_ROLE_CLASS[roleType.trim()];
 }
 
-function isFuehrungsklasse(roleClass?: RoleClass): boolean {
-  return roleClass === "fk";
-}
+const ALL_ROLE_CLASSES: readonly RoleClass[] = [
+  "ek",
+  "fk",
+  "verwaltung",
+  "praktikant",
+  "subunternehmer",
+];
 
-function isVerwaltungsklasse(roleClass?: RoleClass): boolean {
-  return roleClass === "verwaltung";
-}
-
-function isPraktikantklasse(roleClass?: RoleClass): boolean {
-  return roleClass === "praktikant";
-}
-
-function isSubunternehmerklasse(roleClass?: RoleClass): boolean {
-  return roleClass === "subunternehmer";
+/** Type-Guard: ist der Wert eine bekannte Norm-Klasse? */
+export function isRoleClass(value: unknown): value is RoleClass {
+  return (
+    typeof value === "string" &&
+    (ALL_ROLE_CLASSES as readonly string[]).includes(value)
+  );
 }
 
 /**
@@ -235,6 +239,45 @@ function isSubunternehmerklasse(roleClass?: RoleClass): boolean {
  */
 export function isBewachungsklasse(roleClass?: RoleClass): boolean {
   return roleClass === "ek" || roleClass === "fk" || roleClass === "subunternehmer";
+}
+
+/** Enthält das Klassen-Set eine Bewachungsklasse (EK/FK/Subunternehmer)? */
+export function isBewachungsSet(roleClasses: readonly RoleClass[]): boolean {
+  return roleClasses.some(isBewachungsklasse);
+}
+
+/**
+ * EK/FK-Refinement — idempotente Ableitung des Norm-Klassen-Sets aus dem
+ * heutigen Modell. Wird einmal von der Repository-Read-Migration genutzt und
+ * als Presenter-Fallback. Reihenfolge:
+ * 1. Ist `roleClasses` bereits gefüllt → unverändert (nur dedupliziert) zurück
+ *    (idempotent — kein erneutes Einmischen von Legacy-Feldern).
+ * 2. Sonst: aus Einfach-`roleClass` (G4) bzw. Org-Titel ableiten …
+ * 3. … plus altes Doppelrolle-Niveau `zusatzBewachungNiveau` (Slice 3)
+ *    einmischen (`"ek"`/`"fk"` → Liste, dedupliziert).
+ * Keine erfundene Klasse: unbekannte Werte werden verworfen.
+ */
+export function resolveRoleClasses(input: {
+  roleClasses?: readonly unknown[] | null;
+  roleClass?: unknown;
+  zusatzBewachungNiveau?: unknown;
+  roleType?: string | null;
+}): RoleClass[] {
+  const existing = (input.roleClasses ?? []).filter(isRoleClass);
+  if (existing.length > 0) return uniqueRoleClasses(existing);
+
+  const out: RoleClass[] = [];
+  const single = isRoleClass(input.roleClass)
+    ? input.roleClass
+    : mapRoleTypeToRoleClass(input.roleType ?? undefined);
+  if (single) out.push(single);
+  if (input.zusatzBewachungNiveau === "ek") out.push("ek");
+  else if (input.zusatzBewachungNiveau === "fk") out.push("fk");
+  return uniqueRoleClasses(out);
+}
+
+function uniqueRoleClasses(list: RoleClass[]): RoleClass[] {
+  return Array.from(new Set(list));
 }
 
 // ---------------------------------------------------------------------------
@@ -293,18 +336,24 @@ export function deriveRequirements(ctx: RequirementContext): RequirementResult {
   const fristen: Deadline[] = [];
   const hinweise: string[] = [];
 
-  // Slice 3 — Doppelrolle (Verwaltung/GF + zusätzlich Bewachung, Niveau EK/FK).
-  // Das additive Niveau-Feld hebt das F3-Gate (effektive Bewachung) und wählt
-  // das SDL-Niveau. Keine neue Normpflicht — nur Trigger/Niveau (CL-40 / CL-01).
-  const baseBewachung = isBewachungsklasse(ctx.roleClass);
-  const doppelrolle = !!ctx.zusatzBewachungNiveau && !baseBewachung;
-  const bewachung = baseBewachung || !!ctx.zusatzBewachungNiveau; // effektiv
-  // FK-Niveau: Norm-Klasse FK (G4) ODER Doppelrolle "fk".
-  const fuehrung =
-    isFuehrungsklasse(ctx.roleClass) || ctx.zusatzBewachungNiveau === "fk";
-  const verwaltung = isVerwaltungsklasse(ctx.roleClass);
-  const praktikant = isPraktikantklasse(ctx.roleClass);
-  const subunternehmer = isSubunternehmerklasse(ctx.roleClass);
+  // EK/FK-Refinement — Norm-Klassen-Set ist die einzige Klassifikationsquelle.
+  // EK + FK frei kombinierbar; Verwaltung/Praktikant + zusätzliche Bewachung
+  // (ek/fk) = der frühere Doppelrolle-Fall. Pflicht-Set = Vereinigung.
+  // Keine neue Normpflicht — nur Trigger/Niveau (CL-40 / CL-01).
+  const set = ctx.roleClasses ?? [];
+  const hasEK = set.includes("ek");
+  const hasFK = set.includes("fk");
+  const hasVerwaltung = set.includes("verwaltung");
+  const hasPraktikant = set.includes("praktikant");
+  const subunternehmer = set.includes("subunternehmer");
+  const bewachung = hasEK || hasFK || subunternehmer; // effektive Bewachung
+  const fuehrung = hasFK; // FK treibt CL-10/CL-20/CL-25
+  const verwaltung = hasVerwaltung;
+  const praktikant = hasPraktikant;
+  // Doppelrolle = Nicht-Bewachungs-Klasse (Verwaltung/Praktikant) + zusätzlich
+  // EK/FK. Effektives Niveau = FK falls FK gewählt, sonst EK.
+  const doppelrolle = (hasVerwaltung || hasPraktikant) && (hasEK || hasFK);
+  const niveau: "ek" | "fk" = hasFK ? "fk" : "ek";
   // CL-10-Gate (Mark 2026-06-07): FK-Quali-Posten nur bei DIN-SDL/Auftrag.
   const hasDinSdl = ctx.sdlScopes.some(
     (s) => s.startsWith("din1") || s.startsWith("din2"),
@@ -312,13 +361,9 @@ export function deriveRequirements(ctx: RequirementContext): RequirementResult {
   // §4.4 Transparenz: bei Doppelrolle lesbar machen, warum das Set greift.
   const grundrolleLabel =
     ctx.roleType?.trim() ||
-    (ctx.roleClass === "verwaltung"
-      ? "Verwaltung"
-      : ctx.roleClass === "praktikant"
-        ? "Praktikant"
-        : "Grundrolle");
+    (hasVerwaltung ? "Verwaltung" : hasPraktikant ? "Praktikant" : "Grundrolle");
   const bewTrigger = doppelrolle
-    ? `Doppelrolle (${grundrolleLabel} + Bewachung, ${ctx.zusatzBewachungNiveau?.toUpperCase()}-Niveau)`
+    ? `Doppelrolle (${grundrolleLabel} + Bewachung, ${niveau.toUpperCase()}-Niveau)`
     : "Bewachungsrolle";
 
   const ref = parseIsoDate(ctx.referenceDate) ?? new Date();
@@ -494,7 +539,7 @@ export function deriveRequirements(ctx: RequirementContext): RequirementResult {
     });
   }
 
-  if (!ctx.roleClass && !ctx.zusatzBewachungNiveau) {
+  if (set.length === 0) {
     hinweise.push(
       "Keine Norm-Klasse erfasst — Pflicht-Set kann nicht abgeleitet werden. Norm-Klasse (EK/FK/Verwaltung/Praktikant/Subunternehmer) setzen.",
     );
@@ -502,9 +547,9 @@ export function deriveRequirements(ctx: RequirementContext): RequirementResult {
 
   // §4.4 Doppelrollen-Transparenz-Hinweis.
   if (doppelrolle) {
-    const niveau = ctx.zusatzBewachungNiveau === "fk" ? "FK" : "EK";
-    let hinweis = `Doppelrolle erfasst: Grundrolle „${grundrolleLabel}" + zusätzliche Bewachung auf ${niveau}-Niveau → volles Bewachungs-Pflichtset (CL-40) und niveau-richtiges SDL-Schulungssoll angewandt.`;
-    if (ctx.zusatzBewachungNiveau === "fk") {
+    const niveauLabel = niveau === "fk" ? "FK" : "EK";
+    let hinweis = `Doppelrolle erfasst: Grundrolle „${grundrolleLabel}" + zusätzliche Bewachung auf ${niveauLabel}-Niveau → volles Bewachungs-Pflichtset (CL-40) und niveau-richtiges SDL-Schulungssoll angewandt.`;
+    if (niveau === "fk") {
       hinweis +=
         ' FK-Quali (CL-10) ist bei DIN-SDL als „fachlich prüfen" zu belegen.';
     }

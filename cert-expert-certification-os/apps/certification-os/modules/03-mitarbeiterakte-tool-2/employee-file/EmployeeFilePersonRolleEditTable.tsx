@@ -16,13 +16,12 @@ import {
   BESCHAEFTIGUNGSART_OPTIONS,
   DIENSTFAHRZEUG_OPTIONS,
   ORG_TITLE_OPTIONS,
-  ROLE_CLASS_OPTIONS,
-  ROLE_CLASS_LABEL,
+  ROLE_CLASS_LABEL_MULTI,
   ROLLE_TYPE_OPTIONS,
   SDL_SCOPE_CATALOG,
-  ZUSATZ_BEWACHUNG_OPTIONS,
 } from "./employee-stammdaten-options";
-import { mapRoleTypeToRoleClass, type RoleClass } from "./requirement-engine";
+import { resolveRoleClasses, type RoleClass } from "./requirement-engine";
+import { RoleClassSelector } from "./RoleClassSelector";
 import {
   joinFullName,
   splitFullName,
@@ -35,12 +34,6 @@ import { EmployeeFileStatusBadge } from "./EmployeeFileStatusBadge";
 
 const COMPACT_SELECT =
   "[&_button]:rounded-lg [&_button]:py-2 [&_button]:text-sm [&_button]:shadow-none";
-
-const ROLE_CLASS_VALUES = ROLE_CLASS_OPTIONS.map((o) => o.id) as string[];
-
-function asRoleClass(value: string): RoleClass | undefined {
-  return ROLE_CLASS_VALUES.includes(value) ? (value as RoleClass) : undefined;
-}
 
 export interface EmployeeFilePersonRolleEditTableProps {
   employee: Employee;
@@ -59,6 +52,7 @@ export const EmployeeFilePersonRolleEditTable: React.FC<
   EmployeeFilePersonRolleEditTableProps
 > = ({ employee, roles, appointments, companyName, rows, onSave }) => {
   const { vorname, nachname } = splitFullName(employee.fullName);
+  const currentRoleClasses = resolveRoleClasses(employee);
 
   const roleOptions = useMemo(
     () =>
@@ -142,23 +136,14 @@ export const EmployeeFilePersonRolleEditTable: React.FC<
     <ul className="divide-y divide-[#e5e7eb] rounded-lg border border-[#e5e7eb]">
       {rowShell(
         "norm-klasse",
-        ROLE_CLASS_LABEL,
-        <div className={COMPACT_SELECT}>
-          <Select
-            options={[...ROLE_CLASS_OPTIONS]}
-            value={
-              employee.roleClass ??
-              mapRoleTypeToRoleClass(employee.roleType) ??
-              ""
-            }
-            onChange={(v) => patch({ roleClass: asRoleClass(v) })}
-            placeholder="Norm-Klasse wählen…"
-          />
-        </div>,
-        "DIN 77200: EK/FK/Verwaltung/Praktikant/Sub — maßgeblich fürs Pflicht-Set (G4).",
-        employee.roleClass || mapRoleTypeToRoleClass(employee.roleType)
-          ? "vorhanden"
-          : "offen",
+        ROLE_CLASS_LABEL_MULTI,
+        <RoleClassSelector
+          value={currentRoleClasses}
+          onChange={(roleClasses) => patch({ roleClasses })}
+          compact
+        />,
+        "DIN 77200: EK + FK frei kombinierbar; Verwaltung/Praktikant/Sub mit EK/FK kombinierbar (Doppelrolle) — maßgeblich fürs Pflicht-Set.",
+        currentRoleClasses.length > 0 ? "vorhanden" : "offen",
       )}
 
       {rowShell(
@@ -176,8 +161,8 @@ export const EmployeeFilePersonRolleEditTable: React.FC<
                 roleType,
                 // Default-Klasse nur setzen, wenn noch keine Norm-Klasse erfasst
                 // ist (Org-Titel überschreibt eine bewusst gewählte Klasse nicht).
-                ...(def && !employee.roleClass
-                  ? { roleClass: def as RoleClass }
+                ...(def && currentRoleClasses.length === 0
+                  ? { roleClasses: [def as RoleClass] }
                   : {}),
               });
             }}
@@ -185,26 +170,6 @@ export const EmployeeFilePersonRolleEditTable: React.FC<
           />
         </div>,
         "Org-Chart-Titel — keine direkte Engine-Wirkung (G4).",
-      )}
-
-      {rowShell(
-        "zusatz-bewachung",
-        "Zusätzliche Bewachungstätigkeit (Doppelrolle)",
-        <div className={COMPACT_SELECT}>
-          <Select
-            options={[...ZUSATZ_BEWACHUNG_OPTIONS]}
-            value={employee.zusatzBewachungNiveau ?? ""}
-            onChange={(v) =>
-              patch({
-                zusatzBewachungNiveau:
-                  v === "ek" || v === "fk" ? v : undefined,
-              })
-            }
-            placeholder="— keine zusätzliche Bewachung"
-          />
-        </div>,
-        "Für Verwaltung/GF, der/die mit auf Schicht geht. Wendet das volle Bewachungs-Pflichtset an (CL-40); FK-Niveau treibt CL-20/25 + FK-Quali CL-10.",
-        employee.zusatzBewachungNiveau ? "vorhanden" : "nicht erforderlich",
       )}
 
       {rowShell(

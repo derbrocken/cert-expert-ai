@@ -40,7 +40,14 @@ export interface Employee {
   /** IDs of appointment docs to include (filtered by user) */
   selectedAppointmentDocIds: string[];
   // New fields
-  /** Norm-Klasse (G4) — primärer Engine-Input (EK/FK/Verwaltung/Praktikant/Subunternehmer). */
+  /**
+   * Norm-Klassen-Set (EK/FK-Refinement) — primärer Engine-Input. EK + FK frei
+   * kombinierbar; Verwaltung/Praktikant/Subunternehmer mit EK/FK kombinierbar
+   * (früherer Doppelrolle-Fall). Ersetzt das Einfachfeld `roleClass` + das
+   * Doppelrolle-Niveau `zusatzBewachungNiveau` (beide bleiben für Read/Migration).
+   */
+  roleClasses?: RoleClass[];
+  /** @deprecated Einfach-Norm-Klasse (G4) — durch `roleClasses` abgelöst; nur noch Read/Migration. */
   roleClass?: RoleClass;
   /** Org-Titel (Anzeige/Org-Chart) — z. B. SMA, Einsatzleitung. Keine direkte Engine-Wirkung mehr (G4). */
   roleType?: string;
@@ -51,7 +58,7 @@ export interface Employee {
   employeeIDNumber?: string;
   /** When true, GuardIDNumber is used as the Employee ID */
   useGuardAsEmployeeId?: boolean;
-  /** Doppelrolle: Person übt zusätzlich Bewachung aus, auf gewähltem Niveau. "ek" = Einsatzkraft/SMA, "fk" = Führungskraft. undefined = keine Doppelrolle. Trigger für CL-40-Pflichtset. */
+  /** @deprecated Slice-3-Doppelrolle-Niveau — durch `roleClasses` (EK/FK im Set) abgelöst; nur noch Read/Migration. */
   zusatzBewachungNiveau?: "ek" | "fk";
   // Slice 2 — Requirement-Engine inputs
   /** SDL-Katalog-IDs (Geltungsbereich), in denen die Person eingesetzt ist */

@@ -37,16 +37,15 @@ import {
   ZUSATZBESTELLUNGEN_HINT,
 } from "./employee-display-labels";
 import {
-  ROLE_CLASS_OPTIONS,
-  ROLE_CLASS_LABEL,
+  ROLE_CLASS_LABEL_MULTI,
   ORG_TITLE_OPTIONS,
   ORG_TITLE_OTHER_ID,
-  ZUSATZ_BEWACHUNG_OPTIONS,
   BESCHAEFTIGUNGSART_OPTIONS,
   DIENSTFAHRZEUG_OPTIONS,
   SDL_SCOPE_CATALOG,
 } from "./employee-stammdaten-options";
-import { mapRoleTypeToRoleClass } from "./requirement-engine";
+import { resolveRoleClasses } from "./requirement-engine";
+import { RoleClassSelector } from "./RoleClassSelector";
 
 export type EmployeeFormDisplayMode = "full" | "master" | "documents";
 
@@ -88,11 +87,8 @@ export const EmployeeForm: React.FC<EmployeeFormProps> = ({
           startDate: editingEmployee.startDate,
           roleId: editingEmployee.roleId,
           appointmentIds: editingEmployee.appointmentIds,
-          roleClass:
-            editingEmployee.roleClass ??
-            mapRoleTypeToRoleClass(editingEmployee.roleType),
+          roleClasses: resolveRoleClasses(editingEmployee),
           roleType: editingEmployee.roleType || "",
-          zusatzBewachungNiveau: editingEmployee.zusatzBewachungNiveau ?? "",
           sdlScopes: editingEmployee.sdlScopes ?? [],
           drivesServiceVehicle: editingEmployee.drivesServiceVehicle,
           ersteHilfeGueltigBis: editingEmployee.ersteHilfeGueltigBis || "",
@@ -109,9 +105,8 @@ export const EmployeeForm: React.FC<EmployeeFormProps> = ({
           startDate: "",
           roleId: "",
           appointmentIds: [],
-          roleClass: undefined,
+          roleClasses: [],
           roleType: "",
-          zusatzBewachungNiveau: "",
           sdlScopes: [],
           drivesServiceVehicle: undefined,
           ersteHilfeGueltigBis: "",
@@ -152,7 +147,8 @@ export const EmployeeForm: React.FC<EmployeeFormProps> = ({
     setValue("roleType", value);
     // Default-Mapping auf die Norm-Klasse (überschreibbar; Klasse maßgeblich).
     const def = ORG_TITLE_OPTIONS.find((o) => o.id === value)?.defaultClass;
-    if (def) setValue("roleClass", def as RoleClass, { shouldValidate: true });
+    if (def)
+      setValue("roleClasses", [def as RoleClass], { shouldValidate: true });
   };
 
   // Sync Guard ID → Employee ID when checkbox is checked
@@ -336,13 +332,12 @@ export const EmployeeForm: React.FC<EmployeeFormProps> = ({
       appointmentIds: data.appointmentIds,
       selectedRoleDocIds: Array.from(selectedRoleDocIds),
       selectedAppointmentDocIds: Array.from(selectedAppDocIds),
-      // G4 — Norm-Klasse (Engine) + Org-Titel (Anzeige) + Requirement-Felder
-      roleClass: data.roleClass,
+      // EK/FK-Refinement — Norm-Klassen-Set (Engine) + Org-Titel (Anzeige)
+      roleClasses: data.roleClasses,
+      // Legacy-Einfachfelder nicht mehr schreiben (Set ist maßgeblich).
+      roleClass: undefined,
+      zusatzBewachungNiveau: undefined,
       roleType: data.roleType || undefined,
-      zusatzBewachungNiveau:
-        data.zusatzBewachungNiveau === "ek" || data.zusatzBewachungNiveau === "fk"
-          ? data.zusatzBewachungNiveau
-          : undefined,
       sdlScopes: data.sdlScopes ?? [],
       drivesServiceVehicle: data.drivesServiceVehicle,
       ersteHilfeGueltigBis: data.ersteHilfeGueltigBis || undefined,
@@ -368,9 +363,8 @@ export const EmployeeForm: React.FC<EmployeeFormProps> = ({
       startDate: "",
       roleId: "",
       appointmentIds: [],
-      roleClass: undefined,
+      roleClasses: [],
       roleType: "",
-      zusatzBewachungNiveau: "",
       sdlScopes: [],
       drivesServiceVehicle: undefined,
       ersteHilfeGueltigBis: "",
@@ -569,49 +563,45 @@ export const EmployeeForm: React.FC<EmployeeFormProps> = ({
 
                   {displayMode === "master" ? (
                     <>
-                      <div className="grid gap-4 sm:grid-cols-2">
-                        <FormField
-                          label={ROLE_CLASS_LABEL}
-                          name="roleClass"
-                          id="roleClass"
-                          description="DIN 77200: EK (§3.10) vs. FK (§3.11/§4.19.1). Maßgeblich fürs Pflicht-Set."
-                          required
-                          error={errors.roleClass?.message}
-                        >
-                          <Controller
-                            name="roleClass"
-                            control={control}
-                            render={({ field }) => (
-                              <Select
-                                options={[...ROLE_CLASS_OPTIONS]}
-                                value={field.value ?? ""}
-                                onChange={field.onChange}
-                                placeholder="Norm-Klasse wählen…"
-                                hasError={!!errors.roleClass}
-                              />
-                            )}
-                          />
-                        </FormField>
-                        <FormField
-                          label="Org-Titel (optional)"
-                          name="orgTitle"
-                          id="orgTitle"
-                          description="Anzeige/Org-Chart. Setzt eine Default-Norm-Klasse (überschreibbar)."
-                        >
-                          <Select
-                            options={[
-                              ...ORG_TITLE_OPTIONS.map((o) => ({
-                                id: o.id,
-                                name: o.name,
-                              })),
-                              { id: ORG_TITLE_OTHER_ID, name: "andere (Freitext)" },
-                            ]}
-                            value={orgTitleSelectValue}
-                            onChange={handleOrgTitleChange}
-                            placeholder="Org-Titel wählen…"
-                          />
-                        </FormField>
-                      </div>
+                      <FormField
+                        label={ROLE_CLASS_LABEL_MULTI}
+                        name="roleClasses"
+                        id="roleClasses"
+                        description="DIN 77200: EK (§3.10) und FK (§3.11/§4.19.1) frei kombinierbar. Maßgeblich fürs Pflicht-Set."
+                        required
+                        error={errors.roleClasses?.message}
+                      >
+                        <Controller
+                          name="roleClasses"
+                          control={control}
+                          render={({ field }) => (
+                            <RoleClassSelector
+                              value={field.value ?? []}
+                              onChange={field.onChange}
+                              hasError={!!errors.roleClasses}
+                            />
+                          )}
+                        />
+                      </FormField>
+                      <FormField
+                        label="Org-Titel (optional)"
+                        name="orgTitle"
+                        id="orgTitle"
+                        description="Anzeige/Org-Chart. Setzt eine Default-Norm-Klasse (überschreibbar)."
+                      >
+                        <Select
+                          options={[
+                            ...ORG_TITLE_OPTIONS.map((o) => ({
+                              id: o.id,
+                              name: o.name,
+                            })),
+                            { id: ORG_TITLE_OTHER_ID, name: "andere (Freitext)" },
+                          ]}
+                          value={orgTitleSelectValue}
+                          onChange={handleOrgTitleChange}
+                          placeholder="Org-Titel wählen…"
+                        />
+                      </FormField>
                       {orgTitleOther ? (
                         <FormField
                           label="Org-Titel (Freitext)"
@@ -685,25 +675,6 @@ export const EmployeeForm: React.FC<EmployeeFormProps> = ({
                     Einsatz &amp; Anforderungen
                   </legend>
                   <div className="space-y-4 mt-2">
-                    <FormField
-                      label="Zusätzliche Bewachung (Doppelrolle)"
-                      name="zusatzBewachungNiveau"
-                      id="zusatzBewachungNiveau"
-                      description="Für Verwaltung/GF, der/die mit auf Schicht geht — wendet das volle Bewachungs-Set an (CL-40)."
-                    >
-                      <Controller
-                        name="zusatzBewachungNiveau"
-                        control={control}
-                        render={({ field }) => (
-                          <Select
-                            options={[...ZUSATZ_BEWACHUNG_OPTIONS]}
-                            value={field.value ?? ""}
-                            onChange={field.onChange}
-                            placeholder="— keine zusätzliche Bewachung"
-                          />
-                        )}
-                      />
-                    </FormField>
                     <div className="grid gap-4 sm:grid-cols-2">
                       <FormField
                         label="Beschäftigungsart"

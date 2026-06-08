@@ -27,13 +27,13 @@ import {
 } from "./employee-display-labels";
 import {
   BESCHAEFTIGUNGSART_OPTIONS,
-  ROLE_CLASS_LABEL,
-  ROLE_CLASS_OPTIONS,
+  ROLE_CLASS_LABEL_MULTI,
   ROLLE_STAMMDATEN_LABEL,
   ROLLE_TYPE_OPTIONS,
 } from "./employee-stammdaten-options";
 import { joinFullName, splitFullName } from "./employee-file-requirements";
-import { mapRoleTypeToRoleClass } from "./requirement-engine";
+import { resolveRoleClasses } from "./requirement-engine";
+import { RoleClassSelector } from "./RoleClassSelector";
 
 const akteEditSchema = employeeFormSchema.extend({
   vorname: z.string().min(1, "Vorname erforderlich"),
@@ -74,8 +74,7 @@ export const EmployeeFileAkteInlineEdit: React.FC<
       startDate: employee.startDate,
       roleId: employee.roleId,
       appointmentIds: employee.appointmentIds,
-      roleClass:
-        employee.roleClass ?? mapRoleTypeToRoleClass(employee.roleType),
+      roleClasses: resolveRoleClasses(employee),
       roleType: employee.roleType || "",
       employmentType: employee.employmentType || "",
       qualification: employee.qualification || "",
@@ -134,7 +133,9 @@ export const EmployeeFileAkteInlineEdit: React.FC<
       startDate: data.startDate,
       roleId: data.roleId,
       appointmentIds: data.appointmentIds,
-      roleClass: data.roleClass,
+      roleClasses: data.roleClasses,
+      roleClass: undefined,
+      zusatzBewachungNiveau: undefined,
       roleType: data.roleType,
       employmentType: data.employmentType,
       qualification: data.qualification,
@@ -179,21 +180,20 @@ export const EmployeeFileAkteInlineEdit: React.FC<
             />
           </FormField>
           <FormField
-            label={ROLE_CLASS_LABEL}
-            name="roleClass"
+            label={ROLE_CLASS_LABEL_MULTI}
+            name="roleClasses"
             required
-            error={errors.roleClass?.message}
+            error={errors.roleClasses?.message}
           >
             <Controller
-              name="roleClass"
+              name="roleClasses"
               control={control}
               render={({ field }) => (
-                <Select
-                  options={[...ROLE_CLASS_OPTIONS]}
-                  value={field.value ?? ""}
+                <RoleClassSelector
+                  value={field.value ?? []}
                   onChange={field.onChange}
-                  placeholder="Norm-Klasse wählen…"
-                  hasError={!!errors.roleClass}
+                  hasError={!!errors.roleClasses}
+                  compact
                 />
               )}
             />
