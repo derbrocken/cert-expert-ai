@@ -3,9 +3,11 @@
 > Ziel: **stabile HTTPS-URL** für Tally-Webhooks statt wechselndem cloudflared-Tunnel.  
 > App: `cert-expert-certification-os/apps/certification-os/` · Port **3001** (intern)
 
-## ✅ LIVE-STAND (2026-06-07, Planer 4 auf Marks Anweisung)
+## ✅ LIVE-STAND (Redeploy 2026-06-09, Terminal-Planer auf Marks Anweisung)
 
-**App live: https://cos.cert-expert.de** (HTTPS, HTTP→HTTPS-Redirect). Deployter Commit `404d55d`.
+**App live: https://cos.cert-expert.de** (HTTPS, HTTP→HTTPS-Redirect). Deployter Commit **`5280d9c`** (zuvor `404d55d`).
+
+> **Redeploy 2026-06-09:** `404d55d` → `5280d9c`. Enthält: Slice 3/G4 (roleClasses), Queue C (trainingPlan), Lane A (ÖPV CL-29/30), Lane B (Audit-Export XLSX/PDF), „Neue Firma"-Dialog + Firmen-Übersicht-IA. DB-Backup vor Deploy (`/var/backups/certification-os/pre-deploy-2026-06-08-224457.db`), `db push` additiv (nullable Felder, kein Datenverlust), Build + Restart grün, Live-Endpunkte 200, Log fehlerfrei.
 
 | Sache | Wert |
 |-------|------|
