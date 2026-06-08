@@ -1,12 +1,16 @@
 /**
- * Unit-Tests für die Slice-2 Requirement-Engine (DoD-Szenarien).
+ * Unit-Tests für die Slice-2/3 + G4 Requirement-Engine (DoD-Szenarien).
  * Lauffähig ohne Test-Framework via Node-Builtin:
  *   npx tsx --test modules/03-mitarbeiterakte-tool-2/employee-file/requirement-engine.test.ts
+ *
+ * G4: Die Engine klassifiziert nach `roleClass` (Norm-Klasse), nicht mehr nach
+ * Org-Titel-Strings. Org-Titel → Klasse läuft über `mapRoleTypeToRoleClass`.
  */
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import {
   deriveRequirements,
+  mapRoleTypeToRoleClass,
   type EngineRule,
   type RequirementContext,
   type TrainingTarget,
@@ -34,11 +38,31 @@ function target(
   return targets.find((t) => t.id === id);
 }
 
-// 1. SMA Vollzeit, Sachkunde, DIN 77200-1
-test("Szenario 1 — SMA Vollzeit + Sachkunde + DIN 77200-1: §4.1b-Set, 40 UE, keine Teil-2-Schulung", () => {
+// ---------------------------------------------------------------------------
+// G4 — Migrations-Mapping Org-Titel → Norm-Klasse (Single Source of Truth)
+// ---------------------------------------------------------------------------
+test("G4-Mapping — Org-Titel → roleClass (Einsatzleitung = FK, Mark-Gate)", () => {
+  assert.equal(mapRoleTypeToRoleClass("Sicherheitsmitarbeiter"), "ek");
+  assert.equal(mapRoleTypeToRoleClass("Schichtleitung"), "ek");
+  assert.equal(mapRoleTypeToRoleClass("Objektleitung"), "ek");
+  // Mark-Gate 2026-06-08: Einsatzleitung = FK (DIN 77200-1 §3.12/§4.2).
+  assert.equal(mapRoleTypeToRoleClass("Einsatzleitung"), "fk");
+  assert.equal(mapRoleTypeToRoleClass("Führungskraft"), "fk");
+  assert.equal(mapRoleTypeToRoleClass("Geschäftsführung"), "verwaltung");
+  assert.equal(mapRoleTypeToRoleClass("Bürokraft / Verwaltung"), "verwaltung");
+  assert.equal(mapRoleTypeToRoleClass("Praktikant / Azubi"), "praktikant");
+  assert.equal(mapRoleTypeToRoleClass("Subunternehmer-SMA"), "subunternehmer");
+  // Unbekannter/leerer Titel ⇒ keine erfundene Klasse.
+  assert.equal(mapRoleTypeToRoleClass("Hausmeister"), undefined);
+  assert.equal(mapRoleTypeToRoleClass(""), undefined);
+  assert.equal(mapRoleTypeToRoleClass(undefined), undefined);
+});
+
+// 1. EK Vollzeit, Sachkunde, DIN 77200-1
+test("Szenario 1 — EK Vollzeit + Sachkunde + DIN 77200-1: §4.1b-Set, 40 UE, keine Teil-2-Schulung", () => {
   const res = deriveRequirements(
     baseCtx({
-      roleType: "Sicherheitsmitarbeiter",
+      roleClass: "ek",
       employmentType: "Vollzeit",
       qualification: "Sachkundeprüfung nach § 34a GewO",
       sdlScopes: ["din1-grunddienste"],
@@ -57,11 +81,11 @@ test("Szenario 1 — SMA Vollzeit + Sachkunde + DIN 77200-1: §4.1b-Set, 40 UE, 
   assert.equal(res.fristen.find((f) => f.id === "frist-sachkunde"), undefined);
 });
 
-// 2. SMA Teilzeit, Unterrichtung, Eintritt vor 5 Monaten
-test("Szenario 2 — SMA Teilzeit + Unterrichtung + Eintritt vor 5 Mt.: 6-Monats-Frist offen (gelb), 24 UE", () => {
+// 2. EK Teilzeit, Unterrichtung, Eintritt vor 5 Monaten
+test("Szenario 2 — EK Teilzeit + Unterrichtung + Eintritt vor 5 Mt.: 6-Monats-Frist offen (gelb), 24 UE", () => {
   const res = deriveRequirements(
     baseCtx({
-      roleType: "Sicherheitsmitarbeiter",
+      roleClass: "ek",
       employmentType: "Teilzeit",
       qualification: "Unterrichtung nach §34a",
       startDate: "2026-01-07", // 5 Monate vor REF
@@ -80,7 +104,7 @@ test("Szenario 2 — SMA Teilzeit + Unterrichtung + Eintritt vor 5 Mt.: 6-Monats
 test("Szenario 2b — Eintritt vor 8 Monaten: Sachkunde-Frist abgelaufen (rot)", () => {
   const res = deriveRequirements(
     baseCtx({
-      roleType: "Sicherheitsmitarbeiter",
+      roleClass: "ek",
       employmentType: "Teilzeit",
       qualification: "Unterrichtung",
       startDate: "2025-10-07", // 8 Monate vor REF
@@ -94,10 +118,10 @@ test("Szenario 2b — Eintritt vor 8 Monaten: Sachkunde-Frist abgelaufen (rot)",
 });
 
 // 3. EK Veranstaltung bes. SR → 16 UE einmalig (CL-21)
-test("Szenario 3 — EK/SMA Veranstaltung bes. SR: 16 UE einmalig (CL-21) + WB", () => {
+test("Szenario 3 — EK Veranstaltung bes. SR: 16 UE einmalig (CL-21) + WB", () => {
   const res = deriveRequirements(
     baseCtx({
-      roleType: "Sicherheitsmitarbeiter",
+      roleClass: "ek",
       employmentType: "Vollzeit",
       qualification: "Sachkunde",
       sdlScopes: ["din2-veranstaltung"],
@@ -110,10 +134,10 @@ test("Szenario 3 — EK/SMA Veranstaltung bes. SR: 16 UE einmalig (CL-21) + WB",
   assert.ok(target(res.schulungsSoll, "jahres-weiterbildung"));
 });
 
-test("Szenario 3b — Führungskraft Veranstaltung bes. SR: 24 UE einmalig (CL-20)", () => {
+test("Szenario 3b — FK Veranstaltung bes. SR: 24 UE einmalig (CL-20) + FK-Quali", () => {
   const res = deriveRequirements(
     baseCtx({
-      roleType: "Führungskraft",
+      roleClass: "fk",
       sdlScopes: ["din2-veranstaltung"],
     }),
   );
@@ -123,10 +147,11 @@ test("Szenario 3b — Führungskraft Veranstaltung bes. SR: 24 UE einmalig (CL-2
   assert.ok(rule(res.pflichtSet, "q-fk-quali")); // CL-10
 });
 
-// F4: Schichtleitung = EK-Niveau (16 UE), KEIN Auto-FK, aber Bewachungsrolle
-test("Szenario 3c — Schichtleitung Veranstaltung bes. SR: 16 UE (EK, nicht 24), kein FK-Quali, Basis-Set", () => {
+// Org-Titel Schichtleitung → ek (16 UE), KEIN Auto-FK, aber Bewachungsrolle
+test("Szenario 3c — Schichtleitung (→ek) Veranstaltung bes. SR: 16 UE (EK, nicht 24), kein FK-Quali, Basis-Set", () => {
   const res = deriveRequirements(
     baseCtx({
+      roleClass: mapRoleTypeToRoleClass("Schichtleitung"),
       roleType: "Schichtleitung",
       sdlScopes: ["din2-veranstaltung"],
     }),
@@ -140,10 +165,10 @@ test("Szenario 3c — Schichtleitung Veranstaltung bes. SR: 16 UE (EK, nicht 24)
 });
 
 // 4. EK Flüchtling/Asyl → 40 UE (CL-24) + Brandschutz-Hinweis
-test("Szenario 4 — EK/SMA Flüchtling/Asyl: 40 UE (CL-24) + Personalschlüssel-Hinweis", () => {
+test("Szenario 4 — EK Flüchtling/Asyl: 40 UE (CL-24) + Personalschlüssel-Hinweis", () => {
   const res = deriveRequirements(
     baseCtx({
-      roleType: "Sicherheitsmitarbeiter",
+      roleClass: "ek",
       sdlScopes: ["din2-fluechtling-asyl"],
     }),
   );
@@ -154,10 +179,10 @@ test("Szenario 4 — EK/SMA Flüchtling/Asyl: 40 UE (CL-24) + Personalschlüssel
   assert.equal(target(res.schulungsSoll, "sdl-asyl-fk"), undefined);
 });
 
-test("Szenario 4b — Führungskraft Flüchtling/Asyl: +24 UE (= 64) (CL-25)", () => {
+test("Szenario 4b — FK Flüchtling/Asyl: +24 UE (= 64) (CL-25)", () => {
   const res = deriveRequirements(
     baseCtx({
-      roleType: "Führungskraft",
+      roleClass: "fk",
       sdlScopes: ["din2-fluechtling-asyl"],
     }),
   );
@@ -166,23 +191,26 @@ test("Szenario 4b — Führungskraft Flüchtling/Asyl: +24 UE (= 64) (CL-25)", (
   assert.equal(target(res.schulungsSoll, "sdl-asyl-fk")?.clauseId, "CL-25");
 });
 
-// F4: Einsatzleitung Asyl = nur Basis (40), KEIN FK-Aufschlag
-test("Szenario 4c — Einsatzleitung Flüchtling/Asyl: nur Basis 40 UE, kein FK-Aufschlag", () => {
+// G4 Mark-Gate (e): Einsatzleitung = FK → Asyl bekommt FK-Aufschlag (64) + q-fk-quali
+test("Szenario 4c — Einsatzleitung (→fk, G4) Flüchtling/Asyl: 40 + 24 (= 64) UE + FK-Quali (CL-10)", () => {
   const res = deriveRequirements(
     baseCtx({
+      roleClass: mapRoleTypeToRoleClass("Einsatzleitung"),
       roleType: "Einsatzleitung",
       sdlScopes: ["din2-fluechtling-asyl"],
     }),
   );
   assert.equal(target(res.schulungsSoll, "sdl-asyl-base")?.ue, 40);
-  assert.equal(target(res.schulungsSoll, "sdl-asyl-fk"), undefined);
+  assert.equal(target(res.schulungsSoll, "sdl-asyl-fk")?.ue, 24);
+  assert.equal(target(res.schulungsSoll, "sdl-asyl-fk")?.clauseId, "CL-25");
+  assert.equal(rule(res.pflichtSet, "q-fk-quali")?.clauseId, "CL-10");
 });
 
-// 5. Bürokraft → kein §34a-Set; Datenschutz/Verschwiegenheit aktiv
-test("Szenario 5 — Bürokraft: kein §34a-Set, Datenschutz/Verschwiegenheit aktiv", () => {
+// 5. Verwaltung → kein §34a-Set; Datenschutz/Verschwiegenheit aktiv
+test("Szenario 5 — Verwaltung: kein §34a-Set, Datenschutz/Verschwiegenheit aktiv", () => {
   const res = deriveRequirements(
     baseCtx({
-      roleType: "Bürokraft / Verwaltung",
+      roleClass: "verwaltung",
       employmentType: "Vollzeit",
       sdlScopes: [],
     }),
@@ -195,10 +223,10 @@ test("Szenario 5 — Bürokraft: kein §34a-Set, Datenschutz/Verschwiegenheit ak
 });
 
 // F3: Verwaltung mit SDL-Scope ⇒ KEIN schwebendes UE-Soll (an Bewachung gegatet)
-test("Szenario 5b — Bürokraft + SDL Veranstaltung/Objekt/Asyl: kein UE-Schulungssoll (F3-Gate)", () => {
+test("Szenario 5b — Verwaltung + SDL Veranstaltung/Objekt/Asyl: kein UE-Schulungssoll (F3-Gate)", () => {
   const res = deriveRequirements(
     baseCtx({
-      roleType: "Bürokraft / Verwaltung",
+      roleClass: "verwaltung",
       sdlScopes: ["din2-veranstaltung", "din2-objekte", "din2-fluechtling-asyl"],
     }),
   );
@@ -214,7 +242,7 @@ test("Szenario 5b — Bürokraft + SDL Veranstaltung/Objekt/Asyl: kein UE-Schulu
 test("Szenario 6 — fährt Dienstfahrzeug: Fahrer-/UVV-Zeile fachlich prüfen", () => {
   const res = deriveRequirements(
     baseCtx({
-      roleType: "Sicherheitsmitarbeiter",
+      roleClass: "ek",
       drivesServiceVehicle: true,
       sdlScopes: ["din1-grunddienste"],
     }),
@@ -224,14 +252,43 @@ test("Szenario 6 — fährt Dienstfahrzeug: Fahrer-/UVV-Zeile fachlich prüfen",
   assert.equal(r?.clauseId, null);
 });
 
+// G4: Subunternehmer → Bewachungs-Set + Firmen-Quote-Hinweis (CL-42)
+test("Szenario 7 — Subunternehmer: Bewachungs-Set + CL-42-Firmenquote-Hinweis, kein FK-Quali", () => {
+  const res = deriveRequirements(
+    baseCtx({
+      roleClass: "subunternehmer",
+      sdlScopes: ["din1-grunddienste"],
+    }),
+  );
+  assert.ok(rule(res.pflichtSet, "q-34a"));
+  assert.ok(rule(res.pflichtSet, "q-datenschutz"));
+  assert.equal(rule(res.pflichtSet, "q-fk-quali"), undefined);
+  assert.ok(res.hinweise.some((h) => /Subunternehmer/.test(h)));
+});
+
+// G4: Praktikant ohne Doppelrolle → reduziertes Set
+test("Szenario 8 — Praktikant: reduziertes Set (p-reduziert, fachlich prüfen), kein §34a-Set", () => {
+  const res = deriveRequirements(baseCtx({ roleClass: "praktikant" }));
+  assert.equal(rule(res.pflichtSet, "p-reduziert")?.status, "fachlich prüfen");
+  assert.equal(rule(res.pflichtSet, "q-34a"), undefined);
+});
+
+// G4: Keine Norm-Klasse → Hinweis, kein Pflicht-Set
+test("Szenario 9 — keine Norm-Klasse: Hinweis 'Keine Norm-Klasse', kein Pflicht-Set", () => {
+  const res = deriveRequirements(baseCtx({ sdlScopes: ["din1-grunddienste"] }));
+  assert.equal(res.pflichtSet.length, 0);
+  assert.ok(res.hinweise.some((h) => /Keine Norm-Klasse/.test(h)));
+});
+
 // ---------------------------------------------------------------------------
 // Slice 3 — Doppelrolle (zusatzBewachungNiveau EK/FK)
 // ---------------------------------------------------------------------------
 
-// D1: GF + EK-Niveau → volles Bewachungs-Set, keine Verwaltungs-Reduktion, kein FK-Quali
-test("Szenario D1 — GF + zusatzBewachungNiveau 'ek': volles Bewachungs-Set, kein v-34a-na/v-datenschutz, kein q-fk-quali, Doppelrollen-Hinweis", () => {
+// D1: Verwaltung + EK-Niveau → volles Bewachungs-Set, keine Verwaltungs-Reduktion, kein FK-Quali
+test("Szenario D1 — Verwaltung + zusatzBewachungNiveau 'ek': volles Bewachungs-Set, kein v-34a-na/v-datenschutz, kein q-fk-quali, Doppelrollen-Hinweis", () => {
   const res = deriveRequirements(
     baseCtx({
+      roleClass: "verwaltung",
       roleType: "Geschäftsführung",
       zusatzBewachungNiveau: "ek",
     }),
@@ -250,10 +307,11 @@ test("Szenario D1 — GF + zusatzBewachungNiveau 'ek': volles Bewachungs-Set, ke
   assert.ok(res.hinweise.some((h) => /Doppelrolle erfasst/.test(h)));
 });
 
-// D2: GF ohne Niveau (Regression) → nur Verwaltungs-Reduktion, kein §34a-Set
-test("Szenario D2 — GF ohne Niveau (Regression): v-datenschutz/v-verschwiegenheit/v-34a-na, kein q-34a/jahres-weiterbildung", () => {
+// D2: Verwaltung ohne Niveau (Regression) → nur Verwaltungs-Reduktion, kein §34a-Set
+test("Szenario D2 — Verwaltung ohne Niveau (Regression): v-datenschutz/v-verschwiegenheit/v-34a-na, kein q-34a/jahres-weiterbildung", () => {
   const res = deriveRequirements(
     baseCtx({
+      roleClass: "verwaltung",
       roleType: "Geschäftsführung",
     }),
   );
@@ -265,11 +323,11 @@ test("Szenario D2 — GF ohne Niveau (Regression): v-datenschutz/v-verschwiegenh
   assert.equal(res.hinweise.some((h) => /Doppelrolle erfasst/.test(h)), false);
 });
 
-// D3: Bürokraft + EK + Veranstaltung → 16 UE (EK), kein FK, kein FK-Quali
-test("Szenario D3 — Bürokraft + 'ek' + Veranstaltung bes. SR: sdl-veranstaltung-ek (16 UE, CL-21), kein FK", () => {
+// D3: Verwaltung + EK + Veranstaltung → 16 UE (EK), kein FK, kein FK-Quali
+test("Szenario D3 — Verwaltung + 'ek' + Veranstaltung bes. SR: sdl-veranstaltung-ek (16 UE, CL-21), kein FK", () => {
   const res = deriveRequirements(
     baseCtx({
-      roleType: "Bürokraft / Verwaltung",
+      roleClass: "verwaltung",
       zusatzBewachungNiveau: "ek",
       sdlScopes: ["din2-veranstaltung"],
     }),
@@ -280,11 +338,11 @@ test("Szenario D3 — Bürokraft + 'ek' + Veranstaltung bes. SR: sdl-veranstaltu
   assert.equal(rule(res.pflichtSet, "q-fk-quali"), undefined);
 });
 
-// D4: Bürokraft + FK + Veranstaltung + Asyl → 24 UE FK + Asyl 40+24=64 + FK-Quali (DIN-SDL)
-test("Szenario D4 — Bürokraft + 'fk' + Veranstaltung + Asyl: sdl-veranstaltung-fk (24, CL-20) + sdl-asyl-base (40) + sdl-asyl-fk (24, CL-25) + q-fk-quali (CL-10)", () => {
+// D4: Verwaltung + FK + Veranstaltung + Asyl → 24 UE FK + Asyl 40+24=64 + FK-Quali (DIN-SDL)
+test("Szenario D4 — Verwaltung + 'fk' + Veranstaltung + Asyl: sdl-veranstaltung-fk (24, CL-20) + sdl-asyl-base (40) + sdl-asyl-fk (24, CL-25) + q-fk-quali (CL-10)", () => {
   const res = deriveRequirements(
     baseCtx({
-      roleType: "Bürokraft / Verwaltung",
+      roleClass: "verwaltung",
       zusatzBewachungNiveau: "fk",
       sdlScopes: ["din2-veranstaltung", "din2-fluechtling-asyl"],
     }),
@@ -299,11 +357,11 @@ test("Szenario D4 — Bürokraft + 'fk' + Veranstaltung + Asyl: sdl-veranstaltun
   assert.equal(rule(res.pflichtSet, "q-fk-quali")?.status, "fachlich prüfen");
 });
 
-// D5: SMA + EK = idempotent (echte Bewachungsrolle, Niveau ist No-op)
-test("Szenario D5 — SMA + 'ek': identisch zu SMA ohne Niveau (Idempotenz, kein doppeltes Set)", () => {
+// D5: EK + EK-Niveau = idempotent (echte Bewachungsklasse, Niveau ist No-op)
+test("Szenario D5 — EK + 'ek': identisch zu EK ohne Niveau (Idempotenz, kein doppeltes Set)", () => {
   const withNiveau = deriveRequirements(
     baseCtx({
-      roleType: "Sicherheitsmitarbeiter",
+      roleClass: "ek",
       employmentType: "Vollzeit",
       qualification: "Sachkunde",
       sdlScopes: ["din1-grunddienste"],
@@ -312,7 +370,7 @@ test("Szenario D5 — SMA + 'ek': identisch zu SMA ohne Niveau (Idempotenz, kein
   );
   const without = deriveRequirements(
     baseCtx({
-      roleType: "Sicherheitsmitarbeiter",
+      roleClass: "ek",
       employmentType: "Vollzeit",
       qualification: "Sachkunde",
       sdlScopes: ["din1-grunddienste"],
@@ -326,7 +384,7 @@ test("Szenario D5 — SMA + 'ek': identisch zu SMA ohne Niveau (Idempotenz, kein
     withNiveau.schulungsSoll.map((t) => t.id).sort().join(","),
     without.schulungsSoll.map((t) => t.id).sort().join(","),
   );
-  // SMA ist baseBewachung ⇒ keine Doppelrolle (kein Doppelrollen-Hinweis)
+  // EK ist baseBewachung ⇒ keine Doppelrolle (kein Doppelrollen-Hinweis)
   assert.equal(withNiveau.hinweise.some((h) => /Doppelrolle erfasst/.test(h)), false);
 });
 
@@ -334,7 +392,7 @@ test("Szenario D5 — SMA + 'ek': identisch zu SMA ohne Niveau (Idempotenz, kein
 test("Szenario D6 — Praktikant + 'ek': volles Bewachungs-Set, kein p-reduziert", () => {
   const res = deriveRequirements(
     baseCtx({
-      roleType: "Praktikant / Azubi",
+      roleClass: "praktikant",
       zusatzBewachungNiveau: "ek",
     }),
   );
@@ -344,21 +402,19 @@ test("Szenario D6 — Praktikant + 'ek': volles Bewachungs-Set, kein p-reduziert
 });
 
 // D7: CL-10-Gate — FK-Quali nur bei DIN-SDL (beide FK-Wege)
-test("Szenario D7 — CL-10-Gate: Führungskraft/Doppelrolle-fk ohne DIN-SDL ⇒ kein q-fk-quali", () => {
-  // (a) echte Grundrolle Führungskraft ohne SDL
-  const fkNoSdl = deriveRequirements(
-    baseCtx({ roleType: "Führungskraft" }),
-  );
+test("Szenario D7 — CL-10-Gate: FK/Doppelrolle-fk ohne DIN-SDL ⇒ kein q-fk-quali", () => {
+  // (a) Norm-Klasse FK ohne SDL
+  const fkNoSdl = deriveRequirements(baseCtx({ roleClass: "fk" }));
   assert.equal(rule(fkNoSdl.pflichtSet, "q-fk-quali"), undefined);
-  // (a') Führungskraft nur mit non-din (kein DIN)
+  // (a') FK nur mit non-din (kein DIN)
   const fkNonDin = deriveRequirements(
-    baseCtx({ roleType: "Führungskraft", sdlScopes: ["non-din"] }),
+    baseCtx({ roleClass: "fk", sdlScopes: ["non-din"] }),
   );
   assert.equal(rule(fkNonDin.pflichtSet, "q-fk-quali"), undefined);
   // (b) Doppelrolle-fk ohne DIN-SDL
   const doppelNoSdl = deriveRequirements(
     baseCtx({
-      roleType: "Bürokraft / Verwaltung",
+      roleClass: "verwaltung",
       zusatzBewachungNiveau: "fk",
     }),
   );
@@ -368,12 +424,12 @@ test("Szenario D7 — CL-10-Gate: Führungskraft/Doppelrolle-fk ohne DIN-SDL ⇒
 // Invariante: keine erfundene Pflicht — clauseId null ⇒ status fachlich prüfen / nicht erforderlich
 test("Invariante — jede Regel ohne clauseId ist 'fachlich prüfen' oder 'nicht erforderlich'", () => {
   const scenarios: RequirementContext[] = [
-    baseCtx({ roleType: "Sicherheitsmitarbeiter", sdlScopes: ["din1-grunddienste"] }),
-    baseCtx({ roleType: "Führungskraft", sdlScopes: ["din2-veranstaltung", "din2-objekte"] }),
-    baseCtx({ roleType: "Sicherheitsmitarbeiter", sdlScopes: ["din2-fluechtling-asyl", "din2-oepv", "non-din"], drivesServiceVehicle: true, appointmentLabels: ["SiBe / Sicherheitsbeauftragter"] }),
-    baseCtx({ roleType: "Bürokraft / Verwaltung" }),
-    baseCtx({ roleType: "Praktikant / Azubi" }),
-    baseCtx({ roleType: "Subunternehmer-SMA", appointmentLabels: ["Ersthelfer", "Brandschutzhelfer", "Interventionskraft"] }),
+    baseCtx({ roleClass: "ek", sdlScopes: ["din1-grunddienste"] }),
+    baseCtx({ roleClass: "fk", sdlScopes: ["din2-veranstaltung", "din2-objekte"] }),
+    baseCtx({ roleClass: "ek", sdlScopes: ["din2-fluechtling-asyl", "din2-oepv", "non-din"], drivesServiceVehicle: true, appointmentLabels: ["SiBe / Sicherheitsbeauftragter"] }),
+    baseCtx({ roleClass: "verwaltung" }),
+    baseCtx({ roleClass: "praktikant" }),
+    baseCtx({ roleClass: "subunternehmer", appointmentLabels: ["Ersthelfer", "Brandschutzhelfer", "Interventionskraft"] }),
   ];
   for (const ctx of scenarios) {
     const res = deriveRequirements(ctx);

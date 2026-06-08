@@ -73,8 +73,20 @@ export interface RequirementResult {
   hinweise: string[];
 }
 
+/**
+ * Norm-Klassifikation (G4): primärer Engine-Input. DIN 77200 kennt als
+ * Qualifikationsachse nur EK (§3.10) vs. FK (§3.11/§4.19.1); Verwaltung
+ * (keine Bewachung, §4.1 b), Praktikant (reduziert) und Subunternehmer
+ * (§4.13/CL-42) ergänzen die Markt-Realität. Org-Titel (SMA, Schichtleitung …)
+ * sind Business-Schicht und werden NICHT mehr direkt von der Engine gelesen.
+ */
+export type RoleClass = "ek" | "fk" | "verwaltung" | "praktikant" | "subunternehmer";
+
 /** Normalisierter Bedingungs-Vektor — die einzige Engine-Eingabe. */
 export interface RequirementContext {
+  /** Norm-Klasse (G4) — primärer Engine-Input für die Klassifikation. */
+  roleClass?: RoleClass;
+  /** Org-Titel (Anzeige/Org-Chart), z. B. "Einsatzleitung". Nur für Trigger-Klartext, keine Engine-Wirkung. */
   roleType?: string;
   /** Doppelrolle-Bewachungs-Niveau: "ek" | "fk". undefined = keine Doppelrolle. Hebt das F3-Gate; "fk" treibt zusätzlich den FK-Zweig (CL-10/CL-20/CL-25). */
   zusatzBewachungNiveau?: "ek" | "fk";
@@ -167,55 +179,62 @@ export function sdlScopeLabel(id: string): string {
 }
 
 // ---------------------------------------------------------------------------
-// Rollen-Klassifikation (roleType, nicht roleId-Heuristik)
+// Rollen-Klassifikation (G4: roleClass-Norm-Klasse, nicht Org-Titel-Heuristik)
 // ---------------------------------------------------------------------------
 
-// F4 (Mark, 2026-06-07): NUR `Führungskraft` zählt als DIN-FK (24 UE §5.3 +
-// FK-Quali CL-10). Einsatz-/Objekt-/Schicht­leitung sind operative Leitung auf
-// EK/SMA-Niveau (16 UE), KEIN Auto-FK — bleiben aber Bewachungsrollen mit
-// vollem Basis-Pflichtset. Upgrade auf FK = Phase 2 (FK-Schulung absolviert →
-// `roleType` auf "Führungskraft" setzen), kein Sondercode hier.
-const FUEHRUNG_ROLES = new Set(["Führungskraft"]);
+/**
+ * G4-Migration/Mapping: Org-Titel (Legacy-`roleType`) → Norm-Klasse `roleClass`.
+ * Single Source of Truth — genutzt von der idempotenten Read-Migration im
+ * Repository und vom Presenter-Fallback (`buildRequirementContext`).
+ *
+ * Mark-Gate (2026-06-08): **Einsatzleitung = FK** (DIN 77200-1 §3.12/§4.2:
+ * Einsatzleitung führt operativ, enthält mind. eine FK). Objekt-/Schichtleitung
+ * **bleiben EK** (Mark: „nur Einsatzleitung = FK"). Keine titelgebundene
+ * FK-Quali-Pflicht erfunden — FK hängt weiter an §4.19.1.
+ */
+const ORG_TITLE_TO_ROLE_CLASS: Record<string, RoleClass> = {
+  Sicherheitsmitarbeiter: "ek",
+  Schichtleitung: "ek",
+  Objektleitung: "ek",
+  Einsatzleitung: "fk",
+  Führungskraft: "fk",
+  Geschäftsführung: "verwaltung",
+  "Bürokraft / Verwaltung": "verwaltung",
+  "Praktikant / Azubi": "praktikant",
+  "Subunternehmer-SMA": "subunternehmer",
+};
 
-/** Leitungsrollen unterhalb der DIN-FK — Bewachung, EK-Niveau (kein Auto-FK). */
-const LEITUNG_BEWACHUNG_ROLES = new Set([
-  "Einsatzleitung",
-  "Objektleitung",
-  "Schichtleitung",
-]);
-
-const VERWALTUNG_ROLES = new Set(["Bürokraft / Verwaltung", "Geschäftsführung"]);
-
-function isFuehrungskraft(roleType?: string): boolean {
-  return !!roleType && FUEHRUNG_ROLES.has(roleType);
+/**
+ * Org-Titel → Norm-Klasse. Unbekannter/leerer Titel ⇒ `undefined` (keine
+ * erfundene Klasse) — die Engine liefert dann „Keine Rolle erfasst".
+ */
+export function mapRoleTypeToRoleClass(roleType?: string): RoleClass | undefined {
+  if (!roleType) return undefined;
+  return ORG_TITLE_TO_ROLE_CLASS[roleType.trim()];
 }
 
-function isVerwaltung(roleType?: string): boolean {
-  return !!roleType && VERWALTUNG_ROLES.has(roleType);
+function isFuehrungsklasse(roleClass?: RoleClass): boolean {
+  return roleClass === "fk";
 }
 
-function isPraktikant(roleType?: string): boolean {
-  return roleType === "Praktikant / Azubi";
+function isVerwaltungsklasse(roleClass?: RoleClass): boolean {
+  return roleClass === "verwaltung";
 }
 
-function isSubunternehmer(roleType?: string): boolean {
-  return roleType === "Subunternehmer-SMA";
+function isPraktikantklasse(roleClass?: RoleClass): boolean {
+  return roleClass === "praktikant";
+}
+
+function isSubunternehmerklasse(roleClass?: RoleClass): boolean {
+  return roleClass === "subunternehmer";
 }
 
 /**
- * Person mit Bewachungsrolle ⇒ "qualifiziert"-Pflichtset (CL-40).
- * EL/OL/SL explizit aufnehmen (nicht über `isFuehrungskraft` ableiten), damit
- * sie das Basis-Set bekommen, ohne als FK zu zählen.
+ * Norm-Klasse mit Bewachungstätigkeit ⇒ "qualifiziert"-Pflichtset (CL-40):
+ * EK, FK und Subunternehmer. Verwaltung/Praktikant tragen keine Bewachung.
  */
-export function isBewachungsrolle(roleType?: string): boolean {
-  if (!roleType) return false;
-  if (isVerwaltung(roleType) || isPraktikant(roleType)) return false;
-  return (
-    roleType === "Sicherheitsmitarbeiter" ||
-    isSubunternehmer(roleType) ||
-    isFuehrungskraft(roleType) ||
-    LEITUNG_BEWACHUNG_ROLES.has(roleType)
-  );
+export function isBewachungsklasse(roleClass?: RoleClass): boolean {
+  return roleClass === "ek" || roleClass === "fk" || roleClass === "subunternehmer";
 }
 
 // ---------------------------------------------------------------------------
@@ -277,22 +296,29 @@ export function deriveRequirements(ctx: RequirementContext): RequirementResult {
   // Slice 3 — Doppelrolle (Verwaltung/GF + zusätzlich Bewachung, Niveau EK/FK).
   // Das additive Niveau-Feld hebt das F3-Gate (effektive Bewachung) und wählt
   // das SDL-Niveau. Keine neue Normpflicht — nur Trigger/Niveau (CL-40 / CL-01).
-  const baseBewachung = isBewachungsrolle(ctx.roleType);
+  const baseBewachung = isBewachungsklasse(ctx.roleClass);
   const doppelrolle = !!ctx.zusatzBewachungNiveau && !baseBewachung;
   const bewachung = baseBewachung || !!ctx.zusatzBewachungNiveau; // effektiv
-  // FK-Niveau: echte Grundrolle Führungskraft (F4) ODER Doppelrolle "fk".
+  // FK-Niveau: Norm-Klasse FK (G4) ODER Doppelrolle "fk".
   const fuehrung =
-    isFuehrungskraft(ctx.roleType) || ctx.zusatzBewachungNiveau === "fk";
-  const verwaltung = isVerwaltung(ctx.roleType);
-  const praktikant = isPraktikant(ctx.roleType);
-  const subunternehmer = isSubunternehmer(ctx.roleType);
+    isFuehrungsklasse(ctx.roleClass) || ctx.zusatzBewachungNiveau === "fk";
+  const verwaltung = isVerwaltungsklasse(ctx.roleClass);
+  const praktikant = isPraktikantklasse(ctx.roleClass);
+  const subunternehmer = isSubunternehmerklasse(ctx.roleClass);
   // CL-10-Gate (Mark 2026-06-07): FK-Quali-Posten nur bei DIN-SDL/Auftrag.
   const hasDinSdl = ctx.sdlScopes.some(
     (s) => s.startsWith("din1") || s.startsWith("din2"),
   );
   // §4.4 Transparenz: bei Doppelrolle lesbar machen, warum das Set greift.
+  const grundrolleLabel =
+    ctx.roleType?.trim() ||
+    (ctx.roleClass === "verwaltung"
+      ? "Verwaltung"
+      : ctx.roleClass === "praktikant"
+        ? "Praktikant"
+        : "Grundrolle");
   const bewTrigger = doppelrolle
-    ? `Doppelrolle (${ctx.roleType} + Bewachung, ${ctx.zusatzBewachungNiveau?.toUpperCase()}-Niveau)`
+    ? `Doppelrolle (${grundrolleLabel} + Bewachung, ${ctx.zusatzBewachungNiveau?.toUpperCase()}-Niveau)`
     : "Bewachungsrolle";
 
   const ref = parseIsoDate(ctx.referenceDate) ?? new Date();
@@ -468,16 +494,16 @@ export function deriveRequirements(ctx: RequirementContext): RequirementResult {
     });
   }
 
-  if (!ctx.roleType) {
+  if (!ctx.roleClass && !ctx.zusatzBewachungNiveau) {
     hinweise.push(
-      "Keine Rolle erfasst — Pflicht-Set kann nicht abgeleitet werden. Rolle setzen.",
+      "Keine Norm-Klasse erfasst — Pflicht-Set kann nicht abgeleitet werden. Norm-Klasse (EK/FK/Verwaltung/Praktikant/Subunternehmer) setzen.",
     );
   }
 
   // §4.4 Doppelrollen-Transparenz-Hinweis.
   if (doppelrolle) {
     const niveau = ctx.zusatzBewachungNiveau === "fk" ? "FK" : "EK";
-    let hinweis = `Doppelrolle erfasst: Grundrolle „${ctx.roleType}" + zusätzliche Bewachung auf ${niveau}-Niveau → volles Bewachungs-Pflichtset (CL-40) und niveau-richtiges SDL-Schulungssoll angewandt.`;
+    let hinweis = `Doppelrolle erfasst: Grundrolle „${grundrolleLabel}" + zusätzliche Bewachung auf ${niveau}-Niveau → volles Bewachungs-Pflichtset (CL-40) und niveau-richtiges SDL-Schulungssoll angewandt.`;
     if (ctx.zusatzBewachungNiveau === "fk") {
       hinweis +=
         ' FK-Quali (CL-10) ist bei DIN-SDL als „fachlich prüfen" zu belegen.';

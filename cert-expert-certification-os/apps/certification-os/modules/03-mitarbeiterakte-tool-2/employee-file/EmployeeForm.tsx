@@ -26,17 +26,27 @@ import {
   Check,
   Briefcase,
   Calendar,
-  Clock,
   Shield,
   Hash,
 } from "lucide-react";
-import type { Employee, Role, Appointment } from "@/lib/types/employee";
+import type { Employee, Role, Appointment, RoleClass } from "@/lib/types/employee";
 import {
   appointmentLabelDe,
   roleLabelDe,
   GRUNDROLLE_HINT,
   ZUSATZBESTELLUNGEN_HINT,
 } from "./employee-display-labels";
+import {
+  ROLE_CLASS_OPTIONS,
+  ROLE_CLASS_LABEL,
+  ORG_TITLE_OPTIONS,
+  ORG_TITLE_OTHER_ID,
+  ZUSATZ_BEWACHUNG_OPTIONS,
+  BESCHAEFTIGUNGSART_OPTIONS,
+  DIENSTFAHRZEUG_OPTIONS,
+  SDL_SCOPE_CATALOG,
+} from "./employee-stammdaten-options";
+import { mapRoleTypeToRoleClass } from "./requirement-engine";
 
 export type EmployeeFormDisplayMode = "full" | "master" | "documents";
 
@@ -78,8 +88,17 @@ export const EmployeeForm: React.FC<EmployeeFormProps> = ({
           startDate: editingEmployee.startDate,
           roleId: editingEmployee.roleId,
           appointmentIds: editingEmployee.appointmentIds,
+          roleClass:
+            editingEmployee.roleClass ??
+            mapRoleTypeToRoleClass(editingEmployee.roleType),
           roleType: editingEmployee.roleType || "",
-          trainingHours: editingEmployee.trainingHours || "",
+          zusatzBewachungNiveau: editingEmployee.zusatzBewachungNiveau ?? "",
+          sdlScopes: editingEmployee.sdlScopes ?? [],
+          drivesServiceVehicle: editingEmployee.drivesServiceVehicle,
+          ersteHilfeGueltigBis: editingEmployee.ersteHilfeGueltigBis || "",
+          brandschutzGueltigBis: editingEmployee.brandschutzGueltigBis || "",
+          employmentType: editingEmployee.employmentType || "",
+          qualification: editingEmployee.qualification || "",
           guardIDNumber: editingEmployee.guardIDNumber || "",
           employeeIDNumber: editingEmployee.employeeIDNumber || "",
           useGuardAsEmployeeId: editingEmployee.useGuardAsEmployeeId || false,
@@ -90,8 +109,15 @@ export const EmployeeForm: React.FC<EmployeeFormProps> = ({
           startDate: "",
           roleId: "",
           appointmentIds: [],
+          roleClass: undefined,
           roleType: "",
-          trainingHours: "",
+          zusatzBewachungNiveau: "",
+          sdlScopes: [],
+          drivesServiceVehicle: undefined,
+          ersteHilfeGueltigBis: "",
+          brandschutzGueltigBis: "",
+          employmentType: "",
+          qualification: "",
           guardIDNumber: "",
           employeeIDNumber: "",
           useGuardAsEmployeeId: false,
@@ -102,6 +128,32 @@ export const EmployeeForm: React.FC<EmployeeFormProps> = ({
   const selectedAppointmentIds = watch("appointmentIds");
   const useGuardAsEmployeeId = watch("useGuardAsEmployeeId");
   const guardIDNumber = watch("guardIDNumber");
+
+  // G4 — Org-Titel: Dropdown mit bekannten Titeln + Option „andere (Freitext)".
+  const watchedRoleType = watch("roleType");
+  const [orgTitleOther, setOrgTitleOther] = useState(
+    () =>
+      !!editingEmployee?.roleType &&
+      !ORG_TITLE_OPTIONS.some((o) => o.id === editingEmployee.roleType),
+  );
+  const orgTitleSelectValue = orgTitleOther
+    ? ORG_TITLE_OTHER_ID
+    : ORG_TITLE_OPTIONS.some((o) => o.id === watchedRoleType)
+      ? (watchedRoleType ?? "")
+      : "";
+
+  const handleOrgTitleChange = (value: string) => {
+    if (value === ORG_TITLE_OTHER_ID) {
+      setOrgTitleOther(true);
+      setValue("roleType", "");
+      return;
+    }
+    setOrgTitleOther(false);
+    setValue("roleType", value);
+    // Default-Mapping auf die Norm-Klasse (überschreibbar; Klasse maßgeblich).
+    const def = ORG_TITLE_OPTIONS.find((o) => o.id === value)?.defaultClass;
+    if (def) setValue("roleClass", def as RoleClass, { shouldValidate: true });
+  };
 
   // Sync Guard ID → Employee ID when checkbox is checked
   useEffect(() => {
@@ -273,6 +325,9 @@ export const EmployeeForm: React.FC<EmployeeFormProps> = ({
       : data.employeeIDNumber || "";
 
     const employee: Employee = {
+      // Bestehende Felder erhalten (z. B. Ist-UE, einmaligIstUE) — beim
+      // Speichern aus dem Generator-Tab darf nichts verloren gehen.
+      ...(editingEmployee ?? {}),
       id: editingEmployee?.id || crypto.randomUUID(),
       fullName: data.fullName,
       birthday: data.birthday,
@@ -281,8 +336,19 @@ export const EmployeeForm: React.FC<EmployeeFormProps> = ({
       appointmentIds: data.appointmentIds,
       selectedRoleDocIds: Array.from(selectedRoleDocIds),
       selectedAppointmentDocIds: Array.from(selectedAppDocIds),
-      roleType: data.roleType,
-      trainingHours: data.trainingHours,
+      // G4 — Norm-Klasse (Engine) + Org-Titel (Anzeige) + Requirement-Felder
+      roleClass: data.roleClass,
+      roleType: data.roleType || undefined,
+      zusatzBewachungNiveau:
+        data.zusatzBewachungNiveau === "ek" || data.zusatzBewachungNiveau === "fk"
+          ? data.zusatzBewachungNiveau
+          : undefined,
+      sdlScopes: data.sdlScopes ?? [],
+      drivesServiceVehicle: data.drivesServiceVehicle,
+      ersteHilfeGueltigBis: data.ersteHilfeGueltigBis || undefined,
+      brandschutzGueltigBis: data.brandschutzGueltigBis || undefined,
+      employmentType: data.employmentType || undefined,
+      qualification: data.qualification || undefined,
       guardIDNumber: data.guardIDNumber,
       employeeIDNumber: effectiveEmployeeId,
       useGuardAsEmployeeId: data.useGuardAsEmployeeId,
@@ -302,12 +368,20 @@ export const EmployeeForm: React.FC<EmployeeFormProps> = ({
       startDate: "",
       roleId: "",
       appointmentIds: [],
+      roleClass: undefined,
       roleType: "",
-      trainingHours: "",
+      zusatzBewachungNiveau: "",
+      sdlScopes: [],
+      drivesServiceVehicle: undefined,
+      ersteHilfeGueltigBis: "",
+      brandschutzGueltigBis: "",
+      employmentType: "",
+      qualification: "",
       guardIDNumber: "",
       employeeIDNumber: "",
       useGuardAsEmployeeId: false,
     });
+    setOrgTitleOther(false);
     setSelectedRoleDocIds(new Set());
     setSelectedAppDocIds(new Set());
     onCancelEdit?.();
@@ -460,12 +534,12 @@ export const EmployeeForm: React.FC<EmployeeFormProps> = ({
                 </div>
               </fieldset>
 
-              {/* ═══ Role & Training ═══ */}
+              {/* ═══ Rolle & Norm-Klasse ═══ */}
               <fieldset className="rounded-xl border border-gray-200 p-5 bg-white/60">
                 <legend className="flex items-center gap-2 px-2 text-sm font-bold text-gray-700 uppercase tracking-wider">
                   <Briefcase className="h-4 w-4 text-indigo-500" />
                   {displayMode === "master"
-                    ? "Beschäftigung / Vertrag"
+                    ? "Rolle & Norm-Klasse"
                     : "Role & Training"}
                 </legend>
                 <div className="space-y-4 mt-2">
@@ -492,16 +566,96 @@ export const EmployeeForm: React.FC<EmployeeFormProps> = ({
                       />
                     </FormField>
                   ) : null}
-                  <div className="grid gap-4 sm:grid-cols-2">
+
+                  {displayMode === "master" ? (
+                    <>
+                      <div className="grid gap-4 sm:grid-cols-2">
+                        <FormField
+                          label={ROLE_CLASS_LABEL}
+                          name="roleClass"
+                          id="roleClass"
+                          description="DIN 77200: EK (§3.10) vs. FK (§3.11/§4.19.1). Maßgeblich fürs Pflicht-Set."
+                          required
+                          error={errors.roleClass?.message}
+                        >
+                          <Controller
+                            name="roleClass"
+                            control={control}
+                            render={({ field }) => (
+                              <Select
+                                options={[...ROLE_CLASS_OPTIONS]}
+                                value={field.value ?? ""}
+                                onChange={field.onChange}
+                                placeholder="Norm-Klasse wählen…"
+                                hasError={!!errors.roleClass}
+                              />
+                            )}
+                          />
+                        </FormField>
+                        <FormField
+                          label="Org-Titel (optional)"
+                          name="orgTitle"
+                          id="orgTitle"
+                          description="Anzeige/Org-Chart. Setzt eine Default-Norm-Klasse (überschreibbar)."
+                        >
+                          <Select
+                            options={[
+                              ...ORG_TITLE_OPTIONS.map((o) => ({
+                                id: o.id,
+                                name: o.name,
+                              })),
+                              { id: ORG_TITLE_OTHER_ID, name: "andere (Freitext)" },
+                            ]}
+                            value={orgTitleSelectValue}
+                            onChange={handleOrgTitleChange}
+                            placeholder="Org-Titel wählen…"
+                          />
+                        </FormField>
+                      </div>
+                      {orgTitleOther ? (
+                        <FormField
+                          label="Org-Titel (Freitext)"
+                          name="roleType"
+                          id="roleType"
+                          description="Frei benannter Org-Titel — keine Engine-Wirkung."
+                        >
+                          <Input
+                            {...register("roleType")}
+                            id="roleType"
+                            placeholder="z. B. Teamleiter Empfang"
+                            leftIcon={<Briefcase className="h-4 w-4" />}
+                          />
+                        </FormField>
+                      ) : null}
+                      <FormField
+                        label="Dokumenten-Vorlage (Grundrolle)"
+                        name="roleId"
+                        id="roleId"
+                        description="Steuert die Generator-Dokumentenpalette (Core-Vorlagen)."
+                        required
+                        error={errors.roleId?.message}
+                      >
+                        <Controller
+                          name="roleId"
+                          control={control}
+                          render={({ field }) => (
+                            <Select
+                              options={roleOptions}
+                              value={field.value}
+                              onChange={field.onChange}
+                              placeholder="Vorlagen-Rolle wählen…"
+                              hasError={!!errors.roleId}
+                            />
+                          )}
+                        />
+                      </FormField>
+                    </>
+                  ) : (
                     <FormField
-                      label={displayMode === "master" ? "Grundrolle" : "Role"}
+                      label="Role"
                       name="roleId"
                       id="roleId"
-                      description={
-                        displayMode === "master"
-                          ? GRUNDROLLE_HINT
-                          : "{RoleName}"
-                      }
+                      description="{RoleName}"
                       required
                       error={errors.roleId?.message}
                     >
@@ -519,35 +673,163 @@ export const EmployeeForm: React.FC<EmployeeFormProps> = ({
                         )}
                       />
                     </FormField>
-                    <FormField
-                      description="{RoleType} placeholder"
-                      label="Role Type"
-                      name="roleType"
-                      id="roleType"
-                    >
-                      <Input
-                        {...register("roleType")}
-                        id="roleType"
-                        placeholder="e.g. Senior, Junior"
-                        leftIcon={<Briefcase className="h-4 w-4" />}
-                      />
-                    </FormField>
-                  </div>
-                  <FormField
-                    label="Training Hours"
-                    name="trainingHours"
-                    id="trainingHours"
-                    description="{TrainingHours} placeholder"
-                  >
-                    <Input
-                      {...register("trainingHours")}
-                      id="trainingHours"
-                      placeholder="e.g. 40"
-                      leftIcon={<Clock className="h-4 w-4" />}
-                    />
-                  </FormField>
+                  )}
                 </div>
               </fieldset>
+
+              {/* ═══ Einsatz & Anforderungen (Engine-Eingang) ═══ */}
+              {displayMode === "master" ? (
+                <fieldset className="rounded-xl border border-gray-200 p-5 bg-white/60">
+                  <legend className="flex items-center gap-2 px-2 text-sm font-bold text-gray-700 uppercase tracking-wider">
+                    <Shield className="h-4 w-4 text-indigo-500" />
+                    Einsatz &amp; Anforderungen
+                  </legend>
+                  <div className="space-y-4 mt-2">
+                    <FormField
+                      label="Zusätzliche Bewachung (Doppelrolle)"
+                      name="zusatzBewachungNiveau"
+                      id="zusatzBewachungNiveau"
+                      description="Für Verwaltung/GF, der/die mit auf Schicht geht — wendet das volle Bewachungs-Set an (CL-40)."
+                    >
+                      <Controller
+                        name="zusatzBewachungNiveau"
+                        control={control}
+                        render={({ field }) => (
+                          <Select
+                            options={[...ZUSATZ_BEWACHUNG_OPTIONS]}
+                            value={field.value ?? ""}
+                            onChange={field.onChange}
+                            placeholder="— keine zusätzliche Bewachung"
+                          />
+                        )}
+                      />
+                    </FormField>
+                    <div className="grid gap-4 sm:grid-cols-2">
+                      <FormField
+                        label="Beschäftigungsart"
+                        name="employmentType"
+                        id="employmentType"
+                        description="Vollzeit → 40 UE, sonst 24 UE (CL-11)."
+                      >
+                        <Controller
+                          name="employmentType"
+                          control={control}
+                          render={({ field }) => (
+                            <Select
+                              options={[...BESCHAEFTIGUNGSART_OPTIONS]}
+                              value={field.value ?? ""}
+                              onChange={field.onChange}
+                              placeholder="Beschäftigungsart wählen…"
+                            />
+                          )}
+                        />
+                      </FormField>
+                      <FormField
+                        label="Qualifikation"
+                        name="qualification"
+                        id="qualification"
+                        description="z. B. Sachkunde §34a / Unterrichtung."
+                      >
+                        <Input
+                          {...register("qualification")}
+                          id="qualification"
+                          placeholder="z. B. Sachkunde §34a"
+                        />
+                      </FormField>
+                    </div>
+                    <FormField
+                      label="SDL / Geltungsbereich"
+                      name="sdlScopes"
+                      id="sdlScopes"
+                      description="Eingang der Pflicht-Engine — Mehrfachauswahl."
+                    >
+                      <Controller
+                        name="sdlScopes"
+                        control={control}
+                        render={({ field }) => (
+                          <MultiSelect
+                            options={SDL_SCOPE_CATALOG.map((s) => ({
+                              id: s.id,
+                              name: s.name,
+                              description: s.geltungsbereich,
+                            }))}
+                            value={field.value ?? []}
+                            onChange={field.onChange}
+                            placeholder="DIN 77200-1/-2, Veranstaltung, Objekt, Asyl …"
+                          />
+                        )}
+                      />
+                    </FormField>
+                    <FormField
+                      label="Fährt Dienstfahrzeug?"
+                      name="drivesServiceVehicle"
+                      id="drivesServiceVehicle"
+                      description="Ja → Fahrer-/UVV-Unterweisung (fachlich prüfen, CL-73)."
+                    >
+                      <Controller
+                        name="drivesServiceVehicle"
+                        control={control}
+                        render={({ field }) => (
+                          <Select
+                            options={[...DIENSTFAHRZEUG_OPTIONS]}
+                            value={
+                              field.value === true
+                                ? "ja"
+                                : field.value === false
+                                  ? "nein"
+                                  : ""
+                            }
+                            onChange={(v) =>
+                              field.onChange(
+                                v === "ja" ? true : v === "nein" ? false : undefined,
+                              )
+                            }
+                            placeholder="unbekannt"
+                          />
+                        )}
+                      />
+                    </FormField>
+                    <div className="grid gap-4 sm:grid-cols-2">
+                      <FormField
+                        label="Erste Hilfe gültig bis"
+                        name="ersteHilfeGueltigBis"
+                        id="ersteHilfeGueltigBis"
+                        description="2-Jahres-Frist (CL-08)."
+                      >
+                        <Controller
+                          name="ersteHilfeGueltigBis"
+                          control={control}
+                          render={({ field }) => (
+                            <DatePicker
+                              value={field.value ?? ""}
+                              onChange={field.onChange}
+                              placeholder="Ablaufdatum Erste Hilfe"
+                            />
+                          )}
+                        />
+                      </FormField>
+                      <FormField
+                        label="Brandschutzhelfer gültig bis"
+                        name="brandschutzGueltigBis"
+                        id="brandschutzGueltigBis"
+                        description="3-Jahres-Frist (CL-23)."
+                      >
+                        <Controller
+                          name="brandschutzGueltigBis"
+                          control={control}
+                          render={({ field }) => (
+                            <DatePicker
+                              value={field.value ?? ""}
+                              onChange={field.onChange}
+                              placeholder="Ablaufdatum Brandschutzhelfer"
+                            />
+                          )}
+                        />
+                      </FormField>
+                    </div>
+                  </div>
+                </fieldset>
+              ) : null}
 
               {/* ═══ Identification ═══ */}
               <fieldset className="rounded-xl border border-gray-200 p-5 bg-white/60">

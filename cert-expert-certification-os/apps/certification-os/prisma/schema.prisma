@@ -42,6 +42,7 @@ model EmployeeFile {
   appointmentIds             Json     @default("[]")
   selectedRoleDocIds         Json     @default("[]")
   selectedAppointmentDocIds  Json     @default("[]")
+  roleClass                  String?
   roleType                   String?
   employmentType             String?
   qualification              String?

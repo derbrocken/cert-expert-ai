@@ -15,11 +15,14 @@ import {
 import {
   BESCHAEFTIGUNGSART_OPTIONS,
   DIENSTFAHRZEUG_OPTIONS,
-  ROLLE_STAMMDATEN_LABEL,
+  ORG_TITLE_OPTIONS,
+  ROLE_CLASS_OPTIONS,
+  ROLE_CLASS_LABEL,
   ROLLE_TYPE_OPTIONS,
   SDL_SCOPE_CATALOG,
   ZUSATZ_BEWACHUNG_OPTIONS,
 } from "./employee-stammdaten-options";
+import { mapRoleTypeToRoleClass, type RoleClass } from "./requirement-engine";
 import {
   joinFullName,
   splitFullName,
@@ -32,6 +35,12 @@ import { EmployeeFileStatusBadge } from "./EmployeeFileStatusBadge";
 
 const COMPACT_SELECT =
   "[&_button]:rounded-lg [&_button]:py-2 [&_button]:text-sm [&_button]:shadow-none";
+
+const ROLE_CLASS_VALUES = ROLE_CLASS_OPTIONS.map((o) => o.id) as string[];
+
+function asRoleClass(value: string): RoleClass | undefined {
+  return ROLE_CLASS_VALUES.includes(value) ? (value as RoleClass) : undefined;
+}
 
 export interface EmployeeFilePersonRolleEditTableProps {
   employee: Employee;
@@ -132,17 +141,50 @@ export const EmployeeFilePersonRolleEditTable: React.FC<
   return (
     <ul className="divide-y divide-[#e5e7eb] rounded-lg border border-[#e5e7eb]">
       {rowShell(
-        "rolle",
-        ROLLE_STAMMDATEN_LABEL,
+        "norm-klasse",
+        ROLE_CLASS_LABEL,
+        <div className={COMPACT_SELECT}>
+          <Select
+            options={[...ROLE_CLASS_OPTIONS]}
+            value={
+              employee.roleClass ??
+              mapRoleTypeToRoleClass(employee.roleType) ??
+              ""
+            }
+            onChange={(v) => patch({ roleClass: asRoleClass(v) })}
+            placeholder="Norm-Klasse wählen…"
+          />
+        </div>,
+        "DIN 77200: EK/FK/Verwaltung/Praktikant/Sub — maßgeblich fürs Pflicht-Set (G4).",
+        employee.roleClass || mapRoleTypeToRoleClass(employee.roleType)
+          ? "vorhanden"
+          : "offen",
+      )}
+
+      {rowShell(
+        "org-titel",
+        "Org-Titel (Anzeige)",
         <div className={COMPACT_SELECT}>
           <Select
             options={[...ROLLE_TYPE_OPTIONS]}
             value={employee.roleType || ""}
-            onChange={(roleType) => patch({ roleType })}
-            placeholder="Rolle wählen…"
+            onChange={(roleType) => {
+              const def = ORG_TITLE_OPTIONS.find(
+                (o) => o.id === roleType,
+              )?.defaultClass;
+              patch({
+                roleType,
+                // Default-Klasse nur setzen, wenn noch keine Norm-Klasse erfasst
+                // ist (Org-Titel überschreibt eine bewusst gewählte Klasse nicht).
+                ...(def && !employee.roleClass
+                  ? { roleClass: def as RoleClass }
+                  : {}),
+              });
+            }}
+            placeholder="Org-Titel wählen…"
           />
         </div>,
-        "Aus Tally oder manuell — keine Pflicht-Ableitung in diesem Slice",
+        "Org-Chart-Titel — keine direkte Engine-Wirkung (G4).",
       )}
 
       {rowShell(

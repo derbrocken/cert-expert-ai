@@ -1,3 +1,7 @@
+import type { RoleClass } from "../requirement-engine";
+
+export type { RoleClass };
+
 export interface RoleDocument {
   id: string;
   name: string;
@@ -36,6 +40,9 @@ export interface Employee {
   /** IDs of appointment docs to include (filtered by user) */
   selectedAppointmentDocIds: string[];
   // New fields
+  /** Norm-Klasse (G4) — primärer Engine-Input (EK/FK/Verwaltung/Praktikant/Subunternehmer). */
+  roleClass?: RoleClass;
+  /** Org-Titel (Anzeige/Org-Chart) — z. B. SMA, Einsatzleitung. Keine direkte Engine-Wirkung mehr (G4). */
   roleType?: string;
   employmentType?: string;
   qualification?: string;

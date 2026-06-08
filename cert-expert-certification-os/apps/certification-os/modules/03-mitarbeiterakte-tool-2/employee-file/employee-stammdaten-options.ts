@@ -3,6 +3,41 @@
 export const ROLLE_STAMMDATEN_LABEL =
   "Rolle (Sicherheitsmitarbeiter / Führungskraft)";
 
+/**
+ * G4 — Norm-Klasse (primärer Engine-Input). DIN 77200 kennt EK (§3.10) vs.
+ * FK (§3.11/§4.19.1); Verwaltung/Praktikant/Subunternehmer ergänzen die
+ * Markt-Realität. Quelle der Klassifikation: requirement-engine `RoleClass`.
+ */
+export const ROLE_CLASS_LABEL = "Norm-Klasse (steuert das Pflicht-Set)";
+
+export const ROLE_CLASS_OPTIONS = [
+  { id: "ek", name: "Einsatzkraft (EK) — Bewachung" },
+  { id: "fk", name: "Führungskraft (FK) — Bewachung + Führung" },
+  { id: "verwaltung", name: "Verwaltung / Geschäftsführung — keine Bewachung" },
+  { id: "praktikant", name: "Praktikant / Azubi" },
+  { id: "subunternehmer", name: "Subunternehmer" },
+] as const;
+
+/**
+ * G4 — Org-Titel (Anzeige/Org-Chart), je mit Default-Mapping auf die Norm-Klasse
+ * (überschreibbar; die Norm-Klasse bleibt maßgeblich). Mark-Gate: Einsatzleitung
+ * → FK (DIN 77200-1 §3.12/§4.2); Objekt-/Schichtleitung bleiben EK.
+ */
+export const ORG_TITLE_OPTIONS = [
+  { id: "Sicherheitsmitarbeiter", name: "Sicherheitsmitarbeiter (SMA)", defaultClass: "ek" },
+  { id: "Schichtleitung", name: "Schichtleitung", defaultClass: "ek" },
+  { id: "Objektleitung", name: "Objektleitung", defaultClass: "ek" },
+  { id: "Einsatzleitung", name: "Einsatzleitung", defaultClass: "fk" },
+  { id: "Führungskraft", name: "Führungskraft", defaultClass: "fk" },
+  { id: "Geschäftsführung", name: "Geschäftsführung", defaultClass: "verwaltung" },
+  { id: "Bürokraft / Verwaltung", name: "Bürokraft / Verwaltung", defaultClass: "verwaltung" },
+  { id: "Subunternehmer-SMA", name: "Subunternehmer-SMA", defaultClass: "subunternehmer" },
+  { id: "Praktikant / Azubi", name: "Praktikant / Azubi", defaultClass: "praktikant" },
+] as const;
+
+/** Sentinel-Option für freien Org-Titel (Gate a: Dropdown + Freitext). */
+export const ORG_TITLE_OTHER_ID = "__other__";
+
 export const ROLLE_TYPE_OPTIONS = [
   { id: "Sicherheitsmitarbeiter", name: "Sicherheitsmitarbeiter (SMA)" },
   { id: "Führungskraft", name: "Führungskraft" },

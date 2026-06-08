@@ -27,10 +27,13 @@ import {
 } from "./employee-display-labels";
 import {
   BESCHAEFTIGUNGSART_OPTIONS,
+  ROLE_CLASS_LABEL,
+  ROLE_CLASS_OPTIONS,
   ROLLE_STAMMDATEN_LABEL,
   ROLLE_TYPE_OPTIONS,
 } from "./employee-stammdaten-options";
 import { joinFullName, splitFullName } from "./employee-file-requirements";
+import { mapRoleTypeToRoleClass } from "./requirement-engine";
 
 const akteEditSchema = employeeFormSchema.extend({
   vorname: z.string().min(1, "Vorname erforderlich"),
@@ -71,10 +74,11 @@ export const EmployeeFileAkteInlineEdit: React.FC<
       startDate: employee.startDate,
       roleId: employee.roleId,
       appointmentIds: employee.appointmentIds,
+      roleClass:
+        employee.roleClass ?? mapRoleTypeToRoleClass(employee.roleType),
       roleType: employee.roleType || "",
       employmentType: employee.employmentType || "",
       qualification: employee.qualification || "",
-      trainingHours: employee.trainingHours || "",
       guardIDNumber: employee.guardIDNumber || "",
       employeeIDNumber: employee.employeeIDNumber || "",
       useGuardAsEmployeeId: employee.useGuardAsEmployeeId || false,
@@ -130,10 +134,10 @@ export const EmployeeFileAkteInlineEdit: React.FC<
       startDate: data.startDate,
       roleId: data.roleId,
       appointmentIds: data.appointmentIds,
+      roleClass: data.roleClass,
       roleType: data.roleType,
       employmentType: data.employmentType,
       qualification: data.qualification,
-      trainingHours: employee.trainingHours,
       guardIDNumber: data.guardIDNumber,
       employeeIDNumber: effectiveEmployeeId,
       useGuardAsEmployeeId: data.useGuardAsEmployeeId,
@@ -175,7 +179,27 @@ export const EmployeeFileAkteInlineEdit: React.FC<
             />
           </FormField>
           <FormField
-            label={ROLLE_STAMMDATEN_LABEL}
+            label={ROLE_CLASS_LABEL}
+            name="roleClass"
+            required
+            error={errors.roleClass?.message}
+          >
+            <Controller
+              name="roleClass"
+              control={control}
+              render={({ field }) => (
+                <Select
+                  options={[...ROLE_CLASS_OPTIONS]}
+                  value={field.value ?? ""}
+                  onChange={field.onChange}
+                  placeholder="Norm-Klasse wählen…"
+                  hasError={!!errors.roleClass}
+                />
+              )}
+            />
+          </FormField>
+          <FormField
+            label={`${ROLLE_STAMMDATEN_LABEL} (Org-Titel)`}
             name="roleType"
           >
             <Controller
@@ -186,7 +210,7 @@ export const EmployeeFileAkteInlineEdit: React.FC<
                   options={[...ROLLE_TYPE_OPTIONS]}
                   value={field.value || ""}
                   onChange={field.onChange}
-                  placeholder="Rolle wählen…"
+                  placeholder="Org-Titel wählen…"
                 />
               )}
             />

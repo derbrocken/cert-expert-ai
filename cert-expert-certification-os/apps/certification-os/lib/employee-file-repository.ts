@@ -16,6 +16,10 @@ import {
   matchCompanySlugByName,
 } from "@/lib/customer-registry";
 import { prisma } from "@/lib/prisma";
+import {
+  mapRoleTypeToRoleClass,
+  type RoleClass,
+} from "@/modules/03-mitarbeiterakte-tool-2/employee-file/requirement-engine";
 
 const QUEUE_MIGRATION_KEY = "cert-expert-tool2-employee-queue-v1";
 const EVIDENCE_MIGRATION_KEY = "cert-expert-tool2-employee-evidence-v1";
@@ -40,6 +44,21 @@ function asNiveau(value: unknown): "ek" | "fk" | undefined {
   return value === "ek" || value === "fk" ? value : undefined;
 }
 
+const ROLE_CLASS_VALUES: readonly RoleClass[] = [
+  "ek",
+  "fk",
+  "verwaltung",
+  "praktikant",
+  "subunternehmer",
+];
+
+function asRoleClass(value: unknown): RoleClass | undefined {
+  return typeof value === "string" &&
+    (ROLE_CLASS_VALUES as readonly string[]).includes(value)
+    ? (value as RoleClass)
+    : undefined;
+}
+
 function asNumberRecord(value: unknown): Record<string, number> {
   if (!value || typeof value !== "object" || Array.isArray(value)) return {};
   const out: Record<string, number> = {};
@@ -59,6 +78,11 @@ export function employeeFileToEmployee(record: EmployeeFile): Employee {
     appointmentIds: asStringArray(record.appointmentIds),
     selectedRoleDocIds: asStringArray(record.selectedRoleDocIds),
     selectedAppointmentDocIds: asStringArray(record.selectedAppointmentDocIds),
+    // G4: idempotente Read-Migration — fehlende Norm-Klasse aus Legacy-Org-Titel
+    // ableiten (mapRoleTypeToRoleClass). Explizit gesetzte Klasse hat Vorrang.
+    roleClass:
+      asRoleClass(record.roleClass) ??
+      mapRoleTypeToRoleClass(record.roleType ?? undefined),
     roleType: record.roleType ?? undefined,
     employmentType: record.employmentType ?? undefined,
     qualification: record.qualification ?? undefined,
@@ -90,6 +114,7 @@ function employeeToUpsertData(
     appointmentIds: employee.appointmentIds,
     selectedRoleDocIds: employee.selectedRoleDocIds,
     selectedAppointmentDocIds: employee.selectedAppointmentDocIds,
+    roleClass: employee.roleClass ?? null,
     roleType: employee.roleType ?? null,
     employmentType: employee.employmentType ?? null,
     qualification: employee.qualification ?? null,
@@ -204,6 +229,7 @@ export async function upsertEmployeeFile(
       appointmentIds: employee.appointmentIds,
       selectedRoleDocIds: employee.selectedRoleDocIds,
       selectedAppointmentDocIds: employee.selectedAppointmentDocIds,
+      roleClass: employee.roleClass ?? null,
       roleType: employee.roleType ?? null,
       employmentType: employee.employmentType ?? null,
       qualification: employee.qualification ?? null,
@@ -253,6 +279,7 @@ export async function replaceEmployeeFilesForCompany(
           appointmentIds: employee.appointmentIds,
           selectedRoleDocIds: employee.selectedRoleDocIds,
           selectedAppointmentDocIds: employee.selectedAppointmentDocIds,
+          roleClass: employee.roleClass ?? null,
           roleType: employee.roleType ?? null,
           employmentType: employee.employmentType ?? null,
           qualification: employee.qualification ?? null,
@@ -584,6 +611,7 @@ export async function migrateFromLocalStoragePayload(
             appointmentIds: employee.appointmentIds,
             selectedRoleDocIds: employee.selectedRoleDocIds,
             selectedAppointmentDocIds: employee.selectedAppointmentDocIds,
+            roleClass: employee.roleClass ?? null,
             roleType: employee.roleType ?? null,
             employmentType: employee.employmentType ?? null,
             qualification: employee.qualification ?? null,

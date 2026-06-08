@@ -6,7 +6,8 @@ import {
 } from "./employee-display-labels";
 import {
   deriveRequirements,
-  isBewachungsrolle,
+  isBewachungsklasse,
+  mapRoleTypeToRoleClass,
   sdlScopeLabel,
   type EngineRule,
   type RequirementContext,
@@ -121,15 +122,18 @@ function fieldStatus(
 }
 
 /**
- * Bewachungsrolle (Slice 2) — abgeleitet aus der echten Stammdatenrolle
- * (`Employee.roleType`), nicht mehr aus der Legacy-`roleId`-Heuristik.
+ * Bewachungsrolle (Slice 2/3, G4) — abgeleitet aus der Norm-Klasse
+ * (`Employee.roleClass`); fehlende Klasse wird idempotent aus dem Legacy-
+ * Org-Titel (`roleType`) gemappt — konsistent zur Repository-Read-Migration.
  */
 function isSecurityRole(
-  employee: Pick<Employee, "roleType" | "zusatzBewachungNiveau">,
+  employee: Pick<Employee, "roleClass" | "roleType" | "zusatzBewachungNiveau">,
 ): boolean {
+  const roleClass =
+    employee.roleClass ?? mapRoleTypeToRoleClass(employee.roleType);
   // Slice 3: Doppelrolle (zusätzliche Bewachung, Niveau EK/FK) gilt in den
   // Anzeige-Rows ebenfalls als Bewachung — konsistent zum Engine-Pflichtset.
-  return isBewachungsrolle(employee.roleType) || !!employee.zusatzBewachungNiveau;
+  return isBewachungsklasse(roleClass) || !!employee.zusatzBewachungNiveau;
 }
 
 /**
@@ -217,6 +221,9 @@ export function buildRequirementContext(
   appointments: Appointment[],
 ): RequirementContext {
   return {
+    // G4: Norm-Klasse ist der primäre Engine-Input; fehlt sie (Legacy/Tally),
+    // wird sie idempotent aus dem Org-Titel abgeleitet (keine erfundene Klasse).
+    roleClass: employee.roleClass ?? mapRoleTypeToRoleClass(employee.roleType),
     roleType: employee.roleType,
     zusatzBewachungNiveau: employee.zusatzBewachungNiveau,
     appointmentLabels: overlayFromAppointments(
