@@ -12,7 +12,7 @@ import { EmployeeFileOverviewIntro } from "./EmployeeFileOverviewIntro";
 import { Button } from "@/components/ui";
 import { Toast } from "@/components/ui/Toast";
 import { generateEmployeeDocs } from "@/app/actions/generate-employee-docs";
-import { Download, Loader2 } from "lucide-react";
+import { Download, FileText, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type {
   Employee,
@@ -74,6 +74,10 @@ function EmployeeAutomationPageContent() {
     () => new Set(),
   );
   const [isGenerating, setIsGenerating] = useState(false);
+  // Lane B / Pt 1 — read-only Batch-Vorzeige-/Audit-Ansicht (je gewählter
+  // Person die `EmployeeFileOverview` mit Feld-Kopieren). Eigenständig; fasst
+  // den EC-09-ZIP-Generator NICHT an.
+  const [showExportView, setShowExportView] = useState(false);
   const [toast, setToast] = useState<{
     message: string;
     type: "success" | "error";
@@ -693,6 +697,56 @@ function EmployeeAutomationPageContent() {
 
   const exportCount = batchSelectedIds.size;
 
+  const selectedEmployees = useMemo(
+    () => employees.filter((e) => batchSelectedIds.has(e.id)),
+    [employees, batchSelectedIds],
+  );
+
+  const exportViewContent = (
+    <div className="mx-auto max-w-3xl space-y-4 p-4 sm:p-6">
+      <div className="flex flex-col gap-3 rounded-lg border border-[#e5e7eb] bg-white px-4 py-4 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <p className="text-[0.65rem] font-semibold uppercase tracking-[0.14em] text-[#e30613]">
+            Vorzeige-/Audit-Ansicht
+          </p>
+          <h2 className="mt-1 text-lg font-bold text-[#111827]">
+            {selectedEmployees.length} ausgewählte Akte(n)
+          </h2>
+          <p className="mt-1 text-xs text-[#6b7280]">
+            Read-only Übersicht je gewählter Person — Feld-Kopieren über die
+            Kopier-Buttons. Rechnerischer Stand, kein Freigabestatus.
+          </p>
+        </div>
+        <Button
+          type="button"
+          variant="secondary"
+          size="sm"
+          onClick={() => setShowExportView(false)}
+          className="w-full sm:w-auto"
+        >
+          Zurück zum Index
+        </Button>
+      </div>
+
+      {selectedEmployees.length === 0 ? (
+        <p className="rounded-lg border border-dashed border-[#e5e7eb] bg-white px-4 py-8 text-center text-sm text-[#6b7280]">
+          Keine Person ausgewählt — im Index Akten für den Export anwählen.
+        </p>
+      ) : (
+        selectedEmployees.map((emp) => (
+          <EmployeeFileOverview
+            key={emp.id}
+            employee={emp}
+            roles={roles}
+            appointments={appointments}
+            companyName={globalProps.companyName}
+            evidenceFiles={{}}
+          />
+        ))
+      )}
+    </div>
+  );
+
   const generateBar =
     employees.length > 0 ? (
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -705,20 +759,33 @@ function EmployeeAutomationPageContent() {
             Firmendaten für {activeCompanyName}.
           </p>
         </div>
-        <Button
-          type="button"
-          variant="primary"
-          size="lg"
-          onClick={handleGenerate}
-          isLoading={isGenerating}
-          disabled={exportCount === 0}
-          leftIcon={
-            isGenerating ? undefined : <Download className="h-5 w-5" />
-          }
-          className="w-full sm:w-auto"
-        >
-          {isGenerating ? "Erzeuge…" : "ZIP exportieren"}
-        </Button>
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
+          <Button
+            type="button"
+            variant="secondary"
+            size="lg"
+            onClick={() => setShowExportView((v) => !v)}
+            disabled={exportCount === 0}
+            leftIcon={<FileText className="h-5 w-5" />}
+            className="w-full sm:w-auto"
+          >
+            {showExportView ? "Ansicht schließen" : "Vorzeige-/Audit-Ansicht"}
+          </Button>
+          <Button
+            type="button"
+            variant="primary"
+            size="lg"
+            onClick={handleGenerate}
+            isLoading={isGenerating}
+            disabled={exportCount === 0}
+            leftIcon={
+              isGenerating ? undefined : <Download className="h-5 w-5" />
+            }
+            className="w-full sm:w-auto"
+          >
+            {isGenerating ? "Erzeuge…" : "ZIP exportieren"}
+          </Button>
+        </div>
       </div>
     ) : null;
 
@@ -759,7 +826,7 @@ function EmployeeAutomationPageContent() {
             onToggleAllBatch={handleToggleAllBatch}
           />
         }
-        dossier={dossierContent}
+        dossier={showExportView ? exportViewContent : dossierContent}
         generateBar={generateBar}
       />
 
