@@ -7,7 +7,8 @@
 
 **Übergabe-Takt (Agent):** Nach Task/Slice/Commit → Mark erinnern: „✅ stabiler Punkt — Committen/Übergeben (neuer Chat)." Bei ~70–80 % Context → „Übergabe empfohlen." Ablauf: stabil → commit → **Abschluss-Eintrag** (fertig/offen/nächster Schritt/Hashes) → neuer Agent liest `CLAUDE.md` + HANDOFF. Gedächtnis = Repo, nicht Chat.
 
-> ## ▶ HIER STARTEN — AKTUELLER STAND (2026-06-07)
+> ## ▶ HIER STARTEN — AKTUELLER STAND (2026-06-08)
+> **▶ JETZT — PARALLEL-DISPATCH DURCH (Terminal-Planer, 2026-06-08): Lane A (ÖPV-Engine CL-29/30) + Lane B (Audit-Export XLSX/PDF + Batch-Vorzeige-Ansicht) REVIEWT → beide ABGENOMMEN → nach `main` GEMERGT + GEPUSHT.** `main` = **`d9615f0`** (origin/main aktuell). **Kombiniert verifiziert** (nach beiden Merges): `tsc` 0 · Engine-Suite **30/30** · Export-Tests **6/6**. Merges konfliktfrei (disjunkte Write-Sets). Beide Lane-Branches **gelöscht** (lokal+remote, merge-verifiziert). Review-Befund = `CODE_REVIEW.md` (oberster Eintrag). **Mark-Hinweise:** ÖPV-Norm-Lesart **bereits** im Cross-Check §2.4 freigegeben (kein To-do); verbleibend nicht-blockierend: (i) Verwaltung+ÖPV erzeugt keine sichtbare Pflicht-Zeile mehr (F3-Gate, gewollt), (ii) XLSX/PDF-Download-Live-Klick optional von Mark abzunehmen. **Offene Fäden:** ① **Hetzner-Redeploy** (cos.cert-expert.de läuft noch auf altem Commit — neue Features erst nach Redeploy live, Runbook `HETZNER_DEPLOY.md`) · ② `cursor/din-77200-1-anforderungsprofile` hat **1 Müll-Checkpoint** (`1f3a7bd`, ~40 MB Binaries + `.pyc` → **NICHT pushen**, verwerfen oder ignorieren) · ③ Kundenprojekt-Mails (TeamFlex/Wolf Street Audit) committet `6d30d8b`. **Arbeitsmodus ab jetzt (Mark, 2026-06-08): Terminal-Planer übernimmt mehr Kontrolle — proaktiver/autonomer im Rahmen der Guardrails (EC-09/EC-10/keine erfundene Normpflicht/kein .env/.db-Commit).**
 > **✅ STATUS (Executor, 2026-06-08): Read-only Akte-/Vorzeige-Übersicht (Queue B / Pt 1) = FERTIG + committet `ae477e8`** (tsc 0 · Engine 27/27 · EC-09-ZIP 200 + `UEsDBA`-Magic · Browser-Akzeptanz EK-Person). Neue `EmployeeFileOverview.tsx` + Toggle „Bearbeiten ↔ Übersicht". Reine Präsentation, EC-09/EC-10 gewahrt, nichts geparkt. Details unten „Von Cursor an Claude". **Nicht gepusht.**
 > **Branch = `main`** · COS: `cert-expert-certification-os/apps/certification-os/` · Port **3001**
 > **▶ NEUER ARBEITSMODUS (Mark, 2026-06-08):** EIN dauerhafter Planer/Status-Chat + **Subagent baut alles autonom** (kein separater Planer-Chat mehr). Gedächtnis = Repo. Neuer Chat liest `CLAUDE.md` + diese Box + `CURSOR_AUTONOMOUS_RUN_ORDER.md`.
@@ -49,6 +50,28 @@
 > **Danach (Scope/Planung, NICHT Review):** Executor-FRAGE „**Anlege-Formular auf neues Requirement-Modell migrieren?**" (Legacy `EmployeeForm.tsx`/Tool-1-Modell vs. neues Akte-Modell) als **eigenen Slice** mit Mark abwägen. Plus offene Fäden: **Slice 3b** (Tally-Formular-Feldlücke, gated auf Marks Tally-Arbeit), **Slice 4** (Ampel-/Status-Ansicht, QFD #1), DEKRA (CL-60–62), Legal-Input (CL-70–73), Ist-UE-Auto-Summe.
 >
 > **Guardrails:** EC-09 (Generator/ZIP nie brechen), EC-10 (kein Freigabe-/Auditfähigkeitsstatus), keine erfundene Normpflicht (jede Regel `clauseId`). Verifikation im echten Browser, nicht per Skript. Mark = Gate. Nach stabilem Punkt: Übergabe-Takt + Abschluss-Eintrag.
+
+---
+
+## 🔚 ABSCHLUSS-EINTRAG — Terminal-Planer: Parallel-Dispatch Lane A + Lane B reviewt, gemergt, gepusht, 2026-06-08
+
+**Rolle:** Planer/Reviewer (Spur P) im Terminal — übernommen, nachdem der vorherige Planer-Chat in einem Read-only-Befehl einfror (kein Schaden; die Executor-Bots hatten ihre `cursor/*`-Branches sauber committet+gepusht).
+
+**Fertig:**
+- **Lane A** (`cursor/oepv-engine-schulungssoll`, `aff20ea`) + **Lane B** (`cursor/audit-export-lane-b`, `45ea375`+`d0f7154`) unabhängig reviewt (je Branch eigene Re-Verifikation) → **beide abgenommen**, Befund in `CODE_REVIEW.md` (oberster Eintrag).
+- Beide nach `main` **gemergt** (`--no-ff`, konfliktfrei — Write-Sets disjunkt): `1033728` (Lane A) + `d9615f0` (Lane B). **Kombiniert auf main verifiziert:** `tsc` 0 · Engine 30/30 · Export 6/6.
+- `main` **gepusht** (`7b9f795..d9615f0`). Review-Doku committet `86ee067`.
+- Beide Lane-Branches **gelöscht** (lokal+remote, `git branch -d` merge-verifiziert).
+- Orphaned Kundenprojekt-Mails (TeamFlex/Wolf Street Audit) gesichert `6d30d8b`.
+
+**Offen / nächster Schritt:**
+1. **Hetzner-Redeploy** (cos.cert-expert.de auf `d9615f0` heben — ÖPV-Soll + Audit-Export erst danach live). Server-Ops, nur auf Marks Anweisung. Runbook `HETZNER_DEPLOY.md`.
+2. `cursor/din-77200-1-anforderungsprofile`: 1 Müll-Checkpoint (`1f3a7bd`, 40 MB Binaries + `.pyc`) — **nicht pushen**; verwerfen/ignorieren entscheiden.
+3. Optionale Mark-Abnahmen: XLSX/PDF-Download-Live-Klick; Verwaltung+ÖPV-Sichtbarkeits-Wunsch (kein Defekt).
+
+**Commit-Basis:** `main = d9615f0`. Diese Session: `86ee067` (Review-Doku) · `1033728`+`d9615f0` (Merges) · `6d30d8b` (Kundenprojekt-Mails) · HANDOFF-Update.
+
+✅ **Stabiler Punkt** — Dispatch vollständig integriert, main gepusht, Branches aufgeräumt.
 
 ---
 
