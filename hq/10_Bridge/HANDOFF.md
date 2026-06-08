@@ -480,6 +480,43 @@
 
 ## 📤 Von Claude an Cursor (Reviews / Hinweise / Aufgaben)
 
+### 2026-06-08 — 🚦 PARALLEL-DISPATCH (Planer): File-Ownership-Grenzen + BOTS READY
+
+**Zweck:** Zwei Executor-Bots parallel, **garantiert kollisionsfrei**, weil ihre Schreib-Mengen **disjunkt** sind. Jeder Bot schreibt **nur** die Dateien seiner Zeile, sonst **nichts**. Baseline-Commit = **`e7ed92e`** (Watcher-Anker; weckt bei neuem main-Commit oder CODE_REVIEW/HANDOFF-Änderung).
+
+#### Dispatch-Tabelle (verbindlich — „touch nothing else")
+
+| Lane | Bot | Bauauftrag(e) | DARF schreiben (nur diese) | NUR LESEN / nie schreiben |
+|------|-----|---------------|----------------------------|---------------------------|
+| **A — Engine (ÖPV)** | Bot A | `CURSOR_OEPV_ENGINE_AUFTRAG.md` | `…/employee-file/requirement-engine.ts` · `…/employee-file/requirement-engine.test.ts` | alles andere |
+| **B — Audit-Export** | Bot B (1 Bot, **sequenziell**: Pt 1 → Pt 2) | `CURSOR_AUDIT_EXPORT_AUFTRAG.md` **dann** `CURSOR_AUDIT_EXPORT_PT2_AUFTRAG.md` | `…/employee-file/EmployeeAutomationPage.tsx` (Export-Toggle + `handleAuditExport` + Download; **ZIP-`handleGenerate` nicht umschreiben**) · `…/employee-file/EmployeeFileOverview.tsx` (CopyButton) · **NEU** `…/employee-file/CopyButton.tsx` · **NEU** `app/actions/generate-audit-export.ts` · **NEU** `…/employee-file/audit-export-xlsx.ts` · **NEU** `…/employee-file/audit-export-pdf.ts` · **NEU** `…/employee-file/audit-export-*.test.ts` · `package.json` + `package-lock.json` (Pt 2: `exceljs`, `pdf-lib`) · optional NEU Print-Route/-Hülle | `requirement-engine.ts` · `employee-file-requirements.ts` (`getEmployeeFileSummary` = Single Source) · `generate-employee-docs.ts` (ZIP-Generator) · `EmployeeForm.tsx` |
+
+**Disjunktheit belegt (am HEAD geprüft):** A-Schreibmenge `{requirement-engine.ts, requirement-engine.test.ts}` ∩ B-Schreibmenge `{EmployeeAutomationPage.tsx, EmployeeFileOverview.tsx, CopyButton.tsx, generate-audit-export.ts, audit-export-*.ts, package.json, package-lock.json}` = **∅**. B liest `requirement-engine.ts` nur transitiv (über `getEmployeeFileSummary`), schreibt sie nie → bei Rebase beider auf `main` **kein Datei-Merge-Konflikt**.
+**Annahme:** Jede Lane in eigenem Checkout/Worktree **oder** auf demselben Tree serialisiert. Beide pushen auf `main` → zweiter Commit **rebaset** (kein `--force`).
+**Pt-1↔Pt-2 = derselbe Export-View → EIN Bot, sequenziell** (NICHT zwei parallele B-Bots — das ist die einzige Stelle, wo B mit sich selbst kollidieren würde).
+
+#### ▶ BOTS READY
+1. **Lane A** → `CURSOR_OEPV_ENGINE_AUFTRAG.md` → schreibt **nur** `requirement-engine.ts` + `requirement-engine.test.ts`.
+2. **Lane B** → `CURSOR_AUDIT_EXPORT_AUFTRAG.md` → dann `…PT2_AUFTRAG.md` (1 Bot, sequenziell) → `EmployeeAutomationPage.tsx` + `EmployeeFileOverview.tsx` + neue `audit-export-*`/`CopyButton`/Action + `package.json`.
+3. **Gates intakt:** C-10 (Mark) · EC-09 (ZIP 200) · EC-10 (kein Freigabe-Wording) · jede Norm-Regel `clauseId` · keine Personendaten/`.env`/`.db` auf Git. Watcher-Baseline `e7ed92e`, disjunkte Write-Sets ✓.
+
+> **Hinweis Planer:** Diese 3 Bridge-Dateien (`HANDOFF.md`, `CODE_REVIEW.md`, `CURSOR_AUDIT_EXPORT_PT2_AUFTRAG.md`) sind noch **uncommitted** (Working Tree auf `e7ed92e`). Der Watcher feuert erst nach dem Commit. → Bridge-Doku committen, bevor die Bots starten, damit die Dispatch-Tabelle live im Repo steht.
+
+### 2026-06-08 — ✅ Planer: G4-P1-Review (`047878c`) ABGENOMMEN + Sanity-Check ÖPV-/Audit-Export-Bauaufträge
+
+**1) G4 Phase 1 (`047878c`) reviewt → ABGENOMMEN** (Detail: `CODE_REVIEW.md`, oberster Eintrag). Unabhängig re-verifiziert am HEAD: `tsc` 0 · Engine-Suite 27/27. roleClass-Klassifikationsquelle sauber, keine neue CL/UE, Migration idempotent, EC-09/EC-10 gewahrt. **1 Mark-Hinweis** (kein Re-Bau): Die Read-Migration klassifiziert **bestehende „Einsatzleitung"-Akten EK→FK** um → höheres Soll + CL-10-Prüfhinweis bei DIN-SDL. Gewollt (Marks Gate „nur Einsatzleitung = FK"), kein Datenverlust; explizit gesetztes `roleClass`/`roleClasses` hat Vorrang. **Hinweis für künftige Aufträge:** `047878c` (Einfachfeld `roleClass`) ist durch `e1899dd` auf **`roleClasses`-Set** generalisiert — HEAD-Stand = Mehrfach-Klasse.
+
+**2) Sanity-Check der zwei noch-nicht-gebauten Bauaufträge (vor Bau):**
+
+**🟢 `CURSOR_OEPV_ENGINE_AUFTRAG.md` (Lane A) — BAUFREI, keine Norm-/Scope-Blocker.**
+- **Cross-Check-Flag „🔴 ÖPV ohne CL" ist AUFGELÖST:** CL-29 (EK 40 UE, §6.4) + CL-30 (FK +16 = 56, §6.3) stehen als **„belegt"** im `NORM_KLAUSEL_REGISTER_v1.md` (Z. 36/37). Der Auftrag zitiert sie korrekt; UE-Werte exakt = Register. Mechanik (additiv auf EK-Basis, F3-`bewachung`-gegatet) = Asyl-Muster CL-24/25 — konsistent.
+- **Anker gegen aktuellen HEAD geprüft (nicht stale):** Block `if (sdl.has("din2-oepv"))` liegt real bei Z. 650 (Auftrag sagt ~650–659 ✅); `SDL_SCOPE_CATALOG`-Eintrag bei Z. 168 (~167–172 ✅); abgeleitete Vars `bewachung`/`fuehrung` existieren (Z. 349/350). §4-Tests nutzen bereits `roleClasses`-Plural (post-`e1899dd`) — passt. **Eine Mini-Korrektur für den Bot:** der Auftrag spricht in §2/§3 noch von „FK/Führungskraft" als ob Einfach-Trigger; im HEAD ist `fuehrung = hasFK` über das `roleClasses`-Set — Logik identisch, nur Wording. Kein Blocker.
+
+**🟡 `CURSOR_AUDIT_EXPORT_AUFTRAG.md` (Lane B) — BAUFREI, aber 1 Scope-Bestätigung für Mark offen.**
+- **EC-09/EC-10 sauber:** Lane B fasst Engine/`EmployeeForm`/ZIP-Generator **nicht** an, reused `EmployeeFileOverview` (Single Source), EC-10-Disclaimer drin → parallel-safe zu Lane A. ✅
+- **✅ Scope-Frage von Mark entschieden (2026-06-08): zusätzlich XLSX + PDF, Browser-Download.** Lane B Pt 1 (In-App-Batch + Feld-Kopieren) bleibt wie es ist; **zusätzlich** ein herunterladbares Datei-Artefakt. **→ Neuer Folgeauftrag geschrieben: `CURSOR_AUDIT_EXPORT_PT2_AUFTRAG.md`** (Lane B Pt 2). Gates eingearbeitet: Format **XLSX + PDF**, Auslieferung **Browser-Download** (Server schreibt NICHT in OneDrive — Mark legt selbst ab; bestehendes `handleGenerate`-Download-Muster wiederverwenden), Engines `exceljs` + `pdf-lib` (kein Puppeteer), Datenquelle `getEmployeeFileSummary` (Single Source), EC-09/EC-10/DSGVO hart, keine Engine-Datei berührt. **Reihenfolge:** Pt 1 zuerst committen, dann Pt 2. Offene Mark-Mini-Punkte (PDF-Pixel-Optik vs. tabellarisch, Spaltenumfang, ein File vs. je Person) als §7-Defaults gesetzt + überschreibbar.
+- **Label-Drift (nur Hygiene, kein Bau-Impact):** Master-Plan nennt Ampel/Status = Slice 3 und Audit-Export = Slice 4; gebaut wurde „Slice 4 = Ampel" (`2261d26`). Funktional kein Konflikt, aber die Slice-Nummern im Master-Plan vs. Build divergieren — bei Gelegenheit im Master-Plan nachziehen.
+
 ### 2026-06-07 — 🐛 BUGFIX-AUFTRAG (Planer 6): Hydration-Mismatch Firmenname (`EmployeeFileIndex` Z. 271)
 
 **Symptom (Mark, Browser):** „1 Issue" im Next-Dev-Overlay = **React-Hydration-Error**. Server rendert `(TeamFlex)`, Client `(Wolf_Street)` an `EmployeeFileIndex.tsx:271` (`{companyDisplayName ? \` (${companyDisplayName})\` : ""}`). Kein Crash, aber Hydration-Warnung + potenziell verworfenes Client-DOM.

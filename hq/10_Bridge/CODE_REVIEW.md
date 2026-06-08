@@ -4,6 +4,32 @@
 
 ---
 
+## 2026-06-08 — G4 Phase 1: roleClass-Modell + Migration + Engine-Refactor, Commit `047878c` — **Planer-Review (unabhängig) → ABGENOMMEN (mit 1 Mark-Hinweis)**
+
+**Methode:** Unabhängiger Review des Feat-Commits `047878c` (11 Dateien) gegen `CURSOR_G4_AUFTRAG.md` v3 (Phase 1) + `NORM_MATRIX_Mitarbeiternachweise_v2.md` + `NORM_KLAUSEL_REGISTER_v1.md`. Diff-Inspektion (Engine, Repository, Schema, Validation, Stammdaten-Options, Test-Suite) + **eigenständige Re-Verifikation am aktuellen HEAD**: `tsc --noEmit` = **0**; Engine-Suite `tsx --test` = **27/27 grün**.
+
+> **Kontext-Hinweis (wichtig):** `047878c` führte die Norm-Klasse als **Einfachfeld** `roleClass` ein. Das **EK/FK-Refinement `e1899dd`** (danach) hat das auf ein **`roleClasses`-Set** generalisiert (frei kombinierbar). Dieser Review bewertet die **Norm-Logik des G4-Diffs** `047878c`; der aktuelle HEAD ist die generalisierte Form — beide am HEAD re-verifiziert grün. Die G4-Phase-1-Entscheide (Klassifikationsquelle, EL=FK-Gate, keine neuen CL/UE) sind in `e1899dd` unverändert übernommen.
+
+### Verdict
+**ABGENOMMEN (G4 Phase 1).** Klassifikationsquelle sauber von Org-Titel-Heuristik auf Norm-Klasse umgestellt; **keine neuen CL-IDs/UE-Werte** (gleiche Posten, nur andere Eingangsquelle); Migration idempotent + verlustfrei; EC-09/EC-10 gewahrt. **Keine Blocker, kein Re-Bau.** Ein **Mark-Hinweis** zu einer gewollten, aber wirksamen Umklassifizierung (unten) — kein Defekt.
+
+### Review-Punkte (jede Norm-Regel CL-belegt)
+1. **roleClass-Modell ✅.** `RoleClass = ek|fk|verwaltung|praktikant|subunternehmer` (DIN 77200-1 §3.10 EK / §3.11+§4.19.1 FK; Verwaltung §4.1b ohne Bewachung; Subunternehmer §4.13/CL-42; Praktikant reduziert). Schema `roleClass String?` (nullable, SQLite-sicher, kein `@default`); Typ in `types/employee.ts` re-exportiert. **Keine neue CL.**
+2. **Read-Migration idempotent + verlustfrei ✅.** Repository: `asRoleClass(record.roleClass) ?? mapRoleTypeToRoleClass(record.roleType)` — **explizit gesetzte Klasse hat Vorrang**, fehlende wird aus Legacy-Org-Titel abgeleitet. Unbekannter/leerer Titel ⇒ `undefined` (**keine erfundene Klasse** → Engine: „Keine Norm-Klasse erfasst"). Mapping `mapRoleTypeToRoleClass` ist **Single Source of Truth**, genutzt von Repository-Migration **und** Presenter-Fallback (`buildRequirementContext`) **und** `isSecurityRole` → konsistent. Write-Mapping `roleClass ?? null` an **allen** Repo-Schreibstellen.
+3. **Engine-Refactor — keine neue Normpflicht ✅.** Klassifikation jetzt aus `roleClass` (`isBewachungsklasse` = ek/fk/sub; `isFuehrungsklasse` = fk) statt String-Sets. Die UE-/Posten-Logik (CL-20/21/24/25, CL-10-Gate, F3-Bewachungs-Gate, Doppelrolle Slice 3) ist **unverändert** — nur die Eingangsquelle wechselt. Verifiziert: Soll-Werte in Szenarien 1–4b identisch zu Slice 2/3.
+4. **Mark-Gate-Mapping korrekt ✅.** `ORG_TITLE_TO_ROLE_CLASS`: Einsatzleitung→`fk` (DIN 77200-1 §3.12/§4.2), Objekt-/Schichtleitung→`ek`, GF/Bürokraft→`verwaltung`, Subunternehmer-SMA→`subunternehmer`, Praktikant→`praktikant`. Deckt sich 1:1 mit Marks Entscheid (2026-06-08). Test „G4-Mapping" prüft alle inkl. `Hausmeister`/`""`/`undefined` → `undefined`.
+5. **EC-09 unberührt ✅.** `roleId` bleibt Pflicht (`employee-form.ts`) → steuert weiter die Generator-Dokumentenpalette; Generator/ZIP-Action **nicht im Diff**. Alt-Felder `trainingHours` + Freitext-`roleType`-als-Engine-Input raus, `roleType` zu reinem Org-Titel-Anzeigefeld degradiert.
+6. **EC-10 gewahrt ✅.** Hinweistext „Keine Norm-Klasse erfasst — Pflicht-Set kann nicht abgeleitet werden" (kein Freigabe-Wording). „Keine-Rolle"-Gate korrekt auf `!roleClass && !zusatzBewachungNiveau` umgestellt → Doppelrollen-only-Person (Verwaltung + Bewachung) verliert ihr Set **nicht**.
+7. **Test-Suite migriert + erweitert ✅.** Alle Slice-2/3-Szenarien auf `roleClass` umgestellt; neu: Szenario 7 (Subunternehmer → Bewachungs-Set + CL-42-Hinweis, kein FK-Quali), 8 (Praktikant → `p-reduziert` „fachlich prüfen"), 9 (keine Klasse → Hinweis, leeres Set). 27/27 grün am HEAD.
+
+### ⚠️ Mark-Hinweis (gewollt, aber wirksam — kein Defekt, kein Re-Bau)
+**Die Read-Migration klassifiziert bestehende „Einsatzleitung"-Akten von EK auf FK um.** Folge: Deren effektives Schulungs-Soll **steigt** (EK 16/40 → FK 24/64-Mechanik) und bei DIN-SDL erscheint zusätzlich der **CL-10 FK-Quali-Posten** („fachlich prüfen"). Das ist **genau Marks Gate-Entscheid (2026-06-08: „nur Einsatzleitung = FK")** und in Test 4c bewusst kodiert (vorher 40/kein FK-Aufschlag → jetzt 64 + CL-10). **Keine Daten gehen verloren — nur die Ableitung ändert sich.** Mark sollte wissen: nach dem Deploy zeigen vorhandene Einsatzleitungs-Akten ein höheres Soll + den CL-10-Prüfhinweis. Wer das nicht will, setzt `roleClass` explizit (Vorrang vor der Ableitung).
+
+### Minor (Beobachtung)
+- **`047878c` ist durch `e1899dd` überholt** (Einfach→Mehrfach-Klasse). Für künftige Reviews/Bauaufträge ist der HEAD-Stand `roleClasses`-Set maßgeblich, nicht das Einfachfeld aus diesem Commit.
+
+---
+
 ## 2026-06-08 — Queue C: lücken-getriebene Termin-Planung Schulungen, Commit `fbe1980` — **Planer-Review (unabhängig) → ABGENOMMEN**
 
 **Methode:** Unabhängiger Review des Feat-Commits `fbe1980` (10 Dateien) gegen `CURSOR_C_TERMINPLANUNG_AUFTRAG.md` (§3–§8) + `NORM_CROSSCHECK_SCHULUNGSKATALOG.md` + `CURSOR_SCHULUNGSKATALOG_PLANUNG.md` §9. Diff-Inspektion aller 10 Dateien + **eigenständige Re-Verifikation** (nicht nur Executor-Meldung): `tsc --noEmit` = **0**; `tsx --test` über die drei Suiten = **49/49 grün** (training-plan **12** + requirement-engine **27** + compliance-status **10**). Browser-Akzeptanz (geplant/überfällig/Ampel/Persistenz) = Executor-Verifikation nach etabliertem Muster übernommen.
