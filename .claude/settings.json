@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "deny": [
+      "Edit(cert-expert-certification-os/**)",
+      "Write(cert-expert-certification-os/**)"
+    ]
+  }
+}
