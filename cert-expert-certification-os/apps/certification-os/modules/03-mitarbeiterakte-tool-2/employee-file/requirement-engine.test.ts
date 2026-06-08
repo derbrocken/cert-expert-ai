@@ -298,6 +298,47 @@ test("Szenario 4c — Einsatzleitung (→fk, G4) Flüchtling/Asyl: 40 + 24 (= 64
   assert.equal(rule(res.pflichtSet, "q-fk-quali")?.clauseId, "CL-10");
 });
 
+// 4d. EK ÖPV → 40 UE einmalig (CL-29, §6.4)
+test("Szenario 4d — EK ÖPV: 40 UE einmalig (CL-29)", () => {
+  const res = deriveRequirements(
+    baseCtx({
+      roleClasses: ["ek"],
+      sdlScopes: ["din2-oepv"],
+    }),
+  );
+  const t = target(res.schulungsSoll, "sdl-oepv-base");
+  assert.equal(t?.ue, 40);
+  assert.equal(t?.clauseId, "CL-29");
+  assert.equal(t?.period, "einmalig");
+  assert.equal(target(res.schulungsSoll, "sdl-oepv-fk"), undefined);
+});
+
+// 4e. FK ÖPV → 40 (CL-29) + 16 UE Aufschlag (= 56, CL-30, §6.3)
+test("Szenario 4e — FK ÖPV: 40 (CL-29) + 16 UE (= 56) (CL-30)", () => {
+  const res = deriveRequirements(
+    baseCtx({
+      roleClasses: ["fk"],
+      sdlScopes: ["din2-oepv"],
+    }),
+  );
+  assert.equal(target(res.schulungsSoll, "sdl-oepv-base")?.ue, 40);
+  assert.equal(target(res.schulungsSoll, "sdl-oepv-base")?.clauseId, "CL-29");
+  assert.equal(target(res.schulungsSoll, "sdl-oepv-fk")?.ue, 16);
+  assert.equal(target(res.schulungsSoll, "sdl-oepv-fk")?.clauseId, "CL-30");
+});
+
+// 4f. Verwaltung + ÖPV → kein ÖPV-Soll (F3-Bewachung-Gate)
+test("Szenario 4f — Verwaltung + ÖPV: kein ÖPV-Schulungssoll (F3-Gate)", () => {
+  const res = deriveRequirements(
+    baseCtx({
+      roleClasses: ["verwaltung"],
+      sdlScopes: ["din2-oepv"],
+    }),
+  );
+  assert.equal(target(res.schulungsSoll, "sdl-oepv-base"), undefined);
+  assert.equal(target(res.schulungsSoll, "sdl-oepv-fk"), undefined);
+});
+
 // 5. Verwaltung → kein §34a-Set; Datenschutz/Verschwiegenheit aktiv
 test("Szenario 5 — Verwaltung: kein §34a-Set, Datenschutz/Verschwiegenheit aktiv", () => {
   const res = deriveRequirements(
