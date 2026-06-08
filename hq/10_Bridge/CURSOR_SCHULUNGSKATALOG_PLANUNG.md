@@ -58,5 +58,15 @@ Die Katalog-UE sind **scope-differenzierter** als das aktuelle Engine-Modell (he
 ## 6. Verhältnis zur „Tour"
 Diese drei Stränge gehören in die Rest-Tour (interne MVP-Vollendung) **nach** dem Norm-Cross-Check §4. Reihenfolge-Vorschlag: erst §4 (Cross-Check, read-only), dann Pt 2 (Modell), dann Pt 3 (Termin-Planung) + Pt 1 (Übersicht/Export). DEKRA/Legal/Phase 2 bleiben draußen.
 
+## 7. Uploads-Architektur (Ist, verifiziert im Code) — Antwort auf Marks Frage
+- **Strukturdaten** (Akte, Evidence-Metadaten, Status) → SQLite (`prisma/prisma/dev.db`). Tabelle `EvidenceItem` (storageKey, fileName, mimeType, **status `unchecked`**, uploadedAt) je `employeeFileId` × `evidenceId` (Nachweis-Slot).
+- **Dateien** → **Hetzner S3 (Cloud Object Storage)**, NICHT OneDrive. Schlüssel (`buildEvidenceKey`): **`cea/companies/{Firma}/evidence/{Person}/{Nachweis-Slot}/datei`** → es gibt also **bereits eine Pro-Person-Struktur**, sauber je Firma/Person/Slot.
+- **Tally-Uploads** importieren automatisch in dieselbe Struktur (`importEvidenceFiles`).
+- **`/uploads` (Upload Manager)** ist NUR für **Vorlagen/Firmendaten/Standard-Models** (`.docx`), nicht für Personen-Nachweise — anderer Pfad.
+- **🔎 Lücke (Trainings):** Heute gibt es nur **Sammel-Slots** „Schulungsnachweise" + „Unterweisungsnachweise" (je ein Eimer), **kein** eigener Slot/Ordner **pro einzelner Schulung aus dem Katalog (§3) mit eigenem Datum/Gültigkeit**. Genau das + die Termin-Planung (§5 Pt 3) ist der Bau-Bedarf.
+
+## 8. „Grüne Trainings-Übersicht ist weg" (Mark) — Regression prüfen
+- Mark vermisst die Ansicht, die **grün/nicht-grün je nach genug Schulung (UE Soll vs. Ist)** zeigt — vermutlich `EmployeeFileTrainingTargets.tsx` (UE-Anzeige Variante C, Soll/Ist-Balken). **Prüfen, ob G4/Slice 4 sie verdeckt/entfernt hat → wiederherstellen** (read-only Sicht), **ohne UE-Werte zu ändern** (UE-Werte erst nach Cross-Check §4). Gehört zur „fertigen Übersicht" (§5 Pt 1).
+
 ---
 **Guardrails:** keine erfundene Normpflicht (jede UE/Pflicht CL-belegt), EC-09/EC-10, kein Commit von `.env`/`.db`/Kundendaten. Verifikation im echten Browser.
