@@ -292,6 +292,25 @@ export async function createCompany(
   return { slug: row.slug, displayName: row.displayName };
 }
 
+/**
+ * Mitarbeiterzahl je Firma (für die Firmen-Übersicht). Eine `groupBy`-Query
+ * statt N Einzelabfragen. Firmen ohne Mitarbeiter fehlen im Ergebnis → der
+ * Aufrufer defaultet auf 0.
+ */
+export async function getEmployeeCountsByCompany(): Promise<
+  Record<string, number>
+> {
+  const groups = await prisma.employeeFile.groupBy({
+    by: ["companySlug"],
+    _count: { _all: true },
+  });
+  const counts: Record<string, number> = {};
+  for (const g of groups) {
+    counts[g.companySlug] = g._count._all;
+  }
+  return counts;
+}
+
 export async function listEmployeeFiles(companySlug: string): Promise<Employee[]> {
   await ensureCompaniesSeeded();
   const rows = await prisma.employeeFile.findMany({
