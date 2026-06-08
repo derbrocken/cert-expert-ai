@@ -23,6 +23,7 @@ import {
   type RequirementRow,
 } from "./employee-file-requirements";
 import { EmployeeFileStatusBadge } from "./EmployeeFileStatusBadge";
+import { EmployeeFilePflichtStatusPanel } from "./EmployeeFilePflichtStatusPanel";
 import { EmployeeFileEvidenceRow } from "./EmployeeFileEvidenceRow";
 import { EmployeeFilePersonRolleEditTable } from "./EmployeeFilePersonRolleEditTable";
 import { EmployeeFileTrainingTargets } from "./EmployeeFileTrainingTargets";
@@ -305,6 +306,13 @@ export const EmployeeFileDossierView: React.FC<EmployeeFileDossierViewProps> = (
           </dl>
         ) : null}
       </div>
+
+      {!evidenceEditMode ? (
+        <EmployeeFilePflichtStatusPanel
+          pflichtSet={summary.pflichtSet}
+          fristen={summary.fristen}
+        />
+      ) : null}
 
       <div className="grid gap-0 divide-y divide-[#e5e7eb]">
         {/* 1. Akte-Kern: Bedingung → Anforderung → Nachweis */}
