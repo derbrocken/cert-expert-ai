@@ -4,6 +4,36 @@
 
 ---
 
+## 2026-06-08 — Parallel-Dispatch: Lane A (ÖPV-Engine `aff20ea`) + Lane B (Audit-Export `45ea375`+`d0f7154`) — **Planer-Review (unabhängig) → BEIDE ABGENOMMEN, mergebereit**
+
+**Methode:** Unabhängiger Review der beiden disjunkten Lane-Branches gegen ihre Bauaufträge + `NORM_KLAUSEL_REGISTER_v1.md`. **Eigenständige Re-Verifikation je Branch** (nicht nur Executor-Meldung): Lane A auf `cursor/oepv-engine-schulungssoll` → `tsc --noEmit` **0** · Engine-Suite `tsx --test` **30/30**. Lane B auf `cursor/audit-export-lane-b` → `tsc --noEmit` **0** · Export-Unit-Tests **6/6** (XLSX+PDF). Diff-Inspektion beider Commits + Guardrail-Greps (Dangling-Ref, EC-10-Disclaimer, verbotene Dateien).
+
+> **Kontext:** Dispatch-Modell (`c5eb583`) — zwei Cursor-Agents, je eigener `cursor/*`-Branch, disjunkte Write-Sets, Planer-Merge-Gate nach `main`. Beide Branches gepusht (0 ahead origin). **Write-Sets verifiziert disjunkt:** Lane A nur `requirement-engine.ts`(+`.test.ts`); Lane B nur `EmployeeAutomationPage.tsx` + neue Export-/CopyButton-Dateien + `EmployeeFileOverview.tsx` + `package.json`/`-lock`. **Keine gemeinsame Datei → konfliktfreier Merge erwartet.**
+
+### Verdict
+**Lane A ABGENOMMEN · Lane B ABGENOMMEN.** Beide norm-/guardrail-konform, keine Blocker, kein Re-Bau. Drei nicht-blockierende Mark-Hinweise (unten). Merge nach `main` = Marks Gate.
+
+### Lane A — ÖPV-Schulungssoll (Engine, Commit `aff20ea`, 2 Dateien)
+1. **CL-belegtes Soll statt Platzhalter ✅.** Alter `sdl-oepv`-Eintrag (pflichtSet, `clauseId:null`, „fachlich prüfen") ersetzt durch `schulungsSoll`: `sdl-oepv-base` **40 UE einmalig CL-29** (§6.4) + bei FK `sdl-oepv-fk` **+16 UE einmalig CL-30** (§6.3, = 56 gesamt, additiv auf EK-Basis = Asyl-Muster CL-24/25). Werte **1:1 register-belegt** (`NORM_KLAUSEL_REGISTER_v1.md` Z. 36–37) — `aff20ea` ändert das Register **nicht**, zitiert nur vorab vom Planer belegte CL-IDs → Traceability intakt, **keine erfundene Pflicht**.
+2. **F3-Bewachungs-Gate ✅.** ÖPV-Soll jetzt `if (sdl.has("din2-oepv") && bewachung)` + FK in `if (fuehrung)` — konsistent mit der F3-Linie (SDL-UE-Soll an Bewachung gegatet). Test 4f (Verwaltung+ÖPV → kein Soll) belegt das Gate.
+3. **Invariante grün ✅.** Engine-Suite-Invariante („jede Regel ohne `clauseId` ist ‚fachlich prüfen'/‚nicht erforderlich'") bleibt 30/30 grün — die EC-10-/Keine-erfundene-Norm-Schranke hält. 3 neue Szenarien 4d (EK 40), 4e (FK 40+16), 4f (Gate) decken die neue Logik ab. Katalog-`hint` auf „40/56 UE einmalig (CL-29/30)" angeglichen.
+
+### Lane B — Audit-Export (Präsentation/Export, Commits `45ea375` Pt 1 + `d0f7154` Pt 2)
+1. **Single Source, keine Neuberechnung ✅.** Overview, XLSX und PDF lesen alle `getEmployeeFileSummary(...)`; `clauseId` je Zeile direkt aus der Summary übernommen, nichts neu abgeleitet. Keine Engine-/Norm-/UE-Datei im Diff (Grep bestätigt: `requirement-engine`/`employee-file-requirements`/`generate-employee-docs`/`EmployeeForm` **nicht** berührt).
+2. **EC-09 unberührt ✅.** Toggle „Vorzeige-/Audit-Ansicht" + `handleAuditExport` liegen **neben** dem ZIP-`handleGenerate` (unangetastet); Audit-Export nutzt dieselbe `batchSelectedIds`-Menge, keine zweite Selection-Logik. Download = bestehendes base64→Blob-Muster.
+3. **EC-10 in beiden Dateien ✅.** Disclaimer-Konstante „Rechnerischer Stand · … ungeprüft (unchecked) · keine Freigabe-/Auditfähigkeits-/Zertifizierungsaussage" in `audit-export-data.ts`, im XLSX-Kopf beider Blätter + PDF-Kopf jeder Seite gerendert; Ampel = „rechnerisch", nie „bestanden/freigegeben". `CopyButton.tsx` = reine UI (Clipboard-API + `execCommand`-Fallback), kein Datenfluss-Eingriff.
+4. **Deps + Tests ✅.** `exceljs` + `pdf-lib` (reine JS, kein Headless-Chromium → Hetzner-systemd-tauglich), `package-lock.json` mitcommittet. Unit-Tests 6/6: XLSX via `exceljs`-Reload gegengelesen (zwei Blätter, Disclaimer, Werte+clauseId, Detailzeile), PDF `%PDF`-Header + Sonderzeichen-/Mehrpersonen-/Leerauswahl-Robustheit.
+
+### ⚠️ Mark-Hinweise (nicht-blockierend, kein Re-Bau)
+- **(A) ÖPV-Norm-Lesart bestätigen + Cross-Check schließen.** `NORM_CROSSCHECK_SCHULUNGSKATALOG.md` führte „🔴 ÖPV ohne CL" als offene Norm-Frage. Mit CL-29 (40 UE, §6.4) / CL-30 (+16 = 56, §6.3) im Register ist die Lücke code-seitig geschlossen — **bitte die §6.3/§6.4-Lesart (EK 40 / FK +16 additiv) freigeben**, dann den Cross-Check-Punkt formal auf „erledigt" setzen.
+- **(A) Verwaltung + ÖPV erzeugt jetzt keine sichtbare Zeile mehr.** Vorher gab es einen „fachlich prüfen"-Platzhalter im Pflicht-Set; durch das F3-Gate verschwindet er für Nicht-Bewachungs-Rollen ganz (norm-konsistent, aber Sichtbarkeits-Änderung). Falls ein „Scope erfasst"-Marker für Verwaltung mit ÖPV-Scope gewünscht ist → kleiner Folge-Wunsch, kein Defekt.
+- **(B) Browser-/Download-Abnahme = Executor-verifiziert.** XLSX/PDF-Datei-Download löst einen OS-Dialog aus (vom Browser-Harness nicht automatisierbar) — die Builder sind unit-getestet, der Download nutzt das etablierte base64-Muster. Optional eine Live-Klick-Abnahme durch Mark (Datei öffnet in Excel/Reader, EC-10 sichtbar).
+
+### Merge-Empfehlung
+Beide Branches sind **mergebereit** (disjunkt, grün, guardrail-konform). Vorschlag: **Lane A zuerst** nach `main` (Engine-Basis), dann **Lane B** — bei Marks Freigabe. Der eine ungepushte Branch `cursor/din-77200-1-anforderungsprofile` (1 Commit ahead) ist hier nicht Teil des Dispatches und separat zu klären.
+
+---
+
 ## 2026-06-08 — G4 Phase 1: roleClass-Modell + Migration + Engine-Refactor, Commit `047878c` — **Planer-Review (unabhängig) → ABGENOMMEN (mit 1 Mark-Hinweis)**
 
 **Methode:** Unabhängiger Review des Feat-Commits `047878c` (11 Dateien) gegen `CURSOR_G4_AUFTRAG.md` v3 (Phase 1) + `NORM_MATRIX_Mitarbeiternachweise_v2.md` + `NORM_KLAUSEL_REGISTER_v1.md`. Diff-Inspektion (Engine, Repository, Schema, Validation, Stammdaten-Options, Test-Suite) + **eigenständige Re-Verifikation am aktuellen HEAD**: `tsc --noEmit` = **0**; Engine-Suite `tsx --test` = **27/27 grün**.
