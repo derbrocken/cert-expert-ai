@@ -11,7 +11,7 @@
 > **✅ STATUS (Executor, 2026-06-08): Read-only Akte-/Vorzeige-Übersicht (Queue B / Pt 1) = FERTIG + committet `ae477e8`** (tsc 0 · Engine 27/27 · EC-09-ZIP 200 + `UEsDBA`-Magic · Browser-Akzeptanz EK-Person). Neue `EmployeeFileOverview.tsx` + Toggle „Bearbeiten ↔ Übersicht". Reine Präsentation, EC-09/EC-10 gewahrt, nichts geparkt. Details unten „Von Cursor an Claude". **Nicht gepusht.**
 > **Branch = `main`** · COS: `cert-expert-certification-os/apps/certification-os/` · Port **3001**
 > **▶ NEUER ARBEITSMODUS (Mark, 2026-06-08):** EIN dauerhafter Planer/Status-Chat + **Subagent baut alles autonom** (kein separater Planer-Chat mehr). Gedächtnis = Repo. Neuer Chat liest `CLAUDE.md` + diese Box + `CURSOR_AUTONOMOUS_RUN_ORDER.md`.
-> **▶ JETZT — RESUME-PUNKT (Planer-Chat, 2026-06-08 ~18:10):** **Bau-Queue = `CURSOR_NAECHSTE_QUEUE.md`.** Stand: **A** Norm-Cross-Check ✅ (`NORM_CROSSCHECK_SCHULUNGSKATALOG.md`, Befunde: 🔴 Veranstaltung-FK 16 vs. 24 CL-20 · 🔴 ÖPV ohne CL · Module=Curriculum; 3 offene Norm-Fragen an Mark, blockieren C **nicht**). **B** read-only Übersicht ✅ **Planer-abgenommen** (`ae477e8`, tsc 0/Engine 27/27/EC-09 200/read-only verifiziert). **EK/FK** `e1899dd` ✅ abgenommen. **Commits (nicht gepusht):** `e1899dd` EK/FK · `ae477e8` Übersicht · `cc39e7f` Planer-Docs. **▶ NÄCHSTER BAU = C — Termin-Planung (lücken-getrieben):** Ist-UE/Lücke (Soll−Ist) je Person + gezielte Modul-/Teil-Zuweisung zum Lücke-Schließen, je mit Datum, speist Ampel. Geschäftslogik = `CURSOR_SCHULUNGSKATALOG_PLANUNG.md` §9 (Mark-Input). Norm bleibt CL-11 (Module füllen, ändern nicht). **Planer schreibt als Nächstes den C-Bauauftrag, dann Bot starten.** Danach D (Modell-Trennung, erst nach Mark-Klärung der Cross-Check-Fragen).
+> **▶ JETZT — RESUME-PUNKT (Planer-Chat, 2026-06-08 ~18:10):** **Bau-Queue = `CURSOR_NAECHSTE_QUEUE.md`.** Stand: **A** Norm-Cross-Check ✅ (`NORM_CROSSCHECK_SCHULUNGSKATALOG.md`, Befunde: 🔴 Veranstaltung-FK 16 vs. 24 CL-20 · 🔴 ÖPV ohne CL · Module=Curriculum; 3 offene Norm-Fragen an Mark, blockieren C **nicht**). **B** read-only Übersicht ✅ **Planer-abgenommen** (`ae477e8`, tsc 0/Engine 27/27/EC-09 200/read-only verifiziert). **EK/FK** `e1899dd` ✅ abgenommen. **Commits (nicht gepusht):** `e1899dd` EK/FK · `ae477e8` Übersicht · `cc39e7f` Planer-Docs. **▶ C — Termin-Planung (lücken-getrieben): ✅ FERTIG + committet `fbe1980` (Executor, 2026-06-08)** — tsc 0 · training-plan 12/12 · Engine 27/27 · compliance 10/10 · EC-09-ZIP 200 · Persistenz+Ampel browser-verifiziert; nur Nachweis-Klick (OS-Dateidialog) nicht harness-automatisierbar → unit-getestet + Evidence-Infra-Reuse. Details unten „Von Cursor an Claude". Detail-Auftrag = `CURSOR_C_TERMINPLANUNG_AUFTRAG.md` (neues `trainingPlan`-Json-Modell + DIN-1-Modul-Katalog als Lehrbausteine + Gap-Logik Soll−Ist + Plan→Ampel operativ + Nachweis-Slot je Zuweisung über bestehende Evidence-Infra). Norm bleibt CL-11 (Module füllen, ändern nicht; **kein Auto-Ist**; Engine/UE unberührt; EC-09/EC-10). Geschäftslogik = `CURSOR_SCHULUNGSKATALOG_PLANUNG.md` §9. **Bot baut autonom; Planer reviewt nach Bau.** Danach D (Modell-Trennung, erst nach Mark-Klärung der Cross-Check-Fragen).
 > **▶ NÄCHSTER BAU — EK/FK-Refinement (Mark entschieden, 2026-06-08):** Norm-Klasse soll **EK + FK FREI KOMBINIERBAR** machen (statt Entweder-oder). Pflicht-Set = **Vereinigung**; da **FK ⊇ EK** → **keine neue Normpflicht erfunden** (EK+FK = FK-Set, CL-10/CL-20/25 nur bei DIN-SDL). **Planer-Empfehlung (Mark: „entscheide du") = ZUSAMMENFÜHREN:** eine saubere **Norm-Klassen-Mehrfachauswahl**, in der das bestehende Feld „Zusätzliche Bewachung (Doppelrolle, EK/FK-Niveau)" **aufgeht** → EIN klarer Mechanismus statt zwei. **Berührt Slice-3-Engine + G4-`roleClass`-Modell** → Engine-Suite erweitern + **idempotente Migration** (Einfachauswahl + altes Doppelrolle-Niveau → neue Mehrfach-Klassen). **EC-09/EC-10 unberührt; Org-Titel bleibt reine Anzeige.** **✅ BAUFERTIG:** Bauauftrag steht → **`hq/10_Bridge/CURSOR_EKFK_REFINEMENT_AUFTRAG.md`** (Modell `roleClasses`-Set, Migration inkl. `zusatzBewachungNiveau`→Set, Engine-Set-Quelle, UI-Mehrfachauswahl, DoD, Kickoff-Prompt; UX-Defaults vom Planer gesetzt + überschreibbar). **▶ Neuer Chat: nur noch Subagent mit dem Kickoff-Prompt starten** (DoD: tsc 0 / Engine-Suite grün+erweitert / EC-09-ZIP 200 / Migration verifiziert).
 > **🟢 AUTONOMER BUILD LÄUFT JETZT (2026-06-08 ~15:50):** Executor-Subagent baut autonom in dieser Reihenfolge: **(1) EK/FK-Refinement** (`CURSOR_EKFK_REFINEMENT_AUFTRAG.md`) → **(2) G4-Phase-2-Delta** (`CURSOR_G4_AUFTRAG.md`) → **(3) Regression-Check „grüne UE-Soll/Ist-Übersicht"** (Mark: „weg" — Sichtbarkeit wiederherstellen, **keine UE-Werte ändern**). Er committet selbst + hängt Ergebnis-Einträge unten an. **Neuer Chat: erst dessen Einträge lesen, bevor du EK/FK neu startest.**
 > **▶ STATUS (Executor, 2026-06-08) — LAUF DURCH:** **(1) EK/FK-Refinement = FERTIG + committet + gepusht `e1899dd`** (tsc 0 · Engine 27/27 · EC-09-ZIP 200 · Migration live-verifiziert). **(2) G4-Phase-2-Delta** = unabhängig re-verifiziert → Ziel bereits durch `displayMode`-Architektur erfüllt → **geparkt** (offene A/B/C/D-Frage an Mark, kein Generator-Umbau ohne reviewtes Delta). **(3) Regression grüne UE-Soll/Ist-Übersicht** = diagnostiziert → **KEINE Rendering-Regression** (G4 fasst DossierView nicht an; Slice 4 rein additiv; Karte rendert live bei EK/FK). Sichtbarkeit ist bewachung-/norm-logik-gegatet (F3) → nicht ohne Norm-Entscheid „aufdrehbar" → **als präzise Frage geparkt** (welche Person? Norm-Klasse EK/FK setzen). Details + Belege unten „Von Cursor an Claude" (2026-06-08).
@@ -49,6 +49,29 @@
 > **Danach (Scope/Planung, NICHT Review):** Executor-FRAGE „**Anlege-Formular auf neues Requirement-Modell migrieren?**" (Legacy `EmployeeForm.tsx`/Tool-1-Modell vs. neues Akte-Modell) als **eigenen Slice** mit Mark abwägen. Plus offene Fäden: **Slice 3b** (Tally-Formular-Feldlücke, gated auf Marks Tally-Arbeit), **Slice 4** (Ampel-/Status-Ansicht, QFD #1), DEKRA (CL-60–62), Legal-Input (CL-70–73), Ist-UE-Auto-Summe.
 >
 > **Guardrails:** EC-09 (Generator/ZIP nie brechen), EC-10 (kein Freigabe-/Auditfähigkeitsstatus), keine erfundene Normpflicht (jede Regel `clauseId`). Verifikation im echten Browser, nicht per Skript. Mark = Gate. Nach stabilem Punkt: Übergabe-Takt + Abschluss-Eintrag.
+
+---
+
+## 🔚 ABSCHLUSS-EINTRAG — Planer: Queue C (Termin-Planung, lücken-getrieben) — Bauauftrag baufertig + Bot gestartet, 2026-06-08
+
+**Rolle:** Planer/Reviewer (Spur P, kein Produktivcode). Aufgabe: den C-Bauauftrag (Termin-Planung, gap-driven nach `CURSOR_SCHULUNGSKATALOG_PLANUNG.md` §9) schreiben und den Bot dafür starten.
+
+**Fertig (nur Bridge-Doku, kein Code):**
+- **`CURSOR_C_TERMINPLANUNG_AUFTRAG.md`** geschrieben — baufertig. Kern: C ist **lücken-getrieben**, nicht nur „Datum setzen": Soll−Ist−Lücke je Person sichtbar + gezielte Modul-Zuweisung (DIN-1-Lehrbausteine §3) zum Lücke-Schließen, je mit Datum (Bulk + Override) + eigenem Nachweis-Slot, speist die Ampel (geplant/überfällig/Nachweis) operativ.
+- **Norm-Leitplanken gegen Cross-Check verdrahtet:** Soll bleibt **CL-11 (40/24)**; Module = **Lehrbausteine, kein Norm-Soll** (Cross-Check §2.1); **kein Auto-Ist** (Ist-UE-Auto-Summe ist geparkt = Queue E); ÖPV/Veranstaltung-FK-Konflikte **nicht** angefasst (C ist UE-neutral); EC-09/EC-10 hart.
+- **Architektur-Entscheide (Planer, gegen Code verifiziert):** neues `trainingPlan: Json?`-Feld nach `einmaligIstUE`-Muster (SQLite-P2023-sicher, alle 4 Repo-Mapping-Stellen + Read-Normalisierung); Engine **unberührt**; Plan→Ampel via Daten-Merge an der Aufrufstelle (kein `compliance-status.ts`-Logikeingriff); Nachweis-Slot über bestehende Evidence-Infra (`evidenceId = training-plan:{id}`, kein neues Storage-Modell).
+- HANDOFF HIER-STARTEN + `CURSOR_NAECHSTE_QUEUE.md` (C-Abschnitt) auf „Bauauftrag steht + Bot gestartet" gekippt.
+
+**Verdict:** **C ist baufertig.** Kein offenes Planer-Gate für C (UE-neutral → Cross-Check blockiert nicht). Bot baut autonom.
+
+**Offen / nächster Schritt:**
+1. **Bot:** baut `CURSOR_C_TERMINPLANUNG_AUFTRAG.md` (§3–§7), hält §8-DoD (tsc 0 / neue + bestehende Suiten grün / EC-09-ZIP 200 / Persistenz + Ampel im Browser / Engine+UE unverändert), committet, hängt Ergebnis-Eintrag an.
+2. **Planer (nach Bau):** C-Review (besonders: Engine/UE wirklich unberührt? Repository-Mapping vollständig? Ampel-Merge EC-10-konform?).
+3. **Danach:** D (Modell-Trennung Bestellung/Schulung/Unterweisung + Brandschutz-Regel) — erst nach Mark-Klärung der Cross-Check-Norm-Fragen (§4: Veranstaltung-FK 16/24, ÖPV-CL, Modul-Bestätigung).
+
+**Commit-Basis:** Produktivcode unverändert (`e1899dd`). Diese Session = nur Bridge-Doku (`CURSOR_C_TERMINPLANUNG_AUFTRAG.md`, `HANDOFF.md`, `CURSOR_NAECHSTE_QUEUE.md`).
+
+✅ **Stabiler Punkt** — C-Bauauftrag steht, Bot läuft; guter Zeitpunkt für Bridge-Doku-Commit. Warten auf Bot-Ergebnis, dann Planer-Review.
 
 ---
 
@@ -205,6 +228,27 @@
 ---
 
 ## 📥 Von Cursor an Claude (Fragen / Bitten)
+
+### 2026-06-08 — ✅ Executor: Queue C — lücken-getriebene Termin-Planung Schulungen FERTIG + COMMITTET (`fbe1980`)
+
+**Gebaut (exakt nach `CURSOR_C_TERMINPLANUNG_AUFTRAG.md` §3–§7, kein Scope-Zusatz):**
+- **§3 Datenmodell:** `trainingPlan Json?` am `EmployeeFile` (Prisma) + `TrainingPlanItem`-Typ (`types/employee.ts`). Repository liest/schreibt tolerant (`asTrainingPlan` normalisiert; Bestandsakten ohne Feld → `[]`, **kein P2023**) an allen 4 Write-Stellen.
+- **§4 `training-catalog.ts`:** DIN-1-Module als **Lehrbausteine** (CL-11, UE rein informativ — **kein eigener Norm-UE/Soll**). `findCatalogModule`-Helper.
+- **§5 `training-plan.ts`:** Gap-Logik `computeTrainingGaps` (Soll−Ist=Rest, nie negativ, null→null), `derivePlanItemStatus` (nachweis-vorhanden > ueberfaellig > geplant > ohne-datum), `planStatusToWorkingItemStatus`, `planEvidenceId` (`training-plan:{id}`), `buildPlanDeadlineRows`. **+ `training-plan.test.ts` 12/12 grün.**
+- **§6 Plan→Ampel operativ:** Plan-Fristen in DossierView **und** read-only Übersicht in `summary.fristen` gemergt → Ampel reagiert. **Engine/UE/Pflicht-Set unberührt** (kein Import-/Logik-Eingriff in `requirement-engine.ts`).
+- **§7 UI `EmployeeFileTrainingPlan.tsx`:** gap-getrieben (Lücke je Soll-Posten), Zuweisung Katalog-Modul + Soll-Posten, **Bulk-Datum + Einzel-Override**, **Nachweis-Slot je Eintrag** über bestehende Evidence-Infra (Upload/Entfernen, `evidenceId=training-plan:{id}`). Read-only-Modus ohne `onSave` (Inputs disabled).
+
+**Gates (DoD §8):**
+- `tsc --noEmit` = **0**.
+- Tests: training-plan **12/12** · requirement-engine **27/27** · compliance-status **10/10** (alle via `npx tsx --test`).
+- **Browser :3001 verifiziert** (Wolf Street / Peter BOnd): Katalog-Modul + Soll-Posten zuweisen, Einzel-Override → „geplant", Bulk-Datum „Datum für alle" → beide „geplant", Vergangenheitsdatum → „überfällig" + Ampel „Nächste Frist/Überfällig" rot. **Persistenz über Reload erhalten** (`trainingPlan` in DB). Read-only Übersicht zeigt Plan + Lücke + Status (Inputs disabled), Ampel identisch, EC-10-Disclaimer da.
+- **EC-09-Smoke:** realer „ZIP exportieren"-Klick → `POST /employee-automation` **200** (~800 ms echte Generierung, kein 5xx). Generator-Code unangetastet.
+- Prisma `generate` + `db push` mit `DATABASE_URL=file:./prisma/dev.db`. **DB nicht committet.**
+- Commit `fbe1980` = genau 10 Dateien (8 Code + `prisma/schema.prisma` + `types/employee.ts`); **kein** `.env`/`.db`/`hq/03_Kundenprojekte/**`.
+
+**1 Verifikations-Hinweis (kein Defekt, kein geparkter Scope):** Der **Nachweis-Upload-Klick** öffnet einen **OS-Dateidialog**, der vom Browser-Automations-Harness nicht bedienbar ist (Input/File-Input-CDP gesperrt). Die „Nachweis-vorhanden → grün"-Logik ist **unit-getestet** (`derivePlanItemStatus` + Mapping) und nutzt die **identische, in früheren Slices browser-verifizierte Evidence-Infra** (gleiche S3-Action, nur `evidenceId`-Konvention neu). Slot/Buttons live sichtbar + verdrahtet. Falls Mark eine Live-Klick-Abnahme des Uploads will → manuell oder anderes Harness.
+
+**Geparkt (Norm/Scope):** nichts — §3–§7 vollständig, keine Norm-Zweifel aufgetreten.
 
 ### 2026-06-08 — ✅ Executor: Read-only Akte-/Vorzeige-Übersicht (Queue B / Pt 1) FERTIG + COMMITTET (`ae477e8`)
 
