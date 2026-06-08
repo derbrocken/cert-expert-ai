@@ -4,6 +4,24 @@
 
 ---
 
+## 2026-06-08 — Slice 4: rechnerischer Pflicht-Status (Ampel), Commit `2261d26` — **Executor-Selbst-Review** (autonomer Lauf)
+
+**Methode:** Eigen-Review von `2261d26` (4 Dateien) gegen Run-Order §4.4 (Slice 4) + EC-10. `tsc` 0; neue Suite `compliance-status.test.ts` **10/10**; Engine-Suite **24/24** (keine Regression); **EC-09-ZIP `POST /employee-automation` 200** (375 ms, Generator unberührt); Browser: Panel rendert auf blubermann-Akte (rot „Offen — kritische Posten", 2 kritisch).
+
+### Verdict
+**Selbst-abgenommen (Slice 4).** Additiver, rein rechnerischer Status; EC-10 hart gewahrt; keine neue Normpflicht. Kein Blocker.
+
+### Review-Punkte
+1. **Nur bestehende Engine-Stati aggregiert ✅.** `computeComplianceStatus` mappt `pflichtSet`+`fristen` (clauseId-belegt) auf Severität (kritisch/offen/erfüllt/neutral). Keine neue CL/UE/Pflicht.
+2. **EC-10 hart ✅.** Gesamtzustand max. „rechnerisch vollständig (ungeprüft)" — **nie** „freigegeben/auditfähig/zertifiziert" (per Test `assert.doesNotMatch(/freigegeben|auditf|zertifiz/i)`). Disclaimer im Panel: „Eingehende Nachweise gelten als ungeprüft." `nicht erforderlich` zählt nicht als relevant.
+3. **EC-09 unberührt ✅.** Änderung nur in `EmployeeFileDossierView` (+ reine `compliance-status.ts` + Panel). Generator/Action nicht angefasst; ZIP 200 verifiziert.
+4. **Reine Funktion + Tests ✅.** `compliance-status.ts` React-frei, erschöpfende `severityOf`-Switch (never-Guard), 10 Tests (leer/neutral/kritisch-dominiert/in-arbeit/vollständig/überfällig-Priorisierung/frühestes-Datum). Panel nur im Read-Modus (nicht im evidenceEditMode).
+
+### Minor (Beobachtung)
+- Panel aggregiert das **Engine-Pflicht-Set** (CL-belegt), nicht die heuristischen Presenter-Rows (`pflichtnachweise`/`schulungUnterweisung`) — bewusst, um sauber CL-belegt zu bleiben. Falls Mark die Ampel über *alle* Dossier-Posten will, ist das eine spätere Erweiterung (Scope-Frage, kein Bug).
+
+---
+
 ## 2026-06-08 — G4 Phase 1: roleClass-Modell + Migration + Engine-Refactor + schlankes Anlege-Formular, Commit `047878c` — **Executor-Selbst-Review** (autonomer Lauf)
 
 **Hinweis Rollenkontrakt:** Dies ist ein **Executor-Selbst-Review** unter Marks autonomer Vollmacht (Run-Order §2/§7), kein unabhängiger Planer-Review. Ein unabhängiger Planer-Review (Engine-Refactor + Migration besonders) bleibt empfohlen.

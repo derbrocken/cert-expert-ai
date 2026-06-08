@@ -9,7 +9,7 @@
 
 > ## ▶ HIER STARTEN — AKTUELLER STAND (2026-06-07)
 > **Branch = `main`** · COS: `cert-expert-certification-os/apps/certification-os/` · Port **3001**
-> **▶ AUTONOMER LAUF WIEDER AKTIV (2026-06-08 ~02:25, „Run Everything").** **G4 Phase 1 = FERTIG + COMMITTET `047878c`** (tsc 0 ✅ / Engine-Suite 24/24 ✅ / **EC-09-ZIP browser-verifiziert: `POST /employee-automation` 200** ✅ / Read-Migration live: blubermann→verwaltung, Neuanlage FK→`roleClass=fk` persistiert ✅). Selbst-Review in `CODE_REVIEW.md` (oben). **Nächster Queue-Punkt: G4 Phase 2** (Doc-Auswahl→Generator-Tab, EC-09-Hauptrisiko) → dann Slice 4 (Ampel/Status, EC-10 nur rechnerisch) → Resttechnik. Details: unten „Von Cursor an Claude", Eintrag 2026-06-08.
+> **⏹️ AUTONOMER LAUF — END-OF-RUN (2026-06-08, „Run Everything").** **Erledigt + committet:** G4 Phase 1 `047878c` · Bridge/Self-Review `dcbd0d5` · Slice 4 (Ampel/Status) `2261d26`. Alle Gates grün (tsc 0 / Engine-Suite 24/24 / Slice-4-Suite 10/10 / **EC-09-ZIP 200**). **Geparkt (mit präziser Frage):** G4 Phase 2 (Doc-Auswahl liegt bereits im Generator-Tab → konkretes Rest-Delta klären, `CURSOR_G4_PHASE2_AUFTRAG.md`) · Resttechnik (Ist-UE-Auto-Summe braucht neues Nachweis-UE-Datenmodell; DB-Doppelpfad = riskanter Infra-Refactor → Mark-Gate). **Empfohlen als Nächstes:** unabhängiger Planer-Review von `047878c`+`2261d26`, dann Phase-2-Delta entscheiden. Vollständige End-of-Run-Summary: unten.
 > **🤖 AUTONOMER DAUERLAUF AKTIV (Mark-Vollmacht, 2026-06-08, bis Montagnachmittag):** Betriebsanleitung = **`hq/10_Bridge/CURSOR_AUTONOMOUS_RUN_ORDER.md`**. Ein Executor baut die Queue (G4 P1 → P1-Review → G4 P2 → Slice 4 → Resttechnik) **eigenständig**, reviewt sich selbst, **committet autonom** nach grüner Verifikation (tsc 0 / Suite / EC-09-ZIP 200). Harte Grenzen bleiben: EC-09/EC-10/keine erfundene Normpflicht/kein `.env`/`.db`/Kundendaten-Commit. **Frischer Chat: lies zuerst den Run-Order + Kickoff-Prompt dort.** Bug-Fixer läuft parallel (rebase, kein force).
 > **Phase = Slice 3 (Doppelrollen, Niveau EK/FK) gebaut + committet (`a276d38`) ✅ — von Planer 6 REVIEWT + ABGENOMMEN ✅.**
 > **Arbeitsmodell:** Planer/Claude führt (plant + reviewt) · Executor/Cursor baut · Ping-Pong über Bridge-Dateien (Mark, 2026-06-07). Planer rotiert seltener als Executor.
@@ -198,6 +198,35 @@
 ---
 
 ## 📥 Von Cursor an Claude (Fragen / Bitten)
+
+### 2026-06-08 — ⏹️ END-OF-RUN-SUMMARY (Executor autonomer Lauf, §7 Run-Order)
+
+**Lauf-Bilanz:** 3 Slices gebaut/verifiziert/committet, 2 Punkte sauber geparkt. Alle Commits = nur Code + Bridge-Doku, explizite Pathspecs, **keine** `.env`/`.db`/Kundendaten (jeweils via `git show --name-only` geprüft). Nicht gepusht (Mark pusht/deployt selbst).
+
+**Commits (chronologisch):**
+| Hash | Was | Gate |
+|---|---|---|
+| `047878c` | **G4 Phase 1** — `roleClass`-Norm-Klasse-Modell (ek/fk/verwaltung/praktikant/sub) als primärer Engine-Input; Org-Titel (`roleType`) = Anzeige; idempotente Read-Migration; Engine-Refactor; schlankes Anlege-Formular; 11 Code-Dateien. | tsc 0 · Engine 24/24 · EC-09-ZIP 200 · Migration live (blubermann→verwaltung, Neuanlage FK persistiert) |
+| `dcbd0d5` | **Bridge** — HANDOFF-Abschluss + Executor-Selbst-Review G4 P1 in `CODE_REVIEW.md`. | docs |
+| `2261d26` | **Slice 4** — rechnerischer Pflicht-Status (Ampel) im Dossier: aggregiert Engine-Stati (pflichtSet+fristen) → offen/in-arbeit/rechnerisch-vollständig + Severitäts-Zähler + nächste/überfällige Frist; reine `compliance-status.ts` + 10 Tests; EC-10-Disclaimer. 4 Dateien. | tsc 0 · Slice-4-Suite 10/10 · Engine 24/24 · EC-09-ZIP 200 (Generator unberührt) |
+
+**Pro Queue-Punkt:**
+1. **G4 Phase 1 — ✅ fertig** (`047878c`). Browser-verifiziert (FK-Neuanlage + Verwaltung-Migration + Dossier-Recompute); restliche Klassen/Doppelrolle durch 24-Test-Suite gedeckt.
+2. **G4-Phase-1-Selbst-Review — ✅ fertig** (`CODE_REVIEW.md`, `dcbd0d5`). **Empfehlung: unabhängiger Planer-Review** (Engine-Refactor + Migration) — bisher nur Executor-Selbst-Review.
+3. **G4 Phase 2 — ⏸️ GEPARKT** (`CURSOR_G4_PHASE2_AUFTRAG.md`). **Befund:** Doc-Auswahl liegt durch die `displayMode="documents"`-Architektur **bereits im Generator-Tab** (nicht mehr im Anlege-Schritt) → Phase-2-Ziel (Gate b) scheint erfüllt. **Präzise Frage an Mark/Planer:** welches konkrete Rest-Delta soll Phase 2 liefern (Batch-Export-Doc-Auswahl? globaler Generator? UX-Feinheit?)? Nicht ins EC-09-kritische Generator gebaut ohne klares, reviewtes Ziel.
+4. **Slice 4 (Ampel/Status) — ✅ fertig** (`2261d26`). EC-10 hart eingehalten (nie „freigegeben/auditfähig").
+5. **Resttechnik — ⏸️ GEPARKT.** **(a) Ist-UE-Auto-Summe:** braucht ein **neues strukturiertes Nachweis-mit-UE-Datenmodell** (Nachweise sind heute nur Datei-Uploads ohne UE-Wert; Ist-UE wird manuell erfasst) → eigener norm-sensibler Slice, kein kleiner Refactor. **(b) DB-Doppelpfad** (`prisma/prisma/dev.db` vs `prisma/dev.db`): riskanter Infra-/Config-Refactor (`DATABASE_URL`), EC-09-Risiko → **Mark-Gate** empfohlen, nicht unbeaufsichtigt.
+
+**Offene Fragen für Mark (gebündelt):**
+- **F1 (Phase 2):** Konkretes Rest-Delta bestätigen — siehe `CURSOR_G4_PHASE2_AUFTRAG.md` §3 (A/B/C/D).
+- **F2 (Review):** Unabhängigen Planer-Review von `047878c` (+ `2261d26`) vor weiterer Bautätigkeit?
+- **F3 (Resttechnik):** Ist-UE-Auto-Summe = eigenen Slice mit Nachweis-UE-Datenmodell aufsetzen? DB-Doppelpfad-Vereinheitlichung freigeben (eigenes Fenster, EC-09-Smoke davor/danach)?
+
+**Nächster empfohlener Schritt:** (1) Planer-Review G4 P1 + Slice 4 → (2) Phase-2-Delta entscheiden (F1) → (3) ggf. Nachweis-UE-Datenmodell-Slice. Dev-DB-Hinweis: Test-Akte „G4 Testperson" wurde entfernt; blubermann trägt jetzt persistiert `roleClass=verwaltung` (legitime Migration).
+
+**Tech-Stand:** HEAD = `2261d26`. Untracked Bridge-Doku noch zu committen: `CURSOR_G4_PHASE2_AUFTRAG.md` (mit diesem Bridge-Commit). Fremd-gestaged/untracked (NICHT von mir): `hq/03_Kundenprojekte/**` (Kundendaten), `hq/10_Bridge/AUTONOMER_BAU_AUSBLICK.md` (Generalist).
+
+---
 
 ### 2026-06-08 — ✅ Executor: G4 Phase 1 FERTIG + COMMITTET `047878c` + Selbst-Review (autonomer Lauf, „Run Everything")
 
