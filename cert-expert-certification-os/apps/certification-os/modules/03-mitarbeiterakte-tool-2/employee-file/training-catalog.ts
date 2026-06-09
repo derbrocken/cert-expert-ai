@@ -61,3 +61,34 @@ export const TRAINING_CATALOG: TrainingCatalogModule[] = [
 export function findCatalogModule(id: string): TrainingCatalogModule | undefined {
   return TRAINING_CATALOG.find((m) => m.id === id);
 }
+
+/**
+ * #5 UE-Anerkennung (Variante C) — Best-Effort-Extraktion eines UE-Werts aus
+ * einem **extern** hochgeladenen Schulungsnachweis (z. B. Dateiname oder
+ * extrahierter Text-Schnipsel). Reine **Heuristik** — der Treffer ist NUR ein
+ * Vorschlag (`unchecked`) und wird erst nach fachlicher Bestätigung anerkannt
+ * (siehe `TrainingPlanItem.ueBestaetigt`). **Keine Auto-Anerkennung (EC-10).**
+ *
+ * Erkennt einfache Muster wie „40 UE", „24 Unterrichtseinheiten", „16 UE.",
+ * groß-/kleinschreibungs- und trennzeichen-tolerant. Liefert `null`, wenn kein
+ * plausibler Wert gefunden wird (dann bleibt der Vorschlag leer → kein Auto-Ist).
+ *
+ * Bewusst NICHT: kein PDF-Parsing, keine Norm-Wertung, keine erfundenen UE —
+ * nur das, was wörtlich im übergebenen Text steht.
+ */
+export function extractUeFromText(text: string | null | undefined): number | null {
+  if (typeof text !== "string" || text.length === 0) return null;
+  // „<Zahl> UE" / „<Zahl> Unterrichtseinheit(en)" — Zahl direkt vor der Einheit.
+  const re = /(\d{1,3})\s*(?:ue\b|unterrichtseinheit(?:en)?\b)/gi;
+  let best: number | null = null;
+  let m: RegExpExecArray | null;
+  while ((m = re.exec(text)) !== null) {
+    const n = Number(m[1]);
+    if (Number.isFinite(n) && n > 0 && n <= 999) {
+      // Bei mehreren Treffern den größten plausiblen Wert vorschlagen
+      // (Gesamt-UE steht i. d. R. als höchste Zahl auf dem Nachweis).
+      if (best === null || n > best) best = n;
+    }
+  }
+  return best;
+}

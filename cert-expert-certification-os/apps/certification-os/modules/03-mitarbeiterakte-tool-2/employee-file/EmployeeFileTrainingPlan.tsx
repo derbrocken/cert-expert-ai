@@ -18,9 +18,12 @@ import {
   computeTrainingGaps,
   derivePlanItemStatus,
   planEvidenceId,
+  attachExternerUeVorschlag,
+  setUeBestaetigt,
+  recognizedUe,
   type PlanItemStatus,
 } from "./training-plan";
-import { TRAINING_CATALOG } from "./training-catalog";
+import { TRAINING_CATALOG, extractUeFromText } from "./training-catalog";
 
 /**
  * Termin-Planung Schulungen (Queue C) — gap-getriebener Planungsbereich.
@@ -116,6 +119,10 @@ export const EmployeeFileTrainingPlan: React.FC<
           label: mod.label,
           ue: mod.ue,
           clauseId: mod.clauseId,
+          // #5 — eigene Cert-Expert-Schulung: Katalog-UE bekannt → automatisch
+          // anerkannt (keine Unterschrift, Schulungsnachweis ≠ Unterweisung).
+          // Fließt über CL-27-Anrechnung in den Ist-Wert (Lücke verkleinert sich).
+          ueAnerkennung: "eigen-katalog",
         };
       }
     } else if (selection.startsWith("soll:")) {
@@ -156,6 +163,34 @@ export const EmployeeFileTrainingPlan: React.FC<
   const handleRemove = (item: TrainingPlanItem) => {
     onEvidenceRemove?.(planEvidenceId(item.id));
     writePlan(plan.filter((p) => p.id !== item.id));
+  };
+
+  /**
+   * #5 — externer Upload an einem Plan-Eintrag: Nachweis hochladen (bestehende
+   * Evidence-Infra) **und** UE best-effort aus dem Dateinamen extrahieren. Der
+   * Treffer bleibt **Vorschlag/`unchecked`** (EC-10), bis er fachlich bestätigt
+   * wird. Eigen-Katalog-Einträge (UE bereits bekannt) werden NICHT überschrieben.
+   */
+  const handlePlanUpload = (item: TrainingPlanItem, file: File) => {
+    onEvidenceUpload?.(planEvidenceId(item.id), file);
+    if (!onSave) return;
+    if (item.ueAnerkennung === "eigen-katalog") return; // UE bekannt — kein Vorschlag.
+    const vorschlag = extractUeFromText(file.name);
+    if (vorschlag === null && item.ueAnerkennung !== "extern") return;
+    writePlan(
+      plan.map((p) =>
+        p.id === item.id
+          ? attachExternerUeVorschlag(p, vorschlag, file.name)
+          : p,
+      ),
+    );
+  };
+
+  /** #5 — fachliche Bestätigung/Rücknahme eines externen UE-Vorschlags (EC-10). */
+  const handleConfirmVorschlag = (item: TrainingPlanItem, confirmed: boolean) => {
+    writePlan(
+      plan.map((p) => (p.id === item.id ? setUeBestaetigt(p, confirmed) : p)),
+    );
   };
 
   return (
@@ -315,6 +350,14 @@ export const EmployeeFileTrainingPlan: React.FC<
                         ? "Lehrbaustein — kein eigener Norm-UE-Wert"
                         : `Soll-Posten${item.clauseId ? ` · ${item.clauseId}` : ""}`}
                     </p>
+                    {/* #5 — UE-Anerkennung (Variante C) */}
+                    <UeAnerkennungInfo
+                      item={item}
+                      editable={editable}
+                      onConfirm={(confirmed) =>
+                        handleConfirmVorschlag(item, confirmed)
+                      }
+                    />
                   </div>
                   <span
                     className={`inline-flex shrink-0 rounded-md border px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide ${pill.cls}`}
@@ -337,12 +380,14 @@ export const EmployeeFileTrainingPlan: React.FC<
                     />
                   </label>
 
-                  {/* Nachweis-Slot (bestehende Evidence-Infra) */}
+                  {/* Nachweis-Slot (bestehende Evidence-Infra). Upload läuft über
+                      handlePlanUpload → speichert Datei + extrahiert externen
+                      UE-Vorschlag (best-effort, unchecked bis Bestätigung, #5). */}
                   <PlanEvidenceSlot
                     evidenceId={evidenceId}
                     stored={stored}
                     editable={editable}
-                    onUpload={onEvidenceUpload}
+                    onUpload={(_id, file) => handlePlanUpload(item, file)}
                     onRemove={onEvidenceRemove}
                   />
 
@@ -456,4 +501,81 @@ const PlanEvidenceSlot: React.FC<PlanEvidenceSlotProps> = ({
       </button>
     </>
   );
+};
+
+interface UeAnerkennungInfoProps {
+  item: TrainingPlanItem;
+  editable: boolean;
+  onConfirm: (confirmed: boolean) => void;
+}
+
+/**
+ * #5 UE-Anerkennung (Variante C) — kompakte Statuszeile je Plan-Eintrag:
+ *  - **Eigen-Katalog:** UE bekannt → automatisch anerkannt, fließt in den
+ *    Ist-Wert (CL-27). Keine Unterschrift, keine Bestätigung nötig.
+ *  - **Extern:** best-effort extrahierter UE-Vorschlag — bleibt `unchecked`
+ *    (Vorschlag) bis zur **fachlichen Bestätigung** (bewusster Klick, EC-10).
+ *    Erst dann zählt er für den Ist-Wert.
+ */
+const UeAnerkennungInfo: React.FC<UeAnerkennungInfoProps> = ({
+  item,
+  editable,
+  onConfirm,
+}) => {
+  if (item.ueAnerkennung === "eigen-katalog") {
+    const ue = recognizedUe(item);
+    return (
+      <p className="mt-1 text-[10px] text-green-700">
+        Eigene Cert-Expert-Schulung — {ue} UE automatisch angerechnet (CL-27),
+        keine Unterschrift.
+      </p>
+    );
+  }
+
+  if (item.ueAnerkennung === "extern") {
+    const bestaetigt = item.ueBestaetigt === true;
+    const hatVorschlag =
+      typeof item.ueVorschlag === "number" && item.ueVorschlag > 0;
+    return (
+      <div className="mt-1 flex flex-wrap items-center gap-2">
+        {hatVorschlag ? (
+          <span
+            className={`inline-flex items-center rounded border px-1.5 py-0.5 text-[10px] font-medium ${
+              bestaetigt
+                ? "border-green-200 bg-green-50 text-green-800"
+                : "border-violet-200 bg-violet-50 text-violet-900"
+            }`}
+          >
+            {bestaetigt
+              ? `${item.ueVorschlag} UE bestätigt (angerechnet)`
+              : `Vorschlag: ${item.ueVorschlag} UE — fachlich prüfen (ungeprüft)`}
+          </span>
+        ) : (
+          <span className="inline-flex items-center rounded border border-[#e5e7eb] bg-[#fafbfc] px-1.5 py-0.5 text-[10px] text-[#6b7280]">
+            Kein UE-Wert erkannt — fachlich prüfen
+          </span>
+        )}
+        {editable && hatVorschlag ? (
+          <button
+            type="button"
+            onClick={() => onConfirm(!bestaetigt)}
+            className={`rounded-md border px-2 py-0.5 text-[10px] font-semibold ${
+              bestaetigt
+                ? "border-[#e5e7eb] text-[#6b7280] hover:border-amber-300 hover:text-amber-700"
+                : "border-green-300 bg-green-50 text-green-800 hover:bg-green-100"
+            }`}
+            title={
+              bestaetigt
+                ? "Bestätigung zurücknehmen (Ist-Beitrag entfällt)"
+                : "UE-Wert fachlich bestätigen → fließt in den Ist-Wert"
+            }
+          >
+            {bestaetigt ? "Bestätigung zurücknehmen" : "Fachlich bestätigen"}
+          </button>
+        ) : null}
+      </div>
+    );
+  }
+
+  return null;
 };
