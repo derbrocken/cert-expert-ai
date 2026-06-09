@@ -4,6 +4,17 @@
 
 ---
 
+## 2026-06-09 — In-Chat-Dispatch v5 (Einzel-Lane): Lane H (Manueller Upload `6669fcb`) — **Planer-Review → ABGENOMMEN, gemergt (`3344b71`)**
+
+**Verifiziert:** Write-Set sauber (DossierView, EvidenceRow, TrainingPlan — kein Engine/Tally/Generator/Form), `tsc` 0, Suite 71/71, EC-09 (bestehende Evidence-Action wiederverwendet, ZIP unberührt), EC-10 (`unchecked`).
+
+**Gebaut:** „Schulung & Unterweisung"-Sektion im Dossier von read-only auf **uploadbar je Position** umgestellt (Slot-Konvention `unterweisung:{id}`); Upload-/Entfernen je relevantem Slot (Pflichtnachweise/Unterweisungen/Standarddok/Bestellungen/Training-Plan) über die bestehende Infra (kein neues Storage-Modell). **Unterschrifts-Logik sichtbar:** Badge „unterschriftspflichtig" (Unterweisungen/Standarddok/Bestellungen, CL-03/04/05/75) vs. „nur anhängen" (Schulungsnachweise). `EmployeeFileEvidenceRow` um `signatureRequired`-Prop + `unchecked`-Badge erweitert.
+
+### Verdict
+**Abgenommen, gemergt.** Keine geparkten Blocker. OS-Dateidialog-Live-Klick = Mark-Abnahme.
+
+---
+
 ## 2026-06-09 — In-Chat-Dispatch v4 (Einzel-Lane): Lane G (Vorlagen-Set `31f28fe`) — **Planer-Review → ABGENOMMEN, gemergt (`bb36d7d`)**
 
 **Warum Einzel-Lane:** Restpunkte (#4/#5/#D/#10) teilen sich dieselben Dossier-/Generator-/Overview-Komponenten → keine konfliktfreie Zwei-Lane-Parallelisierung; #D zuerst (strukturelle Basis). Verifiziert: Write-Set sauber (nur #D-Dateien), Engine/Tally unberührt, `tsc` 0, Suite 71/71, EC-09 additiv.
