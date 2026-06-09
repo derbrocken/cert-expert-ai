@@ -32,6 +32,11 @@
 | 10 | **Bestellung Brandschutzhelfer** | CL-23 | ja | Bestell-/Einstellungsdatum | prüfen |
 | 11 | **Bestellung Sicherheitsbeauftragter (SiBe)** | CL-74 | ja | Bestell-/Einstellungsdatum | prüfen |
 
+## 📥 Eingang 2026-06-10 (Mark geliefert)
+**✅ erhalten** (OneDrive `…/Template/…` bzw. Repo): Datenschutz und Vertraulichkeit (#2 CL-04/05) · Unterweisungsnachweis_Allgm. Pflichtunterweisung (#1 CL-75) · Unterweisungsnachweis_Arbeitsschutz_DGUV (CL-75) · ODA Einzel- + Sammelunterweisung (#7 CL-22) · Veranstaltung bes. SR Einweisungsnachweis Einzel + Sammel (CL-20/21) · Bestellungsurkunde Brandschutzhelfer (#10 CL-23) · Stellenbeschreibung **BK_Dispo** (= Bürokraft) · Ausgabe Dienstausweis (neu) · Jahresweiterbildung 24UE/40UE (CL-11, für #5).
+**❌ fehlen noch:** Stellenbeschreibung **Sicherheitsmitarbeiter** (#3) · Stellenbeschreibung **Führungskraft** (#4) · **Bildschirmarbeitsplatz-Unterweisung** (Büro, #5 — oder bestätigen, dass „Allgm. Pflichtunterweisung" das abdeckt) · **Kfz-/Fahr-Anweisung** (#6 CL-73) · **Mutterschutz-Hinweis** (#8 CL-77) · **Bestellungsurkunde Ersthelfer** (#9 CL-08) · **Bestellungsurkunde SiBe** (#11 CL-74).
+**Integration:** Dateien via **Upload-Manager** in den S3-Vorlagen-Bucket → dann wird `vorlagen-set-catalog.ts` auf die realen Dateinamen verdrahtet (`templateMissing` raus). Variantenpaare ODA/Veranstaltung (Einzel vs. Sammel) ggf. als Auswahl modellieren.
+
 ## Noch von Mark nachzureichen (separat)
 - **Exakte DGUV-Nummern** für die Allgemeine Unterweisung (CL-75).
 - Bestätigung **CL-76** (§7 WaffG / §3 Abs.2 AWaffV) und **CL-77** (MuSchG-§).
