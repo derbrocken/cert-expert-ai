@@ -2,6 +2,7 @@ import type {
   BestellungTyp,
   Employee,
   GeneratorDates,
+  Geschlecht,
   GlobalProperties,
   TrainingPlanItem,
 } from "@/lib/types/employee";
@@ -183,6 +184,24 @@ function asSetKategorie(
   return projectSetKategorieFromRoleId(roleId);
 }
 
+const GESCHLECHT_VALUES: readonly Geschlecht[] = [
+  "weiblich",
+  "maennlich",
+  "divers",
+];
+
+/**
+ * Lane K — Read-Normalisierung der `gender String?`-Spalte. Nur bekannte Werte
+ * werden übernommen; alles andere (null/Müll/Legacy) → `undefined` (kein
+ * Mutterschutz-Overlay). Minimale PII, keine Engine-Wirkung (EC-10).
+ */
+function asGeschlecht(value: unknown): Geschlecht | undefined {
+  return typeof value === "string" &&
+    (GESCHLECHT_VALUES as readonly string[]).includes(value)
+    ? (value as Geschlecht)
+    : undefined;
+}
+
 /**
  * Lane J (A3) — Read-Normalisierung des `generatorDates Json?` (Muster
  * `asTrainingPlan`/`asNumberRecord`). Nur valide `global`/`perDocument`-Strings;
@@ -242,6 +261,9 @@ export function employeeFileToEmployee(record: EmployeeFile): Employee {
     guardIDNumber: record.guardIDNumber ?? undefined,
     employeeIDNumber: record.employeeIDNumber ?? undefined,
     useGuardAsEmployeeId: record.useGuardAsEmployeeId ?? undefined,
+    // Lane K — Geschlecht (Mutterschutz-Overlay-Trigger CL-77). Tolerant: nur
+    // bekannte Werte; sonst `undefined` (kein Overlay).
+    gender: asGeschlecht(record.gender),
     zusatzBewachungNiveau: asNiveau(record.zusatzBewachungNiveau),
     sdlScopes: asStringArray(record.sdlScopes),
     drivesServiceVehicle: record.drivesServiceVehicle ?? undefined,
@@ -298,6 +320,8 @@ function employeeToUpsertData(
     guardIDNumber: employee.guardIDNumber ?? null,
     employeeIDNumber: employee.employeeIDNumber ?? null,
     useGuardAsEmployeeId: employee.useGuardAsEmployeeId ?? null,
+    // Lane K — Geschlecht (Mutterschutz-Overlay-Trigger). Nullable/additiv.
+    gender: employee.gender ?? null,
     zusatzBewachungNiveau: employee.zusatzBewachungNiveau ?? null,
     sdlScopes: employee.sdlScopes ?? [],
     drivesServiceVehicle: employee.drivesServiceVehicle ?? null,
@@ -325,6 +349,9 @@ function employeeToUpsertData(
  */
 function laneJUpdateFields(employee: Employee) {
   return {
+    // Lane K — Geschlecht (Mutterschutz-Overlay-Trigger). Nullable/additiv;
+    // über alle Write-Mapping-Stellen (upsert/replace/migrate) DRY mitgeschrieben.
+    gender: employee.gender ?? null,
     bestelltAls: (employee.bestelltAls ?? []) as unknown as Prisma.InputJsonValue,
     bestellungSchulungLink: employee.bestellungSchulungLink
       ? (employee.bestellungSchulungLink as unknown as Prisma.InputJsonValue)

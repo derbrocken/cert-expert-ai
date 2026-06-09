@@ -253,6 +253,37 @@
 
 ## 📥 Von Cursor an Claude (Fragen / Bitten)
 
+### 2026-06-09 — ✅ Executor Lane K (Set→Dokument-Mapping B + Org-Titel-FK-Gating #7 + Mutterschutz-Overlay): FERTIG + committet (Branch `lane-k-set-mapping`, NICHT gepusht/gemergt)
+
+**Branch:** `lane-k-set-mapping` (ab `main` HEAD `43e8875`). **`main` unberührt, nicht gepusht/gemergt.** Commit: **`e3d2458`** (Feature) + HANDOFF-Commit.
+**Gates (alle grün):** `prisma generate` + `db push` (neue `gender`-Spalte) gegen **frische Worktree-DB** erfolgreich (additive nullable Spalte, P2023-sicher) · `npx tsc --noEmit` = **0** · employee-file-Suite **106/106** (90 alt unverändert + **16 neue** `vorlagen-set-mapping.test.ts`) · **Engine-Suite 52/52 unberührt** (requirement-engine.ts nicht im Diff) · `lib/tally-*` unberührt. **Kein `.env`/`.db`/node_modules committet** (gitignore verifiziert; node_modules nur lokal in den Worktree symverlinkt).
+
+**Gebaut (Bounded Write-Set eingehalten):**
+- **Set→Dokument-Mapping (B)** in `vorlagen-set-catalog.ts` (deklarativ, `buildSetDocumentPlan`/`coreDocsForSetKategorie`/`overlayDocsForEmployee`): Core-Set je Set-Kategorie — Basis (Arbeitsschutz **CL-75** „fachlich prüfen" + Datenschutz/Verschwiegenheit **CL-04/05**); SMA/FK + jeweilige Stellenbeschreibung; **Bürokraft** = Bildschirmarbeitsplatz-Unterweisung (CL-75 Büro) statt SR-DA + Datenschutz/Verschwiegenheit. **Overlays positionsunabhängig:** Bestellungen (**CL-08/23/74** aus `bestelltAls`), Kfz-/Fahr-Anweisung (**CL-73**, fachlich prüfen), objektbezogene DA (**CL-22**, Datum = erster Einsatz **manuell**), Mutterschutz-Hinweis (**CL-77**, MuSchG, **weiblich, ALLE Sets**). Default-Datum aller Standarddoku = `startDate`; Ausnahme Objekt-DA = manuell.
+- **Generator** (`generate-employee-docs.ts`): je MA ein `_Dokumenten-Plan.txt`-Manifest (Core + Overlays + fehlende Vorlagen als Platzhalter, CL/„fachlich prüfen"-markiert); **try/catch-gewrappt → bricht den ZIP nie (EC-09)**. Physische Vorlagen-Verarbeitung (S3-Pfad) unberührt.
+- **#7 Org-Titel-Gating:** Schichtleitung/Objektleitung = **FK-Unter-Titel** (`requiresFk`), nur sichtbar/wählbar wenn Norm-Klasse `fk` gewählt; bei `fk`-Abwahl wird ein gesetzter FK-Unter-Titel zurückgesetzt. Reine Anzeige — **KEINE Engine-Änderung** (`roleClasses` bleibt maßgeblich). In `employee-stammdaten-options.ts` (`visibleOrgTitleOptions`/`isOrgTitleGatedOut`/`FK_ONLY_ORG_TITLE_IDS`) + `EmployeeForm.tsx`.
+- **Geschlechts-Feld:** additive **nullable** Spalte `gender String?` (`schema.prisma` + `employee-file-repository.ts` Read-Norm `asGeschlecht` + DRY-Write über `employeeToUpsertData`/`laneJUpdateFields`, Muster Lane J) + `types/employee.ts` (`Geschlecht`) + Validierung + Form-Feld (`GESCHLECHT_OPTIONS`). Nur „weiblich" triggert das Mutterschutz-Overlay. PII minimal, **kein Auto-Status (EC-10)**.
+
+**⚠️ Fehlende Vorlagen (Platzhalter + Hinweis im Manifest, NICHT erfunden):**
+1. Allgemeine Arbeitsschutz-Grundunterweisung (CL-75) — VORLAGE FEHLT.
+2. Bildschirmarbeitsplatz-Unterweisung Büro (CL-75) — VORLAGE FEHLT.
+3. Stellenbeschreibung Sicherheitsmitarbeiter — VORLAGE FEHLT.
+4. Stellenbeschreibung Führungskraft — VORLAGE FEHLT.
+5. Kfz-/Fahr-Anweisung (CL-73) — VORLAGE FEHLT (bereits in Auftrag genannt).
+6. Mutterschutz-Hinweis (CL-77, MuSchG) — VORLAGE FEHLT.
+
+**Prod-Deploy-Hinweis:** Neue Spalte `gender String?` → **`db push` auf Prod-DB beim Deploy nötig** (additiv/nullable, keine Datenmigration). Macht der Planer/Mark beim Hetzner-Redeploy.
+
+**Geparkte Fragen / offene Punkte (NICHT selbst entschieden):**
+- **CL-75/CL-77 exakter §** (DGUV-Nummern / MuSchG-§) noch offen (Register `legal-input`) → alle betroffenen Posten als „fachlich prüfen" geführt, kein erfundener Wert.
+- **Objekt-Overlay-Trigger:** mangels Projektakte als Heuristik an `sdlScopes` (nicht leer) gekoppelt — bis die Projektakte existiert (Q10b: manuell). Falls ein anderer Trigger gewünscht ist → Planer-Entscheid.
+- **EC-09-ZIP-Live-Klick** (`POST /employee-automation` 200) im echten Browser durch Mark abzunehmen; Generator-Änderung ist rein additiv (manifest, try/catch) — kein Bruch zu erwarten. Set-Mapping-Logik ist unit-getestet (16 Tests).
+- **Stellenbeschreibung-/Set-Slugs:** Set-Kategorie→`roleId`-Auflösung nutzt weiterhin die Lane-J-Default-Heuristik; echte S3-Set-Ordner = Daten-/Mark-Entscheidung (bereits in `vorlagen-set-catalog.ts` dokumentiert).
+
+✅ **Stabiler Punkt** — Lane K fertig, Gates grün, nicht gemergt/gepusht. Bereit für Planer-Review + Merge.
+
+---
+
 ### 2026-06-09 — ✅ Executor Lane J (Persistenz-Migration A1+A2+A3): FERTIG + committet (Branch `lane-j-persistenz`, NICHT gepusht/gemergt)
 
 **Branch:** `lane-j-persistenz` (ab `main` HEAD `03a5334`). **`main` unberührt, nicht gepusht/gemergt.** Commit: **`74650ef`**.

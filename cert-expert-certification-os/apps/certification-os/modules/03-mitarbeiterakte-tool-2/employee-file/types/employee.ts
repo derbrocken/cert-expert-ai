@@ -42,6 +42,14 @@ export interface Appointment {
  */
 export type BestellungTyp = "ersthelfer" | "brandschutzhelfer" | "sibe";
 
+/**
+ * Geschlecht (Lane K) — minimale, **nullable** PII-Angabe, ausschließlich zum
+ * bedingten Auslösen des Mutterschutz-Hinweis-Overlays (CL-77, MuSchG,
+ * „fachlich prüfen"). Nur `weiblich` triggert das Overlay; keine Engine-/
+ * Norm-Wirkung (EC-10). `undefined` = nicht erfasst (kein Overlay).
+ */
+export type Geschlecht = "weiblich" | "maennlich" | "divers";
+
 export interface Employee {
   id: string;
   fullName: string;
@@ -95,6 +103,15 @@ export interface Employee {
   employeeIDNumber?: string;
   /** When true, GuardIDNumber is used as the Employee ID */
   useGuardAsEmployeeId?: boolean;
+  /**
+   * Geschlecht (Lane K) — minimale, nullable PII-Angabe. **Einziger Zweck:** das
+   * Mutterschutz-Hinweis-Overlay (CL-77, MuSchG, „fachlich prüfen") für
+   * **weibliche** MA über ALLE Sets auslösen. Nur `weiblich` triggert das
+   * Overlay. Keine Engine-/Norm-Wirkung, kein Auto-Status (EC-10).
+   * **Persistenz (Lane K):** echte additive **nullable** DB-Spalte
+   * `gender String?` (Muster Lane J). `undefined` = nicht erfasst.
+   */
+  gender?: Geschlecht;
   /** @deprecated Slice-3-Doppelrolle-Niveau — durch `roleClasses` (EK/FK im Set) abgelöst; nur noch Read/Migration. */
   zusatzBewachungNiveau?: "ek" | "fk";
   // Slice 2 — Requirement-Engine inputs

@@ -41,8 +41,11 @@ import {
   ORG_TITLE_OPTIONS,
   ORG_TITLE_OTHER_ID,
   BESCHAEFTIGUNGSART_OPTIONS,
+  GESCHLECHT_OPTIONS,
   DIENSTFAHRZEUG_OPTIONS,
   SDL_SCOPE_CATALOG,
+  visibleOrgTitleOptions,
+  isOrgTitleGatedOut,
 } from "./employee-stammdaten-options";
 import { resolveRoleClasses } from "./requirement-engine";
 import { RoleClassSelector } from "./RoleClassSelector";
@@ -120,6 +123,8 @@ export const EmployeeForm: React.FC<EmployeeFormProps> = ({
               ? editingEmployee.qualifications
               : parseQualifications(editingEmployee.qualification).ids,
           qualification: editingEmployee.qualification || "",
+          // Lane K: Geschlecht (Mutterschutz-Overlay-Trigger CL-77).
+          gender: editingEmployee.gender,
           guardIDNumber: editingEmployee.guardIDNumber || "",
           employeeIDNumber: editingEmployee.employeeIDNumber || "",
           useGuardAsEmployeeId: editingEmployee.useGuardAsEmployeeId || false,
@@ -140,6 +145,7 @@ export const EmployeeForm: React.FC<EmployeeFormProps> = ({
           employmentType: "",
           qualifications: [],
           qualification: "",
+          gender: undefined,
           guardIDNumber: "",
           employeeIDNumber: "",
           useGuardAsEmployeeId: false,
@@ -167,6 +173,13 @@ export const EmployeeForm: React.FC<EmployeeFormProps> = ({
 
   // G4 — Org-Titel: Dropdown mit bekannten Titeln + Option „andere (Freitext)".
   const watchedRoleType = watch("roleType");
+  const watchedRoleClasses = watch("roleClasses");
+  // Batch-2 #7 — Schichtleitung/Objektleitung sind FK-Unter-Titel: nur sichtbar/
+  // wählbar, wenn Norm-Klasse `fk` gewählt ist (UI-Gating, KEINE Engine-Wirkung).
+  const visibleOrgTitles = useMemo(
+    () => visibleOrgTitleOptions(watchedRoleClasses),
+    [watchedRoleClasses],
+  );
   const [orgTitleOther, setOrgTitleOther] = useState(
     () =>
       !!editingEmployee?.roleType &&
@@ -174,9 +187,18 @@ export const EmployeeForm: React.FC<EmployeeFormProps> = ({
   );
   const orgTitleSelectValue = orgTitleOther
     ? ORG_TITLE_OTHER_ID
-    : ORG_TITLE_OPTIONS.some((o) => o.id === watchedRoleType)
+    : visibleOrgTitles.some((o) => o.id === watchedRoleType)
       ? (watchedRoleType ?? "")
       : "";
+
+  // Batch-2 #7 — wird `fk` abgewählt, während ein FK-Unter-Titel
+  // (Schichtleitung/Objektleitung) gesetzt ist, den Org-Titel zurücksetzen
+  // (Anzeige-Gatung; die Norm-Klasse bleibt maßgeblich, keine Engine-Wirkung).
+  useEffect(() => {
+    if (!orgTitleOther && isOrgTitleGatedOut(watchedRoleType, watchedRoleClasses)) {
+      setValue("roleType", "");
+    }
+  }, [orgTitleOther, watchedRoleType, watchedRoleClasses, setValue]);
 
   const handleOrgTitleChange = (value: string) => {
     if (value === ORG_TITLE_OTHER_ID) {
@@ -400,6 +422,9 @@ export const EmployeeForm: React.FC<EmployeeFormProps> = ({
         data.qualifications && data.qualifications.length > 0
           ? serializeQualifications(data.qualifications)
           : undefined,
+      // Lane K: Geschlecht (Mutterschutz-Overlay-Trigger CL-77). Leer = nicht
+      // erfasst → kein Overlay. Keine Engine-Wirkung (EC-10).
+      gender: data.gender,
       guardIDNumber: data.guardIDNumber,
       employeeIDNumber: effectiveEmployeeId,
       useGuardAsEmployeeId: data.useGuardAsEmployeeId,
@@ -429,6 +454,7 @@ export const EmployeeForm: React.FC<EmployeeFormProps> = ({
       employmentType: "",
       qualifications: [],
       qualification: "",
+      gender: undefined,
       guardIDNumber: "",
       employeeIDNumber: "",
       useGuardAsEmployeeId: false,
@@ -644,11 +670,11 @@ export const EmployeeForm: React.FC<EmployeeFormProps> = ({
                         label="Org-Titel (optional)"
                         name="orgTitle"
                         id="orgTitle"
-                        description="Anzeige/Org-Chart. Setzt eine Default-Norm-Klasse (überschreibbar)."
+                        description="Anzeige/Org-Chart. Setzt eine Default-Norm-Klasse (überschreibbar). Schichtleitung/Objektleitung sind FK-Unter-Titel — nur wählbar, wenn Norm-Klasse Führungskraft (FK) gewählt ist."
                       >
                         <Select
                           options={[
-                            ...ORG_TITLE_OPTIONS.map((o) => ({
+                            ...visibleOrgTitles.map((o) => ({
                               id: o.id,
                               name: o.name,
                             })),
@@ -765,6 +791,27 @@ export const EmployeeForm: React.FC<EmployeeFormProps> = ({
                               value={field.value ?? ""}
                               onChange={field.onChange}
                               placeholder="Beschäftigungsart wählen…"
+                            />
+                          )}
+                        />
+                      </FormField>
+                      <FormField
+                        label="Geschlecht (optional)"
+                        name="gender"
+                        id="gender"
+                        description="Nur für den Mutterschutz-Hinweis (CL-77, MuSchG, fachlich prüfen). »weiblich« löst das Overlay aus. Keine Engine-Wirkung."
+                      >
+                        <Controller
+                          name="gender"
+                          control={control}
+                          render={({ field }) => (
+                            <Select
+                              options={[...GESCHLECHT_OPTIONS]}
+                              value={field.value ?? ""}
+                              onChange={(v) =>
+                                field.onChange(v ? v : undefined)
+                              }
+                              placeholder="— nicht erfasst —"
                             />
                           )}
                         />
