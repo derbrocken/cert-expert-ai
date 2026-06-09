@@ -273,6 +273,18 @@
 **Frage an Planer (Architektur, NICHT selbst entschieden):**
 - `bestelltAls` ist bewusst als Projektion über `appointmentIds` gebaut (Write-Set schließt Repo/Schema aus). Falls eine **eigene persistierte DB-Spalte** `bestelltAls` gewünscht ist (echte Trennung der Achsen Bestellung vs. Appointment-Vorlagen), wäre ein Repo-/Schema-Slice nötig (`schema.prisma` + `employee-file-repository.ts`, 1 Read + 3 Write-Mappings) — als eigener Dispatch.
 - Optionale **Verknüpfung Bestellung↔Schulung** (auftrag „optional"): als reine UI-Verknüpfung nicht persistierbar ohne Feld → **geparkt** (gleicher Repo-/Schema-Slice). Aktuell nicht gebaut.
+### 2026-06-09 — ✅ Executor Lane D (Tally-Mapping #3): FERTIG + COMMITTET (`lane-d-tally` HEAD), nicht gepusht
+
+**Branch:** `lane-d-tally` (ab `origin/main`). **`main` unberührt; nicht gepusht** (auftragsgemäß).
+**Write-Set eingehalten** (nur diese): `lib/tally-intake-service.ts` · `lib/tally-intake-config.ts` (Quelle von `mapTallyUploadToEvidenceId`, separat → vom Auftrag zugelassen) · `lib/data/tally-employee-slots.json` · `hq/10_Bridge/TALLY_FIELD_MAPPING.md`. Keine verbotene Datei (`lib/types/employee.ts`, `modules/03-…/**`, Engine) berührt.
+
+- **#3 Q3 umgesetzt:** Schulungen → **je-Schulung-eigener-Slot** via `training-plan:{id}`-Konvention (Ersthelfer→`training-plan:erste-hilfe` CL-08, Brandschutz→`training-plan:brandschutz` CL-23), statt fixem Slot-je-Typ. Dokumente/Zertifikate (Arbeitsvertrag/Bundesauszug/Dienstausweis/Sachkunde CL-01/02) behalten ihre feste evidenceId.
+- **Fehl-Mapping gefixt (Bug):** Datei-Felder ohne Label (Slots 3–10) gaben über die alte Label-Heuristik **alle** dieselbe `tally-upload`-evidenceId → spätere Uploads überschrieben frühere. Jetzt **positionsbasiert eindeutig** (`TALLY_FILE_POSITION_EVIDENCE_IDS` + explizite `evidenceId` je Eintrag in der JSON; neuer `resolveTallyFileEvidenceId`: explizit → Position → Label-Rückfall). Slot-10-Extras (`tally-weitere-nachweise-2/-3/-4`) ebenfalls entkollidiert.
+- **Abgleich-Tabelle** (Tally-Feld → evidenceId → Akte-Slot, Status ok/fix) vollständig in `TALLY_FIELD_MAPPING.md` (neuer Abschnitt „Lane D #3"). Reine Zuordnung, **keine neue Normpflicht**; EC-10: Import bleibt `unchecked`.
+
+**Gates:** `tsc --noEmit` = **0** · `tsx --test modules/03-…/employee-file/*.test.ts` = **58/58** grün (keine Engine-/Akte-Datei berührt) · JSON ohne Intra-Slot-Kollisionen verifiziert. EC-09 unberührt (Tally-Service nicht im ZIP-Pfad).
+
+**Geparkte Frage an Planer:** Die Akte legt `training-plan:{id}`-Slots heute mit **benutzergenerierten** Item-Ids (`tp-…`, Queue C) an; der Tally-Import nutzt **stabile** Ids (`erste-hilfe`/`brandschutz`). Damit ein importierter Schulungsnachweis automatisch an einem vorhandenen Plan-Eintrag erscheint, müssten Plan-Items dieselbe stabile Id tragen **oder** ein Lookup ergänzt werden — das berührt `modules/03-mitarbeiterakte-tool-2/**` (Lane C/Akte, außerhalb Lane-D-Write-Set). **Nicht selbst entschieden/gebaut.**
 
 ### 2026-06-09 — ✅ Executor Lane A (Shell-Nav): P1 #1/#B/#9 FERTIG + COMMITTET + GEPUSHT (`38bc341`)
 
