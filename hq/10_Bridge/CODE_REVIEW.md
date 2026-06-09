@@ -4,6 +4,19 @@
 
 ---
 
+## 2026-06-09 — Nachbau Lane K: Set-Mapping (B) + Org-Titel-Gating (#7) + Mutterschutz (`e3d2458`) — **Planer-Review → ABGENOMMEN, gemergt (`ec56c11`)**
+
+**Verifiziert:** Write-Set sauber (vorlagen-set-catalog, generate-employee-docs, EmployeeForm, stammdaten-options, types, validations, schema.prisma, repository, neuer mapping-Test — **kein Engine/Tally**), `tsc` 0 (nach `prisma generate`), Suite **106/106** (90 + 16). Neue additive nullable Spalte `gender String?`. EC-09 (Generator-Manifest try/catch, ZIP bricht nie) + EC-10 (kein Auto-Status).
+
+**Gebaut:** Set→Doc-Mapping (Basis Arbeitsschutz CL-75 + Datenschutz/Verschwiegenheit CL-04/05; SMA/FK +Stellenbeschreibung; Bürokraft = Bildschirmarbeitsplatz statt SR-DA). Overlays positionsunabhängig: Bestellungen CL-08/23/74, Kfz CL-73, Objekt-DA CL-22 (manuelles Datum), Mutterschutz CL-77 (weiblich, alle Sets). #7: Schichtleiter/Objektleiter = FK-Unter-Titel, nur bei `fk` sichtbar (UI-Gating, keine Engine-Änderung). Default-Datum = `startDate`.
+
+**Fehlende Vorlagen (Platzhalter, nicht erfunden):** Arbeitsschutz-Grundunterweisung, Bildschirmarbeitsplatz, Stellenbeschreibung SMA/FK, Kfz-Anweisung, Mutterschutz-Hinweis — als `.docx` von Mark nachzuliefern; Mapping greift dann automatisch. Generator legt ein `_Dokumenten-Plan.txt`-Manifest je MA in den ZIP (additiv).
+
+### Verdict
+**Abgenommen, gemergt.** **Prod-`db push` (gender) beim Deploy nötig** (additiv). Offen: CL-75/CL-77 exakter § (Mark), fehlende Vorlagen-Dateien.
+
+---
+
 ## 2026-06-09 — Nachbau Lane J: Persistenz-Migration A1/A2/A3 (`74650ef`) — **Planer-Review → ABGENOMMEN, gemergt (`0257668`)**
 
 **Verifiziert:** Write-Set sauber (schema.prisma, repository, types, employee-display-labels, vorlagen-set-catalog, EmployeeForm, EmployeeAutomationPage, EmployeeFileDossierView, neuer backfill-Test — **kein Engine/Tally**), Suite **90/90** (80 + 10 Backfill). 4 additive nullable Spalten (`bestelltAls`/`bestellungSchulungLink`/`setKategorie`/`generatorDates`, P2023-sicher). EC-09 (`appointmentIds`-Sync) + EC-10 (kein Auto-Status auf Link/Nachweis).
