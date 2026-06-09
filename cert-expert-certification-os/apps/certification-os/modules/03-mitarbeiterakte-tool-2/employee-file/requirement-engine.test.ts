@@ -12,8 +12,11 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import {
   deriveRequirements,
+  defaultErstunterweisungDatum,
+  isWiederholungUnterweisungFaellig,
   mapRoleTypeToRoleClass,
   resolveRoleClasses,
+  type Deadline,
   type EngineRule,
   type RequirementContext,
   type RoleClass,
@@ -47,6 +50,10 @@ function target(
   id: string,
 ): TrainingTarget | undefined {
   return targets.find((t) => t.id === id);
+}
+
+function frist(fristen: Deadline[], id: string): Deadline | undefined {
+  return fristen.find((f) => f.id === id);
 }
 
 function classesFromTitle(title: string): RoleClass[] {
@@ -750,4 +757,122 @@ test("Migration round-trip — serialize → parse ergibt dieselbe ID-Menge", ()
   const serialized = serializeQualifications(ids);
   assert.equal(parseQualifications(serialized).unmatched.length, 0);
   assert.deepEqual(parseQualifications(serialized).ids.sort(), [...ids].sort());
+});
+
+// ===========================================================================
+// #10 — Datums-Logik / Defaults (Erst-Standardunterweisung + Wiederholung)
+// ===========================================================================
+
+// Default-Datum-Helfer: Erst-Standardunterweisung = erster Arbeitstag (startDate).
+test("#10 — defaultErstunterweisungDatum: Default = startDate; ohne startDate undefined", () => {
+  assert.equal(defaultErstunterweisungDatum("2026-01-07"), "2026-01-07");
+  assert.equal(defaultErstunterweisungDatum(undefined), undefined);
+  assert.equal(defaultErstunterweisungDatum(""), undefined);
+  assert.equal(defaultErstunterweisungDatum("kein-datum"), undefined);
+});
+
+// >1-Jahr-Fälligkeit der Wiederholungs-Unterweisung — deterministisch (feste Daten).
+test("#10 — isWiederholungUnterweisungFaellig: > 1 Jahr seit Bezug = fällig, sonst nicht", () => {
+  const refSpaet = new Date(Date.UTC(2026, 5, 7)); // 2026-06-07
+  // 2024-01-07 + 1 J = 2025-01-07 < ref → fällig.
+  assert.equal(isWiederholungUnterweisungFaellig("2024-01-07", refSpaet), true);
+  // 2026-01-07 + 1 J = 2027-01-07 > ref → nicht fällig.
+  assert.equal(isWiederholungUnterweisungFaellig("2026-01-07", refSpaet), false);
+  // Genau 1 Jahr (kein „>") → noch nicht fällig.
+  assert.equal(isWiederholungUnterweisungFaellig("2025-06-07", refSpaet), false);
+  // Kein Bezugsdatum → nicht fällig (kein schwebender Eintrag).
+  assert.equal(isWiederholungUnterweisungFaellig(undefined, refSpaet), false);
+});
+
+// Engine: Erst-Standardunterweisung < 1 Jahr → Wiederholungs-Frist als „fachlich
+// prüfen" (Beobachtung), Bezug = erster Arbeitstag, CL-75.
+test("#10 — EK, Eintritt < 1 Jahr: frist-wiederholung-unterweisung CL-75 'fachlich prüfen' (Beobachtung), Bezug startDate", () => {
+  const res = deriveRequirements(
+    baseCtx({
+      roleClasses: ["ek"],
+      startDate: "2026-01-07",
+      sdlScopes: ["din1-grunddienste"],
+    }),
+  );
+  const w = frist(res.fristen, "frist-wiederholung-unterweisung");
+  assert.equal(w?.clauseId, "CL-75");
+  assert.equal(w?.status, "fachlich prüfen");
+  assert.equal(w?.dueDate, "2027-01-07"); // startDate + 1 Jahr
+  assert.equal(w?.basis, "Erster Arbeitstag + 1 Jahr");
+  assert.ok(/beobachten/i.test(w?.trigger ?? ""));
+});
+
+// Engine: > 1 Jahr seit Eintritt → Wiederholung fällig (Trigger „prüfen"), bleibt CL-75 „fachlich prüfen".
+test("#10 — EK, Eintritt > 1 Jahr: Wiederholung fällig (Trigger 'prüfen'), Status bleibt 'fachlich prüfen' (kein Auto-abgelaufen, EC-10)", () => {
+  const res = deriveRequirements(
+    baseCtx({
+      roleClasses: ["ek"],
+      startDate: "2024-01-07",
+      sdlScopes: ["din1-grunddienste"],
+    }),
+  );
+  const w = frist(res.fristen, "frist-wiederholung-unterweisung");
+  assert.equal(w?.clauseId, "CL-75");
+  assert.equal(w?.status, "fachlich prüfen");
+  assert.equal(w?.dueDate, "2025-01-07");
+  assert.ok(/prüfen/i.test(w?.trigger ?? ""));
+});
+
+// Override: erstunterweisungDatum sticht über startDate als Bezug.
+test("#10 — erstunterweisungDatum übersteuert startDate als Bezug (Basis-Label + dueDate)", () => {
+  const res = deriveRequirements(
+    baseCtx({
+      roleClasses: ["ek"],
+      startDate: "2024-01-07",
+      erstunterweisungDatum: "2026-03-01",
+      sdlScopes: ["din1-grunddienste"],
+    }),
+  );
+  const w = frist(res.fristen, "frist-wiederholung-unterweisung");
+  assert.equal(w?.dueDate, "2027-03-01"); // erstunterweisungDatum + 1 Jahr
+  assert.equal(w?.basis, "Erstunterweisung + 1 Jahr");
+});
+
+// Kein startDate → keine Wiederholungs-Frist (manuell setzen, kein schwebender Eintrag).
+test("#10 — EK ohne startDate: keine frist-wiederholung-unterweisung", () => {
+  const res = deriveRequirements(
+    baseCtx({ roleClasses: ["ek"], sdlScopes: ["din1-grunddienste"] }),
+  );
+  assert.equal(frist(res.fristen, "frist-wiederholung-unterweisung"), undefined);
+});
+
+// Keine Norm-Klasse → keine Wiederholungs-Frist (an erfasste Klasse gegatet).
+test("#10 — keine Norm-Klasse: keine Wiederholungs-Frist trotz startDate", () => {
+  const res = deriveRequirements(
+    baseCtx({ startDate: "2024-01-07", sdlScopes: ["din1-grunddienste"] }),
+  );
+  assert.equal(frist(res.fristen, "frist-wiederholung-unterweisung"), undefined);
+});
+
+// Verwaltung (keine Bewachung) mit startDate → Wiederholung gilt (Arbeitsschutz CL-75
+// betrifft alle Beschäftigten), bleibt „fachlich prüfen".
+test("#10 — Verwaltung mit startDate: Wiederholungs-Frist greift (CL-75, alle Beschäftigten), 'fachlich prüfen'", () => {
+  const res = deriveRequirements(
+    baseCtx({ roleClasses: ["verwaltung"], startDate: "2024-01-07" }),
+  );
+  const w = frist(res.fristen, "frist-wiederholung-unterweisung");
+  assert.equal(w?.clauseId, "CL-75");
+  assert.equal(w?.status, "fachlich prüfen");
+});
+
+// Objektbezogene Unterweisung (CL-22) — Default-Datum = erster Arbeitstag.
+// (Q10b: in der App manuell, bis Projektakte existiert; der rechnerische Default
+// für die objektspezifische Schulung bleibt der Eintritt.)
+test("#10 — Objekt-Zusatz (CL-22) vorhanden: objektspezifischer Eintrag bleibt (Default-Datum = Eintritt, manuell pflegbar)", () => {
+  const res = deriveRequirements(
+    baseCtx({
+      roleClasses: ["ek"],
+      startDate: "2026-01-07",
+      sdlScopes: ["din2-objekte"],
+    }),
+  );
+  // CL-22 objektspezifischer Zusatz wird weiter abgeleitet (unverändert).
+  assert.equal(target(res.schulungsSoll, "sdl-objekt-zusatz")?.clauseId, "CL-22");
+  // Default-Bezug der Erstunterweisung = Eintritt (für die Wiederholungs-Frist).
+  assert.equal(defaultErstunterweisungDatum("2026-01-07"), "2026-01-07");
 });

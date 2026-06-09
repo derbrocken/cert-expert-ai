@@ -114,6 +114,13 @@ export interface RequirementContext {
   qualification?: string;
   /** Eintrittsdatum (ISO YYYY-MM-DD). */
   startDate?: string;
+  /**
+   * #10 — Datum der erfolgten Erst-Standardunterweisung (ISO YYYY-MM-DD), falls
+   * abweichend vom erwarteten Default (= erster Arbeitstag) nachgepflegt. Fehlt
+   * es, bildet `startDate` den Default-Bezug für die Wiederholungs-Frist.
+   * Reiner Datums-Bezug — keine neue UE/CL.
+   */
+  erstunterweisungDatum?: string;
   /** SDL-Katalog-IDs, in denen die Person eingesetzt ist. */
   sdlScopes: string[];
   drivesServiceVehicle?: boolean | null;
@@ -359,8 +366,50 @@ function addMonths(date: Date, months: number): Date {
   return d;
 }
 
+function addYears(date: Date, years: number): Date {
+  const d = new Date(date.getTime());
+  d.setUTCFullYear(d.getUTCFullYear() + years);
+  return d;
+}
+
 function toIso(date: Date): string {
   return date.toISOString().slice(0, 10);
+}
+
+// ---------------------------------------------------------------------------
+// #10 — Default-Daten (rechnerisch, EC-10: keine Freigabe-Aussage)
+// ---------------------------------------------------------------------------
+
+/**
+ * #10 — Default-Datum der Erst-Standardunterweisung (Datenschutz CL-04,
+ * Verschwiegenheit CL-05, Dienstanweisung CL-03, Arbeitsschutz CL-75
+ * „fachlich prüfen") + Datenschutz-/Verschwiegenheitserklärung sowie der
+ * objektbezogenen Unterweisung (CL-22) = **erster Arbeitstag** (`startDate`).
+ * Rein rechnerischer Vorschlag, überall überschreibbar; der MA unterschreibt
+ * nach. Liefert ISO `YYYY-MM-DD` oder `undefined`, wenn kein `startDate` erfasst
+ * ist (dann manuell setzen). Keine UE/CL — nur ein Datums-Default.
+ */
+export function defaultErstunterweisungDatum(
+  startDate?: string,
+): string | undefined {
+  const d = parseIsoDate(startDate);
+  return d ? toIso(d) : undefined;
+}
+
+/**
+ * #10 — Ist seit der Erst-Standardunterweisung (bzw. ersatzweise dem ersten
+ * Arbeitstag) mehr als ein Jahr vergangen? Basis: DGUV V23 §4(2)
+ * („regelmäßig, lt. Dienstanweisung mind. jährlich") — siehe CL-75. Diese Basis
+ * wird **nicht** überschritten (kein erfundener Turnus); die Wiederholung bleibt
+ * „fachlich prüfen", bis Mark den exakten § nachreicht. `ref` = Stichtag.
+ */
+export function isWiederholungUnterweisungFaellig(
+  basisDatum: string | undefined,
+  ref: Date,
+): boolean {
+  const base = parseIsoDate(basisDatum);
+  if (!base) return false;
+  return ref.getTime() > addYears(base, 1).getTime();
 }
 
 // ---------------------------------------------------------------------------
@@ -887,6 +936,39 @@ export function deriveRequirements(ctx: RequirementContext): RequirementResult {
         hasBrandschutz ? "Beauftragung Brandschutzhelfer" : "SDL Objekte bes. SR",
       ),
     );
+  }
+
+  // #10 — Wiederholungs-Unterweisung (Arbeitsschutz). Default-Bezug der
+  // Erst-Standardunterweisung = erster Arbeitstag (`startDate`), überschreibbar
+  // via `erstunterweisungDatum`. Ist seit Bezug > 1 Jahr vergangen, entsteht
+  // eine zusätzliche Wiederholungs-Unterweisung. Basis: DGUV V23 §4(2)
+  // („regelmäßig, lt. Dienstanweisung mind. jährlich") — CL-75, `legal-input`.
+  // EC-10 / „keine erfundene Pflicht": KEIN Turnus über diese Basis hinaus →
+  // Status bleibt „fachlich prüfen", bis Mark den exakten § nachreicht. Nur bei
+  // erfasster Norm-Klasse (kein „schwebender" Eintrag ohne Basis-Set).
+  if (set.length > 0) {
+    const basisDatum = ctx.erstunterweisungDatum ?? ctx.startDate;
+    const basis = parseIsoDate(basisDatum);
+    if (basis) {
+      const due = addYears(basis, 1);
+      const faellig = isWiederholungUnterweisungFaellig(basisDatum, ref);
+      fristen.push({
+        id: "frist-wiederholung-unterweisung",
+        label:
+          "Wiederholungs-Unterweisung Arbeitsschutz (> 1 Jahr seit Erstunterweisung)",
+        clauseId: "CL-75",
+        dueDate: toIso(due),
+        basis: ctx.erstunterweisungDatum
+          ? "Erstunterweisung + 1 Jahr"
+          : "Erster Arbeitstag + 1 Jahr",
+        // CL-75 = legal-input → konservativ „fachlich prüfen" (auch wenn fällig);
+        // kein automatischer „abgelaufen"-/Freigabe-Status (EC-10), exakter § offen.
+        status: "fachlich prüfen",
+        trigger: faellig
+          ? "Mehr als 1 Jahr seit Erst-Standardunterweisung — Wiederholung prüfen (CL-75, DGUV V23 §4(2), legal-input)"
+          : "Erst-Standardunterweisung erfasst — jährliche Wiederholung beobachten (CL-75, DGUV V23 §4(2), legal-input)",
+      });
+    }
   }
 
   return { pflichtSet, schulungsSoll, fristen, hinweise };
