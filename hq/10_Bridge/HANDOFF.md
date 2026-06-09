@@ -253,6 +253,26 @@
 
 ## 📥 Von Cursor an Claude (Fragen / Bitten)
 
+### 2026-06-09 — ✅ Executor Lane I (Dispatch v6 #10 Datums-Logik/Defaults): FERTIG + committet (Branch `lane-i-datums-defaults`, NICHT gepusht/gemergt)
+
+**Branch:** `lane-i-datums-defaults` (ab `main` HEAD `8e0dd8f`). **`main` unberührt, nicht gepusht/gemergt.** Commit: **`0ec3de6`**.
+**Write-Set eingehalten** — geändert: `…/employee-file/requirement-engine.ts` + `requirement-engine.test.ts` · `…/employee-generator/generate-employee-docs.ts`. **Nicht berührt:** `employee-file-requirements.ts` (nicht nötig — Wiederholungs-Frist fließt über die bestehende `summary.fristen`→`mergedFristen`-Verdrahtung der DossierView automatisch in die Ampel) · `EmployeeFileDossierView.tsx` (keine Änderung nötig, optionaler Write). VERBOTEN (`lib/tally-*`, `vorlagen-set-catalog.ts`, `EmployeeForm.tsx`) nicht angefasst; keine neuen UE/CL erfunden.
+
+**Gebaut (exakt #10) — Default-Daten überall überschreibbar:**
+- **Geburtsdatum:** `{Birthday}` lag bereits im Generator-`templateData` und wird in **alle** Rollen- **und** Bestell-/Appointment-Dokumente gespreadet → erscheint bereits auf Schulungs-/Unterweisungs-Dokumenten. Keine Änderung nötig (verifiziert).
+- **Erst-Standardunterweisung + Erklärungen → Default = erster Arbeitstag (`startDate`):** Generator klassifiziert per Dateiname (`isErstunterweisungDoc`) Datenschutz **CL-04**, Verschwiegenheit **CL-05**, Dienstanweisung **CL-03**, Arbeitsschutz **CL-75** („fachlich prüfen") + Erklärungen und setzt deren Default-Ausgabedatum auf `startDate`; **Per-Doc-Override (#8) sticht** weiter, fehlt `startDate` → globaler Generator-Datum-Wert. MA unterschreibt nach.
+- **>1 Jahr seit Erstunterweisung → Wiederholungs-Unterweisung** als Engine-`Deadline` `frist-wiederholung-unterweisung`, **CL-75 „fachlich prüfen"** (Basis DGUV V23 §4(2) „regelmäßig, lt. DA mind. jährlich" — KEIN Turnus darüber hinaus erfunden). Bezug = `startDate` bzw. optionaler `erstunterweisungDatum`-Override. Bewusst **kein** Auto-„abgelaufen" (EC-10), Status bleibt „fachlich prüfen", auch wenn fällig (nur Trigger-Text wechselt von „beobachten" → „prüfen"). Nur bei erfasster Norm-Klasse (kein schwebender Eintrag).
+- **Einzelschulungen → individuelles Datum:** deckt sich mit #8-Per-Doc-Override + Queue-C (kein neuer Mechanismus).
+- **Objektbezogene Unterweisung (CL-22):** rechnerischer Default = erster Arbeitstag; bewusst **NICHT** auf `startDate` im Generator gezwungen → läuft manuell (Q10b), bis Projektakte existiert. Bestehende CL-22-Ableitung unverändert.
+- **Engine-Helfer (exportiert, deterministisch/UTC):** `defaultErstunterweisungDatum(startDate)`, `isWiederholungUnterweisungFaellig(basis, ref)`; neuer optionaler `RequirementContext.erstunterweisungDatum`.
+
+**Gates:** `npx tsc --noEmit` = **0**. `npx tsx --test employee-file/*.test.ts` = **80/80** grün (71 Bestand + **10 neue #10-Szenarien**: Default-Datum aus `startDate`, >1J fällig/nicht fällig/genau-1J, `erstunterweisungDatum`-Override, kein `startDate`/keine Klasse → kein Eintrag, Verwaltung greift CL-75, CL-22-Default). **Bestehende Engine-Regeln/UE/CL unverändert** (CL-02/11/20/21/24/25/29/30 etc. nicht im Diff der Engine-Logik berührt — nur additive Wiederholungs-Frist + Helfer). **EC-09:** `generateEmployeeDocs`-Action-Signatur unverändert, rein additive Datums-Auflösung → ZIP-Pfad unberührt (Live-Klick-Abnahme optional Mark). **EC-10** gewahrt.
+**Hinweis Infra:** Worktree hatte kein eigenes `node_modules` → für tsc/tsx das `node_modules` der Haupt-Checkout symlinkt (gitignored, nicht committet); danach laufen audit-export-Tests (exceljs) ebenfalls grün mit.
+
+**Geparkt (keine eigene Entscheidung):** keine offenen Fragen aus #10 — CL-75/CL-76 exakter § bleibt der bereits gelistete offene Faden (Mark reicht §; bis dahin „fachlich prüfen", wie umgesetzt).
+
+---
+
 ### 2026-06-09 — ✅ Executor Lane H (Dispatch v5 #4 Manueller Upload signierter Dokumente): FERTIG + committet (Branch `lane-h-upload`, NICHT gepusht/gemergt)
 
 **Branch:** `lane-h-upload` (ab `main` HEAD `f009481`). **`main` unberührt, nicht gepusht/gemergt.** Commit: **`6669fcb`**.
