@@ -59,6 +59,26 @@ model EmployeeFile {
   weiterbildungIstUE         Int?
   einmaligIstUE              Json?
   trainingPlan               Json?
+  // Lane J (A1) — persistierter Bestell-Status (Multiselect, unabhängig vom
+  // Dokument). Json-Array von BestellungTyp ("ersthelfer"/"brandschutzhelfer"/
+  // "sibe"). Nullable/additiv (kein @default → P2023-sicher). Fehlt das Feld auf
+  // Bestandsakten, leitet die Read-Normalisierung tolerant aus `appointmentIds`
+  // ab (Legacy-Backfill). KEINE Auto-Status-Wirkung (EC-10).
+  bestelltAls                Json?
+  // Lane J (A1) — optionale, nicht blockierende Verknüpfung Bestellung↔Schulung.
+  // Json-Map BestellungTyp → evidenceId/refId (Schulungs-Nachweis). Nullable;
+  // KEIN Auto-Status, kein Pflicht-Gate (EC-10).
+  bestellungSchulungLink     Json?
+  // Lane J (A2) — persistierte Set-Kategorie (Vorlagen-Achse, #D). String
+  // ("sicherheitsmitarbeiter"/"fuehrungskraft"/"buerokraft"). Default wird aus
+  // Rolle/`roleId` abgeleitet, ist aber überschreibbar. Fehlt das Feld, leitet
+  // die Read-Normalisierung aus `roleId` ab (Legacy-Backfill). Nullable/additiv.
+  setKategorie               String?
+  // Lane J (A3) — persistiertes Generator-Ausgabedatum je Akte: Json
+  // { global?: string; perDocument?: Record<docId,string> }. Ersetzt den
+  // bisherigen Session-State. Nullable/additiv (P2023-sicher); reines
+  // Ausgabedatum, kein Engine-/Norm-/UE-Eingriff (EC-10).
+  generatorDates             Json?
   evidenceItems              EvidenceItem[]
   migratedFromLocalStorageAt DateTime?
   createdAt                  DateTime @default(now())
