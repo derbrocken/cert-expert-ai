@@ -141,18 +141,25 @@ export const EmployeeFileIndex: React.FC<EmployeeFileIndexProps> = ({
           />
         </div>
         {employees.length > 0 ? (
-          <button
-            type="button"
-            onClick={() => onToggleAllBatch(!allFilteredSelected)}
-            className="mt-2 flex w-full items-center gap-2 rounded-md px-1 py-1.5 text-left text-xs font-medium text-[#6b7280] hover:text-[#111827]"
-          >
-            {allFilteredSelected ? (
-              <CheckSquare className="h-3.5 w-3.5 text-[#e30613]" />
-            ) : (
-              <Square className="h-3.5 w-3.5" />
-            )}
-            {batchSelectedIds.size} für Export gewählt
-          </button>
+          // #9 Selektion: sichtbare Auswahl-Leiste mit Alle/Keine-Toggle +
+          // Zähler (noch keine benannten/gespeicherten Gruppen).
+          <div className="mt-3 flex items-center justify-between gap-2 rounded-lg border border-[#e5e7eb] bg-[#fafbfc] px-2.5 py-2">
+            <button
+              type="button"
+              onClick={() => onToggleAllBatch(!allFilteredSelected)}
+              className="inline-flex items-center gap-1.5 text-xs font-medium text-[#6b7280] hover:text-[#111827]"
+            >
+              {allFilteredSelected ? (
+                <CheckSquare className="h-3.5 w-3.5 text-[#e30613]" />
+              ) : (
+                <Square className="h-3.5 w-3.5" />
+              )}
+              {allFilteredSelected ? "Alle abwählen" : "Alle auswählen"}
+            </button>
+            <span className="shrink-0 text-xs font-semibold text-[#111827]">
+              {batchSelectedIds.size} ausgewählt
+            </span>
+          </div>
         ) : null}
       </div>
 
