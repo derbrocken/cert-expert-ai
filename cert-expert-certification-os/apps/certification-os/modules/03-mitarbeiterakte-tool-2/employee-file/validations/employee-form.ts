@@ -10,10 +10,13 @@ export const employeeFormSchema = z.object({
   // G4: roleId bleibt Pflicht — steuert die Generator-Dokumentenpalette (EC-09).
   roleId: z.string().min(1, "Bitte eine Dokumenten-Vorlage wählen"),
   appointmentIds: z.array(z.string()),
-  // EK/FK-Refinement: Norm-Klassen-Set = primärer Engine-Input (mind. eine Klasse).
-  roleClasses: z
-    .array(z.enum(["ek", "fk", "verwaltung", "praktikant", "subunternehmer"]))
-    .min(1, "Bitte mindestens eine Norm-Klasse wählen"),
+  // #A: Norm-Klassen-Set = primärer Engine-Input. Mehrfachauswahl, frei
+  // kombinierbar, jede Klasse einzeln abwählbar — KEINE Zwangsvorauswahl. Leere
+  // Auswahl ist zulässig; Overview/Engine zeigen dann „Keine Norm-Klasse
+  // erfasst" (EC-10, bereits behandelt) statt einen Save zu blockieren.
+  roleClasses: z.array(
+    z.enum(["ek", "fk", "verwaltung", "praktikant", "subunternehmer"]),
+  ),
   // Org-Titel (Anzeige/Org-Chart) — optional, keine Engine-Wirkung.
   roleType: z.string().optional(),
   // Requirement-Felder (Engine-Eingang)

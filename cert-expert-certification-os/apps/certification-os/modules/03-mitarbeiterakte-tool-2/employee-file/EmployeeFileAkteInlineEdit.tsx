@@ -182,7 +182,6 @@ export const EmployeeFileAkteInlineEdit: React.FC<
           <FormField
             label={ROLE_CLASS_LABEL_MULTI}
             name="roleClasses"
-            required
             error={errors.roleClasses?.message}
           >
             <Controller

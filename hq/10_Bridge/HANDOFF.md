@@ -265,6 +265,19 @@
 **Gates:** `tsc --noEmit` = 0 · Test-Suite **58/58** unverändert grün (keine Engine-Datei berührt) · Routes `GET /`, `/?area=mitarbeiterakte`, `/employee-automation` = **200** (EC-09-Generator unberührt im Diff → nicht-regressiv) · EC-10 unverändert · keine `.env`/`.db`/`hq/03_Kundenprojekte/**` committet.
 
 **Offen / Hinweis an Planer:** `components/layout/Navbar.tsx` setzt `style={{ width: "100vw" }}` — `100vw` schließt die Scrollbar-Breite ein und kann minimal horizontalen Overflow/Shift erzeugen. Datei liegt **außerhalb** des Lane-A-Write-Sets → **nicht editiert, als Frage geparkt** (eigener kleiner Fix-Dispatch sinnvoll). Browser-Live-Klick-Abnahme (Fensterbreiten-Durchklick + ZIP-POST-Klick) durch Mark optional; hier via tsc/Suite/Route-200/Diff belegt.
+### 2026-06-09 — ✅ Executor (Lane B / Agent 2): #A Rollen-Eingabe-Bug FERTIG + committet + gepusht (`0929d94`, Branch `cursor/tool2-rollen-eingabe`)
+
+**Gebaut (exakt #A, kein Scope-Zusatz; Engine NICHT angefasst — nur Eingabe entsperrt):**
+- `validations/employee-form.ts`: `roleClasses` `.min(1)` entfernt → **leere Auswahl zulässig** (Overview/Engine zeigen „Keine Norm-Klasse erfasst", EC-10) statt Save zu blockieren. Keine Zwangsvorauswahl.
+- `EmployeeForm.tsx`: Org-Titel-Wechsel setzt Default-Norm-Klasse **nur noch, wenn noch keine erfasst ist** (überschreibt bewusst gewählte/geleerte Auswahl nicht); `roleClasses`-Feld nicht mehr `required`. Spiegelt das bereits korrekte Muster aus `EmployeeFilePersonRolleEditTable.tsx`.
+- `EmployeeFileAkteInlineEdit.tsx`: `roleClasses`-Feld nicht mehr `required`.
+- **Nicht angefasst (bereits korrekt / vollständig):** `EmployeeFilePersonRolleEditTable.tsx` (Org-Titel schon non-destruktiv) · `employee-stammdaten-options.ts` (alle 5 Klassen inkl. sichtbarer „Verwaltung / Geschäftsführung" bereits da).
+
+**Ergebnis:** EK/FK/Verwaltung frei kombinierbar, jede Klasse einzeln an-/abwählbar, „nur Verwaltung" wählbar, leere Auswahl ok (kein Crash).
+
+**Gates (DoD):** `tsc --noEmit` = **0** · Engine-Suite (`tsx --test`) **30/30 unverändert grün** (Engine nicht im Diff; Szenario 9 belegt „Keine Norm-Klasse"-Hinweis) · EC-09-Generatorpfad nicht berührt. **EC-09-ZIP-tsx-Smoke im Sandbox nicht durchführbar (kein S3-Netz in der Shell)** → Live-`:3001` + Browser-Klick-Abnahme = Mark.
+
+**❓ FRAGE an Planer (geparkt — nicht selbst entschieden, Datei außerhalb Lane-B-Write-Set):** „alle 5 Klassen **frei** kombinierbar" — die Multiselect-UI lebt in `RoleClassSelector.tsx` (NICHT im Write-Set). Dort sind `verwaltung`/`praktikant`/`subunternehmer` **untereinander exklusiv** (bewusstes Bestandsdesign; mit EK/FK kombinierbar). Mit dem Fix oben sind EK abwählbar, „nur Verwaltung", Kombination mit EK/FK und leere Auswahl erfüllt. **Soll die gegenseitige Exklusivität der Nicht-Bewachungs-Klassen ZUSÄTZLICH aufgehoben werden?** → bräuchte Edit an `RoleClassSelector.tsx` (außerhalb Write-Set) → Planer-/Mark-Entscheid, von mir nicht eingeplant.
 
 ### 2026-06-08 — ✅ Executor: Queue C — lücken-getriebene Termin-Planung Schulungen FERTIG + COMMITTET (`fbe1980`)
 
