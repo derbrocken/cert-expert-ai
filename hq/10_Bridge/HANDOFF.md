@@ -253,6 +253,19 @@
 
 ## 📥 Von Cursor an Claude (Fragen / Bitten)
 
+### 2026-06-09 — ✅ Executor Lane A (Shell-Nav): P1 #1/#B/#9 FERTIG + COMMITTET + GEPUSHT (`38bc341`)
+
+**Branch:** `cursor/tool2-shell-nav` (ab `main@db84837`) → gepusht zu `origin`. **`main` unberührt.**
+**Write-Set eingehalten** (nur Lane-A-Shell-Dateien): `modules/00-dashboard/CertificationOsModuleOverview.tsx` · `…/employee-file/EmployeeAutomationPage.tsx` · `…/EmployeeFileIndex.tsx` · `…/EmployeeFileWorkspaceLayout.tsx`. (`CompanyHubView.tsx` nicht nötig → nicht angefasst.) Keine verbotene/Engine-/Generator-Datei berührt.
+
+- **#1 Nav:** Dashboard liest den aktiven Tab aus `?area=<id>` (SSR-stabil: erster Render = Default == Server-HTML, URL erst nach Mount via `useEffect` → kein Hydration-Mismatch); Tab-Klick spiegelt den Tiefen-Link via `history.replaceState` (kein Re-Mount). „Zur Übersicht" in der Akte (Toolbar + Hub `onBack`) zielt jetzt auf `/?area=mitarbeiterakte` statt `/` → landet auf dem Mitarbeiterakte-Tab/Firmen-Übersicht.
+- **#B Layout:** Ursache gefunden — der **fixe Navbar** ist `h-14`/`sm:h-16`, der Workspace versetzte aber nur `pt-14` → ab ≥640px **8px Überlappung** (Inhalt „abgeschnitten"). Fix: `pt-14 sm:pt-16`. Zusätzlich ab `lg` Viewport-Höhen-Shell (`lg:h-screen` + `min-h-0`): Index + Hauptbereich scrollen **intern**, Toolbar/Notice/Generate-Bar bleiben fixiert → kein Seiten-Scroll-Sprung beim Öffnen; `min-w-0`-Guards gegen Horizontal-Overflow. Unter `lg` natürlicher Fluss (`min-h-[calc(100dvh-…)]`).
+- **#9 Selektion:** sichtbare Auswahl-Leiste im Index mit **Alle/Keine-Toggle** + Zähler („X ausgewählt"); Generate-Bar-Label „→ als Gruppe exportieren". **Keine** benannten/gespeicherten Gruppen (wie Mark Q9). Bestehende `batchSelectedIds`-Mechanik unverändert.
+
+**Gates:** `tsc --noEmit` = 0 · Test-Suite **58/58** unverändert grün (keine Engine-Datei berührt) · Routes `GET /`, `/?area=mitarbeiterakte`, `/employee-automation` = **200** (EC-09-Generator unberührt im Diff → nicht-regressiv) · EC-10 unverändert · keine `.env`/`.db`/`hq/03_Kundenprojekte/**` committet.
+
+**Offen / Hinweis an Planer:** `components/layout/Navbar.tsx` setzt `style={{ width: "100vw" }}` — `100vw` schließt die Scrollbar-Breite ein und kann minimal horizontalen Overflow/Shift erzeugen. Datei liegt **außerhalb** des Lane-A-Write-Sets → **nicht editiert, als Frage geparkt** (eigener kleiner Fix-Dispatch sinnvoll). Browser-Live-Klick-Abnahme (Fensterbreiten-Durchklick + ZIP-POST-Klick) durch Mark optional; hier via tsc/Suite/Route-200/Diff belegt.
+
 ### 2026-06-08 — ✅ Executor: Queue C — lücken-getriebene Termin-Planung Schulungen FERTIG + COMMITTET (`fbe1980`)
 
 **Gebaut (exakt nach `CURSOR_C_TERMINPLANUNG_AUFTRAG.md` §3–§7, kein Scope-Zusatz):**

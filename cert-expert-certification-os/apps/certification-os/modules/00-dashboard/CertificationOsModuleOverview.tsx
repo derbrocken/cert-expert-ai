@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ExternalLink, ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { CompanyHubPanel } from "@/modules/03-mitarbeiterakte-tool-2/employee-file/CompanyHubPanel";
@@ -207,6 +207,27 @@ export function CertificationOsModuleOverview() {
     CERT_OS_V1_MAIN_AREAS.find((a) => a.id === selectedId) ??
     CERT_OS_V1_MAIN_AREAS[0];
 
+  // #1 Nav: Tab aus ?area=<id> übernehmen (z. B. „← Zur Übersicht" aus der
+  // Akte → /?area=mitarbeiterakte). SSR-stabil: erster Render bleibt der
+  // konstante Default (== Server-HTML), die URL wird erst nach Mount gelesen
+  // → kein Hydration-Mismatch.
+  useEffect(() => {
+    const area = new URLSearchParams(window.location.search).get("area");
+    if (area && CERT_OS_V1_MAIN_AREAS.some((a) => a.id === area)) {
+      setSelectedId(area);
+    }
+  }, []);
+
+  const selectArea = (id: string) => {
+    setSelectedId(id);
+    // Tiefen-Link spiegeln, ohne Next-Navigation/Re-Mount.
+    if (typeof window !== "undefined") {
+      const url = new URL(window.location.href);
+      url.searchParams.set("area", id);
+      window.history.replaceState(null, "", url);
+    }
+  };
+
   return (
     <div className="grid min-h-[calc(100vh-3.5rem)] grid-cols-1 bg-[#f4f5f7] lg:grid-cols-[minmax(260px,300px)_1fr]">
       <aside className="flex flex-col border-b border-[#e5e7eb] bg-white lg:border-b-0 lg:border-r">
@@ -252,7 +273,7 @@ export function CertificationOsModuleOverview() {
                           ? "bg-[rgba(227,6,19,0.08)]"
                           : "hover:bg-[#f9fafb]",
                       )}
-                      onClick={() => setSelectedId(area.id)}
+                      onClick={() => selectArea(area.id)}
                     >
                       <td className="px-2 py-2.5">
                         <span
@@ -314,7 +335,7 @@ export function CertificationOsModuleOverview() {
               <button
                 key={area.id}
                 type="button"
-                onClick={() => setSelectedId(area.id)}
+                onClick={() => selectArea(area.id)}
                 className={cn(
                   "shrink-0 rounded-lg border px-3 py-1.5 text-xs font-semibold transition-colors sm:text-sm",
                   isActive

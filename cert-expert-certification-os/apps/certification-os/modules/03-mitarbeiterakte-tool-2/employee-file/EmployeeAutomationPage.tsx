@@ -915,8 +915,8 @@ function EmployeeAutomationPageContent() {
             ZIP-Export (Generator)
           </p>
           <p className="text-xs text-[#6b7280]">
-            {exportCount} von {employees.length} Person(en) ausgewählt — nutzt
-            Firmendaten für {activeCompanyName}.
+            {exportCount} von {employees.length} Person(en) ausgewählt → als
+            Gruppe exportieren (nutzt Firmendaten für {activeCompanyName}).
           </p>
         </div>
         <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
@@ -956,7 +956,7 @@ function EmployeeAutomationPageContent() {
           type="button"
           variant="secondary"
           size="sm"
-          onClick={() => router.push("/")}
+          onClick={() => router.push("/?area=mitarbeiterakte")}
           leftIcon={<ArrowLeft className="h-4 w-4" />}
         >
           Zur Übersicht
@@ -984,7 +984,7 @@ function EmployeeAutomationPageContent() {
           counts={employeeCounts}
           onEnter={handleEnterCompany}
           onCreate={handleCreateCompany}
-          onBack={() => router.push("/")}
+          onBack={() => router.push("/?area=mitarbeiterakte")}
         />
         {toast ? (
           <Toast
