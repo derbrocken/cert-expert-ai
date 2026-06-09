@@ -207,5 +207,22 @@ Vier getrennte Achsen, in UI + Code **nicht** vermischen:
 
 **Beide:** EC-09/EC-10, keine erfundene Normpflicht; `tsc` 0; Engine-Suite unverändert grün; eigener `cursor/*`-Branch; committen + pushen; EINEN HANDOFF-Ergebnis-Eintrag; Zweifel parken.
 
+## 🚦 DISPATCH v3 (2026-06-09) — zwei parallele Lanes (disjunkt)
+**Branch-Basis = `main` (HEAD `d9c6704`).** Dispatch v2 (#7/#C + #3) gemergt. Generator jetzt frei → #8 baubar. Lane E (Generator) und Lane F (Form/Engine) sind disjunkt.
+
+### Lane E — Generator-Datum global + pro Dokument → **#8**
+- **Branch:** `lane-e-generator-datum`
+- **Write-Set (NUR):** `…/employee-file/EmployeeAutomationPage.tsx` · `…/employee-file/EmployeeFileDossierView.tsx` · `…/employee-generator/generate-employee-docs.ts` · `app/actions/generate-employee-docs.ts` · `…/employee-generator/templateData.ts` · `…/employee-file/utils/date.ts`
+- **Inhalt:** Generator-Datum global („Datum für alle") **und** je Dokument überschreibbar (Muster Queue C Bulk+Override) statt hartkodiertem `new Date()`; Action nimmt `documentDates` entgegen. Default bleibt „heute".
+- **VERBOTEN:** `requirement-engine.ts`/Engine, `EmployeeForm.tsx`, `lib/*`, Lane-F-Dateien. Bei Bedarf → parken.
+
+### Lane F — Qualifikation als Multiselect-Dropdown → **#2**
+- **Branch:** `lane-f-qualifikation`
+- **Write-Set (NUR):** neuer `…/employee-file/qualification-catalog.ts` · `components/employee/EmployeeForm.tsx` (und/oder `…/employee-file/EmployeeForm.tsx`) · `…/employee-file/validations/employee-form.ts` · `…/employee-file/types/employee.ts` · `…/employee-file/requirement-engine.ts` + `requirement-engine.test.ts` · `lib/employee-file-repository.ts` (Migration/Persistenz)
+- **Inhalt:** Multiselect (höchste Stufe zählt, Zusätze additiv) — Werte CL-belegt: Unterrichtung/Sachkunde §34a CL-01/02, GSSK/Servicekraft CL-07/CL-10, Fachkraft/Meister CL-07/CL-10, **Waffensachkunde CL-76 (Zusatz, „fachlich prüfen")**. Engine liest strukturierten Wert statt Freitext-Regex; Migration Freitext→Katalog (unbekannt → „fachlich prüfen"). EC-10: keine „qualifiziert"-Aussage. **Engine-Suite erweitern + grün halten.**
+- **VERBOTEN:** Generator-/Dossier-Dateien (Lane E), `EmployeeAutomationPage.tsx`. Bei Bedarf → parken.
+
+**Beide:** EC-09/EC-10, jede Regel CL-belegt oder „fachlich prüfen"; `tsc` 0; Suite grün (Lane F erweitert); eigener Branch; committen (nicht main/nicht pushen bei Worktree-Subagent); EINEN HANDOFF-Eintrag; Zweifel parken. **Danach:** Planer reviewt + merged.
+
 ## DoD (gesamt)
 Pro Phase eigener Commit; je Phase `tsc --noEmit` 0 · Engine-Suite (`tsx --test`) grün (bei #2/#5/#10/#D erweitert) · **EC-09-ZIP `POST /employee-automation` 200** · EC-10 (`unchecked`, kein Freigabe-Wording) · jede Regel CL-belegt oder „fachlich prüfen" · Browser-Akzeptanz `:3001` (Mark-Klick für OS-Dialoge). **P1 sofort baubar; P2/P3 laufen, offene Punkte oben blockieren nur die jeweils betroffenen Teil-Posten, nicht die Phase.**

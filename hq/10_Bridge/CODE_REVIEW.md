@@ -4,6 +4,26 @@
 
 ---
 
+## 2026-06-09 — In-Chat-Dispatch v2: Lane C (Bestellungen `d312f6d`) + Lane D (Tally-Mapping `3c17345`) — **Planer-Review → BEIDE ABGENOMMEN, gemergt (`d9c6704`)**
+
+**Methode:** Zwei Claude-Subagenten (worktree-isoliert) bauten Lane C (#7/#C) + Lane D (#3) parallel. Unabhängiger Review: Write-Sets disjunkt (nur HANDOFF überschneidet → beim Merge beide Einträge behalten); kombinierte Re-Verifikation auf `main` nach beiden Merges: `tsc --noEmit` = **0**, Suite **58/58**. Keine Engine-/`EmployeeAutomationPage`-/verbotene Datei berührt; EC-09-ZIP-Pfad strukturell unverändert (Live-POST-Klick = Mark, S3 im Sandbox nicht verfügbar); EC-10 (`unchecked`) gewahrt.
+
+### Lane C — #7/#C Bestellungen sauber getrennt
+- `BestellungTyp = ersthelfer|brandschutzhelfer|sibe` + `BESTELLUNG_DEFS` (CL-08/CL-23/CL-74), je unterschriftspflichtig; Bestellungen = nur diese 3 formalen Ernennungen, keine Schulungen.
+- Akte-Flag `bestelltAls` (Multiselect) + Generator 2 Wege (aus Vorlage mit Default-Datum / hochladen, `evidenceId=bestellung:{typ}`). Route filtert Unterweisungs-/Schulungs-Ordner aus `appointments`.
+- **⚠️ Architektur-Flag an Mark:** `bestelltAls` ist als **Projektion über `appointmentIds`** gebaut (kein Schema-Eingriff, Write-Set schloss Repo/Prisma aus). Funktioniert round-trip-stabil; falls eine **eigene persistierte DB-Spalte** + **Bestellung↔Schulung-Verknüpfung** gewünscht → eigener Repo/Schema-Slice (geparkt).
+- **Geparkt (Server/Mark):** S3-Move `appointments/unterweisungen/Unterweisungsnachweis_Arbeitsschutz_DGUV.docx` → Unterweisungen (CL-75). Route blendet den Ordner bis dahin aus.
+
+### Lane D — #3 Tally-Mapping (je Schulung eigener Slot, Q3)
+- Schulungen → `training-plan:{id}`-Konvention (Ersthelfer `training-plan:erste-hilfe` CL-08, Brandschutz `…:brandschutz` CL-23); Dokumente behalten feste evidenceId (Sachkunde CL-01/02 etc.).
+- **Echter Bug gefixt:** unlabeled File-Felder (Slots 3–10) liefen alle auf `tally-upload` → spätere Uploads überschrieben frühere; jetzt positionsbasiert eindeutig (`TALLY_FILE_POSITION_EVIDENCE_IDS` + explizite `evidenceId` je JSON-Eintrag, neuer `resolveTallyFileEvidenceId`). Abgleich-Tabelle in `TALLY_FIELD_MAPPING.md`.
+- **Geparkte Frage an Mark:** Akte legt Plan-Slots mit benutzergenerierten Ids (`tp-…`, Queue C) an; Tally-Import nutzt stabile Ids → für Auto-Anhängen importierter Nachweise an vorhandene Plan-Einträge braucht es Id-Angleichung/Lookup in der Akte (Folge-Dispatch).
+
+### Verdict
+**Beide abgenommen, gemergt (`eb9ece5` + `d9c6704`).** Keine Blocker. **Zwei Mark-Entscheidungen offen** (kein Re-Bau nötig): (1) `bestelltAls` Projektion vs. persistierte Spalte + Bestellung↔Schulung-Link; (2) Tally↔Plan-Id-Angleichung. Beide = optionaler Folge-Slice.
+
+---
+
 ## 2026-06-08 — Parallel-Dispatch: Lane A (ÖPV-Engine `aff20ea`) + Lane B (Audit-Export `45ea375`+`d0f7154`) — **Planer-Review (unabhängig) → BEIDE ABGENOMMEN, mergebereit**
 
 **Methode:** Unabhängiger Review der beiden disjunkten Lane-Branches gegen ihre Bauaufträge + `NORM_KLAUSEL_REGISTER_v1.md`. **Eigenständige Re-Verifikation je Branch** (nicht nur Executor-Meldung): Lane A auf `cursor/oepv-engine-schulungssoll` → `tsc --noEmit` **0** · Engine-Suite `tsx --test` **30/30**. Lane B auf `cursor/audit-export-lane-b` → `tsc --noEmit` **0** · Export-Unit-Tests **6/6** (XLSX+PDF). Diff-Inspektion beider Commits + Guardrail-Greps (Dangling-Ref, EC-10-Disclaimer, verbotene Dateien).
