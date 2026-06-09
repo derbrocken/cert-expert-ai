@@ -76,6 +76,7 @@ export const EmployeeForm: React.FC<EmployeeFormProps> = ({
     control,
     reset,
     setValue,
+    getValues,
     formState: { errors },
   } = useForm<EmployeeFormData>({
     resolver: zodResolver(employeeFormSchema),
@@ -145,9 +146,12 @@ export const EmployeeForm: React.FC<EmployeeFormProps> = ({
     }
     setOrgTitleOther(false);
     setValue("roleType", value);
-    // Default-Mapping auf die Norm-Klasse (überschreibbar; Klasse maßgeblich).
+    // #A: Default-Klasse nur als Vorschlag setzen, wenn noch KEINE Norm-Klasse
+    // erfasst ist. Ein Org-Titel überschreibt eine bewusst gewählte (oder
+    // bewusst geleerte) Klassenauswahl nicht — keine Zwangsvorauswahl.
     const def = ORG_TITLE_OPTIONS.find((o) => o.id === value)?.defaultClass;
-    if (def)
+    const current = getValues("roleClasses") ?? [];
+    if (def && current.length === 0)
       setValue("roleClasses", [def as RoleClass], { shouldValidate: true });
   };
 
@@ -567,8 +571,7 @@ export const EmployeeForm: React.FC<EmployeeFormProps> = ({
                         label={ROLE_CLASS_LABEL_MULTI}
                         name="roleClasses"
                         id="roleClasses"
-                        description="DIN 77200: EK (§3.10) und FK (§3.11/§4.19.1) frei kombinierbar. Maßgeblich fürs Pflicht-Set."
-                        required
+                        description="DIN 77200: EK (§3.10), FK (§3.11/§4.19.1) und Verwaltung frei kombinierbar, jede Klasse einzeln abwählbar. Leere Auswahl möglich. Maßgeblich fürs Pflicht-Set."
                         error={errors.roleClasses?.message}
                       >
                         <Controller
