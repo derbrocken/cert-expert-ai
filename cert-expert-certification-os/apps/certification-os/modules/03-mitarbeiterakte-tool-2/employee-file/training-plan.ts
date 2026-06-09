@@ -36,24 +36,55 @@ export type PlanItemStatus =
   | "ohne-datum";
 
 /**
- * Ist-Quelle exakt wie `EmployeeFileTrainingTargets`:
+ * **Manuelles** Ist exakt wie `EmployeeFileTrainingTargets`:
  * `jahres-weiterbildung` → `weiterbildungIstUE`, sonst `einmaligIstUE[id]`.
  */
-function istForTarget(target: TrainingTarget, employee: Employee): number {
+function manualIstForTarget(target: TrainingTarget, employee: Employee): number {
   if (target.id === "jahres-weiterbildung") {
     return employee.weiterbildungIstUE ?? 0;
   }
   return employee.einmaligIstUE?.[target.id] ?? 0;
 }
 
-/** Soll − Ist − Lücke je Soll-Posten (rein rechnerisch). */
+/**
+ * **Effektives** Ist eines Soll-Postens = manuell erfasstes Ist
+ * **+ anerkannter UE-Beitrag aus dem `trainingPlan`** (#5, Variante C). So
+ * reagiert die Soll/Ist-Ampel auf eine anerkannte Schulung, ohne dass die
+ * Engine (liest nur die manuellen Ist-Felder) angefasst wird.
+ *  - `jahres-weiterbildung` (CL-11) bekommt die **Summe** aller anerkannten UE
+ *    (CL-27-Anrechnung jeder Einmal-/Eigen-Schulung im Erwerbsjahr).
+ *  - Ein Einmal-Soll-Posten bekommt zusätzlich die ihm zugeordneten UE.
+ * Unbestätigte externe Vorschläge (`unchecked`) tragen NICHT bei (EC-10).
+ */
+export function effectiveIstForTarget(
+  target: TrainingTarget,
+  employee: Employee,
+  contribution?: RecognizedIstContribution,
+): number {
+  const manual = manualIstForTarget(target, employee);
+  const contrib =
+    contribution ?? computeRecognizedIstContribution(employee.trainingPlan ?? []);
+  if (target.id === "jahres-weiterbildung") {
+    return manual + contrib.weiterbildung;
+  }
+  return manual + (contrib.einmalig[target.id] ?? 0);
+}
+
+/**
+ * Soll − Ist − Lücke je Soll-Posten (rein rechnerisch). Das Ist enthält jetzt
+ * den **anerkannten** UE-Beitrag aus dem `trainingPlan` (#5), sodass eine
+ * anerkannte Schulung die Lücke verkleinert. Engine unberührt.
+ */
 export function computeTrainingGaps(
   targets: TrainingTarget[],
   employee: Employee,
 ): TrainingGap[] {
+  const contribution = computeRecognizedIstContribution(
+    employee.trainingPlan ?? [],
+  );
   return targets.map((t) => {
     const soll = t.ue;
-    const ist = istForTarget(t, employee);
+    const ist = effectiveIstForTarget(t, employee, contribution);
     const rest = soll === null ? null : Math.max(soll - ist, 0);
     return {
       id: t.id,
@@ -121,6 +152,127 @@ export function planStatusToWorkingItemStatus(
 /** Evidence-Slot-Konvention je Plan-Eintrag (bestehende Evidence-Infra). */
 export function planEvidenceId(itemId: string): string {
   return `training-plan:${itemId}`;
+}
+
+// --- #5 UE-Anerkennung (Variante C) --------------------------------------
+//
+// Norm-Leitplanken (hart):
+//  - UE-Werte nur CL-belegt: Jahres-Weiterbildung CL-11 (40/24), Einmalschulungen
+//    CL-20/21/24/25/29/30 — bzw. der im Katalog hinterlegte Eigen-Schulungs-UE.
+//    Keine erfundenen UE.
+//  - **Anrechnung CL-27:** Eine im Erwerbsjahr anerkannte Einmalschulung wird auf
+//    die Jahres-Weiterbildung (§4.19.2 / CL-11) angerechnet. In diesem Tool fließt
+//    jeder anerkannte Plan-Eintrag in `weiterbildungIstUE` (CL-11-Bucket); ein
+//    `source:"soll-posten"`-Eintrag zusätzlich in `einmaligIstUE[refId]` (sein
+//    eigener Soll-Posten). So reagiert die Soll/Ist-Ampel ohne Engine-Eingriff.
+//  - **EC-10:** Eigen-Katalog = bekannt → automatisch anerkannt (keine Unterschrift,
+//    Schulungsnachweis ≠ Unterweisung). Extern = best-effort extrahierter Vorschlag,
+//    der **erst nach fachlicher Bestätigung** (`ueBestaetigt === true`) zählt — sonst
+//    `unchecked`/0 Beitrag. Keine Auto-Anerkennung, keine Freigabeaussage.
+
+/**
+ * Anrechenbarer UE-Wert eines Plan-Eintrags (Variante C). Liefert nur dann > 0,
+ * wenn die UE **anerkannt** ist:
+ *  - `ueAnerkennung === "eigen-katalog"` → der bekannte Katalog-/Snapshot-UE
+ *    (`item.ue`) zählt sofort (UE bekannt, EC-10-konform, keine Unterschrift).
+ *  - `ueAnerkennung === "extern"` → nur wenn `ueBestaetigt === true`; dann zählt
+ *    der bestätigte `ueVorschlag` (Heuristik-Treffer). Sonst 0 (`unchecked`).
+ * Alles andere → 0 (kein Auto-Ist).
+ */
+export function recognizedUe(item: TrainingPlanItem): number {
+  if (item.ueAnerkennung === "eigen-katalog") {
+    return typeof item.ue === "number" && Number.isFinite(item.ue) && item.ue > 0
+      ? item.ue
+      : 0;
+  }
+  if (item.ueAnerkennung === "extern" && item.ueBestaetigt === true) {
+    return typeof item.ueVorschlag === "number" &&
+      Number.isFinite(item.ueVorschlag) &&
+      item.ueVorschlag > 0
+      ? item.ueVorschlag
+      : 0;
+  }
+  return 0;
+}
+
+/** Aufschlüsselung der aus dem Plan **anerkannten** Ist-UE je Bucket. */
+export interface RecognizedIstContribution {
+  /** Summe aller anerkannten UE → CL-11 Jahres-Weiterbildung (CL-27-Anrechnung). */
+  weiterbildung: number;
+  /** Anerkannte UE je Einmal-Soll-Posten (`source:"soll-posten"` → `refId`). */
+  einmalig: Record<string, number>;
+}
+
+/**
+ * Summiert die aus dem `trainingPlan` **anerkannten** UE (Variante C) in die
+ * beiden Ist-Buckets, die die Engine liest. Reine Berechnung (kein Seiteneffekt,
+ * kein Auto-Ist für unbestätigte Externe). CL-27: jeder anerkannte Eintrag zählt
+ * für die Jahres-Weiterbildung; Soll-Posten-Einträge zusätzlich für ihren Posten.
+ */
+export function computeRecognizedIstContribution(
+  plan: TrainingPlanItem[],
+): RecognizedIstContribution {
+  const out: RecognizedIstContribution = { weiterbildung: 0, einmalig: {} };
+  for (const item of plan) {
+    const ue = recognizedUe(item);
+    if (ue <= 0) continue;
+    out.weiterbildung += ue;
+    if (item.source === "soll-posten" && item.refId.length > 0) {
+      out.einmalig[item.refId] = (out.einmalig[item.refId] ?? 0) + ue;
+    }
+  }
+  return out;
+}
+
+/**
+ * Markiert einen Plan-Eintrag als **eigene Cert-Expert-Schulung** (Variante C):
+ * die im Katalog hinterlegte/Snapshot-UE wird automatisch anerkannt (keine
+ * Unterschrift). Idempotent; ändert keinen anderen Eintrag.
+ */
+export function markEigenKatalogAnerkennung(
+  item: TrainingPlanItem,
+): TrainingPlanItem {
+  return {
+    ...item,
+    ueAnerkennung: "eigen-katalog",
+    // Eigen-Katalog ist bekannt → kein Vorschlag/Bestätigungs-Flow nötig.
+    ueVorschlag: undefined,
+    ueVorschlagQuelle: undefined,
+    ueBestaetigt: undefined,
+  };
+}
+
+/**
+ * Hängt einen **externen** UE-Vorschlag an einen Plan-Eintrag (best-effort
+ * extrahiert). Bleibt `unchecked` (`ueBestaetigt` wird NICHT gesetzt) →
+ * fließt erst nach fachlicher Bestätigung in den Ist-Wert (EC-10).
+ */
+export function attachExternerUeVorschlag(
+  item: TrainingPlanItem,
+  vorschlag: number | null,
+  quelle?: string,
+): TrainingPlanItem {
+  return {
+    ...item,
+    ueAnerkennung: "extern",
+    ueVorschlag:
+      typeof vorschlag === "number" && vorschlag > 0 ? vorschlag : undefined,
+    ueVorschlagQuelle: quelle,
+    // Bewusst NICHT bestätigen — bleibt Vorschlag bis zum fachlichen Klick.
+    ueBestaetigt: false,
+  };
+}
+
+/**
+ * Setzt die fachliche Bestätigung eines externen UE-Vorschlags (EC-10: bewusster
+ * Klick). Nur sinnvoll bei `ueAnerkennung === "extern"`. `confirmed=false` zieht
+ * die Anerkennung zurück (Ist-Beitrag wird wieder 0).
+ */
+export function setUeBestaetigt(
+  item: TrainingPlanItem,
+  confirmed: boolean,
+): TrainingPlanItem {
+  return { ...item, ueBestaetigt: confirmed };
 }
 
 /**

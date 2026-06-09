@@ -112,6 +112,19 @@ function asTrainingPlan(value: unknown): TrainingPlanItem[] {
       plannedDate: typeof r.plannedDate === "string" ? r.plannedDate : undefined,
       validUntil: typeof r.validUntil === "string" ? r.validUntil : undefined,
       note: typeof r.note === "string" ? r.note : undefined,
+      // #5 UE-Anerkennung (Variante C) — im trainingPlan-Json mitgeführt (keine
+      // neue DB-Spalte). EC-10: extern bleibt Vorschlag, bis `ueBestaetigt`.
+      ueAnerkennung:
+        r.ueAnerkennung === "eigen-katalog" || r.ueAnerkennung === "extern"
+          ? r.ueAnerkennung
+          : undefined,
+      ueVorschlag:
+        typeof r.ueVorschlag === "number" && Number.isFinite(r.ueVorschlag)
+          ? r.ueVorschlag
+          : undefined,
+      ueVorschlagQuelle:
+        typeof r.ueVorschlagQuelle === "string" ? r.ueVorschlagQuelle : undefined,
+      ueBestaetigt: r.ueBestaetigt === true ? true : undefined,
     });
   }
   return out;

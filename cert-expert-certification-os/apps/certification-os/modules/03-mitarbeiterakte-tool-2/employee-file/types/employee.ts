@@ -191,6 +191,35 @@ export interface TrainingPlanItem {
   validUntil?: string;
   /** Freitext-Notiz (optional). */
   note?: string;
+  /**
+   * #5 UE-Anerkennung (Variante C) — Herkunft der UE-Anerkennung dieses
+   * Plan-Eintrags. Wird im bestehenden `trainingPlan`-Json mitgeführt (KEINE
+   * neue DB-Spalte). Zwei Wege (Unterschrifts-Logik: Schulungsnachweis ≠
+   * Unterweisung → in beiden Fällen KEINE Unterschrift):
+   *  - `"eigen-katalog"`: eigene Cert-Expert-Schulung, UE im Katalog hinterlegt
+   *    (bekannt) → automatisch anerkannt; fließt über `recognizedUe` in den
+   *    Ist-Wert (CL-27-Anrechnung). Kein Vorschlag, keine Bestätigung nötig.
+   *  - `"extern"`: extern hochgeladenes Dokument → UE best-effort extrahiert
+   *    (`ueVorschlag`, Heuristik). Bleibt **Vorschlag/`unchecked`** bis
+   *    `ueBestaetigt === true` (fachliche Bestätigung). Erst dann fließt der
+   *    bestätigte Wert in den Ist-Wert. **Keine Auto-Anerkennung (EC-10).**
+   * `undefined` = (noch) keine UE-Anerkennung an diesem Eintrag.
+   */
+  ueAnerkennung?: "eigen-katalog" | "extern";
+  /**
+   * #5 — best-effort aus dem hochgeladenen Dokument extrahierter UE-Wert
+   * (Heuristik, nur bei `ueAnerkennung === "extern"`). **`unchecked`/Vorschlag**
+   * — fließt NICHT in den Ist-Wert, solange `ueBestaetigt !== true` (EC-10).
+   */
+  ueVorschlag?: number;
+  /** #5 — Herkunfts-Hinweis des Vorschlags (z. B. Dateiname/Fundtext), Anzeige. */
+  ueVorschlagQuelle?: string;
+  /**
+   * #5 — fachliche Bestätigung des externen Vorschlags. Nur wenn `true` wird
+   * `ueVorschlag` als anrechenbarer Ist-Beitrag gewertet (EC-10:
+   * keine Auto-Anerkennung; Bestätigung ist ein bewusster fachlicher Klick).
+   */
+  ueBestaetigt?: boolean;
 }
 
 export interface GlobalProperties {

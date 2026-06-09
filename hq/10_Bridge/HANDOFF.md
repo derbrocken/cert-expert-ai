@@ -253,7 +253,24 @@
 
 ## 📥 Von Cursor an Claude (Fragen / Bitten)
 
-### 2026-06-09 — ✅ Executor Lane K (Set→Dokument-Mapping B + Org-Titel-FK-Gating #7 + Mutterschutz-Overlay): FERTIG + committet (Branch `lane-k-set-mapping`, NICHT gepusht/gemergt)
+### 2026-06-09 — ✅ Executor Lane L (#5 UE-Anerkennung beim Schulungs-Upload, Variante C): FERTIG + committet (Branch `lane-l-ue`, NICHT gepusht/gemergt)
+
+**Branch:** `lane-l-ue` (ab `main` HEAD `3a5cf49`). **`main` unberührt, nicht gepusht/gemergt.** Commit: **`d7d6493`** (Feature + 14 neue #5-Tests). HANDOFF-Eintrag separat.
+**Gates (alle grün):** `npx tsc --noEmit` = **0** · employee-file-Suite **120/120** (106 Basis unverändert + **14 neue** #5-Tests in `training-plan.test.ts`) · **Engine-Suite 52/52 unberührt** (`requirement-engine.ts` nicht im Diff) · `lib/tally-*` unberührt. **Kein `.env`/`.db`/node_modules committet** (node_modules nur lokal in den Worktree gelinkt/kopiert, vor Commit entfernt).
+
+**Gebaut (Bounded Write-Set eingehalten — 6 Dateien):**
+- **Eigene Cert-Expert-Schulungen (Variante C):** beim Anhängen eines Katalog-Moduls (`source:"katalog"`) wird der Eintrag automatisch `ueAnerkennung:"eigen-katalog"` markiert (UE bekannt) → fließt über `recognizedUe`/`computeRecognizedIstContribution` in das Ist (**CL-27-Anrechnung** auf Jahres-Weiterbildung **CL-11**; ein `source:"soll-posten"`-Eintrag zusätzlich in seinen eigenen Einmal-Posten). **`computeTrainingGaps`** rechnet jetzt mit effektivem Ist (manuell + anerkannt) → **Soll/Ist-Lücke reagiert**, Engine unberührt. **Keine Unterschrift** (Schulungsnachweis ≠ Unterweisung).
+- **Externe Uploads — Best-Effort-Extraktion MIT Pflicht-Bestätigung:** Upload an einem Plan-Eintrag (kein Eigen-Katalog) extrahiert UE best-effort aus dem Dateinamen (`extractUeFromText`, Heuristik „… UE"/„Unterrichtseinheiten") → `ueVorschlag` bleibt **`unchecked`** (`ueBestaetigt:false`), zählt **0** zum Ist; erst nach **fachlichem Klick** „Fachlich bestätigen" (`setUeBestaetigt`) fließt der bestätigte Wert ein. **Keine Auto-Anerkennung (EC-10).** UI (`UeAnerkennungInfo` in `EmployeeFileTrainingPlan.tsx`) zeigt Eigen-Katalog (grün, automatisch angerechnet) bzw. Vorschlag (violett, „fachlich prüfen") + Bestätigungs-Toggle.
+- **Persistenz:** Status (`ueAnerkennung`/`ueVorschlag`/`ueVorschlagQuelle`/`ueBestaetigt`) im **bestehenden `trainingPlan`-Json** mitgeführt (`TrainingPlanItem` erweitert + `asTrainingPlan`-Read-Norm in `employee-file-repository.ts`) — **KEINE neue DB-Spalte/Schema-Migration.** Ist-Werte weiterhin über die bestehenden Felder `weiterbildungIstUE`/`einmaligIstUE` (effektives Ist = Merge an der Rechen-Stelle, nicht persistiert doppelt → kein Doppelzählen).
+- **Norm:** UE nur CL-belegt (CL-11/20/21/24/25/29/30, Anrechnung CL-27) bzw. Katalog-Eigen-UE; Extraktion = „fachlich prüfen" bis Bestätigung — **keine erfundenen UE.**
+
+**Dateien:** `lib/employee-file-repository.ts` · `…/employee-file/training-catalog.ts` · `…/training-plan.ts` · `…/EmployeeFileTrainingPlan.tsx` · `…/types/employee.ts` · `…/training-plan.test.ts`. **`requirement-engine.ts`/`EmployeeFileTrainingTargets.tsx`/Generator/`tally-*` NICHT angefasst.**
+
+**Geparkt / offen für Planer-Review:**
+1. **EC-09-ZIP Live-Klick (`POST /employee-automation` 200) nicht im Worktree fahrbar:** kein `.env`/DB im Worktree (DSGVO — Realdaten nicht kopieren); `next build` läuft hier nicht durch (Turbopack lehnt symlinked node_modules ab; bei kopiertem node_modules **vorbestehender** Build-Fehler in `generate-employee-docs.ts` „Server Actions must be async" — **nicht im Lane-L-Diff**, latente Build-Config-Sache der bestehenden Codebasis). **Struktureller EC-09-Beleg:** Generator/ZIP-Action importiert **kein** #5-Code; einzige geteilte Änderung ist additiv/type-only an `TrainingPlanItem`. → **Live-ZIP-Klick = Mark-Gate**; bitte beim Review beachten + ggf. der vorbestehende `generate-employee-docs.ts`-Async-Build-Befund separat verifizieren.
+2. **Externe Extraktion = Dateiname-Heuristik** (kein PDF-Text-Parsing in Browser-Evidence-Pfad ohne neue Lib/Architektur → Scope-/Gate-Frage). Reicht Best-Effort-aus-Dateiname (Q5' „Best-Effort mit Pflicht-Bestätigung" = bestätigt) oder soll echtes PDF-Parsing als eigener Slice folgen? → Planer/Mark.
+
+
 
 **Branch:** `lane-k-set-mapping` (ab `main` HEAD `43e8875`). **`main` unberührt, nicht gepusht/gemergt.** Commit: **`e3d2458`** (Feature) + HANDOFF-Commit.
 **Gates (alle grün):** `prisma generate` + `db push` (neue `gender`-Spalte) gegen **frische Worktree-DB** erfolgreich (additive nullable Spalte, P2023-sicher) · `npx tsc --noEmit` = **0** · employee-file-Suite **106/106** (90 alt unverändert + **16 neue** `vorlagen-set-mapping.test.ts`) · **Engine-Suite 52/52 unberührt** (requirement-engine.ts nicht im Diff) · `lib/tally-*` unberührt. **Kein `.env`/`.db`/node_modules committet** (gitignore verifiziert; node_modules nur lokal in den Worktree symverlinkt).
