@@ -1,5 +1,106 @@
 /** UI labels (DE) — template/API ids unchanged for EC-09 */
 
+import type { BestellungTyp, Employee } from "@/lib/types/employee";
+
+/**
+ * BESTELLUNGEN (#C) — die DREI formalen Ernennungs-Typen, sauber von Schulungen/
+ * Unterweisungen getrennt (Begriffs-Modell, Feedback E). Jede Bestellung ist
+ * **unterschriftspflichtig** (Unterschrifts-Logik). Jeder Typ ist mit seiner
+ * Norm-Fundstelle (CL-xx) belegt; keine erfundene Pflicht.
+ *
+ * **Persistenz-Brücke:** `appointmentId` koppelt den Bestell-Typ an den bereits
+ * persistierten `appointmentIds`-Eintrag (Source of Truth, kein neuer DB-Spalt).
+ */
+export interface BestellungDef {
+  typ: BestellungTyp;
+  /** DE-Label für Dropdown/Anzeige. */
+  label: string;
+  /** Norm-Fundstelle (CL-xx) — Bestellung ist Ernennung, nicht Schulung. */
+  clauseId: string;
+  /** Persistierter `appointmentIds`-Schlüssel (Brücke zur DB). */
+  appointmentId: string;
+  /** Kurzhinweis zum optionalen Schulungs-Bezug (Bestellung ≠ Schulung). */
+  schulungHint: string;
+}
+
+export const BESTELLUNG_DEFS: readonly BestellungDef[] = [
+  {
+    typ: "ersthelfer",
+    label: "Ersthelfer",
+    clauseId: "CL-08",
+    appointmentId: "safety-training",
+    schulungHint: "Bestellung ≠ Erste-Hilfe-Schulung (separater Nachweis, CL-08).",
+  },
+  {
+    typ: "brandschutzhelfer",
+    label: "Brandschutzhelfer",
+    clauseId: "CL-23",
+    appointmentId: "fire-safety",
+    schulungHint:
+      "Bestellung ≠ Brandschutzhelfer-Schulung (separater Nachweis, CL-23).",
+  },
+  {
+    typ: "sibe",
+    label: "SiBe / Sicherheitsbeauftragter",
+    clauseId: "CL-74",
+    appointmentId: "compliance-training",
+    schulungHint: "Betriebliche Bestellung (Beauftragung ≠ Schulung, CL-74).",
+  },
+] as const;
+
+const BESTELLUNG_BY_TYP: Record<BestellungTyp, BestellungDef> =
+  Object.fromEntries(BESTELLUNG_DEFS.map((d) => [d.typ, d])) as Record<
+    BestellungTyp,
+    BestellungDef
+  >;
+
+const BESTELLUNG_BY_APPOINTMENT: Record<string, BestellungDef> =
+  Object.fromEntries(BESTELLUNG_DEFS.map((d) => [d.appointmentId, d]));
+
+/** Ist die appointmentId eine der drei Bestellungen? (für Filter/Trennung). */
+export function isBestellungAppointmentId(appointmentId: string): boolean {
+  return appointmentId in BESTELLUNG_BY_APPOINTMENT;
+}
+
+export function bestellungLabelDe(typ: BestellungTyp): string {
+  return BESTELLUNG_BY_TYP[typ].label;
+}
+
+export function bestellungClauseId(typ: BestellungTyp): string {
+  return BESTELLUNG_BY_TYP[typ].clauseId;
+}
+
+/**
+ * Liest `bestelltAls` aus den persistierten `appointmentIds` ab (Projektion auf
+ * die drei Bestell-Typen). Reihenfolge = Katalog-Reihenfolge, dedupliziert.
+ */
+export function getBestelltAls(employee: Employee): BestellungTyp[] {
+  const ids = new Set(employee.appointmentIds ?? []);
+  return BESTELLUNG_DEFS.filter((d) => ids.has(d.appointmentId)).map(
+    (d) => d.typ,
+  );
+}
+
+/**
+ * Baut den `appointmentIds`-Patch für eine neue Bestell-Auswahl: alle
+ * Nicht-Bestell-appointmentIds bleiben unverändert, die drei Bestell-Typen
+ * werden exakt auf `typen` gesetzt. Persistiert über den bestehenden
+ * `appointmentIds`-Pfad (kein Repo-/Schema-Eingriff).
+ */
+export function setBestelltAlsPatch(
+  employee: Employee,
+  typen: BestellungTyp[],
+): string[] {
+  const wanted = new Set(typen.map((t) => BESTELLUNG_BY_TYP[t].appointmentId));
+  const kept = (employee.appointmentIds ?? []).filter(
+    (id) => !isBestellungAppointmentId(id),
+  );
+  const bestell = BESTELLUNG_DEFS.filter((d) => wanted.has(d.appointmentId)).map(
+    (d) => d.appointmentId,
+  );
+  return [...kept, ...bestell];
+}
+
 export const GRUNDROLLE_HINT =
   "Eine Grundrolle pro Person — operative Kraft (z. B. SMA) oder Führung (z. B. Einsatzleitung). Nicht beides als Grundrolle.";
 

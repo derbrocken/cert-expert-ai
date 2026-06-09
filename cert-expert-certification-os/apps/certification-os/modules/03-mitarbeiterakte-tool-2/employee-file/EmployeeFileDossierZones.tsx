@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { ChevronDown, GraduationCap, ClipboardCheck } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { Employee, Role, Appointment } from "@/lib/types/employee";
+import { bestellungLabelDe, getBestelltAls } from "./employee-display-labels";
 
 export interface EmployeeFileDossierZonesProps {
   employee: Employee;
@@ -59,11 +60,13 @@ function ZoneAccordion({
 
 export const EmployeeFileDossierZones: React.FC<
   EmployeeFileDossierZonesProps
-> = ({ employee, roles, appointments }) => {
+> = ({ employee, roles }) => {
   const role = roles.find((r) => r.id === employee.roleId);
-  const overlayNames = appointments
-    .filter((a) => employee.appointmentIds.includes(a.id))
-    .map((a) => a.name);
+  // #C — Bestellungen (formale Ernennungen) sauber getrennt anzeigen, NICHT mit
+  // allen Appointment-Vorlagen vermischen. Quelle = `bestelltAls`-Projektion.
+  const bestellungNames = getBestelltAls(employee).map((t) =>
+    bestellungLabelDe(t),
+  );
 
   return (
     <div className="space-y-3">
@@ -78,8 +81,10 @@ export const EmployeeFileDossierZones: React.FC<
             {(role?.name ?? employee.roleId) || "—"}
           </li>
           <li>
-            <span className="font-medium text-[#111827]">Zusatzrollen:</span>{" "}
-            {overlayNames.length > 0 ? overlayNames.join(", ") : "Keine"}
+            <span className="font-medium text-[#111827]">
+              Bestellungen (bestellt als):
+            </span>{" "}
+            {bestellungNames.length > 0 ? bestellungNames.join(", ") : "Keine"}
           </li>
           <li>
             <span className="font-medium text-[#111827]">

@@ -253,6 +253,27 @@
 
 ## 📥 Von Cursor an Claude (Fragen / Bitten)
 
+### 2026-06-09 — ✅ Executor Lane C (Bestellungen): #7 + #C FERTIG + committet (`daea75d`, Branch `lane-c-bestellungen`, NICHT gepusht/gemergt)
+
+**Branch:** `lane-c-bestellungen` (ab `main`). **`main` unberührt, nicht gepusht.**
+**Write-Set eingehalten** (nur diese 6 Dateien geändert): `…/employee-file/employee-display-labels.ts` · `…/employee-file/EmployeeFileDossierView.tsx` · `…/employee-file/EmployeeFileDossierZones.tsx` · `…/employee-file/types/employee.ts` (= das `@/lib/types/employee`-Alias-Ziel; ein separates `lib/types/employee.ts` existiert nicht) · `app/api/templates/route.ts` · `…/employee-generator/generate-employee-docs.ts`. (`app/actions/generate-employee-docs.ts` = nur 4-Zeilen-Re-Export → keine Änderung nötig.) Keine verbotene Datei (`lib/tally-*`, `EmployeeAutomationPage.tsx`, Engine) berührt.
+
+**Gebaut (exakt #7 + #C):**
+- **Begriffs-Trennung Bestellung ≠ Schulung:** neuer Typ `BestellungTyp = ersthelfer|brandschutzhelfer|sibe` + `BESTELLUNG_DEFS` (CL-08/CL-23/CL-74, je unterschriftspflichtig) in `employee-display-labels.ts`. Bestellungen = NUR diese 3 formalen Ernennungen, keine Schulungen/Unterweisungen.
+- **Akte-Flag `bestelltAls` (Multiselect):** neues Feld in `types/employee.ts`. **Persistenz ohne Repo-/Schema-Eingriff:** `bestelltAls` ist eine Projektion über die bereits persistierten `appointmentIds` (Helfer `getBestelltAls` / `setBestelltAlsPatch`, gekoppelt an die 3 Bestell-appointmentIds `safety-training`/`fire-safety`/`compliance-training`). Round-trip-stabil über den bestehenden `appointmentIds`-Pfad (Repo + Prisma lagen außerhalb des Write-Sets → bewusst NICHT angefasst).
+- **Generator 2 Wege:** (a) **aus Vorlage generieren** — Bestellungs-Appointments erhalten als Default das Einstellungs-/Bestelldatum (`startDate`, sonst `currentDate`) + additive Platzhalter `BestellDatum`/`Unterschriftspflichtig` (Templates ohne diese Felder unberührt → EC-09); (b) **hochladen** — Upload je Bestellung über bestehende Evidence-Infra (`evidenceId = bestellung:{typ}`, bleibt `unchecked`, EC-10).
+- **UI:** Bestellungen-Panel in `EmployeeFileDossierView` (Multiselect-Chips m. CL-Badge, „unterschriftspflichtig"-Badge, „Aus Vorlage generieren" / „Bestellung hochladen"); read-only Zone in `EmployeeFileDossierZones` zeigt jetzt saubere „Bestellungen (bestellt als)" statt vermischter „Zusatzrollen".
+- **`app/api/templates/route.ts`:** filtert Unterweisungs-/Schulungs-Ordner (Name enthält „unterweisung/schulung/unterrichtung") aus der `appointments`-Liste → die fälschlich abgelegte Unterweisung erscheint nicht mehr unter Bestellungen. Generator (EC-09) liest Vorlagen über `listTemplateFiles`, nicht über diese Route → unberührt.
+
+**Gates:** `tsc --noEmit` = **0** · Test-Suite `tsx --test …/employee-file/*.test.ts` = **58/58** grün (Engine nicht angefasst) · ESLint geänderte Dateien = 0 · EC-09-Generator-Flow strukturell unverändert (nur additive Bestellungs-Platzhalter) — Live-ZIP-POST-Klick durch Mark optional abzunehmen (S3-Creds im Sandbox nicht verfügbar) · EC-10 gewahrt (`unchecked`, keine Freigabe-Aussage) · kein `.env`/`.db`/Kundendaten-Commit.
+
+**Geparkt (NICHT selbst gemacht — kein S3-Schreibzugriff in Cursor):**
+- **S3-Move:** `appointments/unterweisungen/Unterweisungsnachweis_Arbeitsschutz_DGUV.docx` → Unterweisungen/Schulungen (CL-75) = **Server/Mark**. Bis zum Move blendet der Route-Filter den Ordner defensiv aus; nach dem Move greift der Filter weiterhin korrekt (keine Doppelarbeit).
+
+**Frage an Planer (Architektur, NICHT selbst entschieden):**
+- `bestelltAls` ist bewusst als Projektion über `appointmentIds` gebaut (Write-Set schließt Repo/Schema aus). Falls eine **eigene persistierte DB-Spalte** `bestelltAls` gewünscht ist (echte Trennung der Achsen Bestellung vs. Appointment-Vorlagen), wäre ein Repo-/Schema-Slice nötig (`schema.prisma` + `employee-file-repository.ts`, 1 Read + 3 Write-Mappings) — als eigener Dispatch.
+- Optionale **Verknüpfung Bestellung↔Schulung** (auftrag „optional"): als reine UI-Verknüpfung nicht persistierbar ohne Feld → **geparkt** (gleicher Repo-/Schema-Slice). Aktuell nicht gebaut.
+
 ### 2026-06-09 — ✅ Executor Lane A (Shell-Nav): P1 #1/#B/#9 FERTIG + COMMITTET + GEPUSHT (`38bc341`)
 
 **Branch:** `cursor/tool2-shell-nav` (ab `main@db84837`) → gepusht zu `origin`. **`main` unberührt.**

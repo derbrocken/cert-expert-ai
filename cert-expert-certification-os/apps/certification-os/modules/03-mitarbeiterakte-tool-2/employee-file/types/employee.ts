@@ -28,6 +28,18 @@ export interface Appointment {
   documents: AppointmentDocument[];
 }
 
+/**
+ * Bestellung (Overlay-Achse, #C / Feedback E) — formale Ernennung, NUR die drei
+ * Typen Ersthelfer / Brandschutzhelfer / SiBe. **Begriffs-Modell:** Bestellung
+ * (Ernennung) ≠ Schulung (Qualifikationsnachweis). Eine Bestellung ist
+ * unterschriftspflichtig (Unterschrifts-Logik). KEINE Schulungen/Unterweisungen
+ * unter dieser Achse.
+ * - Ersthelfer → CL-08 (Erste Hilfe, 2-Jahres-Frist)
+ * - Brandschutzhelfer → CL-23 (Brandschutz, 3-Jahres-Frist)
+ * - SiBe → CL-74 (betriebliche Bestellung, Beauftragung ≠ Schulung)
+ */
+export type BestellungTyp = "ersthelfer" | "brandschutzhelfer" | "sibe";
+
 export interface Employee {
   id: string;
   fullName: string;
@@ -75,6 +87,15 @@ export interface Employee {
   einmaligIstUE?: Record<string, number>;
   /** Termin-Planung Schulungen (Queue C) — gezielte gap-fill-Zuweisungen. */
   trainingPlan?: TrainingPlanItem[];
+  /**
+   * Bestellt als … (#C) — Multiselect-Akte-Flag der formalen Ernennungen
+   * (Ersthelfer/Brandschutzhelfer/SiBe). **Persistenz:** wird über die bereits
+   * persistierten `appointmentIds` ge-/entladen (s. `bestelltAls`-Helfer in
+   * `employee-display-labels.ts`); KEINE eigene DB-Spalte → kein Repo-/Schema-
+   * Eingriff nötig, round-trip-stabil. Source of Truth bleibt `appointmentIds`.
+   * Unterschriftspflichtig (Unterschrifts-Logik). Bestellung ≠ Schulung.
+   */
+  bestelltAls?: BestellungTyp[];
 }
 
 /**
