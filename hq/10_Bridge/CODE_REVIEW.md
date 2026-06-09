@@ -4,6 +4,24 @@
 
 ---
 
+## 2026-06-09 — In-Chat-Dispatch v3: Lane E (Generator-Datum `2a91f62`) + Lane F (Qualifikation-Multiselect `eb5e754`) — **Planer-Review → BEIDE ABGENOMMEN, gemergt (`3fd017b`)**
+
+**Methode:** Zwei Claude-Subagenten (worktree-isoliert) parallel. Write-Sets disjunkt (nur HANDOFF). Kombinierte Re-Verifikation auf `main`: `tsc` = **0**, Suite **71/71** (58 + 13 neue Qualifikations-Szenarien). EC-09/EC-10 gewahrt.
+
+### Lane E — #8 Generator-Datum global + pro Dokument
+- Action nimmt optionales `documentDates = {global?, perDocument?}`; Auflösung per-Doc → global → heute. Default „heute" unverändert (alle Alt-Aufrufe unberührt) → EC-09 intakt. UI: globales Feld + „für alle übernehmen" + ausklappbare Per-Doc-Overrides. `EmployeeFileDossierView`/`templateData.ts` korrekt NICHT angefasst (templateData existiert nicht; Datum-Logik liegt in generate-employee-docs).
+- **Geparkt:** Persistenz des gesetzten Datums über Reload (aktuell Session-State) — optionaler Folge-Slice (berührt `lib/*`).
+
+### Lane F — #2 Qualifikation Multiselect-Dropdown
+- Katalog `qualification-catalog.ts`: 8 CL-belegte Optionen (Unterrichtung/Sachkunde CL-01/02 Stufe A, GSSK CL-07 B, Servicekraft CL-10, Fachkraft/Meister CL-07 C, **Waffensachkunde CL-76 Zusatz/„fachlich prüfen"**). Höchste Stufe A<B<C zählt, Zusätze additiv (keine neue DIN-Pflicht, EC-10).
+- Engine liest strukturierten `qualifications`-Wert (Freitext bleibt Fallback). Migration verlustfrei über bestehende `qualification`-Spalte (kein Schema-Eingriff). 13 neue Engine-Tests.
+- **Planer-Vervollständigung (`3fd017b`):** Lane F parkte die letzte Verdrahtung (außerhalb Write-Set) — `buildRequirementContext` reicht jetzt `qualifications` an die Engine durch → strukturierte Signale erscheinen live im Dossier. Additive 1-Zeile, Suite weiter 71/71.
+
+### Verdict
+**Beide abgenommen, gemergt + voll verdrahtet.** Keine Blocker. 1 optionaler Folge-Punkt (Generator-Datum-Persistenz).
+
+---
+
 ## 2026-06-09 — In-Chat-Dispatch v2: Lane C (Bestellungen `d312f6d`) + Lane D (Tally-Mapping `3c17345`) — **Planer-Review → BEIDE ABGENOMMEN, gemergt (`d9c6704`)**
 
 **Methode:** Zwei Claude-Subagenten (worktree-isoliert) bauten Lane C (#7/#C) + Lane D (#3) parallel. Unabhängiger Review: Write-Sets disjunkt (nur HANDOFF überschneidet → beim Merge beide Einträge behalten); kombinierte Re-Verifikation auf `main` nach beiden Merges: `tsc --noEmit` = **0**, Suite **58/58**. Keine Engine-/`EmployeeAutomationPage`-/verbotene Datei berührt; EC-09-ZIP-Pfad strukturell unverändert (Live-POST-Klick = Mark, S3 im Sandbox nicht verfügbar); EC-10 (`unchecked`) gewahrt.
