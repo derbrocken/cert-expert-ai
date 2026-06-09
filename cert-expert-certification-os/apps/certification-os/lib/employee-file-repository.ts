@@ -25,6 +25,10 @@ import {
   resolveRoleClasses,
   type RoleClass,
 } from "@/modules/03-mitarbeiterakte-tool-2/employee-file/requirement-engine";
+import {
+  parseQualifications,
+  serializeQualifications,
+} from "@/modules/03-mitarbeiterakte-tool-2/employee-file/qualification-catalog";
 
 const QUEUE_MIGRATION_KEY = "cert-expert-tool2-employee-queue-v1";
 const EVIDENCE_MIGRATION_KEY = "cert-expert-tool2-employee-evidence-v1";
@@ -129,6 +133,12 @@ export function employeeFileToEmployee(record: EmployeeFile): Employee {
       mapRoleTypeToRoleClass(record.roleType ?? undefined),
     roleType: record.roleType ?? undefined,
     employmentType: record.employmentType ?? undefined,
+    // #2: strukturierte Qualifikation aus der bestehenden `qualification`-Spalte
+    // ableiten (keine neue DB-Spalte). Round-trip aus serialisierten Labels bzw.
+    // tolerante Legacy-/Tally-Freitext-Migration. Verlustfrei: der Freitext
+    // bleibt zusätzlich erhalten (`qualification`), unbekannte Reste gehen nicht
+    // verloren und greifen weiter über den Engine-Freitext-Fallback.
+    qualifications: parseQualifications(record.qualification).ids,
     qualification: record.qualification ?? undefined,
     trainingHours: record.trainingHours ?? undefined,
     guardIDNumber: record.guardIDNumber ?? undefined,
@@ -143,6 +153,17 @@ export function employeeFileToEmployee(record: EmployeeFile): Employee {
     einmaligIstUE: asNumberRecord(record.einmaligIstUE),
     trainingPlan: asTrainingPlan(record.trainingPlan),
   };
+}
+
+/**
+ * #2: Schreibwert für die bestehende `qualification`-Spalte. Strukturierte
+ * Auswahl (`qualifications`) ist Source of Truth → als Label-Liste spiegeln;
+ * sonst Legacy-/Tally-Freitext unverändert erhalten (verlustfrei, round-trip).
+ */
+function qualificationColumnValue(employee: Employee): string | null {
+  return employee.qualifications && employee.qualifications.length > 0
+    ? serializeQualifications(employee.qualifications)
+    : (employee.qualification ?? null);
 }
 
 function employeeToUpsertData(
@@ -163,7 +184,7 @@ function employeeToUpsertData(
     roleClass: employee.roleClass ?? null,
     roleType: employee.roleType ?? null,
     employmentType: employee.employmentType ?? null,
-    qualification: employee.qualification ?? null,
+    qualification: qualificationColumnValue(employee),
     trainingHours: employee.trainingHours ?? null,
     guardIDNumber: employee.guardIDNumber ?? null,
     employeeIDNumber: employee.employeeIDNumber ?? null,
@@ -342,7 +363,7 @@ export async function upsertEmployeeFile(
       roleClass: employee.roleClass ?? null,
       roleType: employee.roleType ?? null,
       employmentType: employee.employmentType ?? null,
-      qualification: employee.qualification ?? null,
+      qualification: qualificationColumnValue(employee),
       trainingHours: employee.trainingHours ?? null,
       guardIDNumber: employee.guardIDNumber ?? null,
       employeeIDNumber: employee.employeeIDNumber ?? null,
@@ -394,7 +415,7 @@ export async function replaceEmployeeFilesForCompany(
           roleClass: employee.roleClass ?? null,
           roleType: employee.roleType ?? null,
           employmentType: employee.employmentType ?? null,
-          qualification: employee.qualification ?? null,
+          qualification: qualificationColumnValue(employee),
           trainingHours: employee.trainingHours ?? null,
           guardIDNumber: employee.guardIDNumber ?? null,
           employeeIDNumber: employee.employeeIDNumber ?? null,
@@ -728,7 +749,7 @@ export async function migrateFromLocalStoragePayload(
             roleClass: employee.roleClass ?? null,
             roleType: employee.roleType ?? null,
             employmentType: employee.employmentType ?? null,
-            qualification: employee.qualification ?? null,
+            qualification: qualificationColumnValue(employee),
             trainingHours: employee.trainingHours ?? null,
             guardIDNumber: employee.guardIDNumber ?? null,
             employeeIDNumber: employee.employeeIDNumber ?? null,

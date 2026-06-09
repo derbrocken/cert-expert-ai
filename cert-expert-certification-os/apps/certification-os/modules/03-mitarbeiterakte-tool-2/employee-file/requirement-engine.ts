@@ -11,6 +11,11 @@
  * in der konservativen `WorkingItemStatus`-Union.
  */
 
+import {
+  deriveQualificationFlags,
+  type QualificationFlags,
+} from "./qualification-catalog";
+
 /** Conservative working statuses — no audit/release claims */
 export type WorkingItemStatus =
   | "vorhanden"
@@ -97,6 +102,15 @@ export interface RequirementContext {
   /** DE-Labels der Beauftragungen (Ersthelfer, Brandschutzhelfer, …). */
   appointmentLabels: string[];
   employmentType?: string;
+  /**
+   * Strukturierte Qualifikations-Auswahl (#2 Multiselect) — Katalog-IDs aus
+   * `qualification-catalog.ts`. **Primärer** Qualifikations-Input: ist dieses
+   * Feld gesetzt, liest die Engine die strukturierten Flags (höchste Stufe +
+   * additive Zusätze) statt der Freitext-Heuristik. Fehlt es (Legacy/Tally),
+   * fällt die Engine auf `qualification` (Freitext) zurück.
+   */
+  qualifications?: string[];
+  /** @deprecated Freitext-Qualifikation — Fallback, wenn `qualifications` fehlt. */
   qualification?: string;
   /** Eintrittsdatum (ISO YYYY-MM-DD). */
   startDate?: string;
@@ -289,12 +303,35 @@ function hasLabel(labels: string[], ...needles: string[]): boolean {
   return needles.some((n) => lower.some((l) => l.includes(n.toLowerCase())));
 }
 
-function hasSachkunde(qualification?: string): boolean {
+/** Freitext-Fallback: §34a-Sachkunde erkannt? (nur wenn `qualifications` fehlt). */
+function freitextHasSachkunde(qualification?: string): boolean {
   return !!qualification && /sachkunde/i.test(qualification);
 }
 
-function hasUnterrichtung(qualification?: string): boolean {
+/** Freitext-Fallback: §34a-Unterrichtung erkannt? (nur wenn `qualifications` fehlt). */
+function freitextHasUnterrichtung(qualification?: string): boolean {
   return !!qualification && /unterricht/i.test(qualification);
+}
+
+/**
+ * Qualifikations-Auflösung (#2): Primär aus dem strukturierten `qualifications`-
+ * Set (Katalog-Flags); fehlt es, Freitext-Heuristik auf `qualification`. So liest
+ * die Engine den strukturierten Wert, bleibt aber für Legacy/Tally-Akten ohne
+ * strukturierte Auswahl rückwärtskompatibel.
+ */
+function resolveQualification(ctx: RequirementContext): QualificationFlags {
+  if (ctx.qualifications && ctx.qualifications.length > 0) {
+    return deriveQualificationFlags(ctx.qualifications);
+  }
+  return {
+    hoechsteStufe: null,
+    hasSachkunde: freitextHasSachkunde(ctx.qualification),
+    hasUnterrichtung: freitextHasUnterrichtung(ctx.qualification),
+    hasFkQualifizierend: false,
+    hasZusatz: false,
+    zusaetze: [],
+    hasUnbekannt: false,
+  };
 }
 
 /** Vollzeit ⇒ 40 UE, sonst 24 UE (CL-11). */
@@ -367,8 +404,11 @@ export function deriveRequirements(ctx: RequirementContext): RequirementResult {
     : "Bewachungsrolle";
 
   const ref = parseIsoDate(ctx.referenceDate) ?? new Date();
-  const sachkunde = hasSachkunde(ctx.qualification);
-  const unterrichtung = hasUnterrichtung(ctx.qualification);
+  // #2: Qualifikation primär aus dem strukturierten Multiselect (höchste Stufe +
+  // additive Zusätze), Freitext-Heuristik nur als Legacy-Fallback.
+  const quali = resolveQualification(ctx);
+  const sachkunde = quali.hasSachkunde;
+  const unterrichtung = quali.hasUnterrichtung;
 
   const hasErsthelfer = hasLabel(ctx.appointmentLabels, "ersthelfer", "erste hilfe");
   const hasBrandschutz = hasLabel(ctx.appointmentLabels, "brand");
@@ -434,15 +474,21 @@ export function deriveRequirements(ctx: RequirementContext): RequirementResult {
       status: "fehlt",
     });
 
-    // q-profil (CL-06 / CL-07) — Default Stufe A
+    // q-profil (CL-06 / CL-07) — höchste erfasste Stufe (#2). Ohne strukturierte
+    // Qualifikation bleibt der konservative Default „Stufe A".
+    const profilStufe = quali.hoechsteStufe ?? "A";
     pflichtSet.push({
       id: "q-profil",
-      label: "Profil-Mindestqualifikation (Stufe A)",
+      label: `Profil-Mindestqualifikation (Stufe ${profilStufe})`,
       clauseId: "CL-06",
       quelle: "DIN 77200-1 §4.19.1 + Anh. A Tab. A.1",
-      trigger: `${bewTrigger} — Default Stufe A`,
+      trigger: quali.hoechsteStufe
+        ? `${bewTrigger} — erfasste Stufe ${profilStufe} (CL-07)`
+        : `${bewTrigger} — Default Stufe A`,
       status: "vorbereitet",
-      hint: "Stufe B/C nur manueller Sonderfall (CL-07) → fachlich prüfen",
+      hint: quali.hoechsteStufe
+        ? `Höchste erfasste Qualifikationsstufe: ${profilStufe} (CL-07). Profil-Eignung fachlich prüfen.`
+        : "Stufe B/C nur manueller Sonderfall (CL-07) → fachlich prüfen",
     });
 
     // q-ersthilfe (CL-08) — Detail-Frist unten in fristen[]
@@ -760,6 +806,32 @@ export function deriveRequirements(ctx: RequirementContext): RequirementResult {
       status: "fachlich prüfen",
       hint: "Werte/Turnus offen (Legal-Input CL-73)",
     });
+  }
+
+  // -------------------------------------------------------------------------
+  // G. Qualifikations-Zusätze (additiv, #2) — z. B. Waffensachkunde (CL-76).
+  // -------------------------------------------------------------------------
+  // EC-10 / „keine erfundene Pflicht": ein Zusatz ändert die Stufe NICHT und
+  // erzeugt KEINE neue DIN-Pflicht. CL-76 (Waffensachkunde) ist `legal-input`
+  // → als „fachlich prüfen" geführt, ersetzt §34a nicht.
+  for (const zusatz of quali.zusaetze) {
+    pflichtSet.push({
+      id: `quali-zusatz-${zusatz.id}`,
+      label: `${zusatz.label} — Zusatzqualifikation (additiv)`,
+      clauseId: zusatz.clauseId,
+      trigger: "Qualifikations-Zusatz erfasst",
+      status: "fachlich prüfen",
+      hint:
+        zusatz.hint ??
+        "Additive Zusatzqualifikation — ersetzt §34a nicht, ändert die Stufe nicht.",
+    });
+  }
+
+  // Unbekannte (Legacy-)Qualifikation, die keiner Katalog-ID entsprach.
+  if (quali.hasUnbekannt) {
+    hinweise.push(
+      "Erfasste Qualifikation nicht eindeutig dem Katalog zuordenbar — fachlich prüfen (keine automatische §34a-/Stufen-Ableitung).",
+    );
   }
 
   // -------------------------------------------------------------------------

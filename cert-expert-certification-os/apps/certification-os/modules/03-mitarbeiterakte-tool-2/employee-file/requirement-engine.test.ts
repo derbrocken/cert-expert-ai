@@ -19,6 +19,12 @@ import {
   type RoleClass,
   type TrainingTarget,
 } from "./requirement-engine";
+import {
+  deriveQualificationFlags,
+  parseQualifications,
+  serializeQualifications,
+  QUALIFICATION_CATALOG,
+} from "./qualification-catalog";
 
 const REF = "2026-06-07";
 
@@ -535,4 +541,213 @@ test("Invariante — jede Regel ohne clauseId ist 'fachlich prüfen' oder 'nicht
       }
     }
   }
+});
+
+// ===========================================================================
+// #2 — Qualifikation als Multiselect (Katalog) — Stufen, Zusätze, Migration
+// ===========================================================================
+
+// Q-Katalog: jede Option ist CL-belegt ODER ein „fachlich prüfen"-Zusatz.
+test("Q-Katalog — jede Option hat eine CL-ID oder ist additiver Zusatz (keine erfundene Pflicht)", () => {
+  for (const opt of QUALIFICATION_CATALOG) {
+    assert.ok(
+      opt.clauseId !== null || opt.zusatz === true,
+      `Katalog-Option ${opt.id} ohne clauseId muss ein Zusatz sein`,
+    );
+  }
+});
+
+// deriveQualificationFlags — höchste Stufe A<B<C.
+test("Q-Flags — höchste Stufe gewinnt (A<B<C); Sachkunde/Unterrichtung korrekt", () => {
+  // Nur Unterrichtung → Stufe A, Unterrichtung, KEINE Sachkunde.
+  const a = deriveQualificationFlags(["unterrichtung-34a"]);
+  assert.equal(a.hoechsteStufe, "A");
+  assert.equal(a.hasUnterrichtung, true);
+  assert.equal(a.hasSachkunde, false);
+  // Unterrichtung + Sachkunde → Stufe A, Sachkunde greift.
+  const aa = deriveQualificationFlags(["unterrichtung-34a", "sachkunde-34a"]);
+  assert.equal(aa.hoechsteStufe, "A");
+  assert.equal(aa.hasSachkunde, true);
+  // Sachkunde (A) + GSSK (B) → höchste Stufe B.
+  const b = deriveQualificationFlags(["sachkunde-34a", "gssk"]);
+  assert.equal(b.hoechsteStufe, "B");
+  assert.equal(b.hasFkQualifizierend, true);
+  // Servicekraft (B) + Geprüfte Fachkraft (C) → höchste Stufe C.
+  const c = deriveQualificationFlags(["servicekraft", "gepruefte-fachkraft"]);
+  assert.equal(c.hoechsteStufe, "C");
+  // Nur Zusatz → keine Stufe.
+  const z = deriveQualificationFlags(["waffensachkunde"]);
+  assert.equal(z.hoechsteStufe, null);
+  assert.equal(z.hasZusatz, true);
+});
+
+// Engine liest strukturierten Wert: Unterrichtung → q-34a unvollständig + Frist.
+test("Szenario Q1 — EK + ['unterrichtung-34a'] (strukturiert): q-34a unvollständig, Sachkunde-Frist offen", () => {
+  const res = deriveRequirements(
+    baseCtx({
+      roleClasses: ["ek"],
+      qualifications: ["unterrichtung-34a"],
+      startDate: "2026-01-07",
+      sdlScopes: ["din1-grunddienste"],
+    }),
+  );
+  assert.equal(rule(res.pflichtSet, "q-34a")?.status, "unvollständig");
+  assert.equal(
+    res.fristen.find((f) => f.id === "frist-sachkunde")?.clauseId,
+    "CL-02",
+  );
+});
+
+// Engine liest strukturierten Wert: Sachkunde → q-34a vorhanden, keine Frist.
+test("Szenario Q2 — EK + ['sachkunde-34a'] (strukturiert): q-34a vorhanden, keine Sachkunde-Frist", () => {
+  const res = deriveRequirements(
+    baseCtx({
+      roleClasses: ["ek"],
+      qualifications: ["sachkunde-34a"],
+      startDate: "2026-01-07",
+      sdlScopes: ["din1-grunddienste"],
+    }),
+  );
+  assert.equal(rule(res.pflichtSet, "q-34a")?.status, "vorhanden");
+  assert.equal(res.fristen.find((f) => f.id === "frist-sachkunde"), undefined);
+});
+
+// Höchste Stufe steuert q-profil-Label (C bei Meister).
+test("Szenario Q3 — EK + ['sachkunde-34a','meister']: q-profil Stufe C, q-34a vorhanden", () => {
+  const res = deriveRequirements(
+    baseCtx({
+      roleClasses: ["ek"],
+      qualifications: ["sachkunde-34a", "meister"],
+      sdlScopes: ["din1-grunddienste"],
+    }),
+  );
+  const profil = rule(res.pflichtSet, "q-profil");
+  assert.ok(profil?.label.includes("Stufe C"));
+  assert.equal(rule(res.pflichtSet, "q-34a")?.status, "vorhanden");
+});
+
+// Waffensachkunde = additiv: Zusatz-Zeile (CL-76, fachlich prüfen), Stufe unverändert,
+// ersetzt §34a NICHT, erzeugt keine neue DIN-Pflicht.
+test("Szenario Q4 — Waffensachkunde additiv: CL-76-Zusatz 'fachlich prüfen', §34a unverändert, kein Stufen-Effekt", () => {
+  const ohne = deriveRequirements(
+    baseCtx({
+      roleClasses: ["ek"],
+      qualifications: ["sachkunde-34a"],
+      sdlScopes: ["din1-grunddienste"],
+    }),
+  );
+  const mit = deriveRequirements(
+    baseCtx({
+      roleClasses: ["ek"],
+      qualifications: ["sachkunde-34a", "waffensachkunde"],
+      sdlScopes: ["din1-grunddienste"],
+    }),
+  );
+  const zusatz = rule(mit.pflichtSet, "quali-zusatz-waffensachkunde");
+  assert.equal(zusatz?.clauseId, "CL-76");
+  assert.equal(zusatz?.status, "fachlich prüfen");
+  // §34a-Status unverändert (Waffensachkunde ersetzt §34a nicht).
+  assert.equal(rule(mit.pflichtSet, "q-34a")?.status, "vorhanden");
+  // Stufe unverändert (Zusatz hat keine Stufe).
+  assert.equal(
+    rule(ohne.pflichtSet, "q-profil")?.label,
+    rule(mit.pflichtSet, "q-profil")?.label,
+  );
+  // Keine neue DIN-/UE-Schulungspflicht durch den Zusatz.
+  assert.deepEqual(
+    ohne.schulungsSoll.map((t) => t.id).sort(),
+    mit.schulungsSoll.map((t) => t.id).sort(),
+  );
+});
+
+// Mehrere Qualifikationen kombiniert (höchste Stufe + Zusatz) auf FK + DIN-SDL.
+test("Szenario Q5 — FK + ['sachkunde-34a','gssk','waffensachkunde'] + DIN-SDL: Stufe B, q-fk-quali (CL-10), Waffen-Zusatz", () => {
+  const res = deriveRequirements(
+    baseCtx({
+      roleClasses: ["fk"],
+      qualifications: ["sachkunde-34a", "gssk", "waffensachkunde"],
+      sdlScopes: ["din1-grunddienste"],
+    }),
+  );
+  assert.ok(rule(res.pflichtSet, "q-profil")?.label.includes("Stufe B"));
+  assert.equal(rule(res.pflichtSet, "q-fk-quali")?.clauseId, "CL-10");
+  assert.equal(
+    rule(res.pflichtSet, "quali-zusatz-waffensachkunde")?.clauseId,
+    "CL-76",
+  );
+});
+
+// Strukturiert hat Vorrang vor Freitext (gemischte Eingabe).
+test("Szenario Q6 — strukturiert gewinnt über Freitext (qualifications gesetzt + widersprüchlicher Freitext)", () => {
+  const res = deriveRequirements(
+    baseCtx({
+      roleClasses: ["ek"],
+      qualifications: ["sachkunde-34a"],
+      qualification: "nur Unterrichtung", // Freitext-Fallback wird ignoriert
+      sdlScopes: ["din1-grunddienste"],
+    }),
+  );
+  assert.equal(rule(res.pflichtSet, "q-34a")?.status, "vorhanden");
+});
+
+// Freitext-Fallback bleibt aktiv, wenn keine strukturierte Auswahl vorliegt.
+test("Szenario Q7 — Freitext-Fallback (kein qualifications): Regex erkennt Sachkunde weiterhin", () => {
+  const res = deriveRequirements(
+    baseCtx({
+      roleClasses: ["ek"],
+      qualification: "Sachkundeprüfung nach §34a",
+      sdlScopes: ["din1-grunddienste"],
+    }),
+  );
+  assert.equal(rule(res.pflichtSet, "q-34a")?.status, "vorhanden");
+});
+
+// Unbekannte Katalog-ID → fachlich-prüfen-Hinweis, keine §34a-Ableitung.
+test("Szenario Q8 — unbekannte Quali-ID: Hinweis 'fachlich prüfen', q-34a bleibt 'fehlt'", () => {
+  const res = deriveRequirements(
+    baseCtx({
+      roleClasses: ["ek"],
+      qualifications: ["voodoo-zertifikat"],
+      sdlScopes: ["din1-grunddienste"],
+    }),
+  );
+  assert.equal(rule(res.pflichtSet, "q-34a")?.status, "fehlt");
+  assert.ok(res.hinweise.some((h) => /fachlich prüfen/.test(h)));
+});
+
+// ---------------------------------------------------------------------------
+// #2 — Migration (verlustfrei): Freitext → Katalog-IDs, Round-trip
+// ---------------------------------------------------------------------------
+test("Migration parseQualifications — Legacy-Freitext tolerant mappen", () => {
+  assert.deepEqual(parseQualifications("Sachkundeprüfung nach §34a").ids, [
+    "sachkunde-34a",
+  ]);
+  assert.deepEqual(parseQualifications("Unterrichtung §34a").ids, [
+    "unterrichtung-34a",
+  ]);
+  assert.deepEqual(parseQualifications("GSSK").ids, ["gssk"]);
+  assert.deepEqual(parseQualifications("IHK-Werkschutzmeister").ids, [
+    "ihk-werkschutzmeister",
+  ]);
+  // Sachkunde + Waffensachkunde im Freitext.
+  assert.deepEqual(
+    parseQualifications("Sachkunde §34a, Waffensachkunde").ids.sort(),
+    ["sachkunde-34a", "waffensachkunde"],
+  );
+});
+
+test("Migration parseQualifications — Unbekanntes geht NICHT verloren (unmatched), leer → leer", () => {
+  const r = parseQualifications("Kammerjäger-Diplom");
+  assert.deepEqual(r.ids, []);
+  assert.deepEqual(r.unmatched, ["Kammerjäger-Diplom"]);
+  assert.deepEqual(parseQualifications("").ids, []);
+  assert.deepEqual(parseQualifications(null).ids, []);
+  assert.deepEqual(parseQualifications(undefined).ids, []);
+});
+
+test("Migration round-trip — serialize → parse ergibt dieselbe ID-Menge", () => {
+  const ids = ["sachkunde-34a", "gssk", "waffensachkunde"];
+  const serialized = serializeQualifications(ids);
+  assert.equal(parseQualifications(serialized).unmatched.length, 0);
+  assert.deepEqual(parseQualifications(serialized).ids.sort(), [...ids].sort());
 });

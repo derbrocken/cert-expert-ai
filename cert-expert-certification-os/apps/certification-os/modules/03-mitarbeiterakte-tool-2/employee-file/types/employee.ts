@@ -64,6 +64,16 @@ export interface Employee {
   /** Org-Titel (Anzeige/Org-Chart) — z. B. SMA, Einsatzleitung. Keine direkte Engine-Wirkung mehr (G4). */
   roleType?: string;
   employmentType?: string;
+  /**
+   * Qualifikation als strukturiertes Multiselect (#2) — Katalog-IDs aus
+   * `qualification-catalog.ts` (höchste Stufe zählt, Zusätze additiv). **Primär**
+   * für die Engine. **Persistenz:** keine eigene DB-Spalte — wird über die
+   * bestehende `qualification`-String-Spalte als „ · "-Label-Liste round-trip-
+   * stabil ge-/entladen (siehe `serializeQualifications`/`parseQualifications` +
+   * Repository). Source of Truth im Formular/Modell ist `qualifications`.
+   */
+  qualifications?: string[];
+  /** @deprecated Freitext-Qualifikation — Legacy-/Persistenz-Träger + Anzeige. */
   qualification?: string;
   trainingHours?: string;
   guardIDNumber?: string;
