@@ -250,6 +250,8 @@ Vier getrennte Achsen, in UI + Code **nicht** vermischen:
 **8 — #5 UE-Anerkennung = letzte Lane:** Auto-Extraktion **Best-Effort MIT Pflicht-Bestätigung** — extrahierter UE-Wert bleibt Vorschlag/`unchecked` bis fachliche Bestätigung; **keine** Auto-Anerkennung (EC-10). Eigen-Cert-Expert-Schulungen: UE bekannt → anhängen, keine Unterschrift.
 **9 — S3-Move (Server/Mark, beim Deploy):** Dreischritt — (1) Datei auf neuen S3-Key/Kategorie kopieren, (2) DB-/Code-Referenzen umbiegen, (3) alten Key entfernen. EC-09-Smoke vor/nach grün, dann deployen.
 
+**Q8 (Mark, 2026-06-09) — Generator-Datum-Granularität:** **beide** Ebenen möglich — Override **pro Dokumenttyp** (für alle gewählten Personen gleich) **und** **pro Person+Dokument**. Auflösungsreihenfolge: **Person+Doc → Dokumenttyp → globaler Default → heute.** Erweitert das `generatorDates`-Modell (A3) um eine `perDocType`-Ebene. (Kleiner Folge-Touch am Generator-Datum, generator-spezifisch — nicht Teil von Lane K/L.)
+
 **NACHBAU-DISPATCH (sequenziell — gemeinsame Dateien):**
 - **Lane J — Persistenz-Migration (A1+A2+A3):** `schema.prisma` (+ `bestelltAls`, `bestellungSchulungLink?`, `setKategorie`, `generatorDates`) + `employee-file-repository.ts` (Read/Write-Mappings + Legacy-Backfill aus den bisherigen Projektionen) + Umbau der Projektions-Helfer auf echte Felder. EC-09-kritisch (db push auf Realdaten = additive nullable Spalten). **Mark-Gate erteilt.**
 - **Lane K — Set-Mapping + Org-Titel + Mutterschutz (B + 7):** `vorlagen-set-catalog.ts` (konkretes B-Mapping + Overlays inkl. Kfz-Platzhalter + Mutterschutz), Org-Titel→FK-Unter-Titel-Gating, Geschlechts-Feld (für Mutterschutz-Overlay). Fehlende Vorlagen (Kfz, Stellenbeschreibungen, Bildschirmarbeitsplatz) = Platzhalter + Hinweis.
