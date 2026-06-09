@@ -17,7 +17,7 @@ import {
 import {
   formatDocumentOutputDate,
   resolveDocumentDate,
-  documentDateKey,
+  resolveDocDateOverride,
 } from "@/modules/03-mitarbeiterakte-tool-2/employee-file/utils/date";
 import { isBestellungAppointmentId } from "@/modules/03-mitarbeiterakte-tool-2/employee-file/employee-display-labels";
 import {
@@ -109,15 +109,21 @@ function isErstunterweisungDoc(fileName: string): boolean {
 }
 
 /**
- * #8 — Generator-Ausgabedatum (`{currentDate}`) global + pro Dokument steuerbar.
+ * #8 / Q8 — Generator-Ausgabedatum (`{currentDate}`) auf drei Override-Ebenen
+ * steuerbar, plus globaler Default.
  * `global` = Default-Datum für alle Dokumente (ISO `YYYY-MM-DD` oder leer = heute).
- * `perDocument` = Override je Dokument, Schlüssel `documentDateKey(employeeId, docId)`.
- * Auflösungsreihenfolge: Per-Doc-Override → global → heute. Rein das
- * Ausgabedatum; berührt weder Engine/Norm-Werte noch die Vorlagen-Verarbeitung.
+ * `perDocument` = Override je **Person+Dokument**, Schlüssel
+ *   `documentDateKey(employeeId, docId)`.
+ * `perDocType` = Override je **Dokument-Typ** (`documentTypeKey(docId)`), gilt für
+ *   ALLE gewählten Personen.
+ * Auflösungsreihenfolge (spezifischer sticht): `perDocument` → `perDocType` →
+ * (#10/#C-Default bzw.) `global` → heute. Rein das Ausgabedatum; berührt weder
+ * Engine/Norm-Werte noch die Vorlagen-Verarbeitung.
  */
 export interface DocumentDates {
   global?: string;
   perDocument?: Record<string, string>;
+  perDocType?: Record<string, string>;
 }
 
 export async function generateEmployeeDocs(
@@ -146,6 +152,9 @@ export async function generateEmployeeDocs(
     // sticht weiter unten je Dokument.
     const globalDate = resolveDocumentDate(documentDates?.global);
     const perDocDates = documentDates?.perDocument ?? {};
+    // Q8 — Datum pro Dokument-Typ (für alle gewählten Personen gleich). Sticht
+    // unter dem Person+Doc-Override, aber über #10/#C-Default + global.
+    const perDocTypeDates = documentDates?.perDocType ?? {};
 
     let logoData = null;
     let imageMimeType = "image/png";
@@ -254,10 +263,16 @@ export async function generateEmployeeDocs(
           }
           try {
             const templateBuffer = await fetchTemplateBufferByKey(objectKey);
-            // #8/#10 — Auflösung: Per-Doc-Override (#8) sticht; sonst bei einer
-            // Erst-Standardunterweisung/-Erklärung der erste Arbeitstag (#10),
-            // ansonsten der globale Generator-Datum-Wert.
-            const roleOverride = perDocDates[documentDateKey(employee.id, doc.id)];
+            // #8/#10/Q8 — Auflösung (spezifischer sticht): Person+Doc-Override →
+            // Doc-Typ-Override (Q8); sonst bei einer Erst-Standardunterweisung/
+            // -Erklärung der erste Arbeitstag (#10), ansonsten der globale
+            // Generator-Datum-Wert.
+            const roleOverride = resolveDocDateOverride(
+              perDocDates,
+              perDocTypeDates,
+              employee.id,
+              doc.id,
+            );
             const docDate = roleOverride
               ? formatDocumentOutputDate(roleOverride) || globalDate
               : isErstunterweisungDoc(doc.fileName)
@@ -312,9 +327,15 @@ export async function generateEmployeeDocs(
               error: `Template not found: ${logicalPath}`,
             };
           }
-          // #8 — Per-Doc-Override sticht; sonst Bestell-Default (startDate) bei
-          // Bestellungen, ansonsten der globale Generator-Datum-Wert.
-          const override = perDocDates[documentDateKey(employee.id, doc.id)];
+          // #8/Q8 — Person+Doc-Override → Doc-Typ-Override (Q8) sticht; sonst
+          // Bestell-Default (startDate) bei Bestellungen, ansonsten der globale
+          // Generator-Datum-Wert.
+          const override = resolveDocDateOverride(
+            perDocDates,
+            perDocTypeDates,
+            employee.id,
+            doc.id,
+          );
           const docDate = override
             ? formatDocumentOutputDate(override) || globalDate
             : isBestellung

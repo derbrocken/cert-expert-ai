@@ -216,23 +216,32 @@ function asGeschlecht(value: unknown): Geschlecht | undefined {
 }
 
 /**
- * Lane J (A3) — Read-Normalisierung des `generatorDates Json?` (Muster
- * `asTrainingPlan`/`asNumberRecord`). Nur valide `global`/`perDocument`-Strings;
- * Müll/Legacy/null → `undefined`. Reines Ausgabedatum, kein Engine-Eingriff.
+ * Lane J (A3) + Q8 — Read-Normalisierung des `generatorDates Json?` (Muster
+ * `asTrainingPlan`/`asNumberRecord`). Nur valide `global`/`perDocument`/
+ * `perDocType`-Strings; Müll/Legacy/null → `undefined`. **Tolerant:** Bestands-
+ * daten ohne `perDocType` bleiben gültig (kein P2023). Reines Ausgabedatum,
+ * kein Engine-Eingriff.
  */
 function asGeneratorDates(value: unknown): GeneratorDates | undefined {
   if (!value || typeof value !== "object" || Array.isArray(value)) return undefined;
   const r = value as Record<string, unknown>;
   const out: GeneratorDates = {};
   if (typeof r.global === "string" && r.global.length > 0) out.global = r.global;
-  if (r.perDocument && typeof r.perDocument === "object" && !Array.isArray(r.perDocument)) {
-    const per: Record<string, string> = {};
-    for (const [k, v] of Object.entries(r.perDocument as Record<string, unknown>)) {
-      if (typeof v === "string" && v.length > 0) per[k] = v;
+  const sanitizeMap = (raw: unknown): Record<string, string> | undefined => {
+    if (!raw || typeof raw !== "object" || Array.isArray(raw)) return undefined;
+    const m: Record<string, string> = {};
+    for (const [k, v] of Object.entries(raw as Record<string, unknown>)) {
+      if (typeof v === "string" && v.length > 0) m[k] = v;
     }
-    if (Object.keys(per).length > 0) out.perDocument = per;
-  }
-  return out.global !== undefined || out.perDocument !== undefined
+    return Object.keys(m).length > 0 ? m : undefined;
+  };
+  const per = sanitizeMap(r.perDocument);
+  if (per) out.perDocument = per;
+  const perType = sanitizeMap(r.perDocType);
+  if (perType) out.perDocType = perType;
+  return out.global !== undefined ||
+    out.perDocument !== undefined ||
+    out.perDocType !== undefined
     ? out
     : undefined;
 }

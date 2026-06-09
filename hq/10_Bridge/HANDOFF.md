@@ -253,6 +253,23 @@
 
 ## 📥 Von Cursor an Claude (Fragen / Bitten)
 
+### 2026-06-09 — ✅ Executor Lane M (Q8 Generator-Datum-Granularität, „sowohl als auch"): FERTIG + committet (Branch `lane-m-datum-granularitaet`, NICHT gepusht/gemergt)
+
+**Branch:** `lane-m-datum-granularitaet` (ab `main` HEAD `7254ab5`). **`main` unberührt, nicht gepusht/gemergt.** Commit: **`7d4f1f3`**.
+**Gates (alle grün):** `npx tsc --noEmit` = **0** · employee-file-Suite **127/127** (120 Basis unverändert + **7 neue** Auflösungs-Tests in `date.test.ts`) · **`npm run build` = „Compiled successfully"** (kein „Build error"/„must be async" — der frühere Async-Build-Befund aus Lane L ist durch `36c4509` bereits behoben; verifiziert). **Kein `.env`/`.db`/node_modules committet** (node_modules nur lokal in den Worktree kopiert zum Build; gitignored).
+
+**Gebaut (Bounded Write-Set eingehalten — 6 Dateien):**
+- **Zweite Override-Ebene `perDocType`** (Datum pro Dokument-Typ, gilt für ALLE gewählten Personen) neben der bestehenden `perDocument`-Ebene (Person+Dokument). **Auflösung je Dokument (spezifischer sticht): `perDocument` → `perDocType` → #10/#C-Default bzw. `global` → heute.**
+- **Doc-Typ-Schlüssel = Vorlagen-`docId`** (gleiches Dokument über mehrere Personen = gleicher Typ), gekapselt in `documentTypeKey(docId)`; neuer Auflösungs-Helfer `resolveDocDateOverride` (`utils/date.ts`) für beide Generator-Stellen (Rolle + Bestellung).
+- **Persistenz:** `generatorDates`-Json (Lane J A3) um `perDocType` erweitert; cross-person → in jede Akte gespiegelt (`applyBatchDatesToEmployees`), Read-Norm `asGeneratorDates` **tolerant** (Bestandsdaten ohne `perDocType` → ok, kein P2023). **KEINE neue Schema-Spalte.**
+- **UI:** Abschnitt „Datum pro Dokument-Typ" (ein Feld je Typ, für alle gewählten Personen) NEBEN den Per-Person+Dokument-Overrides; Toggle-Buttons + Auflösungs-Hinweis. Leer = nächste Ebene greift.
+- **EC-09:** Default „heute" unverändert, wenn nichts gesetzt (`resolveDocDateOverride` → `undefined` → bisherige Default-/Global-Logik); Generator-Action-Signatur additiv (`DocumentDates.perDocType?`). **EC-10:** reines Ausgabedatum, kein Engine-/Norm-/UE-Eingriff.
+
+**Dateien:** `…/employee-generator/generate-employee-docs.ts` · `…/employee-file/utils/date.ts` (+ `date.test.ts`) · `…/employee-file/EmployeeAutomationPage.tsx` · `…/employee-file/types/employee.ts` · `lib/employee-file-repository.ts`. **Engine/`requirement-engine.ts`, `lib/tally-*`, `vorlagen-set-catalog.ts`, training-* NICHT angefasst.**
+
+**Geparkt / offen für Planer-Review:**
+1. **EC-09-ZIP Live-Klick (`POST /employee-automation` 200) nicht im Worktree fahrbar** (kein `.env`/DB im Worktree, DSGVO — Realdaten nicht kopiert). **Struktureller Beleg:** ZIP-Generator-Pfad fasst nur die additive `perDocType`-Auflösung an; ohne gesetztes Datum identisch zum Vorzustand. `next build` der Route lief durch. → Live-ZIP-Klick = Mark-Gate.
+
 ### 2026-06-09 — ✅ Executor Lane L (#5 UE-Anerkennung beim Schulungs-Upload, Variante C): FERTIG + committet (Branch `lane-l-ue`, NICHT gepusht/gemergt)
 
 **Branch:** `lane-l-ue` (ab `main` HEAD `3a5cf49`). **`main` unberührt, nicht gepusht/gemergt.** Commit: **`d7d6493`** (Feature + 14 neue #5-Tests). HANDOFF-Eintrag separat.

@@ -14,7 +14,7 @@ import { Toast } from "@/components/ui/Toast";
 import { generateEmployeeDocs } from "@/app/actions/generate-employee-docs";
 import { generateAuditExport } from "@/app/actions/generate-audit-export";
 import { ArrowLeft, CalendarRange, Download, FileSpreadsheet, FileText, Loader2 } from "lucide-react";
-import { documentDateKey, formatIsoDisplay } from "./utils/date";
+import { documentDateKey, documentTypeKey, formatIsoDisplay } from "./utils/date";
 import { cn } from "@/lib/utils";
 import type {
   Employee,
@@ -52,19 +52,26 @@ import { CompanyHubView } from "./CompanyHubView";
 type DossierTab = "akte" | "generator";
 
 /**
- * Lane J (A3) — Generator-Datum ist jetzt **persistiert** (`generatorDates` je
+ * Lane J (A3) + Q8 — Generator-Datum ist **persistiert** (`generatorDates` je
  * Akte) statt Session-State. Diese reinen Helfer übersetzen zwischen der
- * Batch-Ansicht der UI (ein globaler Default + flacher Per-Doc-Override-Map,
- * Schlüssel `documentDateKey(employeeId, docId)`) und der per-Akte-Persistenz
- * (`employee.generatorDates` mit `perDocument` je **docId**). Reines
- * Ausgabedatum, kein Engine-/Norm-/UE-Eingriff (EC-10).
+ * Batch-Ansicht der UI (globaler Default + flacher Per-Person+Doc-Override-Map,
+ * Schlüssel `documentDateKey(employeeId, docId)` + Per-Dokument-Typ-Map, Schlüssel
+ * = `docId`) und der per-Akte-Persistenz (`employee.generatorDates` mit
+ * `perDocument` je **docId** + `perDocType` je **Dokument-Typ**, cross-person
+ * gespiegelt in jede Akte). Reines Ausgabedatum, kein Engine-/Norm-/UE-Eingriff
+ * (EC-10).
  */
 function extractBatchDatesFromEmployees(employees: Employee[]): {
   global: string;
   perDoc: Record<string, string>;
+  perDocType: Record<string, string>;
 } {
   let global = "";
   const perDoc: Record<string, string> = {};
+  // perDocType ist cross-person (für ALLE gewählten Personen gleich) → in jede
+  // Akte gespiegelt; beim Lesen die Werte über alle Akten vereinen (jüngste
+  // gewinnt nicht — gleiche Werte erwartet, sonst erster nicht-leerer).
+  const perDocType: Record<string, string> = {};
   for (const emp of employees) {
     const gd = emp.generatorDates;
     if (!gd) continue;
@@ -74,14 +81,21 @@ function extractBatchDatesFromEmployees(employees: Employee[]): {
         if (date) perDoc[documentDateKey(emp.id, docId)] = date;
       }
     }
+    if (gd.perDocType) {
+      for (const [docId, date] of Object.entries(gd.perDocType)) {
+        if (date && !perDocType[docId]) perDocType[docId] = date;
+      }
+    }
   }
-  return { global, perDoc };
+  return { global, perDoc, perDocType };
 }
 
 /**
- * Lane J (A3) — schreibt die Batch-Ansicht (globaler Default + Per-Doc-Map)
- * zurück in jede Akte als `generatorDates`. Der Per-Doc-Schlüssel
- * `employeeId::docId` wird je Akte zu `docId` aufgelöst. Gibt eine neue
+ * Lane J (A3) + Q8 — schreibt die Batch-Ansicht (globaler Default + Per-Person+
+ * Doc-Map + Per-Dokument-Typ-Map) zurück in jede Akte als `generatorDates`. Der
+ * Per-Doc-Schlüssel `employeeId::docId` wird je Akte zu `docId` aufgelöst; die
+ * `perDocType`-Map (cross-person) wird unverändert in jede Akte gespiegelt, damit
+ * sie unabhängig von der Lade-Reihenfolge round-trippt. Gibt eine neue
  * Employees-Liste zurück (immutable); ungeänderte Akten bleiben referenzgleich,
  * damit der Persistenz-Effekt nicht unnötig feuert.
  */
@@ -89,8 +103,15 @@ function applyBatchDatesToEmployees(
   employees: Employee[],
   global: string,
   perDoc: Record<string, string>,
+  perDocType: Record<string, string>,
 ): Employee[] {
   let changed = false;
+  // Cross-person: nur nicht-leere Typ-Overrides spiegeln.
+  const sharedPerDocType: Record<string, string> = {};
+  for (const [docId, date] of Object.entries(perDocType)) {
+    if (date) sharedPerDocType[docId] = date;
+  }
+  const hasPerDocType = Object.keys(sharedPerDocType).length > 0;
   const next = employees.map((emp) => {
     const prefix = `${emp.id}::`;
     const perDocument: Record<string, string> = {};
@@ -102,9 +123,13 @@ function applyBatchDatesToEmployees(
     const gd: GeneratorDates = {};
     if (global) gd.global = global;
     if (Object.keys(perDocument).length > 0) gd.perDocument = perDocument;
-    const resolved = gd.global !== undefined || gd.perDocument !== undefined
-      ? gd
-      : undefined;
+    if (hasPerDocType) gd.perDocType = { ...sharedPerDocType };
+    const resolved =
+      gd.global !== undefined ||
+      gd.perDocument !== undefined ||
+      gd.perDocType !== undefined
+        ? gd
+        : undefined;
     // Referenzgleichheit erhalten, wenn sich nichts ändert.
     const prev = emp.generatorDates;
     if (JSON.stringify(prev ?? null) === JSON.stringify(resolved ?? null)) {
@@ -153,12 +178,19 @@ function EmployeeAutomationPageContent() {
     () => new Set(),
   );
   const [isGenerating, setIsGenerating] = useState(false);
-  // #8 — Generator-Ausgabedatum: globaler Default („Datum für alle", ISO; leer
-  // = heute) + Per-Doc-Override (Schlüssel `documentDateKey(employeeId, docId)`).
-  // Rein Ausgabedatum, kein Engine-/Norm-Eingriff. Per-Doc sticht über global.
+  // #8 / Q8 — Generator-Ausgabedatum: globaler Default („Datum für alle", ISO;
+  // leer = heute) + zwei Override-Ebenen: Per-Person+Doc (Schlüssel
+  // `documentDateKey(employeeId, docId)`) und Per-Dokument-Typ (Schlüssel =
+  // `documentTypeKey(docId)`, gilt für alle gewählten Personen). Rein
+  // Ausgabedatum, kein Engine-/Norm-Eingriff. Auflösung (spezifischer sticht):
+  // Per-Person+Doc → Per-Dokument-Typ → global → heute.
   const [generatorGlobalDate, setGeneratorGlobalDate] = useState<string>("");
   const [perDocDates, setPerDocDates] = useState<Record<string, string>>({});
+  const [perDocTypeDates, setPerDocTypeDates] = useState<
+    Record<string, string>
+  >({});
   const [showDateOverrides, setShowDateOverrides] = useState(false);
+  const [showDocTypeOverrides, setShowDocTypeOverrides] = useState(false);
   // Lane B / Pt 1 — read-only Batch-Vorzeige-/Audit-Ansicht (je gewählter
   // Person die `EmployeeFileOverview` mit Feld-Kopieren). Eigenständig; fasst
   // den EC-09-ZIP-Generator NICHT an.
@@ -257,6 +289,7 @@ function EmployeeAutomationPageContent() {
       const seeded = extractBatchDatesFromEmployees(snapshot.employees);
       setGeneratorGlobalDate(seeded.global);
       setPerDocDates(seeded.perDoc);
+      setPerDocTypeDates(seeded.perDocType);
       setSelectedEmployeeId(null);
       setEditingEmployee(null);
       setIsCreatingNew(false);
@@ -281,6 +314,7 @@ function EmployeeAutomationPageContent() {
         employees,
         generatorGlobalDate,
         perDocDates,
+        perDocTypeDates,
       );
       void saveEmployeeQueue(companySlug, {
         employees: withDates,
@@ -295,6 +329,7 @@ function EmployeeAutomationPageContent() {
     companySlug,
     generatorGlobalDate,
     perDocDates,
+    perDocTypeDates,
   ]);
 
   useEffect(() => {
@@ -656,7 +691,11 @@ function EmployeeAutomationPageContent() {
         freshGlobal,
         roles,
         appointments,
-        { global: generatorGlobalDate, perDocument: perDocDates },
+        {
+          global: generatorGlobalDate,
+          perDocument: perDocDates,
+          perDocType: perDocTypeDates,
+        },
       );
 
       if (result.success && result.zipBase64) {
@@ -1000,6 +1039,40 @@ function EmployeeAutomationPageContent() {
     });
   }, []);
 
+  // Q8 — distinkte Dokument-Typen über ALLE gewählten Personen (gleiches
+  // Dokument bei mehreren Personen = ein Typ, Schlüssel `documentTypeKey(docId)`).
+  // Grundlage für „Datum pro Dokument-Typ" (ein Feld je Typ für alle gewählten
+  // Personen). Reine Selektions-Ableitung; berührt keine Norm-Werte.
+  const exportDocTypes = useMemo(() => {
+    const seen = new Map<
+      string,
+      { typeKey: string; label: string; groupLabel: string }
+    >();
+    for (const row of exportDocuments) {
+      const typeKey = documentTypeKey(row.docId);
+      if (!seen.has(typeKey)) {
+        seen.set(typeKey, {
+          typeKey,
+          label: row.docLabel,
+          groupLabel: row.groupLabel,
+        });
+      }
+    }
+    return Array.from(seen.values());
+  }, [exportDocuments]);
+
+  const handlePerDocTypeDateChange = useCallback(
+    (typeKey: string, value: string) => {
+      setPerDocTypeDates((prev) => {
+        const next = { ...prev };
+        if (value) next[typeKey] = value;
+        else delete next[typeKey];
+        return next;
+      });
+    },
+    [],
+  );
+
   // „Datum für alle übernehmen" — globalen Wert auf alle Per-Doc-Overrides
   // schreiben (Muster Queue C Bulk). Override sticht weiter pro Dokument.
   const handleApplyGlobalToAll = useCallback(() => {
@@ -1108,21 +1181,75 @@ function EmployeeAutomationPageContent() {
               <CalendarRange className="h-3.5 w-3.5" />
               Datum für alle übernehmen
             </button>
+            {exportDocTypes.length > 0 ? (
+              <button
+                type="button"
+                onClick={() => setShowDocTypeOverrides((v) => !v)}
+                title="Ein Datum je Dokument-Typ für alle gewählten Personen"
+                className="inline-flex shrink-0 items-center rounded-md border border-[#e5e7eb] px-2.5 py-1 text-xs font-medium text-[#374151] hover:border-[rgba(227,6,19,0.35)] hover:text-[#e30613]"
+              >
+                {showDocTypeOverrides
+                  ? "Pro Dokument-Typ schließen"
+                  : `Pro Dokument-Typ (${exportDocTypes.length})`}
+              </button>
+            ) : null}
             {exportDocuments.length > 0 ? (
               <button
                 type="button"
                 onClick={() => setShowDateOverrides((v) => !v)}
+                title="Ein Datum je Person+Dokument (spezifischster Override)"
                 className="inline-flex shrink-0 items-center rounded-md border border-[#e5e7eb] px-2.5 py-1 text-xs font-medium text-[#374151] hover:border-[rgba(227,6,19,0.35)] hover:text-[#e30613]"
               >
                 {showDateOverrides
-                  ? "Pro-Dokument schließen"
-                  : `Pro-Dokument (${exportDocuments.length})`}
+                  ? "Pro Person+Dokument schließen"
+                  : `Pro Person+Dokument (${exportDocuments.length})`}
               </button>
             ) : null}
           </div>
         </div>
 
+        {showDocTypeOverrides && exportDocTypes.length > 0 ? (
+          <div className="flex flex-col gap-1.5">
+            <p className="text-[10px] font-semibold uppercase tracking-[0.1em] text-[#6b7280]">
+              Datum pro Dokument-Typ (für alle gewählten Personen)
+            </p>
+            <ul className="divide-y divide-[#f1f3f5] rounded-md border border-[#e5e7eb] bg-white">
+              {exportDocTypes.map((type) => (
+                <li
+                  key={type.typeKey}
+                  className="flex flex-wrap items-center justify-between gap-2 px-3 py-2"
+                >
+                  <div className="min-w-0">
+                    <p className="truncate text-xs text-[#111827]">
+                      {type.label}
+                    </p>
+                    <p className="truncate text-[10px] text-[#9ca3af]">
+                      {type.groupLabel} · gilt für alle gewählten Personen
+                    </p>
+                  </div>
+                  <label className="flex shrink-0 items-center gap-1 text-[10px] text-[#6b7280]">
+                    Datum:
+                    <input
+                      type="date"
+                      value={perDocTypeDates[type.typeKey] ?? ""}
+                      onChange={(e) =>
+                        handlePerDocTypeDateChange(type.typeKey, e.target.value)
+                      }
+                      placeholder={generatorGlobalDate || undefined}
+                      className="rounded-md border border-[#e5e7eb] px-2 py-1 text-xs text-[#111827] focus:border-[#e30613] focus:outline-none"
+                    />
+                  </label>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ) : null}
+
         {showDateOverrides && exportDocuments.length > 0 ? (
+          <div className="flex flex-col gap-1.5">
+          <p className="text-[10px] font-semibold uppercase tracking-[0.1em] text-[#6b7280]">
+            Datum pro Person+Dokument (spezifischster Override)
+          </p>
           <ul className="divide-y divide-[#f1f3f5] rounded-md border border-[#e5e7eb] bg-white">
             {exportDocuments.map((row) => (
               <li
@@ -1152,10 +1279,12 @@ function EmployeeAutomationPageContent() {
               </li>
             ))}
           </ul>
+          </div>
         ) : null}
         <p className="text-[10px] text-[#9ca3af]">
-          Reines Ausgabedatum auf den Dokumenten. Pro-Dokument-Datum sticht über
-          den globalen Default; leer = heute. Keine Freigabe-/Auditfähigkeitsaussage.
+          Reines Ausgabedatum auf den Dokumenten. Auflösung (spezifischer sticht):
+          Pro Person+Dokument → Pro Dokument-Typ → globaler Default → heute. Leer =
+          nächste Ebene greift. Keine Freigabe-/Auditfähigkeitsaussage.
         </p>
       </div>
     ) : null;
