@@ -224,5 +224,37 @@ Vier getrennte Achsen, in UI + Code **nicht** vermischen:
 
 **Beide:** EC-09/EC-10, jede Regel CL-belegt oder „fachlich prüfen"; `tsc` 0; Suite grün (Lane F erweitert); eigener Branch; committen (nicht main/nicht pushen bei Worktree-Subagent); EINEN HANDOFF-Eintrag; Zweifel parken. **Danach:** Planer reviewt + merged.
 
+## 🟦 BATCH-2-ENTSCHEIDUNGEN (Mark, 2026-06-09) + NACHBAU-PLAN
+**C-10-Gate: Mark hat alle folgenden freigegeben.** EC-09-Smoke + EC-10 (`unchecked`) bindend; jede Regel CL-belegt oder „fachlich prüfen".
+
+**A — Persistenz (alle PERSISTIEREN, nicht projizieren → Prisma-Migration + Legacy-Backfill, Tech-Debt):**
+- **A1 `bestelltAls`:** echte persistierte Spalte (Multiselect an der Akte, **unabhängig vom Dokument** — Status oft VOR dem Doc setzbar). **Verknüpfung Bestellung↔zugrundeliegende Schulung: JA, aber optional/nullable, nicht blockierend, KEIN Auto-Status** (EC-10).
+- **A2 `setKategorie`:** echte persistierte Spalte. **Default aus Rolle abgeleitet, aber manuell überschreibbar + im Generator wählbar.** Rolle vs. Set-Kategorie entkoppelt (Collision aufgelöst).
+- **A3 Generator-Datum:** **persistieren** (globaler Default + Einzel-Overrides je Dokument), kein Session-Reset.
+- → Eine Prisma-Migration deckt A1+A2+A3 + Backfill. EC-09 vor/nach grün.
+
+**B — Set→Dokument-Mapping:**
+- **Basis (jeder MA):** Allgemeine (Jahres-)Pflichtunterweisung (Arbeitsschutz **CL-75**, DGUV V1/V2/V23 — exakte Nummern *fachlich prüfen*) + Datenschutz-/Verschwiegenheitserklärung (1 Blatt, generiert, CL-04/CL-05).
+- **Sicherheitsmitarbeiter:** Basis + Stellenbeschreibung Sicherheitsmitarbeiter.
+- **Führungskraft:** Basis + Stellenbeschreibung Führungskraft.
+- **Bürokraft (Verwaltung):** **KEINE** allgemeine/sicherheitsrelevante Dienstanweisung. Stattdessen: **Bildschirmarbeitsplatz-Unterweisung** (CL-75 Büro-Variante) + Verschwiegenheits-/Datenschutzerklärung (CL-04/05).
+- **Overlays (positionsunabhängig, bedingt):**
+  - Bestellungen (Ersthelfer CL-08 / Brandschutzhelfer CL-23 / SiBe) — wenn bestellt.
+  - **Kfz-/Fahr-Anweisung** (CL-73, *fachlich prüfen*) — wenn Fahrtätigkeit. **⚠️ VORLAGE fehlt → muss hinterlegt werden** (Platzhalter bis dahin).
+  - Objektbezogene DA (CL-22) — wenn Objekt zugeordnet; **eigenes Datum = erster Einsatz am Objekt**.
+  - **Mutterschutz-Hinweis** (CL-77, *fachlich prüfen*) — Overlay für **weibliche MA, ALLE Sets** (braucht Geschlechts-Feld; MuSchG).
+- **Default-Datum aller Standarddokumente = Arbeitsvertrags-/Einstellungsdatum** (`startDate`); **Ausnahme objektbezogene DA = erster Einsatz** (manuell).
+
+**6 — Rechtsbezüge (im Register gefüllt, Status legal-input/„fachlich prüfen"):** Waffensachkunde **CL-76** = §7 WaffG + §3 Abs.2 AWaffV (getrennt von §34a). Arbeitsschutz **CL-75** = §12 ArbSchG i.V.m. §4 DGUV V1 (Erst vor Aufnahme + mind. jährlich) + §4 Abs.2 DGUV V23 (Wach-/Sicherung). **Offen (Mark liefert):** exakte DGUV-Nummern.
+**7 — Org-Titel:** **Schichtleiter/Objektleiter = ausschließlich Unter-Titel der Führungskraft**; nur sichtbar/wählbar, wenn „Führungskraft" gewählt. (→ Org-Titel-Mapping + UI-Gating.)
+**8 — #5 UE-Anerkennung = letzte Lane:** Auto-Extraktion **Best-Effort MIT Pflicht-Bestätigung** — extrahierter UE-Wert bleibt Vorschlag/`unchecked` bis fachliche Bestätigung; **keine** Auto-Anerkennung (EC-10). Eigen-Cert-Expert-Schulungen: UE bekannt → anhängen, keine Unterschrift.
+**9 — S3-Move (Server/Mark, beim Deploy):** Dreischritt — (1) Datei auf neuen S3-Key/Kategorie kopieren, (2) DB-/Code-Referenzen umbiegen, (3) alten Key entfernen. EC-09-Smoke vor/nach grün, dann deployen.
+
+**NACHBAU-DISPATCH (sequenziell — gemeinsame Dateien):**
+- **Lane J — Persistenz-Migration (A1+A2+A3):** `schema.prisma` (+ `bestelltAls`, `bestellungSchulungLink?`, `setKategorie`, `generatorDates`) + `employee-file-repository.ts` (Read/Write-Mappings + Legacy-Backfill aus den bisherigen Projektionen) + Umbau der Projektions-Helfer auf echte Felder. EC-09-kritisch (db push auf Realdaten = additive nullable Spalten). **Mark-Gate erteilt.**
+- **Lane K — Set-Mapping + Org-Titel + Mutterschutz (B + 7):** `vorlagen-set-catalog.ts` (konkretes B-Mapping + Overlays inkl. Kfz-Platzhalter + Mutterschutz), Org-Titel→FK-Unter-Titel-Gating, Geschlechts-Feld (für Mutterschutz-Overlay). Fehlende Vorlagen (Kfz, Stellenbeschreibungen, Bildschirmarbeitsplatz) = Platzhalter + Hinweis.
+- **Lane L — #5 UE-Anerkennung (8):** Eigen-Katalog-UE + Best-Effort-Extraktion mit Pflicht-Bestätigung (`unchecked`).
+- **Danach:** S3-Move (9) + Hetzner-Redeploy.
+
 ## DoD (gesamt)
 Pro Phase eigener Commit; je Phase `tsc --noEmit` 0 · Engine-Suite (`tsx --test`) grün (bei #2/#5/#10/#D erweitert) · **EC-09-ZIP `POST /employee-automation` 200** · EC-10 (`unchecked`, kein Freigabe-Wording) · jede Regel CL-belegt oder „fachlich prüfen" · Browser-Akzeptanz `:3001` (Mark-Klick für OS-Dialoge). **P1 sofort baubar; P2/P3 laufen, offene Punkte oben blockieren nur die jeweils betroffenen Teil-Posten, nicht die Phase.**
