@@ -189,5 +189,23 @@ Vier getrennte Achsen, in UI + Code **nicht** vermischen:
 
 **Beide:** EC-09 (ZIP 200), EC-10, keine erfundene Normpflicht; `tsc --noEmit` 0; Engine-Suite **unverändert grün** (kein Engine-Edit); Browser-Akzeptanz `:3001`; committen auf eigenem Branch + **pushen**; **EINEN** Ergebnis-Eintrag unter „Von Cursor an Claude" im HANDOFF; Zweifel als Frage parken (Plan nicht umschreiben). **#8 Generator-Datum = nächster Dispatch** (teilt `EmployeeAutomationPage` mit Lane A).
 
+## 🚦 DISPATCH v2 (2026-06-09) — zwei parallele Lanes (disjunkt)
+**Branch-Basis = `main` (HEAD `c436125`).** **Hinweis:** #8 (Generator-Datum) und #7/#C (Bestellungen) **überlappen** auf `EmployeeFileDossierView.tsx` + `generate-employee-docs.ts` → **nicht parallel**. Daher #7/#C + #3 (disjunkt) jetzt; **#8 = Dispatch v3 nach #7/#C-Merge**. Dispatch v1 (#1/#B/#9/#A) ist gemergt.
+
+### Lane C — Bestellungen sauber trennen → **#7 + #C**
+- **Branch:** `cursor/tool2-bestellungen`
+- **Write-Set (NUR):** `…/employee-file/employee-display-labels.ts` · `…/employee-file/EmployeeFileDossierView.tsx` · `…/employee-file/EmployeeFileDossierZones.tsx` · `lib/types/employee.ts` (Feld `bestelltAls`) · `app/api/templates/route.ts` (Filter) · `modules/03-mitarbeiterakte-tool-2/employee-generator/generate-employee-docs.ts` + `app/actions/generate-employee-docs.ts` (Bestellung-aus-Vorlage)
+- **Inhalt:** Bestellungen = nur Ersthelfer/Brandschutzhelfer/SiBe (**CL-08/CL-23/CL-74**); Akte-Flag Multiselect `bestelltAls`; Generator 2 Wege (Vorlage generieren mit Default-Datum Einstellung/Bestellung **ODER** hochladen); Bestellung = unterschriftspflichtig (Unterschrifts-Logik); optionale Verknüpfung Bestellung↔Schulung.
+- **PARKEN (nicht im Sandbox machbar):** S3-Move von `appointments/unterweisungen/Unterweisungsnachweis_Arbeitsschutz_DGUV.docx` → Unterweisungen/Schulungen = **Server/Mark** (kein S3-Schreibzugriff in Cursor). Als Hinweis im HANDOFF.
+- **VERBOTEN:** `lib/tally-*` (Lane D), `EmployeeAutomationPage.tsx`, Engine, `requirement-engine.ts`. Bei Bedarf → parken.
+
+### Lane D — Tally-Mapping ↔ Nachweis-Slots → **#3**
+- **Branch:** `cursor/tool2-tally-mapping`
+- **Write-Set (NUR):** `lib/tally-intake-service.ts` (+ `mapTallyUploadToEvidenceId`-Quelle) · `lib/data/tally-employee-slots.json` · `hq/10_Bridge/TALLY_FIELD_MAPPING.md` (anlegen, falls fehlt)
+- **Inhalt:** Abgleich Tally-Feld → `evidenceId` → Akte-Slot auf **je-Schulung-mit-eigenem-Datum** (Q3, Muster `training-plan:{id}`); Lücken/Fehl-Mappings fixen; Abgleich-Tabelle (ok/fix) in `TALLY_FIELD_MAPPING.md`. Bezug CL-03/04/05/08/23, Sachkunde CL-01/02 (nur Zuordnung, keine neue Pflicht).
+- **VERBOTEN:** `lib/types/employee.ts` (Lane C besitzt es), `modules/03-mitarbeiterakte-tool-2/**` (Lane C/Akte), Engine. Bei Bedarf → parken.
+
+**Beide:** EC-09/EC-10, keine erfundene Normpflicht; `tsc` 0; Engine-Suite unverändert grün; eigener `cursor/*`-Branch; committen + pushen; EINEN HANDOFF-Ergebnis-Eintrag; Zweifel parken.
+
 ## DoD (gesamt)
 Pro Phase eigener Commit; je Phase `tsc --noEmit` 0 · Engine-Suite (`tsx --test`) grün (bei #2/#5/#10/#D erweitert) · **EC-09-ZIP `POST /employee-automation` 200** · EC-10 (`unchecked`, kein Freigabe-Wording) · jede Regel CL-belegt oder „fachlich prüfen" · Browser-Akzeptanz `:3001` (Mark-Klick für OS-Dialoge). **P1 sofort baubar; P2/P3 laufen, offene Punkte oben blockieren nur die jeweils betroffenen Teil-Posten, nicht die Phase.**
