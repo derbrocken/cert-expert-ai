@@ -13,7 +13,8 @@ import { Button } from "@/components/ui";
 import { Toast } from "@/components/ui/Toast";
 import { generateEmployeeDocs } from "@/app/actions/generate-employee-docs";
 import { generateAuditExport } from "@/app/actions/generate-audit-export";
-import { ArrowLeft, Download, FileSpreadsheet, FileText, Loader2 } from "lucide-react";
+import { ArrowLeft, CalendarRange, Download, FileSpreadsheet, FileText, Loader2 } from "lucide-react";
+import { documentDateKey, formatIsoDisplay } from "./utils/date";
 import { cn } from "@/lib/utils";
 import type {
   Employee,
@@ -86,6 +87,12 @@ function EmployeeAutomationPageContent() {
     () => new Set(),
   );
   const [isGenerating, setIsGenerating] = useState(false);
+  // #8 — Generator-Ausgabedatum: globaler Default („Datum für alle", ISO; leer
+  // = heute) + Per-Doc-Override (Schlüssel `documentDateKey(employeeId, docId)`).
+  // Rein Ausgabedatum, kein Engine-/Norm-Eingriff. Per-Doc sticht über global.
+  const [generatorGlobalDate, setGeneratorGlobalDate] = useState<string>("");
+  const [perDocDates, setPerDocDates] = useState<Record<string, string>>({});
+  const [showDateOverrides, setShowDateOverrides] = useState(false);
   // Lane B / Pt 1 — read-only Batch-Vorzeige-/Audit-Ansicht (je gewählter
   // Person die `EmployeeFileOverview` mit Feld-Kopieren). Eigenständig; fasst
   // den EC-09-ZIP-Generator NICHT an.
@@ -557,6 +564,7 @@ function EmployeeAutomationPageContent() {
         freshGlobal,
         roles,
         appointments,
+        { global: generatorGlobalDate, perDocument: perDocDates },
       );
 
       if (result.success && result.zipBase64) {
@@ -844,6 +852,73 @@ function EmployeeAutomationPageContent() {
     [employees, batchSelectedIds],
   );
 
+  // #8 — Liste aller im Export ausgewählten Einzeldokumente (Rolle + Bestellung/
+  // Appointment) je gewählter Person → Grundlage für die Per-Doc-Datum-Override.
+  // Schlüssel = `documentDateKey(employeeId, docId)`, identisch zur Generator-
+  // Auflösung. Reine Selektions-Ableitung; berührt keine Norm-Werte.
+  const exportDocuments = useMemo(() => {
+    const rows: {
+      key: string;
+      employeeId: string;
+      employeeName: string;
+      docId: string;
+      docLabel: string;
+      groupLabel: string;
+    }[] = [];
+    for (const emp of selectedEmployees) {
+      const role = roles.find((r) => r.id === emp.roleId);
+      if (role) {
+        for (const doc of role.documents) {
+          if (!emp.selectedRoleDocIds.includes(doc.id)) continue;
+          rows.push({
+            key: documentDateKey(emp.id, doc.id),
+            employeeId: emp.id,
+            employeeName: emp.fullName,
+            docId: doc.id,
+            docLabel: doc.name,
+            groupLabel: role.name,
+          });
+        }
+      }
+      for (const appointmentId of emp.appointmentIds) {
+        const appointment = appointments.find((a) => a.id === appointmentId);
+        if (!appointment) continue;
+        for (const doc of appointment.documents) {
+          if (!emp.selectedAppointmentDocIds.includes(doc.id)) continue;
+          rows.push({
+            key: documentDateKey(emp.id, doc.id),
+            employeeId: emp.id,
+            employeeName: emp.fullName,
+            docId: doc.id,
+            docLabel: doc.name,
+            groupLabel: appointment.name,
+          });
+        }
+      }
+    }
+    return rows;
+  }, [selectedEmployees, roles, appointments]);
+
+  const handlePerDocDateChange = useCallback((key: string, value: string) => {
+    setPerDocDates((prev) => {
+      const next = { ...prev };
+      if (value) next[key] = value;
+      else delete next[key];
+      return next;
+    });
+  }, []);
+
+  // „Datum für alle übernehmen" — globalen Wert auf alle Per-Doc-Overrides
+  // schreiben (Muster Queue C Bulk). Override sticht weiter pro Dokument.
+  const handleApplyGlobalToAll = useCallback(() => {
+    if (!generatorGlobalDate || exportDocuments.length === 0) return;
+    setPerDocDates((prev) => {
+      const next = { ...prev };
+      for (const row of exportDocuments) next[row.key] = generatorGlobalDate;
+      return next;
+    });
+  }, [generatorGlobalDate, exportDocuments]);
+
   const exportViewContent = (
     <div className="mx-auto max-w-3xl space-y-4 p-4 sm:p-6">
       <div className="flex flex-col gap-3 rounded-lg border border-[#e5e7eb] bg-white px-4 py-4 sm:flex-row sm:items-center sm:justify-between">
@@ -907,8 +982,95 @@ function EmployeeAutomationPageContent() {
     </div>
   );
 
+  // #8 — Generator-Datum-Panel: globaler Default („Datum für alle") +
+  // Per-Doc-Override (Muster Queue C Bulk + Einzel). Leer = heute.
+  const generatorDatePanel =
+    exportCount > 0 ? (
+      <div className="flex flex-col gap-3 rounded-md border border-[#e5e7eb] bg-[#fafbfc] px-3 py-3">
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex items-center gap-2">
+            <CalendarRange className="h-4 w-4 text-[#6b7280]" />
+            <label className="flex items-center gap-2 text-xs font-medium text-[#374151]">
+              Generator-Datum (Default für alle):
+              <input
+                type="date"
+                value={generatorGlobalDate}
+                onChange={(e) => setGeneratorGlobalDate(e.target.value)}
+                className="rounded-md border border-[#e5e7eb] px-2 py-1 text-xs text-[#111827] focus:border-[#e30613] focus:outline-none"
+              />
+            </label>
+            <span className="text-[10px] text-[#9ca3af]">
+              {generatorGlobalDate
+                ? `→ ${formatIsoDisplay(generatorGlobalDate)}`
+                : "leer = heute"}
+            </span>
+          </div>
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={handleApplyGlobalToAll}
+              disabled={!generatorGlobalDate || exportDocuments.length === 0}
+              title="Globales Datum auf alle Einzeldokumente übernehmen"
+              className="inline-flex shrink-0 items-center gap-1 rounded-md border border-[#e5e7eb] px-2.5 py-1 text-xs font-medium text-[#374151] hover:border-[rgba(227,6,19,0.35)] hover:text-[#e30613] disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              <CalendarRange className="h-3.5 w-3.5" />
+              Datum für alle übernehmen
+            </button>
+            {exportDocuments.length > 0 ? (
+              <button
+                type="button"
+                onClick={() => setShowDateOverrides((v) => !v)}
+                className="inline-flex shrink-0 items-center rounded-md border border-[#e5e7eb] px-2.5 py-1 text-xs font-medium text-[#374151] hover:border-[rgba(227,6,19,0.35)] hover:text-[#e30613]"
+              >
+                {showDateOverrides
+                  ? "Pro-Dokument schließen"
+                  : `Pro-Dokument (${exportDocuments.length})`}
+              </button>
+            ) : null}
+          </div>
+        </div>
+
+        {showDateOverrides && exportDocuments.length > 0 ? (
+          <ul className="divide-y divide-[#f1f3f5] rounded-md border border-[#e5e7eb] bg-white">
+            {exportDocuments.map((row) => (
+              <li
+                key={row.key}
+                className="flex flex-wrap items-center justify-between gap-2 px-3 py-2"
+              >
+                <div className="min-w-0">
+                  <p className="truncate text-xs text-[#111827]">
+                    {row.docLabel}
+                  </p>
+                  <p className="truncate text-[10px] text-[#9ca3af]">
+                    {row.employeeName} · {row.groupLabel}
+                  </p>
+                </div>
+                <label className="flex shrink-0 items-center gap-1 text-[10px] text-[#6b7280]">
+                  Datum:
+                  <input
+                    type="date"
+                    value={perDocDates[row.key] ?? ""}
+                    onChange={(e) =>
+                      handlePerDocDateChange(row.key, e.target.value)
+                    }
+                    placeholder={generatorGlobalDate || undefined}
+                    className="rounded-md border border-[#e5e7eb] px-2 py-1 text-xs text-[#111827] focus:border-[#e30613] focus:outline-none"
+                  />
+                </label>
+              </li>
+            ))}
+          </ul>
+        ) : null}
+        <p className="text-[10px] text-[#9ca3af]">
+          Reines Ausgabedatum auf den Dokumenten. Pro-Dokument-Datum sticht über
+          den globalen Default; leer = heute. Keine Freigabe-/Auditfähigkeitsaussage.
+        </p>
+      </div>
+    ) : null;
+
   const generateBar =
     employees.length > 0 ? (
+      <div className="flex flex-col gap-3">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <p className="text-sm font-semibold text-[#111827]">
@@ -946,6 +1108,8 @@ function EmployeeAutomationPageContent() {
             {isGenerating ? "Erzeuge…" : "ZIP exportieren"}
           </Button>
         </div>
+      </div>
+      {generatorDatePanel}
       </div>
     ) : null;
 

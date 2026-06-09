@@ -16,7 +16,8 @@ import {
 } from "@/lib/template-storage";
 import {
   formatDocumentOutputDate,
-  formatTodayDocumentOutput,
+  resolveDocumentDate,
+  documentDateKey,
 } from "@/modules/03-mitarbeiterakte-tool-2/employee-file/utils/date";
 import { isBestellungAppointmentId } from "@/modules/03-mitarbeiterakte-tool-2/employee-file/employee-display-labels";
 
@@ -27,11 +28,24 @@ export interface GenerateEmployeeDocsState {
   timestamp?: number;
 }
 
+/**
+ * #8 — Generator-Ausgabedatum (`{currentDate}`) global + pro Dokument steuerbar.
+ * `global` = Default-Datum für alle Dokumente (ISO `YYYY-MM-DD` oder leer = heute).
+ * `perDocument` = Override je Dokument, Schlüssel `documentDateKey(employeeId, docId)`.
+ * Auflösungsreihenfolge: Per-Doc-Override → global → heute. Rein das
+ * Ausgabedatum; berührt weder Engine/Norm-Werte noch die Vorlagen-Verarbeitung.
+ */
+export interface DocumentDates {
+  global?: string;
+  perDocument?: Record<string, string>;
+}
+
 export async function generateEmployeeDocs(
   employees: Employee[],
   globalProps: GlobalProperties,
   roles: Role[],
   appointments: Appointment[],
+  documentDates?: DocumentDates,
 ): Promise<GenerateEmployeeDocsState> {
   try {
     if (!employees || employees.length === 0) {
@@ -48,7 +62,14 @@ export async function generateEmployeeDocs(
 
     const zip = new JSZip();
     const handler = new TemplateHandler();
-    const currentDate = formatTodayDocumentOutput();
+    // #8 — globaler Default („Datum für alle"); leer → heute. Per-Doc-Override
+    // sticht weiter unten je Dokument.
+    const globalDate = resolveDocumentDate(documentDates?.global);
+    const perDocDates = documentDates?.perDocument ?? {};
+    const resolveDocDate = (employeeId: string, docId: string): string => {
+      const override = perDocDates[documentDateKey(employeeId, docId)];
+      return override ? formatDocumentOutputDate(override) || globalDate : globalDate;
+    };
 
     let logoData = null;
     let imageMimeType = "image/png";
@@ -113,7 +134,8 @@ export async function generateEmployeeDocs(
         TrainingHours: employee.trainingHours || "",
         GuardIDNumber: employee.guardIDNumber || "",
         EmployeeIDNumber: employee.employeeIDNumber || "",
-        currentDate,
+        // Default = globaler Generator-Datum-Wert; je Dokument unten überschrieben.
+        currentDate: globalDate,
         CompanyName: globalProps.companyName || "",
         CompanyEmail: globalProps.companyEmail || "",
         CompanyAddress: globalProps.companyAddress || "",
@@ -140,10 +162,12 @@ export async function generateEmployeeDocs(
           }
           try {
             const templateBuffer = await fetchTemplateBufferByKey(objectKey);
-            const processedDoc = await handler.process(
-              templateBuffer,
-              templateData,
-            );
+            // #8 — Per-Doc-Datum sticht über den globalen Default.
+            const docDate = resolveDocDate(employee.id, doc.id);
+            const processedDoc = await handler.process(templateBuffer, {
+              ...templateData,
+              currentDate: docDate,
+            });
             roleFolder.file(doc.fileName, processedDoc);
           } catch (err) {
             console.error(
@@ -169,21 +193,13 @@ export async function generateEmployeeDocs(
         // #C — Bestellung „aus Vorlage generieren": eine Bestellung
         // (Ersthelfer/Brandschutzhelfer/SiBe) ist unterschriftspflichtig und
         // trägt als Default das Einstellungs-/Bestelldatum (`startDate`); der MA
-        // unterschreibt nach. Fällt auf `currentDate` zurück, wenn kein startDate.
-        // Additive Platzhalter → Templates ohne diese Felder bleiben unberührt
-        // (EC-09). EC-10: kein Freigabe-/Auditfähigkeits-Wording.
+        // unterschreibt nach. Fällt auf den globalen Generator-Datum-Wert zurück,
+        // wenn kein startDate. Additive Platzhalter → Templates ohne diese Felder
+        // bleiben unberührt (EC-09). EC-10: kein Freigabe-/Auditfähigkeits-Wording.
         const isBestellung = isBestellungAppointmentId(appointment.id);
-        const bestellDatum = employee.startDate
+        const bestellDefaultDate = employee.startDate
           ? formatDocumentOutputDate(employee.startDate)
-          : currentDate;
-        const appointmentTemplateData: TemplateData = isBestellung
-          ? {
-              ...templateData,
-              currentDate: bestellDatum,
-              BestellDatum: bestellDatum,
-              Unterschriftspflichtig: "Ja",
-            }
-          : templateData;
+          : globalDate;
 
         const selectedAppDocs = appointment.documents.filter((doc) =>
           employee.selectedAppointmentDocIds.includes(doc.id),
@@ -197,6 +213,25 @@ export async function generateEmployeeDocs(
               error: `Template not found: ${logicalPath}`,
             };
           }
+          // #8 — Per-Doc-Override sticht; sonst Bestell-Default (startDate) bei
+          // Bestellungen, ansonsten der globale Generator-Datum-Wert.
+          const override = perDocDates[documentDateKey(employee.id, doc.id)];
+          const docDate = override
+            ? formatDocumentOutputDate(override) || globalDate
+            : isBestellung
+              ? bestellDefaultDate
+              : globalDate;
+          const appointmentTemplateData: TemplateData = isBestellung
+            ? {
+                ...templateData,
+                currentDate: docDate,
+                BestellDatum: docDate,
+                Unterschriftspflichtig: "Ja",
+              }
+            : {
+                ...templateData,
+                currentDate: docDate,
+              };
           try {
             const templateBuffer = await fetchTemplateBufferByKey(objectKey);
             const processedDoc = await handler.process(

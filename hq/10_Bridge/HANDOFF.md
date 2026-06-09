@@ -253,6 +253,21 @@
 
 ## 📥 Von Cursor an Claude (Fragen / Bitten)
 
+### 2026-06-09 — ✅ Executor Lane E (Generator-Datum): #8 FERTIG + committet (Branch `lane-e-generator-datum`, NICHT gepusht/gemergt)
+
+**Branch:** `lane-e-generator-datum` (ab `main` HEAD `40bd1d2`). **`main` unberührt, nicht gepusht.**
+**Write-Set eingehalten** — 4 der 6 gelisteten Dateien geändert: `…/employee-file/EmployeeAutomationPage.tsx` · `…/employee-generator/generate-employee-docs.ts` · `app/actions/generate-employee-docs.ts` (Re-Export um `DocumentDates`-Typ erweitert) · `…/employee-file/utils/date.ts`. **Nicht angefasst:** `…/employee-file/EmployeeFileDossierView.tsx` (enthält keine Datums-/`new Date()`-Logik — verlinkt nur den Generator-Tab; Datum-UI lebt in `EmployeeAutomationPage`) · `…/employee-generator/templateData.ts` (**existiert nicht** — `{currentDate}`-Logik liegt real in `generate-employee-docs.ts`; Auftrags-Zeilenverweis war gegen eine ältere Struktur). Keine verbotene Datei (Engine/`EmployeeForm.tsx`/`lib/*`/Lane-F) berührt.
+
+**Gebaut (exakt #8 — Generator-Datum global + pro Dokument):**
+- **Action-Signatur:** `generateEmployeeDocs(..., documentDates?: DocumentDates)` mit `DocumentDates = { global?: string; perDocument?: Record<string,string> }`. Optional → **Default-Verhalten unverändert** (alle Aufrufe ohne das Argument erzeugen weiterhin „heute").
+- **Auflösungsreihenfolge je Dokument:** Per-Doc-Override → globaler Default → **heute** (`resolveDocumentDate` in `date.ts`, neuer Helfer + `documentDateKey(employeeId, docId)`). Per-Doc sticht.
+- **Bestellungen (#C-Pfad gewahrt):** Per-Doc-Override sticht weiterhin über den Bestell-Default (`startDate`); ohne Override bleibt der Bestell-Default bei Bestellungen, sonst der globale Wert. `BestellDatum`/`Unterschriftspflichtig`-Platzhalter unverändert.
+- **UI (Generator-Bar):** globales Datumsfeld („Generator-Datum, Default für alle"; leer = heute) + „Datum für alle übernehmen" (Bulk, Muster Queue C) + ausklappbare Per-Doc-Liste (je ausgewähltem Einzeldokument aller Export-Personen, Schlüssel = `documentDateKey`) mit eigenem Datum-Input (Override). EC-10-Disclaimer im Panel.
+
+**Gates:** `tsc --noEmit` = **0** · Test-Suite `tsx --test …/employee-file/*.test.ts` = **58/58** grün (Engine nicht angefasst; `npm install` in diesem Worktree nötig, da `pdf-lib`/`exceljs` für die 2 Audit-Tests fehlten — nur Dependency-Install, kein Code) · EC-09-Generator-Flow strukturell intakt (nur Datum-Auflösung geändert, Default „heute" identisch zu vorher) — Live-ZIP-POST-Klick durch Mark optional abzunehmen (S3-Creds im Sandbox nicht verfügbar) · EC-10 gewahrt (kein Freigabe-Wording) · kein `.env`/`.db`/Kundendaten-Commit.
+
+**Geparkt (NICHT gebaut, da außerhalb Scope/Write-Set):** Persistenz des gesetzten Generator-Datums (global + per-Doc) über localStorage/Repo — aktuell Session-State (zurückgesetzt bei Reload). War im Auftrag nicht gefordert (Default „heute" bleibt); falls gewünscht → eigener Auftrag (berührt `lib/*`/Repository = Lane F). **Frage an Planer:** soll das gesetzte Datum persistieren?
+
 ### 2026-06-09 — ✅ Executor Lane C (Bestellungen): #7 + #C FERTIG + committet (`daea75d`, Branch `lane-c-bestellungen`, NICHT gepusht/gemergt)
 
 **Branch:** `lane-c-bestellungen` (ab `main`). **`main` unberührt, nicht gepusht.**

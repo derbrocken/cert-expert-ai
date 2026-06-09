@@ -85,3 +85,27 @@ export function formatTodayDocumentOutput(): string {
   );
   return iso ? formatIsoToInput(iso) : "";
 }
+
+/**
+ * #8 — Generator-Ausgabedatum auflösen: ein explizit gesetztes Datum
+ * (ISO `YYYY-MM-DD` oder `DD.MM.YYYY`) wird zu `DD.MM.YYYY` formatiert; leer
+ * oder unparsbar → Fallback auf „heute". So bleibt der Default „heute" intakt,
+ * während ein global gesetztes oder pro Dokument überschriebenes Datum sticht.
+ */
+export function resolveDocumentDate(value?: string | null): string {
+  if (value) {
+    const formatted = formatDocumentOutputDate(value);
+    if (formatted) return formatted;
+  }
+  return formatTodayDocumentOutput();
+}
+
+/**
+ * Stabiler Schlüssel für ein pro-Dokument überschreibbares Generator-Datum:
+ * `${employeeId}::${docId}`. `docId` ist die Vorlagen-Dokument-ID (Rolle oder
+ * Bestellung/Appointment). So sticht ein Per-Doc-Datum über den globalen
+ * Default, ohne die Vorlagen-Verarbeitung anzufassen.
+ */
+export function documentDateKey(employeeId: string, docId: string): string {
+  return `${employeeId}::${docId}`;
+}
