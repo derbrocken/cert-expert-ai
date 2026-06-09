@@ -156,14 +156,18 @@ export interface Employee {
 }
 
 /**
- * Persistiertes Generator-Ausgabedatum (Lane J A3). `global` = Default-Datum
+ * Persistiertes Generator-Ausgabedatum (Lane J A3 + Q8). `global` = Default-Datum
  * für alle Dokumente dieser Akte (ISO `YYYY-MM-DD` oder leer = heute).
- * `perDocument` = Override je Dokument, Schlüssel = Vorlagen-`docId`. Reine
- * Ausgabesteuerung; verändert weder Norm-Werte noch die Vorlagen-Verarbeitung.
+ * `perDocument` = Override je **Person+Dokument**, Schlüssel = Vorlagen-`docId`.
+ * `perDocType` = Override je **Dokument-Typ** (`documentTypeKey(docId)`), gilt für
+ * ALLE gewählten Personen (Q8). Auflösung (spezifischer sticht): `perDocument` →
+ * `perDocType` → `global` → heute. Reine Ausgabesteuerung; verändert weder
+ * Norm-Werte noch die Vorlagen-Verarbeitung.
  */
 export interface GeneratorDates {
   global?: string;
   perDocument?: Record<string, string>;
+  perDocType?: Record<string, string>;
 }
 
 /**

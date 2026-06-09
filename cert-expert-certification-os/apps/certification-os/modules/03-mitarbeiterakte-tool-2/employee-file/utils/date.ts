@@ -109,3 +109,36 @@ export function resolveDocumentDate(value?: string | null): string {
 export function documentDateKey(employeeId: string, docId: string): string {
   return `${employeeId}::${docId}`;
 }
+
+/**
+ * Q8 — Schlüssel für ein Datum **pro Dokument-Typ** (gilt für ALLE gewählten
+ * Personen): der dokument-/template-übergreifende Identifier. Das ist die
+ * Vorlagen-`docId` selbst — dasselbe Dokument bei mehreren Personen trägt
+ * dieselbe `docId`, also denselben Typ-Schlüssel. Eigene Funktion (statt roher
+ * `docId`), damit die Typ-Ebene als Konzept benannt und an einer Stelle änderbar
+ * ist. Auflösung (spezifischer sticht): `perDocument` (Person+Doc) → `perDocType`
+ * (Doc-Typ) → `global` → heute.
+ */
+export function documentTypeKey(docId: string): string {
+  return docId;
+}
+
+/**
+ * Q8 — löst die Override-Ebenen eines Dokuments auf: `perDocument` (Person+Doc)
+ * → `perDocType` (Doc-Typ). Gibt den ROHEN Wert der stechenden Ebene zurück
+ * (noch nicht formatiert) oder `undefined`, wenn keine Ebene greift (→ Aufrufer
+ * fällt auf #10/#C-Default bzw. globalen Wert zurück). Reines Ausgabedatum,
+ * kein Engine-/Norm-Eingriff. Spezifischer sticht.
+ */
+export function resolveDocDateOverride(
+  perDocument: Record<string, string>,
+  perDocType: Record<string, string>,
+  employeeId: string,
+  docId: string,
+): string | undefined {
+  const perDoc = perDocument[documentDateKey(employeeId, docId)];
+  if (perDoc) return perDoc;
+  const perType = perDocType[documentTypeKey(docId)];
+  if (perType) return perType;
+  return undefined;
+}
