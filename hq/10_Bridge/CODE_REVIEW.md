@@ -4,6 +4,17 @@
 
 ---
 
+## 2026-06-09 — Nachbau Lane J: Persistenz-Migration A1/A2/A3 (`74650ef`) — **Planer-Review → ABGENOMMEN, gemergt (`0257668`)**
+
+**Verifiziert:** Write-Set sauber (schema.prisma, repository, types, employee-display-labels, vorlagen-set-catalog, EmployeeForm, EmployeeAutomationPage, EmployeeFileDossierView, neuer backfill-Test — **kein Engine/Tally**), Suite **90/90** (80 + 10 Backfill). 4 additive nullable Spalten (`bestelltAls`/`bestellungSchulungLink`/`setKategorie`/`generatorDates`, P2023-sicher). EC-09 (`appointmentIds`-Sync) + EC-10 (kein Auto-Status auf Link/Nachweis).
+
+**⚠️ Merge-Lehre (festgehalten):** Nach Prisma-Schema-Merge muss lokal `npx prisma generate` laufen, sonst tsc rot (stale Client) — Code war korrekt, nach `generate` tsc 0. Prod-Deploy: `db push` + `npm run build` (generate) decken das ab; additive nullable Spalten → kein Datenverlust/Backfill nötig.
+
+### Verdict
+**Abgenommen, gemergt.** Persistenz steht (A1/A2/A3 echte Spalten statt Projektion). **Prod-DB-Migration erfolgt beim Deploy.**
+
+---
+
 ## 2026-06-09 — In-Chat-Dispatch v6 (Einzel-Lane): Lane I (Datums-Defaults `0ec3de6`) — **Planer-Review → ABGENOMMEN, gemergt (`06c714b`)**
 
 **Verifiziert:** Write-Set sauber (requirement-engine + test, generate-employee-docs — kein Tally/Form/Vorlagen), `tsc` 0, Suite **80/80** (71 + 10 neue #10-Szenarien). **Engine-Integrität:** bestehende CL/UE (CL-02/11/20/21/24/25/29/30) unverändert (71 Alt-Tests grün); neue Wiederholungs-Frist `frist-wiederholung-unterweisung` = **CL-75 „fachlich prüfen"** (DGUV V23 §4(2), kein erfundener Turnus, kein Auto-„abgelaufen" → EC-10). EC-09 additiv (Action-Signatur unverändert).
