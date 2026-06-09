@@ -11,6 +11,30 @@ export const TALLY_GLOBAL_QUESTIONS = {
   companySlug: null as string | null,
 } as const;
 
+export interface TallyFileQuestionConfig {
+  questionId: string;
+  /** Human label from the Tally form (empty for slots 3–10 in the REST export). */
+  label: string;
+  /**
+   * Explicit target slot — overrides the label heuristic. The Tally upload
+   * order is identical across all employee slots, so a position-derived
+   * evidenceId is deterministic even when the label is empty (slots 3–10
+   * previously collapsed every upload onto a single `tally-upload` id and
+   * overwrote each other).
+   *
+   * Convention (Q3, Mark 2026-06-09 — JE SCHULUNG EIN EIGENER SLOT MIT EIGENEM
+   * DATUM):
+   *  - Dokument/Zertifikat (1 pro Person): fixe evidenceId
+   *    (`arbeitsvertrag` CL-03-Beleg / `bundesauszug` / `dienstausweis` /
+   *    `sachkunde` CL-01/02).
+   *  - Schulung/Training: `training-plan:{trainingId}` — eigener Slot + eigenes
+   *    Datum, identisch zur Queue-C-Konvention `planEvidenceId(itemId)`
+   *    (`erste-hilfe` CL-08, `brandschutz` CL-23).
+   * Reine Zuordnung — KEINE neue Normpflicht.
+   */
+  evidenceId?: string;
+}
+
 export interface TallyEmployeeSlotConfig {
   index: number;
   nameQuestionId: string;
@@ -20,13 +44,55 @@ export interface TallyEmployeeSlotConfig {
   birthdayQuestionId: string | null;
   guardIdQuestionId: string | null;
   employeeIdQuestionId: string | null;
-  fileQuestionIds: { questionId: string; label: string }[];
+  fileQuestionIds: TallyFileQuestionConfig[];
 }
 
 export const TALLY_EMPLOYEE_SLOTS =
   employeeSlots as TallyEmployeeSlotConfig[];
 
-/** Map Tally upload label → EvidenceItem.evidenceId (EC-10: status stays unchecked) */
+/**
+ * Tally-Upload-Reihenfolge je Mitarbeiter-Slot (positionsgleich über alle
+ * Slots). Quelle für die positionsbasierte evidenceId, wenn das Label leer ist.
+ * Index = Reihenfolge in `fileQuestionIds`. Positionen jenseits dieser Liste
+ * (z. B. die „Erforderliche Dokumente"-Extras in Slot 10) → generischer
+ * Sammel-Slot `tally-weitere-nachweise` (positionsstabil pro Person).
+ */
+export const TALLY_FILE_POSITION_EVIDENCE_IDS: readonly string[] = [
+  "arbeitsvertrag", // 0 — Contracts (Arbeitsvertrag / Beschäftigungsnachweis)
+  "bundesauszug", // 1 — BWR (Bewacherregister-Auszug)
+  "dienstausweis", // 2 — Dienstausweis / GuardCard
+  "sachkunde", // 3 — Qualifikation §34a / Sachkunde (CL-01/02)
+  "training-plan:erste-hilfe", // 4 — Ersthelfer / First Aid (Schulung, CL-08)
+  "training-plan:brandschutz", // 5 — Brandschutz (Schulung, CL-23)
+  "tally-weitere-nachweise", // 6 — weitere/sonstige Nachweise (unbeschriftet)
+];
+
+/** Sammel-Slot für Upload-Positionen ohne dedizierte Zuordnung. */
+export const TALLY_FALLBACK_EVIDENCE_ID = "tally-weitere-nachweise";
+
+/**
+ * evidenceId einer Datei-Frage auflösen — Reihenfolge der Quellen:
+ *  1. explizite `evidenceId` aus der Slot-Konfiguration (höchste Priorität),
+ *  2. positionsbasierte Tabelle (deterministisch, label-unabhängig),
+ *  3. Label-Heuristik (`mapTallyUploadToEvidenceId`) als Rückfall.
+ * EC-10: Status des erzeugten EvidenceItem bleibt `unchecked` (im Service).
+ */
+export function resolveTallyFileEvidenceId(
+  fileField: TallyFileQuestionConfig,
+  position: number,
+): string {
+  if (fileField.evidenceId?.trim()) return fileField.evidenceId.trim();
+  const byPosition = TALLY_FILE_POSITION_EVIDENCE_IDS[position];
+  if (byPosition) return byPosition;
+  if (fileField.label?.trim()) return mapTallyUploadToEvidenceId(fileField.label);
+  return TALLY_FALLBACK_EVIDENCE_ID;
+}
+
+/**
+ * Map Tally upload label → EvidenceItem.evidenceId (EC-10: status stays
+ * unchecked). Label-Rückfall, wenn weder explizite noch positionsbasierte
+ * evidenceId greift. Schulungen folgen der Q3-Konvention `training-plan:{id}`.
+ */
 export function mapTallyUploadToEvidenceId(label: string): string {
   const normalized = label.toLowerCase();
   if (normalized.includes("contract")) return "arbeitsvertrag";
@@ -38,9 +104,9 @@ export function mapTallyUploadToEvidenceId(label: string): string {
     return "sachkunde";
   }
   if (normalized.includes("ersthelfer") || normalized.includes("first aid")) {
-    return "erste-hilfe";
+    return "training-plan:erste-hilfe";
   }
-  if (normalized.includes("brandschutz")) return "brandschutz";
+  if (normalized.includes("brandschutz")) return "training-plan:brandschutz";
   return `tally-${normalized.replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "upload"}`;
 }
 

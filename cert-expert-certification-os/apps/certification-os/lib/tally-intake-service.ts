@@ -3,8 +3,8 @@ import {
   resolveCompanySlug,
 } from "@/lib/customer-registry";
 import {
-  mapTallyUploadToEvidenceId,
   questionIdFromFieldKey,
+  resolveTallyFileEvidenceId,
   TALLY_EMPLOYEE_FORM_ID,
   TALLY_EMPLOYEE_SLOTS,
   TALLY_GLOBAL_QUESTIONS,
@@ -183,15 +183,16 @@ async function importEvidenceFiles(
   fieldMap: Map<string, TallyWebhookField>,
 ): Promise<number> {
   let imported = 0;
-  for (const fileField of slot.fileQuestionIds) {
+  for (let position = 0; position < slot.fileQuestionIds.length; position += 1) {
+    const fileField = slot.fileQuestionIds[position];
     const field = fieldMap.get(fileField.questionId);
     if (!field) continue;
     const uploads = extractUploadedFiles(field.value);
     if (uploads.length === 0) continue;
 
-    const evidenceId = mapTallyUploadToEvidenceId(
-      fileField.label || field.label || fileField.questionId,
-    );
+    // Position-/Config-getriebene Zuordnung (label-unabhängig, Q3-Konvention
+    // `training-plan:{id}` für Schulungen); Label-Heuristik nur als Rückfall.
+    const evidenceId = resolveTallyFileEvidenceId(fileField, position);
 
     for (const upload of uploads) {
       if (!upload.url) continue;
