@@ -4,6 +4,17 @@
 
 ---
 
+## 2026-06-09 — In-Chat-Dispatch v6 (Einzel-Lane): Lane I (Datums-Defaults `0ec3de6`) — **Planer-Review → ABGENOMMEN, gemergt (`06c714b`)**
+
+**Verifiziert:** Write-Set sauber (requirement-engine + test, generate-employee-docs — kein Tally/Form/Vorlagen), `tsc` 0, Suite **80/80** (71 + 10 neue #10-Szenarien). **Engine-Integrität:** bestehende CL/UE (CL-02/11/20/21/24/25/29/30) unverändert (71 Alt-Tests grün); neue Wiederholungs-Frist `frist-wiederholung-unterweisung` = **CL-75 „fachlich prüfen"** (DGUV V23 §4(2), kein erfundener Turnus, kein Auto-„abgelaufen" → EC-10). EC-09 additiv (Action-Signatur unverändert).
+
+**Gebaut:** Erst-Standardunterweisung (CL-03/04/05 + Arbeitsschutz CL-75) Default-Ausgabedatum = `startDate`; >1 Jahr → Wiederholungsunterweisung-Frist (CL-75 fachlich prüfen); objektbezogen CL-22 = startDate, manuell (Q10b); Geburtsdatum war bereits via `{Birthday}` auf den Docs. Per-Doc-Override (#8) sticht weiter.
+
+### Verdict
+**Abgenommen, gemergt.** Keine #10-Blocker. Offener Faden bleibt nur CL-75/CL-76 exakter § (legal-input).
+
+---
+
 ## 2026-06-09 — In-Chat-Dispatch v5 (Einzel-Lane): Lane H (Manueller Upload `6669fcb`) — **Planer-Review → ABGENOMMEN, gemergt (`3344b71`)**
 
 **Verifiziert:** Write-Set sauber (DossierView, EvidenceRow, TrainingPlan — kein Engine/Tally/Generator/Form), `tsc` 0, Suite 71/71, EC-09 (bestehende Evidence-Action wiederverwendet, ZIP unberührt), EC-10 (`unchecked`).
