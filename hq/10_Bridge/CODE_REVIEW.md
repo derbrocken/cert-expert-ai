@@ -4,6 +4,21 @@
 
 ---
 
+## 2026-06-09 — Nachbau Lane L: #5 UE-Anerkennung (`d7d6493`) + 🔴 Build-Blocker-Fix (`36c4509`) — **Planer-Review → ABGENOMMEN, gemergt (`1e4555f`)**
+
+**🔴 Wichtiger Befund (Lane-L-Executor surfacte ihn):** `next build` schlug auf `main` fehl — **„Server Actions must be async"** in `employee-generator/generate-employee-docs.ts:98`. Ursache: **Lane I (#10)** exportierte die synchrone `isErstunterweisungDoc` aus der `"use server"`-Datei. `tsc --noEmit` + `tsx --test` fangen das NICHT (Next-Build-Regel). **Ein Deploy hätte hier gebrochen.** Fix: `export` entfernt (nur modulintern genutzt). → **`next build` ist ab jetzt fester Review-Gate** (Prozesslücke geschlossen).
+
+**Lane L verifiziert:** Write-Set sauber (training-catalog, training-plan, EmployeeFileTrainingPlan, types, repository, test — **kein Engine/Tally/Generator**), `tsc` 0, Suite **120/120** (106 + 14), **`next build` Compiled successfully**. Keine neue Schema-Spalte (Status im `trainingPlan`-Json). EC-10 (Vorschlag=`unchecked` bis Bestätigung, keine Auto-Anerkennung).
+
+**Gebaut:** Eigen-Katalog-Schulungen → UE automatisch angehängt (keine Unterschrift), CL-27-Anrechnung in CL-11; externe Uploads → Best-Effort-UE-Extraktion (`ueVorschlag`/`unchecked`) erst nach fachlicher Bestätigung in den Ist-Wert. Engine unberührt (liest Ist).
+
+**Geparkt:** Extraktion ist Dateiname-Heuristik (kein PDF-Text-Parsing ohne neue Lib → eigener Slice falls gewünscht); EC-09-Live-ZIP-Klick = Mark.
+
+### Verdict
+**Abgenommen, gemergt.** **#5 + Build-Fix.** Tool-2-Feedback-Features damit komplett (außer Q8-Datum-Granularität-Extension).
+
+---
+
 ## 2026-06-09 — Nachbau Lane K: Set-Mapping (B) + Org-Titel-Gating (#7) + Mutterschutz (`e3d2458`) — **Planer-Review → ABGENOMMEN, gemergt (`ec56c11`)**
 
 **Verifiziert:** Write-Set sauber (vorlagen-set-catalog, generate-employee-docs, EmployeeForm, stammdaten-options, types, validations, schema.prisma, repository, neuer mapping-Test — **kein Engine/Tally**), `tsc` 0 (nach `prisma generate`), Suite **106/106** (90 + 16). Neue additive nullable Spalte `gender String?`. EC-09 (Generator-Manifest try/catch, ZIP bricht nie) + EC-10 (kein Auto-Status).
