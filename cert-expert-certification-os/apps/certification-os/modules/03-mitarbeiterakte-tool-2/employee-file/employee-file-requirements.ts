@@ -232,6 +232,7 @@ export function buildRequirementContext(
     ),
     employmentType: employee.employmentType,
     qualification: employee.qualification,
+    qualifications: employee.qualifications,
     startDate: employee.startDate,
     sdlScopes: employee.sdlScopes ?? [],
     drivesServiceVehicle: employee.drivesServiceVehicle,
