@@ -29,6 +29,29 @@ export interface GenerateEmployeeDocsState {
 }
 
 /**
+ * #10 — Erst-Standardunterweisungen + Erklärungen, deren Default-Ausgabedatum
+ * der **erste Arbeitstag** (`startDate`) ist (der MA unterschreibt nach):
+ * Datenschutz-Unterweisung/-Erklärung (CL-04), Verschwiegenheits-Unterweisung/
+ * -Erklärung (CL-05), Einweisung in die Dienstanweisung (CL-03) und die
+ * Arbeitsschutz-Grundunterweisung (CL-75, „fachlich prüfen"). Objektbezogene
+ * Unterweisung (CL-22) läuft laut Mark (Q10b) manuell, bis die Projektakte
+ * existiert → hier bewusst NICHT auf startDate defaulten.
+ * Klassifikation rein über den Dateinamen (Vorlagen liegen in S3, keine festen
+ * IDs zur Build-Zeit). Reiner Datums-Default, überschreibbar je Dokument (#8) —
+ * keine UE/CL-Wirkung, EC-10: kein Freigabe-/Auditfähigkeits-Wording.
+ */
+export function isErstunterweisungDoc(fileName: string): boolean {
+  const f = fileName.toLowerCase();
+  return (
+    /datenschutz/.test(f) ||
+    /verschwiegenheit/.test(f) ||
+    /dienstanweisung/.test(f) ||
+    /arbeitsschutz/.test(f) ||
+    /erstunterweisung/.test(f)
+  );
+}
+
+/**
  * #8 — Generator-Ausgabedatum (`{currentDate}`) global + pro Dokument steuerbar.
  * `global` = Default-Datum für alle Dokumente (ISO `YYYY-MM-DD` oder leer = heute).
  * `perDocument` = Override je Dokument, Schlüssel `documentDateKey(employeeId, docId)`.
@@ -66,10 +89,6 @@ export async function generateEmployeeDocs(
     // sticht weiter unten je Dokument.
     const globalDate = resolveDocumentDate(documentDates?.global);
     const perDocDates = documentDates?.perDocument ?? {};
-    const resolveDocDate = (employeeId: string, docId: string): string => {
-      const override = perDocDates[documentDateKey(employeeId, docId)];
-      return override ? formatDocumentOutputDate(override) || globalDate : globalDate;
-    };
 
     let logoData = null;
     let imageMimeType = "image/png";
@@ -115,6 +134,12 @@ export async function generateEmployeeDocs(
 
       const employeeFolder = zip.folder(employee.fullName);
       if (!employeeFolder) continue;
+
+      // #10 — Default-Datum der Erst-Standardunterweisung/-Erklärung = erster
+      // Arbeitstag (`startDate`); fehlt er, der globale Generator-Datum-Wert.
+      const erstunterweisungDefaultDate = employee.startDate
+        ? formatDocumentOutputDate(employee.startDate)
+        : globalDate;
 
       const templateData: TemplateData = {
         Logo: logoData
@@ -172,8 +197,15 @@ export async function generateEmployeeDocs(
           }
           try {
             const templateBuffer = await fetchTemplateBufferByKey(objectKey);
-            // #8 — Per-Doc-Datum sticht über den globalen Default.
-            const docDate = resolveDocDate(employee.id, doc.id);
+            // #8/#10 — Auflösung: Per-Doc-Override (#8) sticht; sonst bei einer
+            // Erst-Standardunterweisung/-Erklärung der erste Arbeitstag (#10),
+            // ansonsten der globale Generator-Datum-Wert.
+            const roleOverride = perDocDates[documentDateKey(employee.id, doc.id)];
+            const docDate = roleOverride
+              ? formatDocumentOutputDate(roleOverride) || globalDate
+              : isErstunterweisungDoc(doc.fileName)
+                ? erstunterweisungDefaultDate
+                : globalDate;
             const processedDoc = await handler.process(templateBuffer, {
               ...templateData,
               currentDate: docDate,
