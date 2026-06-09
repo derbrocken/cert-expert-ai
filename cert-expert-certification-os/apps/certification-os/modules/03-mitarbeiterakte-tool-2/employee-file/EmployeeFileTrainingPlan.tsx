@@ -302,7 +302,13 @@ export const EmployeeFileTrainingPlan: React.FC<
               <li key={item.id} className="px-4 py-3">
                 <div className="flex flex-wrap items-start justify-between gap-2">
                   <div className="min-w-0 flex-1">
-                    <p className="text-sm text-[#111827]">{item.label}</p>
+                    <p className="flex flex-wrap items-center gap-2 text-sm text-[#111827]">
+                      {item.label}
+                      {/* #4 — Schulungsnachweis = nur anhängen (keine Unterschrift). */}
+                      <span className="rounded border border-[#e5e7eb] bg-[#f9fafb] px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wide text-[#9ca3af]">
+                        nur anhängen
+                      </span>
+                    </p>
                     <p className="mt-0.5 text-[10px] text-[#9ca3af]">
                       {item.ue !== null ? `${item.ue} UE · ` : ""}
                       {item.source === "katalog"

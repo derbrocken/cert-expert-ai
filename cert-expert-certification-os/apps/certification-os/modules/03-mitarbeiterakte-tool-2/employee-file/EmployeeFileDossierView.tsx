@@ -225,6 +225,43 @@ function SubSectionHeader({
   );
 }
 
+/**
+ * #4 — Unterschrifts-Logik je Schulung-/Unterweisungs-Slot (sichtbar machen).
+ * Unterweisungen + Standarddokumente = unterschriftspflichtig (Datenschutz CL-04,
+ * Verschwiegenheit CL-05, Dienstanweisung CL-03, Arbeitsschutz/Wiederholung
+ * CL-75 „fachlich prüfen"); reine Schulungs-/Qualifikationsnachweise = nur
+ * anhängen (kein Unterschrifts-Badge). Werte/Norm-Bezug nur Anzeige — keine neue
+ * Engine-Pflicht. Upload nutzt dieselbe Evidence-Infra (`unterweisung:{id}`).
+ * EC-10: hochgeladene Nachweise bleiben `unchecked`, keine Auto-Freigabe.
+ */
+const SCHULUNG_UNTERWEISUNG_SIGNATURE: Record<string, boolean> = {
+  allgemein: true, // Allgemeine Unterweisung / Dienstanweisung — CL-03
+  "datenschutz-u": true, // Datenschutzunterweisung — CL-04
+  "verschwiegenheit-u": true, // Verschwiegenheitsunterweisung — CL-05
+  "objekt-u": true, // Objektbezogene Einweisung (Unterweisung, scope-sensitiv)
+  "sdl-u": true, // SDL-bezogene Unterweisung
+  wiederholung: true, // Wiederholungsunterweisung — Arbeitsschutz CL-75 (fachlich prüfen)
+  qualifikation: false, // Schulungs-/Qualifikationsnachweis — nur anhängen
+};
+
+/** Stabiler Evidence-Slot je Schulung-/Unterweisungs-Anforderung (#4). */
+function unterweisungEvidenceId(rowId: string): string {
+  return `unterweisung:${rowId}`;
+}
+
+/**
+ * #4 — Unterschrifts-Logik je Pflichtnachweis-Slot (Standarddokumente).
+ * Standarddokumente, die der MA unterschreibt (Datenschutz CL-04,
+ * Verschwiegenheit CL-05), = unterschriftspflichtig. Reine Schulungsnachweise
+ * = nur anhängen. Übrige Dokument-Slots (Vertrag/Auszug/Ausweis/…) ohne
+ * explizite Unterschrifts-Aussage → kein Badge (`undefined`). Nur Anzeige.
+ */
+const PFLICHTNACHWEIS_SIGNATURE: Record<string, boolean> = {
+  datenschutz: true, // Datenschutz-Erklärung (Standarddokument) — CL-04
+  verschwiegenheit: true, // Verschwiegenheitserklärung (Standarddokument) — CL-05
+  schulungsnachweise: false, // Sammel-Schulungsnachweise — nur anhängen
+};
+
 function catalogMatch(active: string, catalogLabel: string): boolean {
   const a = active.toLowerCase();
   const c = catalogLabel.toLowerCase();
@@ -619,6 +656,7 @@ export const EmployeeFileDossierView: React.FC<EmployeeFileDossierViewProps> = (
                     row={row}
                     storedFile={evidenceFiles[row.id]}
                     editMode={evidenceEditMode}
+                    signatureRequired={PFLICHTNACHWEIS_SIGNATURE[row.id]}
                     onUpload={(file) => onEvidenceUpload?.(row.id, file)}
                     onRemove={() => onEvidenceRemove?.(row.id)}
                   />
@@ -630,10 +668,31 @@ export const EmployeeFileDossierView: React.FC<EmployeeFileDossierViewProps> = (
               <SubSectionHeader
                 icon={<GraduationCap className="h-3.5 w-3.5 text-[#e30613]" />}
                 title="Schulung & Unterweisung"
-                subtitle="Verpflichtende Qualifikationen und Anforderungen"
+                subtitle={
+                  evidenceEditMode
+                    ? "Unterschriebene Unterweisung / Schulungsnachweis je Position hochladen — unterschriftspflichtig vs. nur anhängen"
+                    : "Verpflichtende Qualifikationen und Anforderungen — unterschriftspflichtig vs. nur anhängen"
+                }
                 level="anforderung"
               />
-              <RequirementTable rows={summary.schulungUnterweisung} />
+              <ul className="space-y-2">
+                {summary.schulungUnterweisung.map((row) => {
+                  const evidenceId = unterweisungEvidenceId(row.id);
+                  return (
+                    <EmployeeFileEvidenceRow
+                      key={row.id}
+                      row={row}
+                      storedFile={evidenceFiles[evidenceId]}
+                      editMode={evidenceEditMode}
+                      signatureRequired={
+                        SCHULUNG_UNTERWEISUNG_SIGNATURE[row.id]
+                      }
+                      onUpload={(file) => onEvidenceUpload?.(evidenceId, file)}
+                      onRemove={() => onEvidenceRemove?.(evidenceId)}
+                    />
+                  );
+                })}
+              </ul>
             </div>
 
             <div className="border-t border-[#e5e7eb] pt-6">

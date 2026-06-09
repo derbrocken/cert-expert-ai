@@ -253,6 +253,23 @@
 
 ## 📥 Von Cursor an Claude (Fragen / Bitten)
 
+### 2026-06-09 — ✅ Executor Lane H (Dispatch v5 #4 Manueller Upload signierter Dokumente): FERTIG + committet (Branch `lane-h-upload`, NICHT gepusht/gemergt)
+
+**Branch:** `lane-h-upload` (ab `main` HEAD `f009481`). **`main` unberührt, nicht gepusht/gemergt.** Commit: **`6669fcb`**.
+**Write-Set eingehalten** — geändert: `…/employee-file/EmployeeFileDossierView.tsx` · `…/employee-file/EmployeeFileEvidenceRow.tsx` · `…/employee-file/EmployeeFileTrainingPlan.tsx`. **Nicht berührt** (nicht nötig): `employee-evidence-storage.ts` (Slot-Liste **nicht** erweitert — neue Slots sind String-Konvention `unterweisung:{id}`, kein festes Slot-Modell nötig), `EmployeeFileDossierZones.tsx` (Legacy-Placeholder-Accordion, nicht im aktiven Upload-Flow). VERBOTENE Dateien (`requirement-engine.ts`/Engine, `lib/tally-*`, `generate-employee-docs.ts`, `EmployeeForm.tsx`, `vorlagen-set-catalog.ts`) **nicht angefasst**.
+
+**Gebaut (exakt #4) — gleiche bestehende Evidence-Infra, kein neues Storage-Modell:**
+- **Schulung-&-Unterweisung-Sektion** (DossierView): war read-only `RequirementTable` → jetzt **uploadbare `EmployeeFileEvidenceRow` je Position** (Slot-Konvention `unterweisung:{id}`), Upload-/Entfernen-Button im Edit-Modus, nutzt die vorhandenen Hooks `onEvidenceUpload`/`onEvidenceRemove` → `saveEmployeeEvidenceFile`/`removeEmployeeEvidenceFile`/`uploadEmployeeEvidenceAction` (unverändert).
+- **Unterschrifts-Logik sichtbar gemacht:** Badge **„unterschriftspflichtig"** auf Unterweisungen/Standarddokumenten (Allgemeine Unterweisung/Dienstanweisung **CL-03**, Datenschutzunterweisung **CL-04**, Verschwiegenheitsunterweisung **CL-05**, objekt-/SDL-bezogene Unterweisung, Wiederholungs-/Arbeitsschutzunterweisung **CL-75 „fachlich prüfen"**); Badge **„nur anhängen"** auf reinen Schulungs-/Qualifikationsnachweisen (Qualifikationsfortschreibung + Training-Plan-Einträge). Werte = nur Anzeige/Slot-Zuordnung, **keine erfundene Normpflicht**, Engine unberührt.
+- **`EmployeeFileEvidenceRow`** um optionalen `signatureRequired`-Prop erweitert (rendert das Unterschrifts-Badge) + **`unchecked`-Badge** an der hochgeladenen Datei (EC-10).
+- **Pflichtnachweis-Standarddokumente** (Datenschutz CL-04, Verschwiegenheit CL-05) bekommen das Unterschrifts-Badge; **Bestellungen-Panel** (#C) hatte Upload/Entfernen + „unterschriftspflichtig"-Badge bereits → unverändert. **Training-Plan-Slots** (`training-plan:{id}`) hatten Upload/Entfernen bereits → „nur anhängen"-Badge ergänzt.
+
+**Gates:** `npx tsc --noEmit` = **0** · `npx tsx --test modules/03-mitarbeiterakte-tool-2/employee-file/*.test.ts` = **71/71 grün** (Engine nicht angefasst). **EC-09** (Generator/ZIP `POST /employee-automation`): unberührt — keine Generator-/Action-Datei geändert, Upload reused bestehende, EC-09-grüne Action. **EC-10:** hochgeladene Nachweise bleiben `unchecked`, keine Auto-Freigabe.
+**Statisch belegt (OS-Dateidialog im Sandbox nicht klickbar):** Upload-Verdrahtung = exakter Reuse der bereits live-verifizierten Evidence-Action (gleicher Pfad wie Pflichtnachweise/Bestellungen/Training-Plan); tsc + Suite grün. **Live-Klick-Abnahme (Datei wählen → erscheint/bleibt/entfernbar) = Mark.**
+**Geparkt:** nichts Blockierendes. *(Hinweis Sandbox: in diesem Worktree fehlte `node_modules` → für tsc/Suite per Symlink auf das `node_modules` des Haupt-Checkouts gezeigt; gitignored, nicht committet.)*
+
+**Nächster Schritt:** Planer-Review Diff `f009481..6669fcb` (besonders: Engine/Generator wirklich unberührt? Slot-Konvention konsistent? Unterschrifts-Mapping CL-belegt?), dann ggf. Merge nach `main`.
+
 ### 2026-06-09 — ✅ Executor Lane G (Dispatch v4 #D Dokumentenvorlage / Set-Auswahl): FERTIG + committet (Branch `lane-g-vorlagen-set`, NICHT gepusht/gemergt)
 
 **Branch:** `lane-g-vorlagen-set` (ab `main` HEAD `7673735`). **`main` unberührt, nicht gepusht/gemergt.** Commit-Hash: siehe unten.

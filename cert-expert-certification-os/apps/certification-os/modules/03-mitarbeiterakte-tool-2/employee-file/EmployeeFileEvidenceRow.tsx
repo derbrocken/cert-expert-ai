@@ -12,6 +12,13 @@ export interface EmployeeFileEvidenceRowProps {
   editMode: boolean;
   onUpload: (file: File) => void;
   onRemove: () => void;
+  /**
+   * #4 — Unterschrifts-Logik sichtbar machen: `true` = unterschriftspflichtig
+   * (Unterweisungen/Standarddokumente/Bestellungen), `false` = nur anhängen
+   * (reine Schulungsnachweise). `undefined` = kein Unterschrifts-Badge (Default,
+   * Pflichtnachweise/Dokument-Slots ohne explizite Unterschrifts-Aussage).
+   */
+  signatureRequired?: boolean;
 }
 
 function displayStatus(
@@ -29,6 +36,7 @@ export const EmployeeFileEvidenceRow: React.FC<EmployeeFileEvidenceRowProps> = (
   editMode,
   onUpload,
   onRemove,
+  signatureRequired,
 }) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const hasFile = Boolean(storedFile);
@@ -44,7 +52,19 @@ export const EmployeeFileEvidenceRow: React.FC<EmployeeFileEvidenceRowProps> = (
     <li className="rounded-lg border border-[#e5e7eb] bg-white px-3 py-3">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
         <div className="min-w-0 flex-1">
-          <p className="text-sm font-medium text-[#111827]">{row.label}</p>
+          <p className="flex flex-wrap items-center gap-2 text-sm font-medium text-[#111827]">
+            {row.label}
+            {signatureRequired === true ? (
+              <span className="rounded border border-amber-200 bg-amber-50 px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wide text-amber-700">
+                unterschriftspflichtig
+              </span>
+            ) : null}
+            {signatureRequired === false ? (
+              <span className="rounded border border-[#e5e7eb] bg-[#f9fafb] px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wide text-[#9ca3af]">
+                nur anhängen
+              </span>
+            ) : null}
+          </p>
           {row.trigger ? (
             <p className="mt-0.5 text-[10px] text-[#9ca3af]">
               Bedingung: {row.trigger}
@@ -65,7 +85,12 @@ export const EmployeeFileEvidenceRow: React.FC<EmployeeFileEvidenceRowProps> = (
               <p className="truncate text-xs font-medium text-[#111827]">
                 {storedFile!.fileName}
               </p>
-              <p className="text-[10px] text-[#6b7280]">PDF / Nachweisdatei</p>
+              <p className="flex items-center gap-1.5 text-[10px] text-[#6b7280]">
+                PDF / Nachweisdatei
+                <span className="rounded border border-[#e5e7eb] bg-[#f9fafb] px-1 py-0.5 text-[9px] font-semibold uppercase tracking-wide text-[#9ca3af]">
+                  unchecked
+                </span>
+              </p>
             </div>
             {storedFile!.dataUrl ? (
               <a
