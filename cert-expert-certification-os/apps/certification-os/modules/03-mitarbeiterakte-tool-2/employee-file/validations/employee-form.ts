@@ -36,6 +36,10 @@ export const employeeFormSchema = z.object({
   // Träger erhalten (round-trip über die bestehende Spalte).
   qualifications: z.array(z.string()).optional(),
   qualification: z.string().optional(),
+  // Lane K: Geschlecht (minimale, optionale PII). Einziger Zweck: Mutterschutz-
+  // Hinweis-Overlay (CL-77, MuSchG, „fachlich prüfen") für weibliche MA. Keine
+  // Engine-Wirkung (EC-10). Leer = nicht erfasst.
+  gender: z.enum(["weiblich", "maennlich", "divers"]).optional(),
   guardIDNumber: z.string().optional(),
   employeeIDNumber: z.string().optional(),
   useGuardAsEmployeeId: z.boolean().optional(),

@@ -20,6 +20,61 @@ import {
   documentDateKey,
 } from "@/modules/03-mitarbeiterakte-tool-2/employee-file/utils/date";
 import { isBestellungAppointmentId } from "@/modules/03-mitarbeiterakte-tool-2/employee-file/employee-display-labels";
+import {
+  buildSetDocumentPlan,
+  setKategorieLabel,
+  resolveSetKategorie,
+  type SetDocumentSpec,
+} from "@/modules/03-mitarbeiterakte-tool-2/employee-file/vorlagen-set-catalog";
+
+/**
+ * Lane K (Batch-2 B) — baut den Set→Dokument-Plan-Manifest-Text für einen MA.
+ * Listet Core-Set (aus Set-Kategorie) + bedingte Overlays mit CL/„fachlich
+ * prüfen"-Markierung und macht **fehlende Vorlagen** sichtbar (Platzhalter),
+ * ohne den ZIP zu brechen (EC-09). Reiner Hinweistext; KEIN Freigabe-/
+ * Auditfähigkeits-Wording (EC-10).
+ */
+function buildSetPlanManifest(
+  employee: Employee,
+  defaultDateLabel: string,
+): string {
+  const plan = buildSetDocumentPlan(employee);
+  const kategorie = resolveSetKategorie(employee);
+  const lines: string[] = [];
+  lines.push("Dokumenten-Plan (Set-Kategorie + Overlays)");
+  lines.push("================================================");
+  lines.push(`Mitarbeiter:in: ${employee.fullName}`);
+  lines.push(
+    `Set-Kategorie: ${kategorie ? setKategorieLabel(kategorie) : "— nicht gewählt (nur allgemeine Basis) —"}`,
+  );
+  lines.push(`Default-Datum Standarddokumente: ${defaultDateLabel}`);
+  lines.push("");
+  const fmt = (d: SetDocumentSpec): string => {
+    const flags: string[] = [];
+    if (d.clauseId) flags.push(d.clauseId);
+    if (d.fachlichPruefen) flags.push("fachlich prüfen");
+    if (d.dateSource === "manual") flags.push("Datum: erster Einsatz (manuell)");
+    if (d.templateMissing) flags.push("VORLAGE FEHLT → Platzhalter");
+    const suffix = flags.length > 0 ? ` [${flags.join(" · ")}]` : "";
+    return `  - ${d.label}${suffix}`;
+  };
+  const core = plan.filter((d) => d.kind === "core");
+  const overlay = plan.filter((d) => d.kind === "overlay");
+  lines.push("Core-Dokumente (aus Set-Kategorie):");
+  for (const d of core) lines.push(fmt(d));
+  lines.push("");
+  lines.push("Overlays (positionsunabhängig, bedingt):");
+  if (overlay.length === 0) lines.push("  (keine)");
+  for (const d of overlay) lines.push(fmt(d));
+  lines.push("");
+  lines.push(
+    "Hinweis: Mit »VORLAGE FEHLT« markierte Dokumente liegen noch nicht als",
+  );
+  lines.push(
+    "Vorlage im Generator vor (Platzhalter). Keine Freigabe-/Auditaussage (EC-10).",
+  );
+  return lines.join("\n");
+}
 
 export interface GenerateEmployeeDocsState {
   success: boolean;
@@ -292,6 +347,25 @@ export async function generateEmployeeDocs(
             };
           }
         }
+      }
+
+      // Lane K (Batch-2 B) — Set→Dokument-Plan-Manifest je MA ablegen: macht das
+      // Core-Set (aus Set-Kategorie) + bedingte Overlays + fehlende Vorlagen
+      // (Platzhalter) sichtbar, ohne die physische Vorlagen-Verarbeitung
+      // anzufassen (EC-09). Default-Datum-Label = erster Arbeitstag (startDate)
+      // bzw. globaler Generator-Datum-Wert. Reiner Hinweistext (EC-10).
+      try {
+        employeeFolder.file(
+          "_Dokumenten-Plan.txt",
+          buildSetPlanManifest(employee, erstunterweisungDefaultDate),
+        );
+      } catch (err) {
+        // Manifest ist additiv/optional — ein Fehler hier darf den ZIP NIE
+        // brechen (EC-09). Nur loggen, weiter.
+        console.error(
+          `Error building set-document manifest for ${employee.fullName}:`,
+          err,
+        );
       }
     }
 

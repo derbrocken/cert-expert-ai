@@ -51,6 +51,11 @@ model EmployeeFile {
   guardIDNumber              String?
   employeeIDNumber           String?
   useGuardAsEmployeeId       Boolean?
+  // Lane K — Geschlecht (minimale, nullable PII). Einziger Zweck: bedingtes
+  // Mutterschutz-Hinweis-Overlay (CL-77, MuSchG, „fachlich prüfen") für
+  // weibliche MA. String ("weiblich"/"maennlich"/"divers"). Nullable/additiv
+  // (kein @default → P2023-sicher). Keine Engine-/Auto-Status-Wirkung (EC-10).
+  gender                     String?
   zusatzBewachungNiveau      String?
   sdlScopes                  Json     @default("[]")
   drivesServiceVehicle       Boolean?

@@ -31,7 +31,7 @@
  * geparkter Schema-Slice).
  */
 
-import type { Role } from "@/lib/types/employee";
+import type { BestellungTyp, Employee, Role } from "@/lib/types/employee";
 
 /** Set-Kategorie = eigene Vorlagen-Achse (NICHT Norm-Klasse, NICHT Org-Titel). */
 export type SetKategorie =
@@ -198,3 +198,256 @@ export const OVERLAY_DEFS: readonly OverlayDef[] = [
     fachlichPruefen: true,
   },
 ] as const;
+
+// ════════════════════════════════════════════════════════════════════════════
+// SET → DOKUMENT-MAPPING (Batch-2 Entscheidung B, Lane K)
+// ════════════════════════════════════════════════════════════════════════════
+/**
+ * Konkretes B-Mapping (Mark, C-10-Gate 2026-06-09): welche **Standard-/Core-
+ * Dokumente** ein MA je Set-Kategorie bekommt + welche **positionsunabhängigen
+ * Overlays** bedingt dazukommen. Dies ist eine **deklarative Beschreibung** des
+ * Dokument-Plans (Was-gehört-dazu) — sie steuert die Anzeige + den Generator-
+ * Manifest. Die physische Vorlagen-Verarbeitung bleibt am bestehenden S3-Pfad
+ * (`role.documents`/`appointment.documents`); fehlende Vorlagen werden hier als
+ * `templateMissing: true` markiert → Generator legt einen Platzhalter-Hinweis ab
+ * statt zu brechen (EC-09).
+ *
+ * NORM: Set-Kategorie ist KEINE Norm-Pflicht. Die einzelnen Dokumente tragen,
+ * soweit normgestützt, ihre CL aus dem Register; sonst `null`. Posten mit
+ * `legal-input` (CL-73/CL-75/CL-77) sind als `fachlichPruefen: true` markiert —
+ * KEIN erfundener Wert, kein Auto-Status (EC-10).
+ *
+ * DATUM (Batch-2 B + #10): Default-Ausgabedatum aller Standarddokumente =
+ * `startDate` (Arbeitsvertrag/Einstellung) → `dateSource: "startDate"`. Ausnahme
+ * objektbezogene DA (CL-22) = erster Einsatz, **manuell** → `dateSource:
+ * "manual"`. Overlays je nach Posten.
+ */
+
+/** Herkunft des Default-Ausgabedatums eines Set-Dokuments. */
+export type SetDocDateSource =
+  /** Arbeitsvertrags-/Einstellungsdatum (`startDate`) — Default Standarddoku. */
+  | "startDate"
+  /** Manuell zu setzen (z. B. objektbezogene DA = erster Einsatz). */
+  | "manual";
+
+/** Klassifikation eines Set-Dokuments (Anzeige/Filter). */
+export type SetDocKind = "core" | "overlay";
+
+export interface SetDocumentSpec {
+  /** Stabile, sprechende ID (für Anzeige/Manifest, KEINE S3-Vorlagen-ID). */
+  id: string;
+  /** DE-Label fürs Dokument. */
+  label: string;
+  /** Core (aus Set-Kategorie) oder Overlay (positionsunabhängig, bedingt). */
+  kind: SetDocKind;
+  /** Norm-Fundstelle (CL-xx) oder `null` (keine Norm-Pflicht). */
+  clauseId: string | null;
+  /** `true` ⇒ nur als „fachlich prüfen" zulässig (legal-input). */
+  fachlichPruefen?: boolean;
+  /** Default-Ausgabedatum-Herkunft. */
+  dateSource: SetDocDateSource;
+  /**
+   * `true` ⇒ es liegt (noch) **keine Vorlage** im Bucket vor → Platzhalter-
+   * Hinweis im Generator-Manifest statt Bruch (EC-09). Siehe HANDOFF-Liste der
+   * fehlenden Vorlagen.
+   */
+  templateMissing?: boolean;
+  /** Kurzhinweis für UI/Manifest. */
+  hint: string;
+}
+
+/**
+ * BASIS-DOKUMENTE — gelten für JEDEN MA (Sicherheitsmitarbeiter + Führungskraft).
+ * Bürokraft hat eine ABWEICHENDE Basis (Bildschirmarbeitsplatz statt SR-DA) →
+ * siehe `BUEROKRAFT_BASIS`.
+ *  - Allgemeine (Jahres-)Pflicht-/Arbeitsschutz-Unterweisung: CL-75
+ *    („fachlich prüfen", DGUV — exakte Nummern Mark nachreichen). VORLAGE FEHLT.
+ *  - Datenschutz-/Verschwiegenheitserklärung (1 Blatt): CL-04/CL-05.
+ */
+const BASIS_DOCS: readonly SetDocumentSpec[] = [
+  {
+    id: "basis-arbeitsschutz-unterweisung",
+    label: "Allgemeine (Jahres-)Pflichtunterweisung Arbeitsschutz",
+    kind: "core",
+    clauseId: "CL-75",
+    fachlichPruefen: true,
+    dateSource: "startDate",
+    hint: "Arbeitsschutz-Grundunterweisung (CL-75, legal-input, fachlich prüfen). VORLAGE FEHLT → Platzhalter.",
+    templateMissing: true,
+  },
+  {
+    id: "basis-datenschutz-verschwiegenheit",
+    label: "Datenschutz-/Verschwiegenheitserklärung",
+    kind: "core",
+    clauseId: "CL-04/CL-05",
+    dateSource: "startDate",
+    hint: "Datenschutz- (CL-04) + Verschwiegenheitsverpflichtung (CL-05), unterschriftspflichtig.",
+  },
+] as const;
+
+/** Bürokraft-Basis: KEINE SR-Dienstanweisung; Bildschirmarbeitsplatz + Erklärung. */
+const BUEROKRAFT_BASIS: readonly SetDocumentSpec[] = [
+  {
+    id: "buero-bildschirmarbeitsplatz-unterweisung",
+    label: "Bildschirmarbeitsplatz-Unterweisung (Büro)",
+    kind: "core",
+    clauseId: "CL-75",
+    fachlichPruefen: true,
+    dateSource: "startDate",
+    hint: "Büro-Variante der Arbeitsschutz-Unterweisung (CL-75, legal-input, fachlich prüfen). VORLAGE FEHLT → Platzhalter.",
+    templateMissing: true,
+  },
+  {
+    id: "basis-datenschutz-verschwiegenheit",
+    label: "Datenschutz-/Verschwiegenheitserklärung",
+    kind: "core",
+    clauseId: "CL-04/CL-05",
+    dateSource: "startDate",
+    hint: "Datenschutz- (CL-04) + Verschwiegenheitsverpflichtung (CL-05), unterschriftspflichtig.",
+  },
+] as const;
+
+const STELLENBESCHREIBUNG_SMA: SetDocumentSpec = {
+  id: "stellenbeschreibung-sma",
+  label: "Stellenbeschreibung Sicherheitsmitarbeiter",
+  kind: "core",
+  clauseId: null,
+  dateSource: "startDate",
+  hint: "Stellenbeschreibung SMA (Set-Doku, keine Norm-Pflicht). VORLAGE FEHLT → Platzhalter.",
+  templateMissing: true,
+};
+
+const STELLENBESCHREIBUNG_FK: SetDocumentSpec = {
+  id: "stellenbeschreibung-fk",
+  label: "Stellenbeschreibung Führungskraft",
+  kind: "core",
+  clauseId: null,
+  dateSource: "startDate",
+  hint: "Stellenbeschreibung FK (Set-Doku, keine Norm-Pflicht). VORLAGE FEHLT → Platzhalter.",
+  templateMissing: true,
+};
+
+/** Core-Dokument-Set je Set-Kategorie (Batch-2 B). */
+export function coreDocsForSetKategorie(
+  setKategorie: SetKategorie | undefined,
+): SetDocumentSpec[] {
+  switch (setKategorie) {
+    case "sicherheitsmitarbeiter":
+      return [...BASIS_DOCS, STELLENBESCHREIBUNG_SMA];
+    case "fuehrungskraft":
+      return [...BASIS_DOCS, STELLENBESCHREIBUNG_FK];
+    case "buerokraft":
+      return [...BUEROKRAFT_BASIS];
+    default:
+      // Keine Set-Kategorie gewählt → nur die allgemeine Basis (jeder MA).
+      return [...BASIS_DOCS];
+  }
+}
+
+/** Overlay-Spec je Bestell-Typ (positionsunabhängig, bedingt). */
+const BESTELLUNG_OVERLAY_DOCS: Record<BestellungTyp, SetDocumentSpec> = {
+  ersthelfer: {
+    id: "overlay-bestellung-ersthelfer",
+    label: "Bestellung Ersthelfer",
+    kind: "overlay",
+    clauseId: "CL-08",
+    dateSource: "startDate",
+    hint: "Bestellung (Ernennung) Ersthelfer — unterschriftspflichtig, ≠ Erste-Hilfe-Schulung (CL-08).",
+  },
+  brandschutzhelfer: {
+    id: "overlay-bestellung-brandschutzhelfer",
+    label: "Bestellung Brandschutzhelfer",
+    kind: "overlay",
+    clauseId: "CL-23",
+    dateSource: "startDate",
+    hint: "Bestellung (Ernennung) Brandschutzhelfer — unterschriftspflichtig, ≠ Brandschutz-Schulung (CL-23).",
+  },
+  sibe: {
+    id: "overlay-bestellung-sibe",
+    label: "Bestellung SiBe / Sicherheitsbeauftragter",
+    kind: "overlay",
+    clauseId: "CL-74",
+    dateSource: "startDate",
+    hint: "Betriebliche Bestellung SiBe — unterschriftspflichtig (Beauftragung ≠ Schulung, CL-74).",
+  },
+};
+
+const FAHR_ANWEISUNG_OVERLAY: SetDocumentSpec = {
+  id: "overlay-fahranweisung",
+  label: "Kfz-/Fahr-Anweisung (UVV)",
+  kind: "overlay",
+  clauseId: "CL-73",
+  fachlichPruefen: true,
+  dateSource: "startDate",
+  hint: "Fahr-/UVV-Anweisung bei Fahrtätigkeit (CL-73, legal-input, fachlich prüfen). VORLAGE FEHLT → Platzhalter.",
+  templateMissing: true,
+};
+
+const OBJEKT_DA_OVERLAY: SetDocumentSpec = {
+  id: "overlay-objektbezogene-da",
+  label: "Objektbezogene Dienstanweisung",
+  kind: "overlay",
+  clauseId: "CL-22",
+  dateSource: "manual",
+  hint: "Objektbezogene DA (CL-22) — eigenes Datum = erster Einsatz am Objekt, MANUELL (Q10b, bis Projektakte existiert).",
+};
+
+const MUTTERSCHUTZ_OVERLAY: SetDocumentSpec = {
+  id: "overlay-mutterschutz-hinweis",
+  label: "Mutterschutz-Hinweis (MuSchG)",
+  kind: "overlay",
+  clauseId: "CL-77",
+  fachlichPruefen: true,
+  dateSource: "startDate",
+  hint: "Hinweis auf Meldepflicht Schwangerschaft — weibliche MA, ALLE Sets (CL-77, MuSchG, legal-input, fachlich prüfen). VORLAGE FEHLT → Platzhalter.",
+  templateMissing: true,
+};
+
+/**
+ * Leitet die **bedingten Overlays** aus den persistierten Akte-Feldern ab
+ * (positionsunabhängig — knüpfen NICHT an die Set-Kategorie):
+ *  - Bestellungen aus `bestelltAls` (Ersthelfer CL-08 / Brandschutz CL-23 / SiBe
+ *    CL-74),
+ *  - Kfz-/Fahr-Anweisung (CL-73, fachlich prüfen) bei `drivesServiceVehicle`,
+ *  - objektbezogene DA (CL-22, manuelles Datum) bei zugeordnetem Objekt
+ *    (`sdlScopes` nicht leer — Heuristik bis Projektakte; KEIN erfundener Wert),
+ *  - Mutterschutz-Hinweis (CL-77) für `gender === "weiblich"`, ALLE Sets.
+ * Reihenfolge ist stabil (Bestellungen → Fahr → Objekt → Mutterschutz).
+ */
+export function overlayDocsForEmployee(employee: {
+  bestelltAls?: BestellungTyp[];
+  drivesServiceVehicle?: boolean;
+  sdlScopes?: string[];
+  gender?: Employee["gender"];
+}): SetDocumentSpec[] {
+  const out: SetDocumentSpec[] = [];
+  // Bestellungen (in Katalog-Reihenfolge der drei Typen).
+  const order: BestellungTyp[] = ["ersthelfer", "brandschutzhelfer", "sibe"];
+  const wanted = new Set(employee.bestelltAls ?? []);
+  for (const typ of order) {
+    if (wanted.has(typ)) out.push(BESTELLUNG_OVERLAY_DOCS[typ]);
+  }
+  if (employee.drivesServiceVehicle === true) out.push(FAHR_ANWEISUNG_OVERLAY);
+  if ((employee.sdlScopes?.length ?? 0) > 0) out.push(OBJEKT_DA_OVERLAY);
+  // Mutterschutz: NUR weiblich, positionsunabhängig (alle Sets).
+  if (employee.gender === "weiblich") out.push(MUTTERSCHUTZ_OVERLAY);
+  return out;
+}
+
+/**
+ * **Voller Set→Dokument-Plan** für einen MA (Batch-2 B): Core-Set (aus
+ * Set-Kategorie) + bedingte Overlays. Deklarativ — Quelle für Anzeige + den
+ * Generator-Manifest. Verändert NICHTS an der physischen Vorlagen-Verarbeitung
+ * (EC-09); fehlende Vorlagen tragen `templateMissing: true`.
+ */
+export function buildSetDocumentPlan(employee: {
+  setKategorie?: SetKategorie;
+  roleId?: string;
+  bestelltAls?: BestellungTyp[];
+  drivesServiceVehicle?: boolean;
+  sdlScopes?: string[];
+  gender?: Employee["gender"];
+}): SetDocumentSpec[] {
+  const kategorie = resolveSetKategorie(employee);
+  return [...coreDocsForSetKategorie(kategorie), ...overlayDocsForEmployee(employee)];
+}
