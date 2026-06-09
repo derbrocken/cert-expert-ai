@@ -1,6 +1,8 @@
 import type { RoleClass } from "../requirement-engine";
+import type { SetKategorie } from "../vorlagen-set-catalog";
 
 export type { RoleClass };
+export type { SetKategorie };
 
 export interface RoleDocument {
   id: string;
@@ -63,6 +65,20 @@ export interface Employee {
   roleClass?: RoleClass;
   /** Org-Titel (Anzeige/Org-Chart) — z. B. SMA, Einsatzleitung. Keine direkte Engine-Wirkung mehr (G4). */
   roleType?: string;
+  /**
+   * Set-Kategorie (#D) — eigene **Vorlagen-Achse** (Sicherheitsmitarbeiter /
+   * Führungskraft / Bürokraft), leitet das Generator-Core-Vorlagen-Set ab.
+   * **≠ Norm-Klasse** `roleClasses` (Engine-Grundset bleibt unberührt) und
+   * **≠ Org-Titel** `roleType`.
+   *
+   * **Persistenz:** KEINE eigene DB-Spalte — die Auswahl reitet auf dem bereits
+   * persistierten `roleId` (Set-Kategorie → Core-Rolle, s.
+   * `vorlagen-set-catalog.ts`). Beim Laden wird die Kategorie aus `roleId`
+   * projiziert (`projectSetKategorieFromRoleId`). Eine eigene persistierte
+   * `setKategorie`-Spalte ist ein geparkter Schema-Slice (HANDOFF). Optionales
+   * Feld am Modell für UI-Komfort; Source of Truth bleibt `roleId`.
+   */
+  setKategorie?: SetKategorie;
   employmentType?: string;
   /**
    * Qualifikation als strukturiertes Multiselect (#2) — Katalog-IDs aus

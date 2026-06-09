@@ -143,6 +143,16 @@ export async function generateEmployeeDocs(
         DocDate: formatDocumentOutputDate(globalProps.documentDate || ""),
         CreatedBy: globalProps.createdBy || "",
         ApprovedBy: globalProps.approvedBy || "",
+        // #D — Fahrtätigkeit-Overlay (positionsunabhängig): Wenn die Person ein
+        // Dienstfahrzeug fährt, additiver Platzhalter für die Fahr-/UVV-Anweisung
+        // (CL-73, legal-input → „fachlich prüfen", KEIN erfundener Wert).
+        // Rein additiv: Vorlagen ohne diese Felder bleiben unberührt (EC-09).
+        // EC-10: kein Freigabe-/Auditfähigkeits-Wording.
+        Fahrtaetigkeit: employee.drivesServiceVehicle === true ? "Ja" : "",
+        FahrAnweisungHinweis:
+          employee.drivesServiceVehicle === true
+            ? "Fahr-/UVV-Anweisung erforderlich (CL-73, fachlich prüfen)"
+            : "",
       };
 
       // Process selected role documents

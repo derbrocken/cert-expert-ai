@@ -19,6 +19,12 @@ export const employeeFormSchema = z.object({
   ),
   // Org-Titel (Anzeige/Org-Chart) — optional, keine Engine-Wirkung.
   roleType: z.string().optional(),
+  // #D: Set-Kategorie = eigene Vorlagen-Achse (NICHT Norm-Klasse, NICHT
+  // Org-Titel). Optional; steuert nur das Generator-Core-Vorlagen-Set über die
+  // abgeleitete `roleId`. Persistenz reitet auf `roleId` (keine eigene Spalte).
+  setKategorie: z
+    .enum(["sicherheitsmitarbeiter", "fuehrungskraft", "buerokraft"])
+    .optional(),
   // Requirement-Felder (Engine-Eingang)
   sdlScopes: z.array(z.string()).optional(),
   drivesServiceVehicle: z.boolean().optional(),

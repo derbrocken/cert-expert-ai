@@ -51,6 +51,13 @@ import {
   parseQualifications,
   serializeQualifications,
 } from "./qualification-catalog";
+import {
+  SET_KATEGORIE_DEFS,
+  resolveSetKategorieRoleId,
+  projectSetKategorieFromRoleId,
+  OVERLAY_DEFS,
+  type SetKategorie,
+} from "./vorlagen-set-catalog";
 
 export type EmployeeFormDisplayMode = "full" | "master" | "documents";
 
@@ -95,6 +102,10 @@ export const EmployeeForm: React.FC<EmployeeFormProps> = ({
           appointmentIds: editingEmployee.appointmentIds,
           roleClasses: resolveRoleClasses(editingEmployee),
           roleType: editingEmployee.roleType || "",
+          // #D: gespeichertes Feld gewinnt; sonst aus `roleId` projizieren.
+          setKategorie:
+            editingEmployee.setKategorie ??
+            projectSetKategorieFromRoleId(editingEmployee.roleId),
           sdlScopes: editingEmployee.sdlScopes ?? [],
           drivesServiceVehicle: editingEmployee.drivesServiceVehicle,
           ersteHilfeGueltigBis: editingEmployee.ersteHilfeGueltigBis || "",
@@ -121,6 +132,7 @@ export const EmployeeForm: React.FC<EmployeeFormProps> = ({
           appointmentIds: [],
           roleClasses: [],
           roleType: "",
+          setKategorie: undefined,
           sdlScopes: [],
           drivesServiceVehicle: undefined,
           ersteHilfeGueltigBis: "",
@@ -136,6 +148,20 @@ export const EmployeeForm: React.FC<EmployeeFormProps> = ({
 
   const selectedRoleId = watch("roleId");
   const selectedAppointmentIds = watch("appointmentIds");
+  const selectedSetKategorie = watch("setKategorie");
+
+  // #D — Set-Kategorie wählen → leitet die Core-Vorlagen-Rolle (`roleId`) ab.
+  // Set-Kategorie ist eine eigene Vorlagen-Achse: NICHT die Norm-Klasse
+  // (`roleClasses`, Engine-Grundset bleibt unberührt) und NICHT der Org-Titel
+  // (`roleType`). Persistenz reitet auf `roleId` (keine eigene DB-Spalte).
+  const handleSetKategorieChange = (value: string) => {
+    const next = value ? (value as SetKategorie) : undefined;
+    setValue("setKategorie", next, { shouldValidate: true });
+    const derivedRoleId = resolveSetKategorieRoleId(next, roles);
+    if (derivedRoleId) {
+      setValue("roleId", derivedRoleId, { shouldValidate: true });
+    }
+  };
   const useGuardAsEmployeeId = watch("useGuardAsEmployeeId");
   const guardIDNumber = watch("guardIDNumber");
 
@@ -356,6 +382,9 @@ export const EmployeeForm: React.FC<EmployeeFormProps> = ({
       roleClass: undefined,
       zusatzBewachungNiveau: undefined,
       roleType: data.roleType || undefined,
+      // #D: Set-Kategorie (Vorlagen-Achse) — am Modell für UI-Komfort; Source of
+      // Truth/Persistenz bleibt `roleId` (s. vorlagen-set-catalog.ts).
+      setKategorie: data.setKategorie,
       sdlScopes: data.sdlScopes ?? [],
       drivesServiceVehicle: data.drivesServiceVehicle,
       ersteHilfeGueltigBis: data.ersteHilfeGueltigBis || undefined,
@@ -390,6 +419,7 @@ export const EmployeeForm: React.FC<EmployeeFormProps> = ({
       appointmentIds: [],
       roleClasses: [],
       roleType: "",
+      setKategorie: undefined,
       sdlScopes: [],
       drivesServiceVehicle: undefined,
       ersteHilfeGueltigBis: "",
@@ -643,10 +673,27 @@ export const EmployeeForm: React.FC<EmployeeFormProps> = ({
                         </FormField>
                       ) : null}
                       <FormField
+                        label="Set-Kategorie (Vorlagen-Set)"
+                        name="setKategorie"
+                        id="setKategorie"
+                        description="Eigene Vorlagen-Achse — leitet das Core-Vorlagen-Set ab. NICHT die Norm-Klasse, NICHT der Org-Titel."
+                      >
+                        <Select
+                          options={SET_KATEGORIE_DEFS.map((s) => ({
+                            id: s.id,
+                            name: s.label,
+                            description: s.description,
+                          }))}
+                          value={selectedSetKategorie ?? ""}
+                          onChange={handleSetKategorieChange}
+                          placeholder="Sicherheitsmitarbeiter / Führungskraft / Bürokraft …"
+                        />
+                      </FormField>
+                      <FormField
                         label="Dokumenten-Vorlage (Grundrolle)"
                         name="roleId"
                         id="roleId"
-                        description="Steuert die Generator-Dokumentenpalette (Core-Vorlagen)."
+                        description="Core-Vorlagen-Rolle (aus der Set-Kategorie abgeleitet, manuell überschreibbar)."
                         required
                         error={errors.roleId?.message}
                       >
@@ -978,6 +1025,52 @@ export const EmployeeForm: React.FC<EmployeeFormProps> = ({
                   : "space-y-6"
               }
             >
+              {/* #D — Set-Kategorie direkt im Generator wählbar (steuert das
+                  Core-Vorlagen-Set). Eigene Vorlagen-Achse, NICHT die
+                  Norm-Klasse, NICHT der Org-Titel. */}
+              <div className="rounded-xl border border-gray-200 bg-white/60 p-4">
+                <h3 className="mb-1 text-sm font-bold uppercase tracking-wider text-gray-700">
+                  Vorlagen-Set
+                </h3>
+                <p className="mb-3 text-xs text-gray-500">
+                  Set-Kategorie wählen → leitet das Core-Dokumenten-Set ab.
+                  Bestellungen + Fahr-Anweisung bleiben positionsunabhängige
+                  Overlays.
+                </p>
+                <Select
+                  options={SET_KATEGORIE_DEFS.map((s) => ({
+                    id: s.id,
+                    name: s.label,
+                    description: s.description,
+                  }))}
+                  value={selectedSetKategorie ?? ""}
+                  onChange={handleSetKategorieChange}
+                  placeholder="Sicherheitsmitarbeiter / Führungskraft / Bürokraft …"
+                />
+                <ul className="mt-3 space-y-1">
+                  {OVERLAY_DEFS.map((o) => (
+                    <li
+                      key={o.typ}
+                      className="flex items-start gap-2 text-xs text-gray-500"
+                    >
+                      <span className="mt-0.5 inline-block h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-400" />
+                      <span>
+                        <span className="font-medium text-gray-600">
+                          {o.label}
+                        </span>
+                        {o.clauseId ? (
+                          <span className="ml-1 rounded bg-amber-100 px-1 text-[0.65rem] font-semibold text-amber-700">
+                            {o.clauseId}
+                            {o.fachlichPruefen ? " · fachlich prüfen" : ""}
+                          </span>
+                        ) : null}
+                        <span className="block text-gray-400">{o.hint}</span>
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
               {/* Core Documents (Role) */}
               <div>
                 <div className="flex items-center justify-between mb-3">

@@ -253,6 +253,23 @@
 
 ## 📥 Von Cursor an Claude (Fragen / Bitten)
 
+### 2026-06-09 — ✅ Executor Lane G (Dispatch v4 #D Dokumentenvorlage / Set-Auswahl): FERTIG + committet (Branch `lane-g-vorlagen-set`, NICHT gepusht/gemergt)
+
+**Branch:** `lane-g-vorlagen-set` (ab `main` HEAD `7673735`). **`main` unberührt, nicht gepusht/gemergt.** Commit-Hash: siehe unten.
+**Write-Set eingehalten** — geändert: NEU `…/employee-file/vorlagen-set-catalog.ts` · `…/employee-file/EmployeeForm.tsx` · `…/employee-file/validations/employee-form.ts` · `…/employee-file/types/employee.ts` · `…/employee-generator/generate-employee-docs.ts`. **Nicht berührt** (nicht nötig): `app/actions/generate-employee-docs.ts` (reiner Re-Export, keine Signaturänderung), `EmployeeAutomationPage.tsx` (Set-/Overlay-UI lebt in `EmployeeForm` im `documents`-Modus, den die Page bereits hostet), `lib/employee-file-repository.ts` (KEINE Set-Persistenz-Spalte gebaut → s. geparkte Frage). VERBOTENE Dateien (`requirement-engine.ts`/Engine, `lib/tally-*`, `lib/data/tally-*`) **nicht angefasst**.
+
+**Gebaut (exakt #D):**
+- **Set-Kategorie-Achse** (`vorlagen-set-catalog.ts`): 3 Kategorien `Sicherheitsmitarbeiter | Führungskraft | Bürokraft` → leiten über `resolveSetKategorieRoleId()` die Core-Vorlagen-Rolle (`roleId`) ab. **Begriffs-Modell strikt:** eigene Achse, KEINE Norm-Klasse (`roleClasses`/Engine unberührt), KEIN Org-Titel (`roleType`); `standard models` (Tool 1) nicht importiert.
+- **Selektion**: Set-Kategorie-Dropdown im Anlege-Formular (master-Modus, vor der Grundrolle) **und** direkt im Generator-Tab (documents-Modus, über den Core-Documents) — „Set + Core/Overlay direkt im Generator auswählbar".
+- **Overlays positionsunabhängig** (`OVERLAY_DEFS`): (a) **Bestellungen** knüpfen an `bestelltAls`/`appointmentIds` (Lane C) — bestehende Appointment-Doku, kein neuer Slot; (b) **Fahrtätigkeit → Fahr-/UVV-Anweisung** = **CL-73 „fachlich prüfen"** (legal-input, KEIN erfundener Wert), im Generator als additiver Template-Platzhalter (`Fahrtaetigkeit`/`FahrAnweisungHinweis`) bei `drivesServiceVehicle === true`.
+- **Persistenz ohne Schema-Eingriff:** `setKategorie` reitet auf dem bestehenden `roleId` (Set → Core-Rolle); beim Laden Projektion `projectSetKategorieFromRoleId(roleId)`. Optionales Modell-Feld `setKategorie?` nur für UI-Komfort; Source of Truth = `roleId`.
+
+**Gates (Worktree, node_modules vom Haupt-Checkout verlinkt):** `npx tsc --noEmit` = **0** · `npx tsx --test …/employee-file/*.test.ts` = **71/71** grün (Engine + Tests nicht angefasst). **EC-09:** Generator-Pfad nur additiv erweitert (zwei zusätzliche `templateData`-Platzhalter; easy-template-x ignoriert nicht vorhandene Felder → Vorlagen ohne diese Felder unberührt) + bestehende `roleId`/Doc-Auswahl unverändert → strukturell intakt; **Live-ZIP-POST-Klick durch Mark abzunehmen** (S3-Creds im Sandbox nicht verfügbar, Muster wie frühere Lanes). **EC-10** gewahrt (kein Freigabe-Wording). Kein `.env`/`.db`/Kundendaten-Commit.
+
+**🅿️ GEPARKTE FRAGEN an Planer/Mark (nicht geraten, nicht gebaut):**
+1. **S3-Template → Set-Kategorie-Mapping** ist eine Daten-/Mark-Entscheidung (heute nur „DIN 77200 Allgemeine" im Bucket). Katalog baut die Struktur + ein **Platzhalter-Mapping** (`DEFAULT_SET_ROLE_SLUGS`, Default-Slugs aus den Demo-/Legacy-Rollen) mit toleranter Fallback-Auflösung auf die erste vorhandene Rolle (kein EC-09-Bruch). Sobald Mark die echten Set-Ordner liefert → reale Slugs eintragen, kein Logik-Umbau nötig.
+2. **Eigene persistierte `setKategorie`-DB-Spalte** (statt Projektion über `roleId`) = Schema/Repo-Slice (wie Lane C bei `bestelltAls`) — bewusst **nicht** gebaut (Write-Set/Scope). Falls explizite Persistenz gewünscht (z. B. Set ≠ abgeleitete Rolle), bitte als eigenen Schema-Slice freigeben.
+
 ### 2026-06-09 — ✅ Executor Lane E (Generator-Datum): #8 FERTIG + committet (Branch `lane-e-generator-datum`, NICHT gepusht/gemergt)
 
 **Branch:** `lane-e-generator-datum` (ab `main` HEAD `40bd1d2`). **`main` unberührt, nicht gepusht.**
