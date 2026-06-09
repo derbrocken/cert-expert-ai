@@ -95,7 +95,9 @@ export interface GenerateEmployeeDocsState {
  * IDs zur Build-Zeit). Reiner Datums-Default, überschreibbar je Dokument (#8) —
  * keine UE/CL-Wirkung, EC-10: kein Freigabe-/Auditfähigkeits-Wording.
  */
-export function isErstunterweisungDoc(fileName: string): boolean {
+// Nicht exportieren: „use server"-Module dürfen nur async Server-Actions exportieren
+// (Next-Build-Regel). Rein modulintern genutzt.
+function isErstunterweisungDoc(fileName: string): boolean {
   const f = fileName.toLowerCase();
   return (
     /datenschutz/.test(f) ||
