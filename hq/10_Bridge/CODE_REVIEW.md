@@ -4,6 +4,19 @@
 
 ---
 
+## 2026-06-09 — In-Chat-Dispatch v4 (Einzel-Lane): Lane G (Vorlagen-Set `31f28fe`) — **Planer-Review → ABGENOMMEN, gemergt (`bb36d7d`)**
+
+**Warum Einzel-Lane:** Restpunkte (#4/#5/#D/#10) teilen sich dieselben Dossier-/Generator-/Overview-Komponenten → keine konfliktfreie Zwei-Lane-Parallelisierung; #D zuerst (strukturelle Basis). Verifiziert: Write-Set sauber (nur #D-Dateien), Engine/Tally unberührt, `tsc` 0, Suite 71/71, EC-09 additiv.
+
+**Gebaut:** Set-Kategorie (Sicherheitsmitarbeiter/Führungskraft/Bürokraft) als **eigene Vorlagen-Achse** (neuer `vorlagen-set-catalog.ts`) → steuert das Core-Vorlagen-Set über abgeleitete `roleId`; strikt getrennt von Norm-Klasse (`roleClasses`/Engine unberührt) und Org-Titel (`roleType`). Bestellungs-Overlay (an `bestelltAls` aus Lane C) + Fahrtätigkeit→Fahr-/UVV-Anweisung (CL-73, „fachlich prüfen"). Set + Core/Overlay im Generator wählbar. `standard models` (Tool 1) nicht angefasst.
+
+**Geparkt (Mark/Daten):** (1) **S3-Template → Set-Kategorie-Mapping** (Bucket hat nur „DIN 77200 Allgemeine") — Struktur + Platzhalter-Mapping mit tolerantem Fallback gebaut (kein EC-09-Bruch), reale Slugs später eintragbar; (2) persistierte `setKategorie`-DB-Spalte (vs. Projektion) = Schema-Slice.
+
+### Verdict
+**Abgenommen, gemergt.** Keine Blocker; 2 geparkte Daten-/Schema-Fragen.
+
+---
+
 ## 2026-06-09 — In-Chat-Dispatch v3: Lane E (Generator-Datum `2a91f62`) + Lane F (Qualifikation-Multiselect `eb5e754`) — **Planer-Review → BEIDE ABGENOMMEN, gemergt (`3fd017b`)**
 
 **Methode:** Zwei Claude-Subagenten (worktree-isoliert) parallel. Write-Sets disjunkt (nur HANDOFF). Kombinierte Re-Verifikation auf `main`: `tsc` = **0**, Suite **71/71** (58 + 13 neue Qualifikations-Szenarien). EC-09/EC-10 gewahrt.
