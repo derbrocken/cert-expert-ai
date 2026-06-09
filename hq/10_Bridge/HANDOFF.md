@@ -267,6 +267,24 @@
 **Gates:** `tsc --noEmit` = **0** · Test-Suite `tsx --test …/employee-file/*.test.ts` = **58/58** grün (Engine nicht angefasst; `npm install` in diesem Worktree nötig, da `pdf-lib`/`exceljs` für die 2 Audit-Tests fehlten — nur Dependency-Install, kein Code) · EC-09-Generator-Flow strukturell intakt (nur Datum-Auflösung geändert, Default „heute" identisch zu vorher) — Live-ZIP-POST-Klick durch Mark optional abzunehmen (S3-Creds im Sandbox nicht verfügbar) · EC-10 gewahrt (kein Freigabe-Wording) · kein `.env`/`.db`/Kundendaten-Commit.
 
 **Geparkt (NICHT gebaut, da außerhalb Scope/Write-Set):** Persistenz des gesetzten Generator-Datums (global + per-Doc) über localStorage/Repo — aktuell Session-State (zurückgesetzt bei Reload). War im Auftrag nicht gefordert (Default „heute" bleibt); falls gewünscht → eigener Auftrag (berührt `lib/*`/Repository = Lane F). **Frage an Planer:** soll das gesetzte Datum persistieren?
+### 2026-06-09 — ✅ Executor Lane F (Dispatch v3 / #2 Qualifikation-Multiselect): FERTIG + committet (Branch `lane-f-qualifikation`, NICHT gepusht/gemergt)
+
+**Branch:** `lane-f-qualifikation` (ab `main` = `40bd1d2`). **`main` unberührt, nicht gepusht, nicht gemergt.**
+**Write-Set eingehalten** (genau diese 7 Dateien, keine verbotene): NEU `…/employee-file/qualification-catalog.ts` · `…/employee-file/EmployeeForm.tsx` · `…/employee-file/validations/employee-form.ts` · `…/employee-file/types/employee.ts` · `…/employee-file/requirement-engine.ts` + `requirement-engine.test.ts` · `lib/employee-file-repository.ts`. Generator-/Dossier-Dateien + `EmployeeAutomationPage.tsx` NICHT berührt.
+
+**Gebaut (exakt #2):**
+- **Katalog `qualification-catalog.ts`:** 8 CL-belegte Optionen — Unterrichtung §34a (CL-01, Stufe A), Sachkunde §34a (CL-01, Stufe A), GSSK (CL-07, Stufe B, FK-qual.), Servicekraft (CL-10, Stufe B, FK-qual.), Geprüfte Fachkraft/Meister/IHK-Werkschutzmeister (CL-07, Stufe C, FK-qual.), Waffensachkunde (CL-76, **Zusatz/additiv, „fachlich prüfen"**). Plus `deriveQualificationFlags` (höchste Stufe A<B<C + additive Flags) und verlustfreie Migration `parseQualifications`/`serializeQualifications`.
+- **Feld `qualifications: string[]`** (Multiselect) in `types/employee.ts` + Zod-Schema; UI = `MultiSelect` statt Freitext-`Input` in `EmployeeForm`.
+- **Engine liest STRUKTURIERT statt Regex:** `resolveQualification(ctx)` nutzt `ctx.qualifications` primär (Stufe→`q-profil`-Label, Sachkunde/Unterrichtung→`q-34a`+CL-02-Frist, FK-qual., Zusatz-Zeile `quali-zusatz-*` CL-76 „fachlich prüfen"); Freitext-`qualification` bleibt **Fallback** (Legacy/Tally). Zusatz ändert Stufe NICHT, erzeugt keine neue DIN-Pflicht (EC-10).
+- **Migration verlustfrei (keine neue DB-Spalte):** strukturierte Auswahl wird über die bestehende `qualification`-String-Spalte als „ · "-Label-Liste round-trip-stabil ge-/entladen; Legacy-/Tally-Freitext wird beim Read tolerant in Katalog-IDs gemappt, Unbekanntes bleibt als Freitext erhalten (Engine-Fallback greift weiter). Repository: 1 Read-Stelle + 4 Write-Stellen (Helfer `qualificationColumnValue`).
+
+**Gates (im Worktree, node_modules vom Haupt-Checkout verlinkt):** `npx tsc --noEmit` = **0** (app-weit) · `npx tsx --test …/employee-file/*.test.ts` = **71/71** grün (58 alt unverändert + **13 neu**: Stufen A/B/C-Aggregation, mehrere Qualifikationen, Waffensachkunde additiv, strukturiert-vor-Freitext, Freitext-Fallback, unbekannte ID → „fachlich prüfen", Migration tolerant + round-trip).
+
+**EC-09:** Generator-/Template-Dateien nicht angefasst, tsc app-weit grün → statisch unverändert. **Live-ZIP-Klick** im Worktree nicht fahrbar (keine isolierte DB/.env; Personendaten nicht committable) → **optionale Mark-Klick-Abnahme** empfohlen (Muster wie frühere Lanes).
+
+**🅿️ GEPARKTE FRAGE an Planer (1 Zeile, außerhalb Write-Set):** Der einzige Engine-Aufrufpfad der UI ist `buildRequirementContext` in `employee-file-requirements.ts` (NICHT im Write-Set) — er übergibt `qualification` (Freitext), aber noch nicht `qualifications`. Dadurch laufen §34a/Sachkunde/Unterrichtung live korrekt (über die serialisierten Labels im Freitext-Fallback), aber die NEUEN strukturierten Signale (höchste Stufe im `q-profil`-Label, Waffensachkunde-Zusatzzeile, FK-qual.) erscheinen im Dossier erst nach **einer additiven Zeile** dort: `qualifications: employee.qualifications`. Bitte als Mini-Folge-Edit freigeben/mergen (kein Scope-Eingriff, rein additiv).
+
+---
 
 ### 2026-06-09 — ✅ Executor Lane C (Bestellungen): #7 + #C FERTIG + committet (`daea75d`, Branch `lane-c-bestellungen`, NICHT gepusht/gemergt)
 

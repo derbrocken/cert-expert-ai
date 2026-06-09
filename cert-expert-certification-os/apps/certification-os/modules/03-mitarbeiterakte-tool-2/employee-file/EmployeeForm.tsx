@@ -46,6 +46,11 @@ import {
 } from "./employee-stammdaten-options";
 import { resolveRoleClasses } from "./requirement-engine";
 import { RoleClassSelector } from "./RoleClassSelector";
+import {
+  QUALIFICATION_CATALOG,
+  parseQualifications,
+  serializeQualifications,
+} from "./qualification-catalog";
 
 export type EmployeeFormDisplayMode = "full" | "master" | "documents";
 
@@ -95,6 +100,14 @@ export const EmployeeForm: React.FC<EmployeeFormProps> = ({
           ersteHilfeGueltigBis: editingEmployee.ersteHilfeGueltigBis || "",
           brandschutzGueltigBis: editingEmployee.brandschutzGueltigBis || "",
           employmentType: editingEmployee.employmentType || "",
+          // #2: strukturierte Auswahl — gefülltes `qualifications` gewinnt; sonst
+          // tolerant aus dem Freitext migrieren (verlustfrei: Unmatched bleibt im
+          // Freitext erhalten).
+          qualifications:
+            editingEmployee.qualifications &&
+            editingEmployee.qualifications.length > 0
+              ? editingEmployee.qualifications
+              : parseQualifications(editingEmployee.qualification).ids,
           qualification: editingEmployee.qualification || "",
           guardIDNumber: editingEmployee.guardIDNumber || "",
           employeeIDNumber: editingEmployee.employeeIDNumber || "",
@@ -113,6 +126,7 @@ export const EmployeeForm: React.FC<EmployeeFormProps> = ({
           ersteHilfeGueltigBis: "",
           brandschutzGueltigBis: "",
           employmentType: "",
+          qualifications: [],
           qualification: "",
           guardIDNumber: "",
           employeeIDNumber: "",
@@ -347,7 +361,14 @@ export const EmployeeForm: React.FC<EmployeeFormProps> = ({
       ersteHilfeGueltigBis: data.ersteHilfeGueltigBis || undefined,
       brandschutzGueltigBis: data.brandschutzGueltigBis || undefined,
       employmentType: data.employmentType || undefined,
-      qualification: data.qualification || undefined,
+      // #2: strukturierte Auswahl ist Source of Truth. Der Freitext
+      // `qualification` wird aus den Labels gespiegelt (Persistenz-Träger +
+      // Engine-/Presenter-Fallback). Nichts wählt → Freitext leeren.
+      qualifications: data.qualifications ?? [],
+      qualification:
+        data.qualifications && data.qualifications.length > 0
+          ? serializeQualifications(data.qualifications)
+          : undefined,
       guardIDNumber: data.guardIDNumber,
       employeeIDNumber: effectiveEmployeeId,
       useGuardAsEmployeeId: data.useGuardAsEmployeeId,
@@ -374,6 +395,7 @@ export const EmployeeForm: React.FC<EmployeeFormProps> = ({
       ersteHilfeGueltigBis: "",
       brandschutzGueltigBis: "",
       employmentType: "",
+      qualifications: [],
       qualification: "",
       guardIDNumber: "",
       employeeIDNumber: "",
@@ -700,14 +722,25 @@ export const EmployeeForm: React.FC<EmployeeFormProps> = ({
                       </FormField>
                       <FormField
                         label="Qualifikation"
-                        name="qualification"
-                        id="qualification"
-                        description="z. B. Sachkunde §34a / Unterrichtung."
+                        name="qualifications"
+                        id="qualifications"
+                        description="Mehrfachauswahl — höchste Stufe zählt, Zusätze (z. B. Waffensachkunde) additiv."
                       >
-                        <Input
-                          {...register("qualification")}
-                          id="qualification"
-                          placeholder="z. B. Sachkunde §34a"
+                        <Controller
+                          name="qualifications"
+                          control={control}
+                          render={({ field }) => (
+                            <MultiSelect
+                              options={QUALIFICATION_CATALOG.map((q) => ({
+                                id: q.id,
+                                name: q.label,
+                                description: q.description,
+                              }))}
+                              value={field.value ?? []}
+                              onChange={field.onChange}
+                              placeholder="Unterrichtung / Sachkunde §34a, GSSK, Fachkraft, Waffensachkunde …"
+                            />
+                          )}
                         />
                       </FormField>
                     </div>

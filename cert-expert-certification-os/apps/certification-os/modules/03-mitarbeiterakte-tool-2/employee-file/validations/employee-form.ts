@@ -25,6 +25,10 @@ export const employeeFormSchema = z.object({
   ersteHilfeGueltigBis: z.string().optional(),
   brandschutzGueltigBis: z.string().optional(),
   employmentType: z.string().optional(),
+  // #2: Qualifikation als strukturiertes Multiselect (Katalog-IDs). Optional,
+  // frei kombinierbar. Freitext `qualification` bleibt als Persistenz-/Legacy-
+  // Träger erhalten (round-trip über die bestehende Spalte).
+  qualifications: z.array(z.string()).optional(),
   qualification: z.string().optional(),
   guardIDNumber: z.string().optional(),
   employeeIDNumber: z.string().optional(),
