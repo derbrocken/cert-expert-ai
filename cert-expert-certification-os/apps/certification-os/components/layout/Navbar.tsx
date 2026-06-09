@@ -15,7 +15,6 @@ export const Navbar: React.FC<NavbarProps> = ({ className }) => {
         "fixed top-0 inset-x-0 z-50 w-full border-b border-[#e5e7eb] bg-white/95 backdrop-blur-xl",
         className,
       )}
-      style={{ width: "100vw" }}
     >
       <div className="mx-auto max-w-[1600px] px-4 sm:px-6 lg:px-8">
         <div className="flex h-14 items-center justify-between sm:h-16">

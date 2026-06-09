@@ -26,12 +26,6 @@ export interface RoleClassSelectorProps {
   compact?: boolean;
 }
 
-const NICHT_BEWACHUNG_IDS: readonly RoleClass[] = [
-  "verwaltung",
-  "praktikant",
-  "subunternehmer",
-];
-
 export const RoleClassSelector: React.FC<RoleClassSelectorProps> = ({
   value,
   onChange,
@@ -48,11 +42,11 @@ export const RoleClassSelector: React.FC<RoleClassSelectorProps> = ({
   };
 
   const selectNichtBewachung = (id: RoleClass) => {
+    // Mark 2026-06-09: alle Norm-Klassen frei kombinierbar (standalone ODER
+    // kombiniert) — keine gegenseitige Exklusivität mehr. Einfacher Toggle.
     const next = new Set(set);
-    const wasSelected = next.has(id);
-    // Nicht-Bewachung untereinander exklusiv.
-    for (const other of NICHT_BEWACHUNG_IDS) next.delete(other);
-    if (!wasSelected) next.add(id);
+    if (next.has(id)) next.delete(id);
+    else next.add(id);
     onChange(orderClasses(next));
   };
 
