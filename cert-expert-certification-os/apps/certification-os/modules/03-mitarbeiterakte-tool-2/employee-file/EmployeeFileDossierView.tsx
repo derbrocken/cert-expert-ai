@@ -12,10 +12,24 @@ import {
   ListChecks,
   CalendarClock,
   Info,
+  ClipboardSignature,
+  Upload,
+  FilePlus2,
 } from "lucide-react";
 import { formatIsoToInput } from "@/lib/utils/date";
-import type { Employee, Role, Appointment } from "@/lib/types/employee";
-import { roleLabelDe } from "./employee-display-labels";
+import type {
+  Employee,
+  Role,
+  Appointment,
+  BestellungTyp,
+} from "@/lib/types/employee";
+import {
+  roleLabelDe,
+  BESTELLUNG_DEFS,
+  getBestelltAls,
+  setBestelltAlsPatch,
+} from "./employee-display-labels";
+import { applyEmployeePatchWithDocSync } from "./employee-doc-selection-sync";
 import {
   GRUNDROLLE_CATALOG,
   ZUSATZROLLEN_CATALOG,
@@ -221,6 +235,175 @@ function catalogMatch(active: string, catalogLabel: string): boolean {
   );
 }
 
+/**
+ * #C — Bestellungen-Panel: Multiselect-Akte-Flag „bestellt als …" (NUR die drei
+ * formalen Ernennungen Ersthelfer/Brandschutzhelfer/SiBe — CL-08/CL-23/CL-74),
+ * sauber getrennt von Schulungen/Unterweisungen. Persistenz über `appointmentIds`
+ * (kein neuer DB-Spalt). Jede Bestellung ist unterschriftspflichtig; Generator
+ * bietet zwei Wege: aus Vorlage generieren ODER bestehende Bestellung hochladen.
+ * EC-10: kein Freigabe-/Auditfähigkeits-Wording, hochgeladene Nachweise bleiben
+ * `unchecked`.
+ */
+function BestellungenPanel({
+  employee,
+  roles,
+  appointments,
+  onSavePerson,
+  evidenceFiles,
+  evidenceEditMode,
+  onEvidenceUpload,
+  onEvidenceRemove,
+  onOpenGenerator,
+}: {
+  employee: Employee;
+  roles: Role[];
+  appointments: Appointment[];
+  onSavePerson?: (employee: Employee) => void;
+  evidenceFiles: EmployeeEvidenceMap;
+  evidenceEditMode: boolean;
+  onEvidenceUpload?: (evidenceId: string, file: File) => void;
+  onEvidenceRemove?: (evidenceId: string) => void;
+  onOpenGenerator?: () => void;
+}) {
+  const active = new Set<BestellungTyp>(getBestelltAls(employee));
+
+  function toggle(typ: BestellungTyp) {
+    if (!onSavePerson) return;
+    const next = new Set(active);
+    if (next.has(typ)) next.delete(typ);
+    else next.add(typ);
+    const appointmentIds = setBestelltAlsPatch(employee, [...next]);
+    onSavePerson(
+      applyEmployeePatchWithDocSync(
+        employee,
+        { appointmentIds },
+        roles,
+        appointments,
+      ),
+    );
+  }
+
+  return (
+    <div>
+      <SubSectionHeader
+        icon={<ClipboardSignature className="h-3.5 w-3.5 text-[#e30613]" />}
+        title="Bestellungen (bestellt als …)"
+        subtitle="Formale Ernennung (unterschriftspflichtig) — Ersthelfer / Brandschutzhelfer / SiBe. Bestellung ≠ Schulung."
+        level="anforderung"
+      />
+      <div className="mb-3 flex flex-wrap gap-1.5">
+        {BESTELLUNG_DEFS.map((def) => {
+          const isOn = active.has(def.typ);
+          return (
+            <button
+              key={def.typ}
+              type="button"
+              disabled={!onSavePerson}
+              onClick={() => toggle(def.typ)}
+              className={
+                isOn
+                  ? "inline-flex items-center gap-1.5 rounded-md border border-[rgba(227,6,19,0.35)] bg-[rgba(227,6,19,0.08)] px-2.5 py-1 text-xs font-medium text-[#b80510] disabled:cursor-default"
+                  : "inline-flex items-center gap-1.5 rounded-md border border-[#e5e7eb] bg-white px-2.5 py-1 text-xs text-[#6b7280] hover:border-[rgba(227,6,19,0.35)] disabled:cursor-default disabled:hover:border-[#e5e7eb]"
+              }
+              aria-pressed={isOn}
+              title={def.schulungHint}
+            >
+              {def.label}
+              <span className="rounded border border-[#e5e7eb] bg-[#f9fafb] px-1 py-0.5 text-[9px] font-semibold uppercase tracking-wide text-[#9ca3af]">
+                {def.clauseId}
+              </span>
+            </button>
+          );
+        })}
+      </div>
+
+      {active.size > 0 ? (
+        <ul className="space-y-2">
+          {BESTELLUNG_DEFS.filter((d) => active.has(d.typ)).map((def) => {
+            const evidenceId = `bestellung:${def.typ}`;
+            const stored = evidenceFiles[evidenceId];
+            return (
+              <li
+                key={def.typ}
+                className="rounded-lg border border-[#e5e7eb] bg-white px-3 py-2.5"
+              >
+                <div className="flex items-center justify-between gap-2">
+                  <div className="min-w-0">
+                    <p className="flex items-center gap-2 text-sm text-[#111827]">
+                      {def.label}
+                      <span className="rounded border border-amber-200 bg-amber-50 px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wide text-amber-700">
+                        unterschriftspflichtig
+                      </span>
+                    </p>
+                    <p className="mt-0.5 text-[10px] text-[#9ca3af]">
+                      {def.schulungHint}
+                    </p>
+                  </div>
+                </div>
+                <div className="mt-2 flex flex-wrap items-center gap-2">
+                  {onOpenGenerator ? (
+                    <button
+                      type="button"
+                      onClick={onOpenGenerator}
+                      className="inline-flex items-center gap-1 rounded-md border border-[#e5e7eb] px-2 py-1 text-[11px] text-[#374151] hover:border-[rgba(227,6,19,0.35)] hover:text-[#e30613]"
+                    >
+                      <FilePlus2 className="h-3 w-3" />
+                      Aus Vorlage generieren
+                    </button>
+                  ) : null}
+                  {evidenceEditMode ? (
+                    <label className="inline-flex cursor-pointer items-center gap-1 rounded-md border border-[#e5e7eb] px-2 py-1 text-[11px] text-[#374151] hover:border-[rgba(227,6,19,0.35)] hover:text-[#e30613]">
+                      <Upload className="h-3 w-3" />
+                      {stored ? "Ersetzen" : "Bestellung hochladen"}
+                      <input
+                        type="file"
+                        accept=".pdf,.png,.jpg,.jpeg,.docx"
+                        className="hidden"
+                        onChange={(e) => {
+                          const file = e.target.files?.[0];
+                          if (file) onEvidenceUpload?.(evidenceId, file);
+                          e.target.value = "";
+                        }}
+                      />
+                    </label>
+                  ) : null}
+                  {stored ? (
+                    <span className="inline-flex items-center gap-2 text-[11px] text-[#6b7280]">
+                      {stored.fileName}
+                      <span className="rounded border border-[#e5e7eb] bg-[#f9fafb] px-1 py-0.5 text-[9px] font-semibold uppercase tracking-wide text-[#9ca3af]">
+                        unchecked
+                      </span>
+                      {evidenceEditMode && onEvidenceRemove ? (
+                        <button
+                          type="button"
+                          onClick={() => onEvidenceRemove(evidenceId)}
+                          className="text-[#9ca3af] underline hover:text-[#e30613]"
+                        >
+                          Entfernen
+                        </button>
+                      ) : null}
+                    </span>
+                  ) : (
+                    <span className="text-[11px] text-[#9ca3af]">
+                      Kein Dokument hinterlegt
+                    </span>
+                  )}
+                </div>
+              </li>
+            );
+          })}
+        </ul>
+      ) : (
+        <p className="rounded-lg border border-dashed border-[#e5e7eb] px-3 py-3 text-xs text-[#6b7280]">
+          Keine Bestellung erfasst. Bestellung wählen → aus Vorlage generieren
+          oder bestehende Bestellung hochladen. Keine Schulungen/Unterweisungen
+          unter Bestellungen.
+        </p>
+      )}
+    </div>
+  );
+}
+
 export const EmployeeFileDossierView: React.FC<EmployeeFileDossierViewProps> = ({
   employee,
   roles,
@@ -402,6 +585,20 @@ export const EmployeeFileDossierView: React.FC<EmployeeFileDossierViewProps> = (
                   </div>
                 </>
               ) : null}
+            </div>
+
+            <div className="border-t border-[#e5e7eb] pt-6">
+              <BestellungenPanel
+                employee={employee}
+                roles={roles}
+                appointments={appointments}
+                onSavePerson={onSavePerson}
+                evidenceFiles={evidenceFiles}
+                evidenceEditMode={evidenceEditMode}
+                onEvidenceUpload={onEvidenceUpload}
+                onEvidenceRemove={onEvidenceRemove}
+                onOpenGenerator={onOpenGenerator}
+              />
             </div>
 
             <div className="border-t border-[#e5e7eb] pt-6">

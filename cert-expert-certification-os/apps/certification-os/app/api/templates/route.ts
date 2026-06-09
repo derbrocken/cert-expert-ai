@@ -17,6 +17,27 @@ interface ScannedFolder {
   documents: ScannedDoc[];
 }
 
+/**
+ * #C — Bestellungen sauber von Schulungen/Unterweisungen trennen. Bestellungen
+ * sind NUR formale Ernennungen (Ersthelfer/Brandschutzhelfer/SiBe). Eine
+ * fälschlich unter `appointments/unterweisungen/` abgelegte Unterweisung
+ * (`Unterweisungsnachweis_Arbeitsschutz_DGUV.docx`, CL-75) gehört NICHT in die
+ * Bestellungen-Liste. Der eigentliche S3-Move (Datei nach Unterweisungen/
+ * Schulungen) ist Server/Mark (kein S3-Schreibzugriff hier, geparkt) — bis dahin
+ * filtert dieser Read-Pfad solche Unterweisungs-/Schulungs-Ordner defensiv aus,
+ * damit die Akte-/Generator-UI keine Unterweisung unter Bestellungen zeigt.
+ * EC-09 unberührt: der Generator liest Vorlagen über `listTemplateFiles`, nicht
+ * über diese Route.
+ */
+function isUnterweisungOrSchulungFolder(folderName: string): boolean {
+  const n = folderName.toLowerCase();
+  return (
+    n.includes("unterweisung") ||
+    n.includes("schulung") ||
+    n.includes("unterrichtung")
+  );
+}
+
 export async function GET() {
   try {
     const files = await listTemplateFiles();
@@ -27,6 +48,14 @@ export async function GET() {
       const parsed = parseCustomId(file.customId);
       if (!parsed) continue;
       if (parsed.category !== "roles" && parsed.category !== "appointments") continue;
+
+      // #C — Unterweisungs-/Schulungs-Ordner nicht als Bestellung listen.
+      if (
+        parsed.category === "appointments" &&
+        isUnterweisungOrSchulungFolder(parsed.folderName)
+      ) {
+        continue;
+      }
 
       const mapKey = `${parsed.category}/${parsed.folderName}`;
 

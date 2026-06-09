@@ -18,6 +18,7 @@ import {
   formatDocumentOutputDate,
   formatTodayDocumentOutput,
 } from "@/modules/03-mitarbeiterakte-tool-2/employee-file/utils/date";
+import { isBestellungAppointmentId } from "@/modules/03-mitarbeiterakte-tool-2/employee-file/employee-display-labels";
 
 export interface GenerateEmployeeDocsState {
   success: boolean;
@@ -165,6 +166,25 @@ export async function generateEmployeeDocs(
         const appointmentFolder = employeeFolder.folder(appointment.name);
         if (!appointmentFolder) continue;
 
+        // #C — Bestellung „aus Vorlage generieren": eine Bestellung
+        // (Ersthelfer/Brandschutzhelfer/SiBe) ist unterschriftspflichtig und
+        // trägt als Default das Einstellungs-/Bestelldatum (`startDate`); der MA
+        // unterschreibt nach. Fällt auf `currentDate` zurück, wenn kein startDate.
+        // Additive Platzhalter → Templates ohne diese Felder bleiben unberührt
+        // (EC-09). EC-10: kein Freigabe-/Auditfähigkeits-Wording.
+        const isBestellung = isBestellungAppointmentId(appointment.id);
+        const bestellDatum = employee.startDate
+          ? formatDocumentOutputDate(employee.startDate)
+          : currentDate;
+        const appointmentTemplateData: TemplateData = isBestellung
+          ? {
+              ...templateData,
+              currentDate: bestellDatum,
+              BestellDatum: bestellDatum,
+              Unterschriftspflichtig: "Ja",
+            }
+          : templateData;
+
         const selectedAppDocs = appointment.documents.filter((doc) =>
           employee.selectedAppointmentDocIds.includes(doc.id),
         );
@@ -181,7 +201,7 @@ export async function generateEmployeeDocs(
             const templateBuffer = await fetchTemplateBufferByKey(objectKey);
             const processedDoc = await handler.process(
               templateBuffer,
-              templateData,
+              appointmentTemplateData,
             );
             appointmentFolder.file(doc.fileName, processedDoc);
           } catch (err) {
