@@ -174,5 +174,20 @@ Vier getrennte Achsen, in UI + Code **nicht** vermischen:
 - **Q5' Autoextraktion-Tiefe:** Eigen-Katalog + Best-Effort-Extraktion mit Pflicht-Bestätigung ok, oder härtere Extraktion gewünscht?
 - **„Q8" aus deiner Antwort:** #8 (Generator-Datum) hatte keine offene Rückfrage — war als spezifiziert gemeint? Falls du etwas anderes meintest, bitte präzisieren.
 
+## 🚦 DISPATCH v1 (2026-06-09) — zwei parallele Executor-Lanes (disjunkte Write-Sets)
+**Modell (wie c5eb583):** jeder Cursor-Agent auf **eigenem `cursor/*`-Branch**, **disjunkte** Datei-Mengen → konfliktfreier Merge; Planer reviewt + merged nach `main`. **Branch-Basis = `main` (HEAD `5638374`).** Beide bauen **nur P1**.
+
+### Lane A — Akte-Shell: Navigation + Layout + Selektion → Punkte **#1, #B, #9**
+- **Branch:** `cursor/tool2-shell-nav`
+- **Write-Set (NUR diese Dateien):** `modules/00-dashboard/CertificationOsModuleOverview.tsx` · `modules/03-mitarbeiterakte-tool-2/employee-file/EmployeeAutomationPage.tsx` · `…/CompanyHubView.tsx` · `…/EmployeeFileWorkspaceLayout.tsx` · `…/EmployeeFileIndex.tsx`
+- **VERBOTEN:** `EmployeeForm.tsx`, `EmployeeFilePersonRolleEditTable.tsx`, `EmployeeFileAkteInlineEdit.tsx`, `employee-stammdaten-options.ts`, `requirement-engine.ts`, Generator-/Engine-Dateien. Bei Bedarf an einer fremden Datei → **als Frage parken**, nicht editieren.
+
+### Lane B — Rollen-Eingabe-Bug → Punkt **#A**
+- **Branch:** `cursor/tool2-rollen-eingabe`
+- **Write-Set (NUR diese Dateien):** `components/employee/EmployeeForm.tsx` *(falls Rollen-UI dort)* · `modules/03-mitarbeiterakte-tool-2/employee-file/EmployeeForm.tsx` · `…/EmployeeFilePersonRolleEditTable.tsx` · `…/EmployeeFileAkteInlineEdit.tsx` · `…/employee-stammdaten-options.ts` · `…/validations/employee-form.ts`
+- **VERBOTEN:** `EmployeeAutomationPage.tsx`, Shell-/Layout-/Index-Dateien (Lane A), `requirement-engine.ts` (Engine — `roleClasses` werden dort schon korrekt verarbeitet; **nur Eingabe entsperren, keine Engine-Werte ändern**). Bei Bedarf → parken.
+
+**Beide:** EC-09 (ZIP 200), EC-10, keine erfundene Normpflicht; `tsc --noEmit` 0; Engine-Suite **unverändert grün** (kein Engine-Edit); Browser-Akzeptanz `:3001`; committen auf eigenem Branch + **pushen**; **EINEN** Ergebnis-Eintrag unter „Von Cursor an Claude" im HANDOFF; Zweifel als Frage parken (Plan nicht umschreiben). **#8 Generator-Datum = nächster Dispatch** (teilt `EmployeeAutomationPage` mit Lane A).
+
 ## DoD (gesamt)
 Pro Phase eigener Commit; je Phase `tsc --noEmit` 0 · Engine-Suite (`tsx --test`) grün (bei #2/#5/#10/#D erweitert) · **EC-09-ZIP `POST /employee-automation` 200** · EC-10 (`unchecked`, kein Freigabe-Wording) · jede Regel CL-belegt oder „fachlich prüfen" · Browser-Akzeptanz `:3001` (Mark-Klick für OS-Dialoge). **P1 sofort baubar; P2/P3 laufen, offene Punkte oben blockieren nur die jeweils betroffenen Teil-Posten, nicht die Phase.**
