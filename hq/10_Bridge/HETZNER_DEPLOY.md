@@ -3,9 +3,11 @@
 > Ziel: **stabile HTTPS-URL** für Tally-Webhooks statt wechselndem cloudflared-Tunnel.  
 > App: `cert-expert-certification-os/apps/certification-os/` · Port **3001** (intern)
 
-## ✅ LIVE-STAND (Redeploy 2026-06-09, Terminal-Planer auf Marks Anweisung)
+## ✅ LIVE-STAND (Redeploy 2026-06-09 #2, Terminal-Planer auf Marks Anweisung)
 
-**App live: https://cos.cert-expert.de** (HTTPS, HTTP→HTTPS-Redirect). Deployter Commit **`5280d9c`** (zuvor `404d55d`).
+**App live: https://cos.cert-expert.de** (HTTPS, HTTP→HTTPS-Redirect). Deployter Commit **`03429b2`** (zuvor `5280d9c`, davor `404d55d`).
+
+> **Redeploy 2026-06-09 #2:** `5280d9c` → `03429b2`. Enthält: Tool-2-Feedback komplett (#1/#A/#B/#9, #7/#C, #3, #8, #2, #D, #4, #10, #5 + Q8) inkl. **5 neue additive nullable Spalten** (`bestelltAls`, `bestellungSchulungLink`, `setKategorie`, `generatorDates`, `gender`). DB-Backup vor Deploy (`pre-deploy-2026-06-09-210010.db`), `db push` synchron (additiv, kein Datenverlust/Backfill), `next build` Compiled successfully, Restart grün, Live-Endpunkte 200 (inkl. `/?area=mitarbeiterakte`), Log fehlerfrei. **Offen (Server):** S3-Move `Unterweisungsnachweis_Arbeitsschutz_DGUV.docx` (#9, Route-Filter blendet bis dahin aus).
 
 > **Redeploy 2026-06-09:** `404d55d` → `5280d9c`. Enthält: Slice 3/G4 (roleClasses), Queue C (trainingPlan), Lane A (ÖPV CL-29/30), Lane B (Audit-Export XLSX/PDF), „Neue Firma"-Dialog + Firmen-Übersicht-IA. DB-Backup vor Deploy (`/var/backups/certification-os/pre-deploy-2026-06-08-224457.db`), `db push` additiv (nullable Felder, kein Datenverlust), Build + Restart grün, Live-Endpunkte 200, Log fehlerfrei.
 

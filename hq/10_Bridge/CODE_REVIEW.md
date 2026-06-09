@@ -4,6 +4,15 @@
 
 ---
 
+## 2026-06-09 — Lane M: Q8 Generator-Datum-Granularität (`7d4f1f3`) — **ABGENOMMEN, gemergt (`03429b2`) + DEPLOYT**
+
+**Verifiziert:** Write-Set sauber (generate-employee-docs, utils/date + test, EmployeeAutomationPage, types, repository — kein Engine/Tally/Vorlagen/Training), `tsc` 0, Suite **127/127** (120 + 7), **`next build` Compiled successfully**. Keine neue Spalte (`generatorDates`-Json um `perDocType` erweitert, tolerante Read-Norm). EC-09 (Default „heute" unverändert).
+**Gebaut:** zweite Override-Ebene `perDocType` (Datum pro Dokument-Typ, alle Personen) + Auflösung `perDocument` → `perDocType` → global/Default → heute.
+
+**▶ DEPLOY 2026-06-09 #2:** `main` `03429b2` live auf cos.cert-expert.de — Backup, `db push` (5 additive Spalten), `next build` grün, Restart, Endpunkte 200, Log sauber. Details: `HETZNER_DEPLOY.md`. **Tool-2-Feedback (10 Punkte + A–E + Q8) damit komplett gebaut, gemergt UND live.**
+
+---
+
 ## 2026-06-09 — Nachbau Lane L: #5 UE-Anerkennung (`d7d6493`) + 🔴 Build-Blocker-Fix (`36c4509`) — **Planer-Review → ABGENOMMEN, gemergt (`1e4555f`)**
 
 **🔴 Wichtiger Befund (Lane-L-Executor surfacte ihn):** `next build` schlug auf `main` fehl — **„Server Actions must be async"** in `employee-generator/generate-employee-docs.ts:98`. Ursache: **Lane I (#10)** exportierte die synchrone `isErstunterweisungDoc` aus der `"use server"`-Datei. `tsc --noEmit` + `tsx --test` fangen das NICHT (Next-Build-Regel). **Ein Deploy hätte hier gebrochen.** Fix: `export` entfernt (nur modulintern genutzt). → **`next build` ist ab jetzt fester Review-Gate** (Prozesslücke geschlossen).
