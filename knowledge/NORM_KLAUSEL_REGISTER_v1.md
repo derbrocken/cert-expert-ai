@@ -60,6 +60,8 @@
 | CL-72 | NON-DIN-SDL Pflichtangaben (gesetzlicher Mindeststandard) | BewachV ___ | legal-input |
 | CL-73 | Fahrer-/UVV-Unterweisung (bei „fährt Dienstfahrzeug") | DGUV ___ | legal-input |
 | CL-74 | **Ausbilder-/Anbieter-Befähigung** für **Brandschutzhelfer-** und **Ersthelfer-Schulung** (Schulung muss von befähigtem Ausbilder/ermächtigtem Anbieter durchgeführt werden) — getrennt von der internen **Beauftragung** (Arbeitsschutz) | DGUV/ASR A2.2 / DGUV-Grundsatz ___ | legal-input |
+| CL-75 | **Arbeitsschutz-Grundunterweisung**: vor Aufnahme der Tätigkeit + **regelmäßig** (lt. Dienstanweisung mind. jährlich); Wiederholung nach >1 Jahr; **Bürotätigkeit = abweichende Vorgaben**. NICHT DIN 77200. | DGUV Vorschrift 23 §4(2) (Wach-/Sicherungsdienste) + DGUV V1 §4 + DGUV V2 [exakter § Mark nachreichen] | legal-input |
+| CL-76 | **Waffensachkunde** (Zusatzqualifikation, **additiv** zu §34a Unterrichtung/Sachkunde — ersetzt diese nicht; nur für bewaffnete Tätigkeit relevant) | §7 WaffG [Mark bestätigen] | legal-input |
 
 ---
 *Konvention: Engine-Regeln (Slice 2) tragen `clauseId: "CL-xx"`. Neue Anforderung ohne CL-ID = nicht zulässig (keine erfundenen Pflichten). Bei Norm-Neuausgabe: betroffene CL-IDs prüfen + Status/Edition aktualisieren.*

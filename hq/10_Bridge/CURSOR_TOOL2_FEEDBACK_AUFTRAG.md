@@ -1,139 +1,178 @@
 # CURSOR_TOOL2_FEEDBACK_AUFTRAG — Mark-Feedback Tool 2 (Mitarbeiterakte + Generator)
 
-> **Quelle:** Mark-Feedback 2026-06-09 (10 Punkte). **Rolle:** Planer hat gemappt; **Executor** baut nur, was hier steht — plant nichts neu, erfindet keine Normwerte. Jede Norm-Regel trägt eine **`clauseId` (CL-xx)** aus `knowledge/NORM_KLAUSEL_REGISTER_v1.md`; ohne CL-ID → als „fachlich prüfen" markieren, **nicht erfinden**.
-> **Norm-Basis:** `NORM_MATRIX_Mitarbeiternachweise_v2.md` + `NORM_KLAUSEL_REGISTER_v1.md`.
+> **v2 (2026-06-09):** Marks Antworten auf die 10 Rückfragen + Zusatz-Feedback A–E eingearbeitet. **Quelle:** Mark-Feedback 2026-06-09. **Rolle:** Planer hat gemappt; **Executor** baut nur, was hier steht — plant nichts neu, erfindet keine Normwerte. Jede Norm-Regel trägt eine **`clauseId` (CL-xx)** aus `knowledge/NORM_KLAUSEL_REGISTER_v1.md`; ohne CL → „fachlich prüfen", **nicht erfinden**.
+> **Norm-Basis:** `NORM_MATRIX_Mitarbeiternachweise_v2.md` + `NORM_KLAUSEL_REGISTER_v1.md` (neu: **CL-75** Arbeitsschutz-Unterweisung DGUV, **CL-76** Waffensachkunde — beide `legal-input`, exakter § von Mark nachzureichen).
 > **Guardrails (hart):** EC-09 (Generator/ZIP `POST /employee-automation` 200 nie brechen) · EC-10 (kein Freigabe-/Auditfähigkeits-/Zertifizierungsstatus; eingehende Nachweise = `unchecked`) · keine erfundene Normpflicht · kein `.env`/`.db`/Kundendaten-Commit.
 
 ## ⚠️ Stand-Korrektur (vor dem Bau lesen)
-Das Feedback nennt „Slice 0+1 fertig (861f210/4d9cefe), Slice 2 offen". **Das stimmt nicht mehr.** Realer HEAD = `5280d9c` (live auf cos.cert-expert.de): requirement-engine (Slice 2, `22e0c7c`, abgenommen), roleClasses (Slice 3/G4), training-plan (Queue C `fbe1980`), ÖPV-Engine (CL-29/30), Audit-Export, Firmen-Übersicht. **Gegen diesen HEAD bauen**, nicht gegen die Annahme. Viele Feedback-Punkte sind deshalb **Erweiterungen vorhandener Module**, keine Neubauten.
-
-## Empfohlenes Phasing (Risiko-getrieben)
-- **P1 — UI/Navigation, kein Norm-/Engine-Eingriff (niedrig-Risiko):** #1 Nav-Bug · #8 Generator-Datum · #9 Generator-Gruppen.
-- **P2 — Daten/Trennung (mittel):** #7 Bestellungen-Cleanup · #3 Tally-Mapping-Abgleich · #4 Manueller Upload (verifizieren/ausbauen).
-- **P3 — Norm/Engine (hoch, berührt abgenommene Engine → Suite-Re-Test Pflicht):** #2 Qualifikation-Dropdown · #6 Rollen-Ausbau · #5 UE-Anerkennung · #10 Datums-Logik/Defaults.
-- **Reihenfolge je Phase = eigene Commits**, kein Sammel-Commit. Nach jeder Phase: `tsc` 0 + Engine-Suite grün + EC-09-ZIP 200.
+Feedback nannte „Slice 2 offen" — **stimmt nicht mehr.** Realer HEAD = `5280d9c` (live): requirement-engine (Slice 2), roleClasses (Slice 3/G4), training-plan (Queue C), ÖPV (CL-29/30), Audit-Export, Firmen-Übersicht. **Gegen diesen HEAD bauen.** Die meisten Punkte sind **Erweiterungen**, keine Neubauten.
 
 ---
 
-## #1 — NAV-BUG: „Zur Übersicht" springt auf Dashboard statt Mitarbeiterakte
-**Ziel (Was kann Mark):** In einer Akte „← Zur Übersicht" (oben links) → landet wieder auf der **Firmen-Übersicht** (Mitarbeiterakte-Tab mit Firmenauswahl), **nicht** auf dem Dashboard/ZKM-Tab.
-**Norm:** keine (reine Navigation).
-**Ist:** `CertificationOsModuleOverview.tsx:205-208` steuert den aktiven Tab über lokalen State `selectedId = useState(CERT_OS_V1_MAIN_AREAS[0].id)` (Default = Dashboard), **kein URL-Param**. `EmployeeAutomationPage.tsx` „Zur Übersicht" + `CompanyHubView.onBack` rufen `router.push("/")` → `/` öffnet immer den Default-Tab (Dashboard).
-**Bau:**
-- `CertificationOsModuleOverview.tsx`: aktiven Tab aus URL-Param `?area=<id>` lesen (Fallback = Default). Param beim Tab-Wechsel spiegeln (`router.replace`), SSR-stabil (Hydration-Lehre `01f720b`: erster Render = Default, Param erst nach Mount).
-- `EmployeeAutomationPage.tsx` + `CompanyHubView`: Zurück-Ziel `"/?area=mitarbeiterakte"` statt `"/"`.
-**Betroffene Dateien:** `modules/00-dashboard/CertificationOsModuleOverview.tsx`, `…/employee-file/EmployeeAutomationPage.tsx`, `…/employee-file/CompanyHubView.tsx`.
-**DoD:** Akte öffnen → „Zur Übersicht" → Mitarbeiterakte-Tab + Firmenauswahl sichtbar; direkter Aufruf `/?area=mitarbeiterakte` öffnet den Tab; kein Hydration-Mismatch; tsc 0; EC-09-ZIP 200.
+## 🧭 BEGRIFFS-MODELL (verbindlich — Feedback E, Collision auflösen)
+Vier getrennte Achsen, in UI + Code **nicht** vermischen:
+1. **Norm-Klasse / Rolle** = `roleClasses[]` (`ek | fk | verwaltung | praktikant | subunternehmer`). Treibt das **Engine-Grundset** (Pflicht-Set, UE-Soll). Norm: EK/FK §4.19.1 **CL-06**, FK-Quali **CL-10**.
+2. **Set-Kategorie (Dokumentvorlagen-Set)** = `Sicherheitsmitarbeiter | Führungskraft | Bürokraft (Verwaltung)`. Leitet das **Generator-Vorlagen-Set** (Core-Dokumente) ab — siehe **#D**. **≠ Norm-Klasse.**
+3. **Organisationstitel** = `roleType` (z. B. Schichtleiter, Objektleiter). Reine **Anzeige**, keine Engine-Wirkung. *(Ob diese FK-Titel „FK nach DIN" sind = **offen/fachlich prüfen**, Q6.)*
+4. **Bestellung (Overlay)** = formale Ernennung (Ersthelfer/Brandschutzhelfer/SiBe), **positionsunabhängig** — siehe **#C**. Norm **CL-74** (Beauftragung ≠ Schulung).
+> **`standard models`** im Upload-Manager = **Tool 1** (später). **Nicht** mit Tool 2 mischen. Nicht importieren.
 
-## #8 — GENERATOR-DATUM: global UND pro Dokument setzbar
-**Ziel:** Beim Generator (Seite unten) ein **globales Datum für alle** Dokumente setzen **und** je Dokument einzeln überschreiben.
-**Norm:** keine (Ausgabedatum). *(Inhaltliche Default-Logik der Unterweisungs-Daten = #10.)*
-**Ist:** `app/actions/generate-employee-docs.ts:50` `const currentDate = formatTodayDocumentOutput()` — **global, hartkodiert „heute"**, nicht überschreibbar. Template-Platzhalter `{currentDate}` in `templateData.ts:115`.
-**Bau:** Generator-Action akzeptiert ein optionales **`documentDates`-Mapping** (global-Default + per-Doc-Override) statt `new Date()`. UI im Generator-Tab: ein globales Datumsfeld („Datum für alle") + je gewähltem Dokument ein Override-Feld (Muster wie Termin-Planung Queue C: Bulk + Einzel-Override).
-**Betroffene Dateien:** `app/actions/generate-employee-docs.ts`, `lib/templateData.ts`, Generator-UI im Dossier (`EmployeeFileDossierView` Generator-Tab).
-**DoD:** globales Datum wirkt auf alle, Einzel-Override sticht; Default bleibt „heute"; ZIP enthält die gesetzten Daten; tsc 0; EC-09-ZIP 200.
+## ✍️ UNTERSCHRIFTS-LOGIK (verbindlich — quer über #4/#5/#C/#10)
+- **Unterschriftspflichtig:** Unterweisungen (Datenschutz **CL-04**, Verschwiegenheit **CL-05**, Dienstanweisung **CL-03**, Arbeitsschutz **CL-75**) + Standarddokumente + **Bestellungen** (#C).
+- **NICHT unterschriftspflichtig:** Schulungs-/Qualifikationsnachweise. Bei **eigenen Cert-Expert-Schulungen** sind die UE bekannt → nur an die Schulung **anhängen**, keine Unterschrift (#5).
 
-## #9 — GENERATOR-GRUPPEN sauber lösen
-**Ziel:** Klare Gruppen-/Stapel-Funktion (heute de facto über Mehrfach-Selektion vorhanden).
+## Phasing (Risiko-getrieben)
+- **P1 — UI/Nav, kein Norm-Eingriff:** #1 Nav-Bug · **#A Rollen-Bug (EK fix/abwählbar)** · **#B Visual-/Responsive-Bug** · #8 Generator-Datum · #9 Gruppen (nur Selektion).
+- **P2 — Daten/Trennung:** #7+#C Bestellungen sauber trennen (inkl. S3-Cleanup) · #3 Tally-Mapping (je Schulung mit Datum) · #4 Manueller Upload.
+- **P3 — Norm/Engine (berührt abgenommene Engine → Suite-Re-Test Pflicht):** #2 Qualifikation-Multiselect · #D Vorlagen-Set · #5 UE-Anerkennung · #10 Datums-Logik/Defaults.
+- Pro Punkt eigener Commit; nach jeder Phase `tsc` 0 + Engine-Suite grün + EC-09-ZIP 200.
+
+---
+
+## P1
+
+### #1 — NAV-BUG: „Zur Übersicht" → Mitarbeiterakte-Tab statt Dashboard
+**Ziel:** „← Zur Übersicht" in der Akte → Firmen-Übersicht (Mitarbeiterakte-Tab), nicht Dashboard/ZKM.
 **Norm:** keine.
-**Ist:** `EmployeeAutomationPage.tsx:85-87` `batchSelectedIds: Set<string>` + Checkboxen im Index; `handleGenerate()` exportiert alle Gewählten als ZIP (Ordner je MA). Funktioniert, ist aber nur „Selektion", kein benanntes Gruppen-Konzept.
-**❓ RÜCKFRAGE (siehe unten Q9):** Was genau fehlt an der bestehenden Selektion? (a) nur sauberere UI/Beschriftung „X ausgewählt → als Gruppe exportieren", (b) **benannte/gespeicherte** Gruppen, (c) Gruppen nach Firma/Rolle? **Default-Bau (a)**, falls keine Antwort: Selektion als „Gruppe" klar labeln + „Alle/Keine"-Toggle + sichtbare Auswahl-Leiste. (b)/(c) erst nach Mark-Antwort.
-**Betroffene Dateien:** `…/employee-file/EmployeeFileIndex.tsx`, `EmployeeAutomationPage.tsx`.
-**DoD:** Auswahl-Stapel klar bedienbar + beschriftet; ZIP-Export der Gruppe 200; tsc 0.
+**Ist:** `CertificationOsModuleOverview.tsx:205-208` Tab über lokalen State (Default Dashboard), kein URL-Param; Zurück ruft `router.push("/")`.
+**Bau:** Tab aus `?area=<id>` lesen (Fallback Default, SSR-stabil); Zurück-Ziel `"/?area=mitarbeiterakte"`.
+**Dateien:** `modules/00-dashboard/CertificationOsModuleOverview.tsx`, `…/employee-file/EmployeeAutomationPage.tsx`, `…/employee-file/CompanyHubView.tsx`.
+**DoD:** Zurück landet auf Mitarbeiterakte-Tab + Firmenauswahl; `/?area=mitarbeiterakte` öffnet den Tab; kein Hydration-Mismatch; tsc 0; EC-09-ZIP 200.
 
-## #7 — BESTELLUNGEN (appointments): falsche Unterweisung raus, Trennung sauber
-**Ziel:** „Bestellungen" enthalten **nur** interne **Beauftragungen**: **Ersthelfer-, Brandschutzhelfer-, Sicherheitsbeauftragter-Bestellung** — **keine Schulungen/Unterweisungen**. Die fälschlich abgelegte Unterweisung verschwindet.
-**Norm:** **CL-74** (Beauftragung ≠ Schulung — interne Bestellung getrennt vom Schulungs-Nachweis; Status `legal-input`, Trennung von Mark 2026-06-07 bestätigt) + Matrix §11. Erste Hilfe **CL-08**, Brandschutzhelfer **CL-23**, SiBe = betriebliche Bestellung (kein DIN-UE → keine erfundene Pflicht).
-**Ist:** Appointment-Katalog wird **dynamisch aus S3 `/appointments/`** gelesen (`app/api/templates/route.ts:20-65`); Labels in `employee-display-labels.ts:39-56` (`safety-training`→Ersthelfer, `fire-safety`→Brandschutzhelfer, `compliance-training`→SiBe, + onboarding/medical-checkup/ergonomics). Eine **fälschlich abgelegte „Unterweisung"** liegt laut Mark im S3-Bestellungs-Ordner.
-**Bau:**
-- **Daten-Cleanup (S3):** die falsche Unterweisung aus dem `/appointments/`-Ordner entfernen. **❗ exakter Pfad/Datei = Mark muss ihn nennen (Q7)** — nicht raten, keine Kundendaten blind löschen.
-- **Modell/Anzeige:** Bestellungen auf die **drei** zulässigen Typen begrenzen (Ersthelfer/Brandschutzhelfer/SiBe); klare Trennung Bestellung (intern) ↔ Schulungsnachweis (Evidence). Schulungs-Doks dürfen **nicht** als Appointment erscheinen.
-**Betroffene Dateien:** `…/employee-file/employee-display-labels.ts`, ggf. `app/api/templates/route.ts` (Filter), S3-Ordner `/appointments/` (Daten, durch Mark/explizit).
-**DoD:** nur die 3 Bestelltypen sichtbar; keine Schulung/Unterweisung unter Bestellungen; Generator-ZIP unberührt (EC-09); tsc 0.
+### #A — ROLLEN-BUG: „Einsatzkraft" fix vorausgewählt + nicht abwählbar
+**Ziel:** Alle Norm-Klassen **frei kombinierbar UND einzeln abwählbar** (z. B. nur Verwaltung). „Verwaltungsmitarbeiter" als eigene, sichtbare Rolle.
+**Norm:** `roleClasses` treiben Engine (CL-06/CL-10). Verwaltung ohne Bewachung → kein §34a-Set (Matrix §5). Leere Auswahl → „Keine Norm-Klasse erfasst" (EC-10, bereits behandelt).
+**Ist:** EK ist im `EmployeeForm` faktisch erzwungen/nicht abwählbar; `verwaltung` als Klasse existiert in der Engine, aber als UI-Rolle nicht sauber wählbar. (EK+Subunternehmer geht laut Mark schon.)
+**Bau:** Mehrfachauswahl aller 5 Klassen (`ek/fk/verwaltung/praktikant/subunternehmer`) **ohne Zwangsvorauswahl**, jede einzeln an-/abwählbar; „Verwaltung" als eigene Option. **Keine** Engine-Werte ändern — nur Eingabe entsperren.
+**Dateien:** `components/employee/EmployeeForm.tsx` (+ ggf. `validations/employee-form.ts`).
+**DoD:** „nur Verwaltung" wählbar, EK abwählbar, alle Klassen frei kombinierbar; leere Auswahl → korrekter Hinweis; Engine-Suite unverändert grün; tsc 0.
 
-## #3 — TALLY-MAPPING ↔ Doc-Slots abgleichen
-**Ziel:** Von MA über Tally hochgeladene Nachweise landen am **richtigen** Nachweis-Slot der Akte.
-**Norm:** Slots referenzieren die Nachweis-Typen — Dienstanweisung **CL-03**, Datenschutz **CL-04**, Verschwiegenheit **CL-05**, Erste Hilfe **CL-08**, Brandschutzhelfer **CL-23**, Sachkunde/Unterrichtung **CL-01/02**. (Reine Zuordnungs-Prüfung, keine neue Pflicht.)
-**Ist:** `TALLY_FIELD_MAPPING.md` + `lib/data/tally-employee-slots.json` (10 Slots à ~7 File-Felder) + `tally-intake-service.ts` (`mapTallyUploadToEvidenceId`, evidenceId per Label-Pattern). Vorhanden, aber **Abgleich Slot↔Doc-Slot nicht verifiziert**.
-**Bau:** **Audit + Korrektur** (kein Neubau): jeden Tally-File-Slot gegen die `evidenceId`-Konvention der Akte prüfen; Lücken/Fehl-Mappings auflisten + fixen, sodass jeder Tally-Upload an der erwarteten Stelle erscheint. Ergebnis als kurzer Abgleich-Report in `TALLY_FIELD_MAPPING.md` (Tabelle Tally-Feld → evidenceId → Akte-Slot, Status ok/fix).
-**Betroffene Dateien:** `hq/10_Bridge/TALLY_FIELD_MAPPING.md`, `lib/data/tally-employee-slots.json`, `lib/tally-intake-service.ts` (+ `mapTallyUploadToEvidenceId`-Quelle).
-**❓ RÜCKFRAGE (Q3):** Welche Nachweis-Slots sind verbindlich „pro Schulung/Unterweisung mit eigenem Datum" vs. „ein Slot je Typ"? (hängt mit #5/#10 zusammen).
-**DoD:** vollständige Mapping-Tabelle, alle Tally-File-Felder landen am korrekten Slot (an Testsubmission verifiziert); EC-10 (`unchecked`) bleibt; tsc 0.
+### #B — VISUAL-BUG: Layout verschiebt sich / Übersicht abgeschnitten
+**Ziel:** Beim Öffnen einer Seite kein Layout-Sprung; Inhalt passt sich der Fenstergröße an (kein Abschneiden).
+**Norm:** keine.
+**Ist:** Responsive-/Overflow-Problem (vermutlich Workspace-Layout/Grid). Genaue Stelle vom Executor reproduzieren.
+**Bau:** Overflow/Responsive im `EmployeeFileWorkspaceLayout` (+ betroffene Container) fixen — `overflow-auto`/`min-w-0`/Breakpoints prüfen; kein Layout-Shift beim Mount.
+**Dateien:** `…/employee-file/EmployeeFileWorkspaceLayout.tsx` (+ betroffene Views).
+**DoD:** kein Sprung/Abschnitt bei verschiedenen Fensterbreiten; tsc 0.
 
-## #4 — MANUELLER UPLOAD signierter Dokumente
-**Ziel:** Mark kann selbst unterschriebene Dokumente (Unterweisungen, eingereichte Schulungen) je MA hochladen.
-**Norm:** Nachweis-Typen wie #3; EC-10: Upload-Status bleibt `unchecked`, **keine** Auto-Freigabe.
-**Ist:** Evidence-Infra **existiert** (`employee-evidence-storage.ts` `saveEmployeeEvidenceFile`/`removeEmployeeEvidenceFile`/`loadEmployeeEvidence`; `uploadEmployeeEvidenceAction`; UI-Hooks `handleEvidenceUpload`/`handleEvidenceRemove` `EmployeeAutomationPage.tsx:371-405`, im Dossier). S3-Pro-Person-Struktur vorhanden.
-**Bau:** **Verifizieren + lückenlos in der UI ausspielen** — sicherstellen, dass für **jeden** relevanten Nachweis-Slot (inkl. Unterweisungen + Einzelschulungen aus #10) ein sichtbarer Upload-/Entfernen-Button existiert. Falls Slots fehlen → ergänzen (gleiche Infra, nur Slot/`evidenceId`). **Kein** neues Storage-Modell.
-**Betroffene Dateien:** `…/employee-file/EmployeeFileDossierView.*`, `employee-evidence-storage.ts` (nur falls Slot-Liste erweitert).
-**DoD:** Mark lädt in der Akte ein PDF je Slot hoch → erscheint, bleibt nach Reload, Status `unchecked`; Live-Klick-Abnahme durch Mark (OS-Dateidialog nicht harness-automatisierbar); tsc 0; EC-09-ZIP 200.
+### #8 — GENERATOR-DATUM: global UND pro Dokument
+**Ziel:** Generator-Datum global für alle setzen **und** je Dokument überschreiben.
+**Norm:** keine (Ausgabedatum; inhaltliche Defaults = #10).
+**Ist:** `app/actions/generate-employee-docs.ts:50` global hartkodiert „heute"; `{currentDate}` in `templateData.ts:115`.
+**Bau:** Action akzeptiert `documentDates` (global-Default + per-Doc-Override) statt `new Date()`; UI: globales Datumsfeld + Per-Doc-Override (Muster Queue C Bulk+Einzel).
+**Dateien:** `app/actions/generate-employee-docs.ts`, `lib/templateData.ts`, Generator-UI.
+**DoD:** global wirkt, Override sticht, Default „heute"; ZIP enthält Daten; tsc 0; EC-09-ZIP 200.
 
-## #2 — QUALIFIKATION: Dropdown statt Freitext (norm-gezogen, je clauseId)
-**Ziel:** Reiter „Qualifikation" = **Auswahl vordefinierter Standardqualifikationen** (kein Freitext), jede mit Norm-Beleg.
-**Norm-Mapping (Katalog-Werte → CL + Stufe A/B/C):**
-- **Unterrichtung §34a** → **CL-01** (Eintritt; Stufe A-Einstieg; löst 6-Monats-Sachkunde-Frist **CL-02** aus).
-- **Sachkundeprüfung §34a** → **CL-01/CL-02** (Stufe A, dauerhaft).
-- **Geprüfte Schutz- u. Sicherheitskraft (GSSK)** → **CL-07** (Stufe B) / FK-qualifizierend **CL-10**.
-- **Servicekraft für Schutz u. Sicherheit** → **CL-10** (FK-Liste) / Stufe B.
-- **Geprüfte Fachkraft für Schutz u. Sicherheit** → **CL-07/CL-10** (Stufe C).
-- **Meister für Schutz u. Sicherheit / IHK-Werkschutzmeister** → **CL-07/CL-10** (Stufe C).
-- *(Stufe-Definitionen: Matrix §3 / CL-07. „Qualifiziert"-Verknüpfung: CL-40 — bleibt rechnerisch, EC-10.)*
-**Ist:** `EmployeeForm.tsx:698-708` Freitext `qualification` (Placeholder „z. B. Sachkunde §34a"); `types/employee.ts:55` `qualification?: string`; Engine matcht den Freitext per Regex `hasSachkunde()`/`hasUnterrichtung()` (`requirement-engine.ts:292-297`).
-**Bau:**
-- Neuer **Qualifikations-Katalog** (Datei, je Eintrag: `id`, Label, `clauseId`, Stufe A/B/C, Flags `erfuelltSachkunde`/`fkQualifizierend`). **Keine erfundenen Einträge** — nur obige CL-belegte.
-- `EmployeeForm` → Dropdown statt Freitext; Engine liest **strukturierten Wert statt Regex** (Migration: bestehende Freitexte tolerant mappen, unbekannt → „fachlich prüfen", nichts verlieren).
-- **EC-10:** Auswahl erzeugt **keine** „qualifiziert/auditfähig"-Aussage; nur Eingangsgröße der rechnerischen Ampel.
-**Betroffene Dateien:** neuer `…/employee-file/qualification-catalog.ts`, `components/employee/EmployeeForm.tsx`, `validations/employee-form.ts`, `types/employee.ts`, `…/employee-file/requirement-engine.ts` (+ Engine-Suite), Repository (Read-Migration/Persistenz).
-**❓ RÜCKFRAGE (Q2):** **single- oder multi-select?** (Eine Person kann real Unterrichtung→Sachkunde **und** zusätzlich GSSK/Meister haben → spräche für multi; aber Engine-Logik „höchste Stufe zählt". Bitte entscheiden.)
-**DoD:** Dropdown mit CL-belegten Optionen; Engine nutzt strukturierten Wert; Migration verlustfrei; Engine-Suite erweitert + grün; tsc 0; EC-09/EC-10.
-
-## #6 — ROLLEN ausbauen (mehrere Rollen, saubere Begriffstrennung)
-**Ziel:** Mehrere Rollen pro MA; Rolle steuert die Standarddokument-Auswahl. Begriffe sauber: **Organisationstitel** (vorerst irrelevant) · **Einsatzkraft/Führungskraft** (steuert Grundset) · **Unterweisungs-Logik** separat. „standard models" des Upload-Managers = **Tool 1**, **nicht** mit Tool 2 vermischen.
-**Norm:** Norm-Klassen EK/FK = **CL-06/CL-10** (FK-Quali), Grundset über die abgenommene Engine. Org-Titel = reine Anzeige (keine Norm-Wirkung).
-**Ist:** Modell ist bereits mehrrollig: `roleClasses: RoleClass[]` (`ek|fk|verwaltung|praktikant|subunternehmer`, frei kombinierbar) treibt die Engine; `roleType` = Org-Titel (Anzeige); **`roleId` (Einzahl!)** steuert die **Generator-Dokumentenpalette** (`selectedRoleDocIds`). **Lücke:** Die **Dokument-Auswahl hängt an genau einem `roleId`** — „nur 1 Rolle" bezieht sich darauf.
-**Bau:**
-- Generator-Dokument-Auswahl von **einem** `roleId` auf **mehrere** Rollen erweitern (Vereinigung der Doc-Sets), analog zur EK/FK-Mehrfachauswahl. Begriffs-Collision auflösen: in der UI klar „Norm-Klasse(n)" (Grundset) vs. „Rolle/Doku-Vorlage(n)" (Generator-Palette) vs. „Org-Titel".
-- **Tool-1-`standard models` strikt draußen halten** (kein Import/keine Vermischung).
-**Betroffene Dateien:** `components/employee/EmployeeForm.tsx`, `types/employee.ts` (`roleId`→`roleIds`?), Generator-Doc-Auswahl + Repository-Mapping, `app/actions/generate-employee-docs.ts`.
-**❓ RÜCKFRAGE (Q6):** Bedeutet „mehrere Rollen" (a) mehrere **Doku-Paletten** (`roleId`→`roleIds`, Doc-Sets vereinigen) **oder** (b) reicht die bereits vorhandene EK/FK-Mehrfachauswahl und es geht nur um die Generator-Palette? Bitte bestätigen, ob `roleId`→`roleIds` migriert werden soll (berührt Generator + Persistenz).
-**DoD:** mehrere Rollen wählbar, Doc-Set = Vereinigung, Begriffe in UI getrennt, Tool-1 unvermischt; Migration verlustfrei; tsc 0; EC-09-ZIP 200.
-
-## #5 — UE-ANERKENNUNG beim Schulungs-Upload
-**Ziel:** Beim Upload einer Schulung werden deren **UE erkannt/zugeordnet und aufsummiert** (welche Schulung = wie viele UE), Soll/Ist-Ampel reagiert.
-**STATUS-ANTWORT auf Marks Rückfrage:** **Nein, wird aktuell NICHT automatisch erkannt.** `weiterbildungIstUE`/`einmaligIstUE` sind **manuell**; `trainingPlan` (Queue C) ist operative Planung **ohne Auto-Ist** (bewusst geparkt — „Ist-UE-Auto-Summe" = Queue E). Upload triggert keine UE-Berechnung.
-**Norm:** UE-Werte kommen aus der Engine — Jahres-Weiterbildung **CL-11** (40/24), Einmalschulungen **CL-20/21/24/25/29/30**, **Anrechnung CL-27** (Einmalschulung auf Jahres-WB im Erwerbsjahr). **Keine neuen UE-Werte erfinden** — nur diese.
-**Bau (neues Feature, war geparkt):** Beim Schulungs-Upload eine **UE-Zuordnung** ermöglichen → fließt in `einmaligIstUE`/`weiterbildungIstUE` und damit in die Soll/Ist-Ampel. **EC-10:** Upload = `unchecked`; UE-Summe ist „rechnerischer Ist-Stand", **keine** Bestätigung der Schulung.
-**❓ RÜCKFRAGE (Q5):** Wie soll die UE je Upload **bestimmt** werden? (a) Mark **gibt die UE beim Upload manuell ein** (einfachste, norm-neutral), (b) **Katalog-Zuordnung** (Schulung wählen → UE aus Katalog, CL-belegt, anrechnungslogik CL-27), (c) **automatische Extraktion** aus dem Dokument (OCR/Heuristik — unsicher, EC-10-heikel, eher nein). **Planer-Empfehlung: (b) Katalog + (a) als Override.**
-**Betroffene Dateien:** `…/employee-file/training-plan.ts` + `training-catalog.ts` (Anrechnung), Evidence-Upload-Pfad, Repository (`einmaligIstUE`/`weiterbildungIstUE`), Ampel-Merge-Stelle. **Engine selbst unberührt** (liest nur Ist).
-**DoD:** Upload mit UE-Zuordnung → Ist-UE steigt, Ampel reagiert, CL-27-Anrechnung korrekt, `unchecked` bleibt; Suite + tsc grün; EC-09-ZIP 200.
-
-## #10 — DATUMS-LOGIK / DEFAULTS (Generator + fehlende Standarddokumente)
-**Ziel:** Sinnvolle Default-Daten für Unterweisungen/Schulungen, überall änderbar:
-- **Geburtsdatum:** Tool übernimmt `birthday` → erscheint auf Schulungen. *(Ist: `birthday` existiert; auf Template ziehen.)*
-- **Fehlende Erst-Standardunterweisung** (enthält **Datenschutz CL-04**, **Verschwiegenheit CL-05**, **Arbeitsschutz [kein DIN-CL → legal-input, s. Q10a]**) **+ Datenschutz-/Verschwiegenheitserklärung** → **Default-Datum = erster Arbeitstag** (`startDate`/Einstellungs-/Vertragsdatum). Änderbar; MA unterschreibt nach.
-- **> 1 Jahr seit Erstunterweisung vergangen** → zusätzlich **Wiederholungsunterweisung** [Arbeitsschutz-jährlich = **kein DIN-CL → legal-input**, s. Q10a]. *(Einweisung Dienstanweisung = **CL-03**.)*
-- **Einzelschulungen** → **individuelles Datum** (manuell, je Eintrag — deckt sich mit #8 per-Doc-Override + Queue-C-Einzel-Override).
-- **Objektbezogene Unterweisung** → Default = **erster Arbeitstag/erster Einsatz**; **CL-22** (objektspezifisch, SDL bes. SR); später ggf. mit Projektakte verknüpfen.
-**Norm:** CL-03 (Dienstanweisung), CL-04 (Datenschutz), CL-05 (Verschwiegenheit), CL-22 (objektbezogen). **Arbeitsschutz-Grundunterweisung + jährliche Wiederholung = NICHT in DIN 77200 → kein CL → „fachlich prüfen"/legal-input** (Guardrail: nicht erfinden). Vgl. CL-73 (Fahrer/UVV, legal-input) als Muster.
-**Ist:** `startDate`/`birthday` vorhanden (`types/employee.ts:31-35`); **keine** Default-Datums-Logik für Unterweisungen; Generator-Datum global „heute" (#8). Unterweisungs-Typen über Engine-Regeln, kein eigener Datums-Default.
-**Bau:** Default-Datums-Ableitung (startDate → Erstunterweisung/Erklärungen; >1 J. → Wiederholungs-Flag; objektbezogen → startDate/erster Einsatz), überall **überschreibbar** (greift in #8-Per-Doc-Datum). Arbeitsschutz-/Wiederholungs-Posten **als „fachlich prüfen" markieren**, bis Mark die Rechtsgrundlage liefert (Q10a).
-**Betroffene Dateien:** `app/actions/generate-employee-docs.ts`, `lib/templateData.ts`, Engine-Fristen-Stelle (nur Default-Daten, **keine** neue UE/CL), Dossier-Generator-UI.
-**❓ RÜCKFRAGEN:** Q10a (Arbeitsschutz-/Wiederholungsunterweisung: Rechtsgrundlage/Turnus = Mark legal-input → neue CL), Q10b („erster Einsatz" für objektbezogene Unterweisung: woher kommt das Datum, bis Projektakte existiert — manuell?).
-**DoD:** Defaults greifen + überall änderbar; Geburtsdatum auf Schulungen; >1-J.-Wiederholung erscheint; Nicht-DIN-Posten „fachlich prüfen" (kein erfundener Wert); tsc 0; EC-09-ZIP 200.
+### #9 — GENERATOR-GRUPPEN: vorerst nur saubere Selektion
+**Mark-Antwort:** Erst mal **nur saubere Selektion**; benannte/gespeicherte Gruppen **später**.
+**Bau:** Auswahl-Stapel klar labeln („X ausgewählt → als Gruppe exportieren"), „Alle/Keine"-Toggle, sichtbare Auswahl-Leiste. **Keine** benannten/gespeicherten Gruppen jetzt.
+**Dateien:** `…/employee-file/EmployeeFileIndex.tsx`, `EmployeeAutomationPage.tsx`.
+**DoD:** Selektion klar bedienbar/beschriftet; ZIP-Export 200; tsc 0.
 
 ---
 
-## 📋 OFFENE RÜCKFRAGEN AN MARK (nicht raten — vor P2/P3 klären)
-- **Q2 (Qualifikation):** single- oder multi-select im Dropdown?
-- **Q3 (Tally/Slots):** Nachweis-Slots „je Schulung mit eigenem Datum" vs. „ein Slot je Typ"?
-- **Q5 (UE-Anerkennung):** UE je Upload (a) manuell eingeben, (b) Katalog-Zuordnung [Empfehlung], oder (c) Auto-Extraktion?
-- **Q6 (Rollen):** `roleId`→`roleIds` migrieren (mehrere Doku-Paletten), oder reicht die vorhandene EK/FK-Mehrfachauswahl + Generator-Palette?
-- **Q7 (Bestellungen):** **exakter S3-Pfad/Dateiname** der fälschlich abgelegten Unterweisung (zum Entfernen — nicht raten, keine Kundendaten blind löschen).
-- **Q9 (Gruppen):** reicht die Selektion sauber gelabelt, oder benannte/gespeicherte Gruppen (nach Firma/Rolle)?
-- **Q10a (Arbeitsschutz/Wiederholung):** Rechtsgrundlage + Turnus (ArbSchG/DGUV §) → neue CL ins Register.
-- **Q10b (objektbezogen):** Datumsquelle „erster Einsatz" bis Projektakte existiert — manuell?
+## P2
+
+### #7 + #C — BESTELLUNGEN sauber trennen (Bestellung ≠ Schulung)
+**Ziel:**
+- Die fälschlich abgelegte Unterweisung verlässt die Bestellungen.
+- **Bestellung = formales Ernennungsdokument** (Ersthelfer/Brandschutzhelfer/SiBe), **unterschriftspflichtig** — **≠** zugehörige **Schulung** (Qualifikationsnachweis).
+- **Mechanik:** Akte-Flag **Multiselect „bestellt als …"**; Generator **zwei Wege**: (a) **aus Vorlage generieren** (Default-Datum = Einstellungs-/Bestelldatum, MA unterschreibt nach) **oder** (b) **bestehende Bestellung hochladen**. **Optional:** Bestellung ↔ zugrundeliegende Schulung verknüpfen.
+**Norm:** **CL-74** (Beauftragung ≠ Schulung, `legal-input`, Trennung Mark bestätigt). Erste Hilfe **CL-08**, Brandschutzhelfer **CL-23**, SiBe = betriebliche Bestellung (kein DIN-UE).
+**Ist:** Appointments dynamisch aus S3 `/appointments/` (`app/api/templates/route.ts:20-65`), Labels `employee-display-labels.ts:39-56`. **Fehlplatzierte Datei (Mark, Q7):** `appointments/unterweisungen/Unterweisungsnachweis_Arbeitsschutz_DGUV.docx` — ist ein **Unterweisungsnachweis** → gehört **raus aus appointments → in Unterweisungen/Schulungen**.
+**Bau:**
+- **S3-Cleanup:** `Unterweisungsnachweis_Arbeitsschutz_DGUV.docx` aus `appointments/unterweisungen/` entfernen und nach Unterweisungen/Schulungen verschieben (Arbeitsschutz **CL-75**, s. #10). *(Datei ist benannt → kein Raten; vor dem Move Backup/Bestätigung wie üblich bei S3.)*
+- **Modell:** Bestellungen auf die **3** Typen begrenzen; Akte-Flag `bestelltAls[]` (Multiselect Ersthelfer/Brandschutzhelfer/SiBe).
+- **Generator:** zwei Wege (Vorlage generieren | hochladen); Bestellung ist **unterschriftspflichtig** (Unterschrifts-Logik oben); optionale Verknüpfung Bestellung↔Schulung.
+**Dateien:** `…/employee-file/employee-display-labels.ts`, `app/api/templates/route.ts` (Filter), Akte-Modell (`types/employee.ts` `bestelltAls`), Generator-Action/UI, S3 `/appointments/` (Daten, explizit).
+**DoD:** nur 3 Bestelltypen, keine Schulung/Unterweisung darunter; Multiselect „bestellt als" persistent; Generator beide Wege; falsche Datei verschoben; EC-09-ZIP 200; tsc 0.
+
+### #3 — TALLY-MAPPING ↔ Nachweis-Slots (je Schulung mit eigenem Datum)
+**Mark-Antwort (Q3):** **Je Schulung ein eigener Slot mit eigenem Datum** — **NICHT** ein Slot je Typ.
+**Ziel:** Tally-Uploads landen am richtigen, **pro-Schulung-granularen** Nachweis-Slot.
+**Norm:** Slots referenzieren CL-03/04/05/08/23, Sachkunde CL-01/02 (Zuordnung, keine neue Pflicht).
+**Ist:** `TALLY_FIELD_MAPPING.md` + `lib/data/tally-employee-slots.json` (10 Slots à ~7 File-Felder) + `tally-intake-service.ts` (`mapTallyUploadToEvidenceId`). Heute eher „Slot je Typ".
+**Bau:** Abgleich Tally-Feld → `evidenceId` → Akte-Slot; auf **pro-Schulung-Granularität** (eigene `evidenceId` + Datum je Schulung, Muster `training-plan:{id}` aus Queue C) umstellen; Lücken/Fehl-Mappings fixen; Abgleich-Tabelle in `TALLY_FIELD_MAPPING.md` (Status ok/fix).
+**Dateien:** `hq/10_Bridge/TALLY_FIELD_MAPPING.md`, `lib/data/tally-employee-slots.json`, `lib/tally-intake-service.ts` (+ `mapTallyUploadToEvidenceId`).
+**DoD:** vollständige Mapping-Tabelle; Tally-Upload landet pro Schulung korrekt (Testsubmission); `unchecked` bleibt; tsc 0.
+
+### #4 — MANUELLER UPLOAD signierter Dokumente
+**Ziel:** Mark lädt unterschriebene Dokumente (Unterweisungen, Standarddokumente, Bestellungen) je MA hoch.
+**Norm:** Typen wie #3/#C; EC-10 `unchecked`, keine Auto-Freigabe. **Unterschrifts-Logik** (oben) sichtbar machen: unterschriftspflichtige vs. nur-anhängen-Slots.
+**Ist:** Evidence-Infra **existiert** (`employee-evidence-storage.ts`, `uploadEmployeeEvidenceAction`, Dossier-Hooks `EmployeeAutomationPage.tsx:371-405`). Pro-Person-S3-Struktur vorhanden.
+**Bau:** Upload-/Entfernen-Button für **jeden** relevanten Slot ausspielen (inkl. Einzelschulungen #10, Bestellungen #C). Fehlende Slots ergänzen (gleiche Infra). **Kein** neues Storage-Modell.
+**Dateien:** `…/employee-file/EmployeeFileDossierView.*`, ggf. `employee-evidence-storage.ts` (Slot-Liste).
+**DoD:** Upload je Slot → erscheint, bleibt, `unchecked`; Live-Klick-Abnahme Mark (OS-Dialog); tsc 0; EC-09-ZIP 200.
+
+---
+
+## P3 (berührt abgenommene Engine → Suite-Re-Test Pflicht)
+
+### #2 — QUALIFIKATION: Multiselect-Dropdown (höchste + Zusätze), je clauseId
+**Mark-Antwort (Q2):** **Multiselect.** Höchste Qualifikation **+ Zusätze kombinierbar** (z. B. **Waffensachkunde** kommt obendrauf).
+**Norm-Mapping (Katalog-Werte → CL + Stufe):**
+- Unterrichtung §34a → **CL-01** (Stufe A-Einstieg; löst 6-Monats-Frist **CL-02**).
+- Sachkundeprüfung §34a → **CL-01/CL-02** (Stufe A).
+- GSSK (Geprüfte Schutz- u. Sicherheitskraft) → **CL-07** (Stufe B) / FK-qualifizierend **CL-10**.
+- Servicekraft → **CL-10** / Stufe B.
+- Geprüfte Fachkraft / Meister / IHK-Werkschutzmeister → **CL-07/CL-10** (Stufe C).
+- **Zusatz: Waffensachkunde → CL-76** (`legal-input`, §7 WaffG — **additiv**, ersetzt §34a nicht; „fachlich prüfen" bis Mark § bestätigt).
+**Engine-Logik bei Multiselect:** **höchste Stufe** (A<B<C) bestimmt die Qualifikationsstufe; **Zusätze** (Waffensachkunde) sind additive Flags, **ändern die Stufe nicht** und erzeugen **keine** neue DIN-Pflicht.
+**Ist:** Freitext `qualification` (`EmployeeForm.tsx:698-708`, `types/employee.ts:55`); Engine Regex `hasSachkunde`/`hasUnterrichtung` (`requirement-engine.ts:292-297`).
+**Bau:** Katalog `qualification-catalog.ts` (id/Label/`clauseId`/Stufe/Flags `erfuelltSachkunde`/`fkQualifizierend`/`zusatz`); Feld `qualifications: string[]` (Multiselect); Engine liest strukturierte Werte statt Regex (Migration: Freitext tolerant mappen, unbekannt → „fachlich prüfen"). **EC-10:** keine „qualifiziert"-Aussage.
+**Dateien:** neuer `…/employee-file/qualification-catalog.ts`, `components/employee/EmployeeForm.tsx`, `validations/employee-form.ts`, `types/employee.ts`, `requirement-engine.ts` (+ Suite), Repository (Migration/Persistenz).
+**DoD:** Multiselect mit CL-belegten Optionen + Waffensachkunde-Zusatz; höchste Stufe zählt; Migration verlustfrei; Suite erweitert + grün; tsc 0; EC-09/EC-10.
+
+### #D — DOKUMENTENVORLAGE: Set-Auswahl je Kategorie + Bestellungs-Overlay
+**Mark-Feedback D + Q6:** Aktuell nur „DIN 77200 Allgemeine". Soll **Set-Auswahl** nach **Set-Kategorie**: **Sicherheitsmitarbeiter / Führungskraft / Bürokraft (Verwaltung)** → leitet das **Vorlagen-Set** ab. **Bestellungen = positionsunabhängiges Overlay** (inkl. **Fahrtätigkeit → Anweisung**, **CL-73** Fahrer/UVV `legal-input`). Set **auch direkt im Generator** (Core/Overlay Documents) wählbar. **Q6: `roleId`→`roleIds` RAUSNEHMEN** — keine Mehrfach-Doku-Paletten; das löst die **Set-Kategorie**, nicht mehrere roleIds.
+**Norm:** Set-Kategorie = Doku-Steuerung, **keine** Norm-Pflicht (Engine-Grundset bleibt `roleClasses`). Fahr-Overlay → CL-73 (`legal-input`).
+**Ist:** Generator nutzt **ein** `roleId` → `selectedRoleDocIds` (`EmployeeForm.tsx:630-641`). Nur ein „Allgemeine"-Set.
+**Bau:** Set-Kategorie-Auswahl (3 Sets) → Core-Vorlagen-Set; Bestellungen als Overlay (positionsunabhängig) + Fahr-Anweisung-Overlay; im Generator Core/Overlay getrennt wählbar. **`roleId`→`roleIds`-Migration NICHT bauen.** **Begriffe** strikt nach Begriffs-Modell trennen; **`standard models` (Tool 1) draußen.**
+**Dateien:** Generator-Doc-Auswahl + Action (`generate-employee-docs.ts`), `EmployeeForm.tsx`/Generator-UI, Vorlagen-Set-Definition (Datei/Katalog).
+**DoD:** 3 Set-Kategorien wählbar → korrektes Core-Set; Bestellungs-/Fahr-Overlay positionsunabhängig; im Generator Core/Overlay wählbar; EC-09-ZIP 200; tsc 0.
+
+### #5 — UE-ANERKENNUNG beim Schulungs-Upload (Variante C + Eigen-Katalog)
+**Mark-Antwort (Q5):** **Variante C — Autoextraktion.** Bei **eigenen Cert-Expert-Schulungen UE bereits bekannt** → nur an die Schulung **anhängen, KEINE Unterschrift**. Unterschriftspflicht nur bei Unterweisungen + Standarddokumenten.
+**STATUS (Marks frühere Frage):** Auto-Ist wird heute **nicht** gebildet (bewusst geparkt) — wird mit diesem Punkt gebaut.
+**Norm:** UE nur aus **CL-11** (40/24), Einmalschulungen **CL-20/21/24/25/29/30**, Anrechnung **CL-27**. **Keine** erfundenen UE.
+**Bau:**
+- **Eigene Cert-Expert-Schulungen:** UE aus Schulungs-Katalog (bekannt) → automatisch an die Schulung anhängen + in `einmaligIstUE`/`weiterbildungIstUE` (CL-27-Anrechnung) → Soll/Ist-Ampel reagiert. **Keine Unterschrift.**
+- **Autoextraktion (extern):** UE-Wert aus dem hochgeladenen Dokument extrahieren. **⚠️ EC-10:** extrahierter Wert = **„fachlich prüfen"** (Heuristik, `unchecked`, **keine** Bestätigung) — vor Übernahme bestätigbar, kein Auto-Grün.
+**Dateien:** `…/employee-file/training-catalog.ts` (Eigen-UE), `training-plan.ts` (Anrechnung), Evidence-Upload-Pfad (Extraktion), Repository (`einmaligIstUE`/`weiterbildungIstUE`), Ampel-Merge. **Engine unberührt** (liest nur Ist).
+**DoD:** eigene Schulung → UE automatisch angehängt (ohne Unterschrift), Ist steigt, CL-27 korrekt; externe Extraktion → „fachlich prüfen", `unchecked`; Suite + tsc grün; EC-09-ZIP 200.
+**Rest-Rückfrage (Q5'):** Auto**extraktion** aus beliebigen PDFs ist technisch unsicher (Layout-abhängig). Vorschlag: **Eigen-Katalog zuverlässig** bauen + Extraktion als **Best-Effort mit Pflicht-Bestätigung**. (Reicht das, oder soll Extraktion hart sein? — siehe offene Punkte.)
+
+### #10 — DATUMS-LOGIK / DEFAULTS
+**Ziel + Mark-Antworten:**
+- **Geburtsdatum:** `birthday` → auf Schulungen drucken.
+- **Erst-Standardunterweisung** (Datenschutz **CL-04**, Verschwiegenheit **CL-05**, **Arbeitsschutz CL-75**) **+** Datenschutz-/Verschwiegenheitserklärung → **Default = erster Arbeitstag** (`startDate`/Einstellungs-/Vertragsdatum), änderbar, MA unterschreibt nach. Dienstanweisung = **CL-03**.
+- **>1 Jahr vergangen → Wiederholungsunterweisung** (Arbeitsschutz **CL-75**: DGUV V23 §4(2) „regelmäßig, lt. DA mind. jährlich" + DGUV V1/V2; **Bürotätigkeit abweichend**; `legal-input` → als **„fachlich prüfen"** führen, exakter § Mark nachreichen).
+- **Einzelschulungen → individuelles Datum** (manuell, je Eintrag; deckt sich mit #8 + Queue-C-Override).
+- **Objektbezogene Unterweisung (CL-22)** → **Mark-Antwort (Q10b): manuell** laufen lassen, bis Projektakte da ist.
+**Ist:** `startDate`/`birthday` vorhanden; keine Default-Datums-Logik; Generator-Datum global „heute".
+**Bau:** Default-Ableitung (startDate → Erstunterweisung/Erklärungen; >1 J. → Wiederholungs-Flag **CL-75 „fachlich prüfen"**; objektbezogen + Einzelschulung → manuell), überall überschreibbar (greift in #8). Nicht-DIN-Posten klar als „fachlich prüfen" markieren.
+**Dateien:** `app/actions/generate-employee-docs.ts`, `lib/templateData.ts`, Engine-Fristen (nur Default-Daten, **keine** neue UE/CL), Generator-UI.
+**DoD:** Defaults greifen + änderbar; Geburtsdatum auf Schulungen; >1-J.-Wiederholung (als „fachlich prüfen"); objektbezogen/Einzel manuell; tsc 0; EC-09-ZIP 200.
+
+---
+
+## ✅ RÜCKFRAGEN — Status nach Mark-Antworten (2026-06-09)
+| # | Status |
+|---|---|
+| Q2 Qualifikation | ✅ **Multiselect**, höchste + Zusätze (Waffensachkunde CL-76) |
+| Q3 Slots | ✅ **je Schulung mit eigenem Datum** |
+| Q5 UE-Upload | ✅ **Variante C**: Eigen-Katalog (UE bekannt, ohne Unterschrift) + Extraktion (fachlich prüfen) |
+| Q6 Rollen/Paletten | ✅ **roleId→roleIds RAUS**; Doku via Set-Kategorie (#D); FK-Org-Titel „FK nach DIN?" = offen |
+| Q7 Pfad | ✅ `appointments/unterweisungen/Unterweisungsnachweis_Arbeitsschutz_DGUV.docx` → raus/verschieben |
+| Q9 Gruppen | ✅ nur **saubere Selektion**, benannte Gruppen später |
+| Q10a Arbeitsschutz | ✅ **CL-75** (DGUV V23 §4(2)/V1/V2, Büro abweichend), `legal-input` — exakter § nachzureichen |
+| Q10b objektbezogen | ✅ **manuell** bis Projektakte |
+
+## 🔴 NOCH OFFEN (Mark)
+- **CL-75 / CL-76 exakter Paragraf:** DGUV-V23-/WaffG-§ verbindlich nachreichen (bis dahin „fachlich prüfen"). 
+- **FK-Org-Titel (Schichtleiter/Objektleiter):** „FK nach DIN" ja/nein? (betrifft #6/#D Org-Titel-Mapping) — **fachlich prüfen.**
+- **Q5' Autoextraktion-Tiefe:** Eigen-Katalog + Best-Effort-Extraktion mit Pflicht-Bestätigung ok, oder härtere Extraktion gewünscht?
+- **„Q8" aus deiner Antwort:** #8 (Generator-Datum) hatte keine offene Rückfrage — war als spezifiziert gemeint? Falls du etwas anderes meintest, bitte präzisieren.
 
 ## DoD (gesamt)
-- Pro Phase eigener Commit; nach jeder Phase: `tsc --noEmit` 0 · Engine-Suite (`tsx --test`) grün (bei #2/#5/#6/#10 erweitert) · **EC-09-ZIP `POST /employee-automation` 200** · EC-10 (`unchecked`, kein Freigabe-Wording) · keine erfundene Normpflicht (jede Regel CL-belegt oder „fachlich prüfen").
-- Browser-Akzeptanz je Punkt im echten `:3001` (bzw. Mark-Klick für OS-Dateidialoge).
-- Offene Rückfragen vor P2/P3 von Mark beantwortet; bis dahin **nur P1 baubar**.
+Pro Phase eigener Commit; je Phase `tsc --noEmit` 0 · Engine-Suite (`tsx --test`) grün (bei #2/#5/#10/#D erweitert) · **EC-09-ZIP `POST /employee-automation` 200** · EC-10 (`unchecked`, kein Freigabe-Wording) · jede Regel CL-belegt oder „fachlich prüfen" · Browser-Akzeptanz `:3001` (Mark-Klick für OS-Dialoge). **P1 sofort baubar; P2/P3 laufen, offene Punkte oben blockieren nur die jeweils betroffenen Teil-Posten, nicht die Phase.**
