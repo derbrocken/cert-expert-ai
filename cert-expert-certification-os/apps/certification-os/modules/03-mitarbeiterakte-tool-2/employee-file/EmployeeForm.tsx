@@ -382,8 +382,10 @@ export const EmployeeForm: React.FC<EmployeeFormProps> = ({
       roleClass: undefined,
       zusatzBewachungNiveau: undefined,
       roleType: data.roleType || undefined,
-      // #D: Set-Kategorie (Vorlagen-Achse) — am Modell für UI-Komfort; Source of
-      // Truth/Persistenz bleibt `roleId` (s. vorlagen-set-catalog.ts).
+      // #D / Lane J (A2): Set-Kategorie (Vorlagen-Achse) — jetzt **echtes
+      // persistiertes Feld** (Schema `setKategorie String?`), von der Rolle
+      // entkoppelt. Default wird aus `roleId` abgeleitet (s. resolveSetKategorie/
+      // vorlagen-set-catalog.ts), ist hier aber überschreibbar.
       setKategorie: data.setKategorie,
       sdlScopes: data.sdlScopes ?? [],
       drivesServiceVehicle: data.drivesServiceVehicle,

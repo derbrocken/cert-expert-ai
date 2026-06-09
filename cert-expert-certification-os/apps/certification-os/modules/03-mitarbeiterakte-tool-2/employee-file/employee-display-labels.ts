@@ -70,11 +70,52 @@ export function bestellungClauseId(typ: BestellungTyp): string {
   return BESTELLUNG_BY_TYP[typ].clauseId;
 }
 
+const VALID_BESTELLUNG_TYPEN = new Set<BestellungTyp>(
+  BESTELLUNG_DEFS.map((d) => d.typ),
+);
+
 /**
- * Liest `bestelltAls` aus den persistierten `appointmentIds` ab (Projektion auf
- * die drei Bestell-Typen). Reihenfolge = Katalog-Reihenfolge, dedupliziert.
+ * Lane J (A1) — `bestelltAls` ist jetzt ein **echtes persistiertes Feld** an der
+ * Akte (Schema `bestelltAls Json?`), unabhängig vom Dokument. Diese Funktion
+ * liefert die Anzeige-/Edit-Quelle: das persistierte Feld hat Vorrang; **fehlt
+ * es** (Bestandsakte vor der Migration), wird **tolerant aus `appointmentIds`
+ * abgeleitet** (Legacy-Backfill, alte Projektion). Reihenfolge =
+ * Katalog-Reihenfolge, dedupliziert. KEIN Auto-Status (EC-10).
  */
 export function getBestelltAls(employee: Employee): BestellungTyp[] {
+  if (Array.isArray(employee.bestelltAls)) {
+    // Persistiertes Feld vorhanden → Source of Truth. Defensive Validierung:
+    // nur bekannte Typen, in Katalog-Reihenfolge, dedupliziert.
+    const set = new Set(
+      employee.bestelltAls.filter((t) => VALID_BESTELLUNG_TYPEN.has(t)),
+    );
+    return BESTELLUNG_DEFS.filter((d) => set.has(d.typ)).map((d) => d.typ);
+  }
+  // Legacy-Backfill: kein persistiertes Feld → aus `appointmentIds` ableiten.
+  const ids = new Set(employee.appointmentIds ?? []);
+  return BESTELLUNG_DEFS.filter((d) => ids.has(d.appointmentId)).map(
+    (d) => d.typ,
+  );
+}
+
+/**
+ * Lane J (A1) — leitet aus einer Bestandsakte den Backfill-Wert für die neue
+ * `bestelltAls`-Spalte ab: persistiertes Feld bevorzugt, sonst aus
+ * `appointmentIds` (alte Projektion). Idempotent; für die Read-Normalisierung
+ * im Repository (Muster `asTrainingPlan`).
+ */
+export function backfillBestelltAls(employee: {
+  bestelltAls?: unknown;
+  appointmentIds?: string[];
+}): BestellungTyp[] {
+  if (Array.isArray(employee.bestelltAls)) {
+    const set = new Set(
+      employee.bestelltAls.filter((t): t is BestellungTyp =>
+        VALID_BESTELLUNG_TYPEN.has(t as BestellungTyp),
+      ),
+    );
+    return BESTELLUNG_DEFS.filter((d) => set.has(d.typ)).map((d) => d.typ);
+  }
   const ids = new Set(employee.appointmentIds ?? []);
   return BESTELLUNG_DEFS.filter((d) => ids.has(d.appointmentId)).map(
     (d) => d.typ,
@@ -84,8 +125,11 @@ export function getBestelltAls(employee: Employee): BestellungTyp[] {
 /**
  * Baut den `appointmentIds`-Patch für eine neue Bestell-Auswahl: alle
  * Nicht-Bestell-appointmentIds bleiben unverändert, die drei Bestell-Typen
- * werden exakt auf `typen` gesetzt. Persistiert über den bestehenden
- * `appointmentIds`-Pfad (kein Repo-/Schema-Eingriff).
+ * werden exakt auf `typen` gesetzt. **Lane J:** `bestelltAls` ist die echte
+ * persistierte Quelle (Edit setzt das Feld direkt) — `appointmentIds` werden
+ * über diesen Patch **weiterhin synchron gehalten**, damit der Generator die
+ * Bestell-Dokumente unverändert erzeugt (EC-09; Dokument-Auswahl bleibt am
+ * `appointmentIds`-Pfad).
  */
 export function setBestelltAlsPatch(
   employee: Employee,

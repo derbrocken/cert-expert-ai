@@ -1,9 +1,12 @@
 import type {
+  BestellungTyp,
   Employee,
+  GeneratorDates,
   GlobalProperties,
   TrainingPlanItem,
 } from "@/lib/types/employee";
-import type { EmployeeFile, EvidenceItem, Prisma } from "@prisma/client";
+import type { EmployeeFile, EvidenceItem } from "@prisma/client";
+import { Prisma } from "@prisma/client";
 import {
   buildCompanyLogoKey,
   buildEvidenceKey,
@@ -29,6 +32,12 @@ import {
   parseQualifications,
   serializeQualifications,
 } from "@/modules/03-mitarbeiterakte-tool-2/employee-file/qualification-catalog";
+import { backfillBestelltAls } from "@/modules/03-mitarbeiterakte-tool-2/employee-file/employee-display-labels";
+import {
+  isKnownSetKategorie,
+  projectSetKategorieFromRoleId,
+  type SetKategorie,
+} from "@/modules/03-mitarbeiterakte-tool-2/employee-file/vorlagen-set-catalog";
 
 const QUEUE_MIGRATION_KEY = "cert-expert-tool2-employee-queue-v1";
 const EVIDENCE_MIGRATION_KEY = "cert-expert-tool2-employee-evidence-v1";
@@ -107,6 +116,95 @@ function asTrainingPlan(value: unknown): TrainingPlanItem[] {
   return out;
 }
 
+const BESTELLUNG_TYP_VALUES: readonly BestellungTyp[] = [
+  "ersthelfer",
+  "brandschutzhelfer",
+  "sibe",
+];
+
+/**
+ * Lane J (A1) — Read-Normalisierung des `bestelltAls Json?` (Muster
+ * `asTrainingPlan`). Liefert immer ein valides `BestellungTyp[]`:
+ *  - persistiertes, gültiges Array → übernommen (unbekannte Werte verworfen),
+ *  - fehlend/Müll (Bestandsakte vor Migration) → **Legacy-Backfill** aus
+ *    `appointmentIds` (tolerant, kein P2023). Idempotent.
+ */
+function asBestelltAls(
+  value: unknown,
+  appointmentIds: string[],
+): BestellungTyp[] {
+  if (Array.isArray(value)) {
+    return backfillBestelltAls({
+      bestelltAls: value.filter((v): v is BestellungTyp =>
+        (BESTELLUNG_TYP_VALUES as readonly string[]).includes(v as string),
+      ),
+      appointmentIds,
+    });
+  }
+  // Kein persistiertes Feld → aus appointmentIds ableiten (Backfill).
+  return backfillBestelltAls({ appointmentIds });
+}
+
+/**
+ * Lane J (A1) — Read-Normalisierung der optionalen Bestellung↔Schulung-
+ * Verknüpfung (`bestellungSchulungLink Json?`). Nur bekannte Bestell-Typen mit
+ * String-Referenz. Nicht blockierend, KEIN Auto-Status (EC-10). `undefined`,
+ * wenn nichts Valides vorliegt.
+ */
+function asBestellungSchulungLink(
+  value: unknown,
+): Partial<Record<BestellungTyp, string>> | undefined {
+  if (!value || typeof value !== "object" || Array.isArray(value)) return undefined;
+  const out: Partial<Record<BestellungTyp, string>> = {};
+  for (const [k, v] of Object.entries(value as Record<string, unknown>)) {
+    if (
+      (BESTELLUNG_TYP_VALUES as readonly string[]).includes(k) &&
+      typeof v === "string" &&
+      v.length > 0
+    ) {
+      out[k as BestellungTyp] = v;
+    }
+  }
+  return Object.keys(out).length > 0 ? out : undefined;
+}
+
+/**
+ * Lane J (A2) — Read-Normalisierung der `setKategorie String?`-Spalte mit
+ * Legacy-Backfill: gültiges persistiertes Feld → Source of Truth (entkoppelt
+ * von der Rolle); sonst Default aus `roleId` ableiten; sonst `undefined`.
+ */
+function asSetKategorie(
+  value: unknown,
+  roleId: string,
+): SetKategorie | undefined {
+  if (typeof value === "string" && isKnownSetKategorie(value)) {
+    return value;
+  }
+  return projectSetKategorieFromRoleId(roleId);
+}
+
+/**
+ * Lane J (A3) — Read-Normalisierung des `generatorDates Json?` (Muster
+ * `asTrainingPlan`/`asNumberRecord`). Nur valide `global`/`perDocument`-Strings;
+ * Müll/Legacy/null → `undefined`. Reines Ausgabedatum, kein Engine-Eingriff.
+ */
+function asGeneratorDates(value: unknown): GeneratorDates | undefined {
+  if (!value || typeof value !== "object" || Array.isArray(value)) return undefined;
+  const r = value as Record<string, unknown>;
+  const out: GeneratorDates = {};
+  if (typeof r.global === "string" && r.global.length > 0) out.global = r.global;
+  if (r.perDocument && typeof r.perDocument === "object" && !Array.isArray(r.perDocument)) {
+    const per: Record<string, string> = {};
+    for (const [k, v] of Object.entries(r.perDocument as Record<string, unknown>)) {
+      if (typeof v === "string" && v.length > 0) per[k] = v;
+    }
+    if (Object.keys(per).length > 0) out.perDocument = per;
+  }
+  return out.global !== undefined || out.perDocument !== undefined
+    ? out
+    : undefined;
+}
+
 export function employeeFileToEmployee(record: EmployeeFile): Employee {
   return {
     id: record.id,
@@ -152,6 +250,17 @@ export function employeeFileToEmployee(record: EmployeeFile): Employee {
     weiterbildungIstUE: record.weiterbildungIstUE ?? undefined,
     einmaligIstUE: asNumberRecord(record.einmaligIstUE),
     trainingPlan: asTrainingPlan(record.trainingPlan),
+    // Lane J (A1) — echtes persistiertes Feld + Legacy-Backfill aus
+    // `appointmentIds`, falls die Spalte auf einer Bestandsakte fehlt.
+    bestelltAls: asBestelltAls(
+      record.bestelltAls,
+      asStringArray(record.appointmentIds),
+    ),
+    bestellungSchulungLink: asBestellungSchulungLink(record.bestellungSchulungLink),
+    // Lane J (A2) — echtes persistiertes Feld; fehlend → Default aus `roleId`.
+    setKategorie: asSetKategorie(record.setKategorie, record.roleId),
+    // Lane J (A3) — persistiertes Generator-Datum (global + per-Doc).
+    generatorDates: asGeneratorDates(record.generatorDates),
   };
 }
 
@@ -197,6 +306,33 @@ function employeeToUpsertData(
     weiterbildungIstUE: employee.weiterbildungIstUE ?? null,
     einmaligIstUE: employee.einmaligIstUE ?? {},
     trainingPlan: (employee.trainingPlan ?? []) as unknown as Prisma.InputJsonValue,
+    // Lane J (A1/A2/A3) — neue persistierte Felder (nullable/additiv).
+    bestelltAls: (employee.bestelltAls ?? []) as unknown as Prisma.InputJsonValue,
+    bestellungSchulungLink: employee.bestellungSchulungLink
+      ? (employee.bestellungSchulungLink as unknown as Prisma.InputJsonValue)
+      : Prisma.JsonNull,
+    setKategorie: employee.setKategorie ?? null,
+    generatorDates: employee.generatorDates
+      ? (employee.generatorDates as unknown as Prisma.InputJsonValue)
+      : Prisma.JsonNull,
+  };
+}
+
+/**
+ * Lane J (A1/A2/A3) — gemeinsamer Update-Patch für die neuen persistierten
+ * Felder (DRY über alle Write-Mapping-Stellen: upsert/replace/migrate).
+ * Nullable/additiv; `Prisma.JsonNull` für „nicht gesetzt" (P2023-sicher).
+ */
+function laneJUpdateFields(employee: Employee) {
+  return {
+    bestelltAls: (employee.bestelltAls ?? []) as unknown as Prisma.InputJsonValue,
+    bestellungSchulungLink: employee.bestellungSchulungLink
+      ? (employee.bestellungSchulungLink as unknown as Prisma.InputJsonValue)
+      : Prisma.JsonNull,
+    setKategorie: employee.setKategorie ?? null,
+    generatorDates: employee.generatorDates
+      ? (employee.generatorDates as unknown as Prisma.InputJsonValue)
+      : Prisma.JsonNull,
   };
 }
 
@@ -376,6 +512,7 @@ export async function upsertEmployeeFile(
       weiterbildungIstUE: employee.weiterbildungIstUE ?? null,
       einmaligIstUE: employee.einmaligIstUE ?? {},
       trainingPlan: (employee.trainingPlan ?? []) as unknown as Prisma.InputJsonValue,
+      ...laneJUpdateFields(employee),
     },
   });
   return employeeFileToEmployee(row);
@@ -428,6 +565,7 @@ export async function replaceEmployeeFilesForCompany(
           weiterbildungIstUE: employee.weiterbildungIstUE ?? null,
           einmaligIstUE: employee.einmaligIstUE ?? {},
           trainingPlan: (employee.trainingPlan ?? []) as unknown as Prisma.InputJsonValue,
+          ...laneJUpdateFields(employee),
         },
       });
     }
@@ -762,6 +900,7 @@ export async function migrateFromLocalStoragePayload(
             weiterbildungIstUE: employee.weiterbildungIstUE ?? null,
             einmaligIstUE: employee.einmaligIstUE ?? {},
             trainingPlan: (employee.trainingPlan ?? []) as unknown as Prisma.InputJsonValue,
+            ...laneJUpdateFields(employee),
             migratedFromLocalStorageAt: new Date(),
           },
         });

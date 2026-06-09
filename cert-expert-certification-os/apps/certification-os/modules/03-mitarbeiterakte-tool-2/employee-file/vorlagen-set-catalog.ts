@@ -125,9 +125,8 @@ export function resolveSetKategorieRoleId(
 
 /**
  * Projiziert eine bestehende `roleId` (Persistenz-Träger) zurück auf die
- * Set-Kategorie — damit die UI eine gespeicherte Auswahl anzeigen kann, OHNE
- * eigene DB-Spalte. Gibt `undefined`, wenn die Rolle keiner Set-Kategorie
- * eindeutig zugeordnet ist (dann zeigt die UI „— bitte wählen —").
+ * Set-Kategorie. Gibt `undefined`, wenn die Rolle keiner Set-Kategorie
+ * eindeutig zugeordnet ist.
  */
 export function projectSetKategorieFromRoleId(
   roleId: string | undefined,
@@ -137,6 +136,26 @@ export function projectSetKategorieFromRoleId(
     if (DEFAULT_SET_ROLE_SLUGS[def.id].includes(roleId)) return def.id;
   }
   return undefined;
+}
+
+/**
+ * Lane J (A2) — `setKategorie` ist jetzt ein **echtes persistiertes Feld** an
+ * der Akte (Schema `setKategorie String?`). Diese Funktion ist die
+ * Read-Normalisierung / der Default-Resolver:
+ *  1. persistiertes, gültiges Feld → Source of Truth (überschreibbar),
+ *  2. sonst **Default aus der Rolle** ableiten (Legacy-Backfill aus `roleId`),
+ *  3. sonst `undefined` (UI „— bitte wählen —").
+ * **Rolle vs. Set-Kategorie entkoppelt:** ein gesetztes Feld gewinnt auch dann,
+ * wenn es von der aus `roleId` abgeleiteten Default abweicht. Idempotent.
+ */
+export function resolveSetKategorie(employee: {
+  setKategorie?: string;
+  roleId?: string;
+}): SetKategorie | undefined {
+  if (employee.setKategorie && isKnownSetKategorie(employee.setKategorie)) {
+    return employee.setKategorie;
+  }
+  return projectSetKategorieFromRoleId(employee.roleId);
 }
 
 // ════════════════════════════════════════════════════════════════════════════

@@ -18,6 +18,7 @@ import { documentDateKey, formatIsoDisplay } from "./utils/date";
 import { cn } from "@/lib/utils";
 import type {
   Employee,
+  GeneratorDates,
   GlobalProperties,
   Role,
   Appointment,
@@ -49,6 +50,71 @@ import { CompanyCreateDialog } from "./CompanyCreateDialog";
 import { CompanyHubView } from "./CompanyHubView";
 
 type DossierTab = "akte" | "generator";
+
+/**
+ * Lane J (A3) — Generator-Datum ist jetzt **persistiert** (`generatorDates` je
+ * Akte) statt Session-State. Diese reinen Helfer übersetzen zwischen der
+ * Batch-Ansicht der UI (ein globaler Default + flacher Per-Doc-Override-Map,
+ * Schlüssel `documentDateKey(employeeId, docId)`) und der per-Akte-Persistenz
+ * (`employee.generatorDates` mit `perDocument` je **docId**). Reines
+ * Ausgabedatum, kein Engine-/Norm-/UE-Eingriff (EC-10).
+ */
+function extractBatchDatesFromEmployees(employees: Employee[]): {
+  global: string;
+  perDoc: Record<string, string>;
+} {
+  let global = "";
+  const perDoc: Record<string, string> = {};
+  for (const emp of employees) {
+    const gd = emp.generatorDates;
+    if (!gd) continue;
+    if (!global && gd.global) global = gd.global;
+    if (gd.perDocument) {
+      for (const [docId, date] of Object.entries(gd.perDocument)) {
+        if (date) perDoc[documentDateKey(emp.id, docId)] = date;
+      }
+    }
+  }
+  return { global, perDoc };
+}
+
+/**
+ * Lane J (A3) — schreibt die Batch-Ansicht (globaler Default + Per-Doc-Map)
+ * zurück in jede Akte als `generatorDates`. Der Per-Doc-Schlüssel
+ * `employeeId::docId` wird je Akte zu `docId` aufgelöst. Gibt eine neue
+ * Employees-Liste zurück (immutable); ungeänderte Akten bleiben referenzgleich,
+ * damit der Persistenz-Effekt nicht unnötig feuert.
+ */
+function applyBatchDatesToEmployees(
+  employees: Employee[],
+  global: string,
+  perDoc: Record<string, string>,
+): Employee[] {
+  let changed = false;
+  const next = employees.map((emp) => {
+    const prefix = `${emp.id}::`;
+    const perDocument: Record<string, string> = {};
+    for (const [key, date] of Object.entries(perDoc)) {
+      if (key.startsWith(prefix) && date) {
+        perDocument[key.slice(prefix.length)] = date;
+      }
+    }
+    const gd: GeneratorDates = {};
+    if (global) gd.global = global;
+    if (Object.keys(perDocument).length > 0) gd.perDocument = perDocument;
+    const resolved = gd.global !== undefined || gd.perDocument !== undefined
+      ? gd
+      : undefined;
+    // Referenzgleichheit erhalten, wenn sich nichts ändert.
+    const prev = emp.generatorDates;
+    if (JSON.stringify(prev ?? null) === JSON.stringify(resolved ?? null)) {
+      return emp;
+    }
+    changed = true;
+    return { ...emp, generatorDates: resolved };
+  });
+  return changed ? next : employees;
+}
 
 function EmployeeAutomationPageContent() {
   const router = useRouter();
@@ -186,6 +252,11 @@ function EmployeeAutomationPageContent() {
       setEmployees(snapshot.employees);
       setGlobalProps(snapshot.globalProps);
       setBatchSelectedIds(new Set(snapshot.employees.map((e) => e.id)));
+      // #8 / Lane J (A3) — Generator-Datum aus den persistierten
+      // `generatorDates` der Akten in die Batch-Ansicht laden (statt Session).
+      const seeded = extractBatchDatesFromEmployees(snapshot.employees);
+      setGeneratorGlobalDate(seeded.global);
+      setPerDocDates(seeded.perDoc);
       setSelectedEmployeeId(null);
       setEditingEmployee(null);
       setIsCreatingNew(false);
@@ -197,13 +268,34 @@ function EmployeeAutomationPageContent() {
     };
   }, [companySlug, companiesLoaded]);
 
+  // #8 / Lane J (A3) — Generator-Datum wird beim Debounce-Save in die Akten
+  // gemerged (`generatorDates`) statt in einem eigenen Effekt in den State zu
+  // schreiben (vermeidet kaskadierende Renders). `applyBatchDatesToEmployees`
+  // erhält Referenzgleichheit, wenn sich nichts ändert. Reines Ausgabedatum
+  // (EC-10). Der Datum-State (`generatorGlobalDate`/`perDocDates`) triggert den
+  // Save mit, damit Änderungen persistiert werden.
   useEffect(() => {
     if (!queueHydrated || !companySlug) return;
     const timer = window.setTimeout(() => {
-      void saveEmployeeQueue(companySlug, { employees, globalProps });
+      const withDates = applyBatchDatesToEmployees(
+        employees,
+        generatorGlobalDate,
+        perDocDates,
+      );
+      void saveEmployeeQueue(companySlug, {
+        employees: withDates,
+        globalProps,
+      });
     }, 400);
     return () => window.clearTimeout(timer);
-  }, [employees, globalProps, queueHydrated, companySlug]);
+  }, [
+    employees,
+    globalProps,
+    queueHydrated,
+    companySlug,
+    generatorGlobalDate,
+    perDocDates,
+  ]);
 
   useEffect(() => {
     const controller = new AbortController();

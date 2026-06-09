@@ -309,11 +309,15 @@ function BestellungenPanel({
     const next = new Set(active);
     if (next.has(typ)) next.delete(typ);
     else next.add(typ);
+    // Lane J (A1): `bestelltAls` ist jetzt ein echtes persistiertes Feld →
+    // direkt setzen (Source of Truth). `appointmentIds` bleiben über den Patch
+    // synchron, damit der Generator die Bestell-Dokumente unverändert erzeugt
+    // (EC-09). KEIN Auto-Status (EC-10).
     const appointmentIds = setBestelltAlsPatch(employee, [...next]);
     onSavePerson(
       applyEmployeePatchWithDocSync(
         employee,
-        { appointmentIds },
+        { appointmentIds, bestelltAls: [...next] },
         roles,
         appointments,
       ),

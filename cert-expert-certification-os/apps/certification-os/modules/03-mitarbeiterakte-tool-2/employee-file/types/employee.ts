@@ -71,12 +71,11 @@ export interface Employee {
    * **≠ Norm-Klasse** `roleClasses` (Engine-Grundset bleibt unberührt) und
    * **≠ Org-Titel** `roleType`.
    *
-   * **Persistenz:** KEINE eigene DB-Spalte — die Auswahl reitet auf dem bereits
-   * persistierten `roleId` (Set-Kategorie → Core-Rolle, s.
-   * `vorlagen-set-catalog.ts`). Beim Laden wird die Kategorie aus `roleId`
-   * projiziert (`projectSetKategorieFromRoleId`). Eine eigene persistierte
-   * `setKategorie`-Spalte ist ein geparkter Schema-Slice (HANDOFF). Optionales
-   * Feld am Modell für UI-Komfort; Source of Truth bleibt `roleId`.
+   * **Persistenz (Lane J A2):** echte persistierte DB-Spalte
+   * `setKategorie String?`, **von der Rolle entkoppelt**. Default wird aus
+   * `roleId` abgeleitet (`resolveSetKategorie`/`projectSetKategorieFromRoleId`),
+   * ist aber manuell überschreibbar + im Generator wählbar. Legacy-Backfill:
+   * fehlt die Spalte auf einer Bestandsakte → aus `roleId` ableiten.
    */
   setKategorie?: SetKategorie;
   employmentType?: string;
@@ -114,14 +113,40 @@ export interface Employee {
   /** Termin-Planung Schulungen (Queue C) — gezielte gap-fill-Zuweisungen. */
   trainingPlan?: TrainingPlanItem[];
   /**
-   * Bestellt als … (#C) — Multiselect-Akte-Flag der formalen Ernennungen
-   * (Ersthelfer/Brandschutzhelfer/SiBe). **Persistenz:** wird über die bereits
-   * persistierten `appointmentIds` ge-/entladen (s. `bestelltAls`-Helfer in
-   * `employee-display-labels.ts`); KEINE eigene DB-Spalte → kein Repo-/Schema-
-   * Eingriff nötig, round-trip-stabil. Source of Truth bleibt `appointmentIds`.
-   * Unterschriftspflichtig (Unterschrifts-Logik). Bestellung ≠ Schulung.
+   * Bestellt als … (#C / Lane J A1) — Multiselect-Akte-Flag der formalen
+   * Ernennungen (Ersthelfer/Brandschutzhelfer/SiBe). **Persistenz (A1):** echte
+   * persistierte DB-Spalte `bestelltAls Json?`, **unabhängig vom Dokument**
+   * (Status oft VOR dem Doc setzbar). Legacy-Backfill: fehlt die Spalte auf einer
+   * Bestandsakte, wird tolerant aus `appointmentIds` abgeleitet
+   * (`getBestelltAls` in `employee-display-labels.ts`). Unterschriftspflichtig
+   * (Unterschrifts-Logik). Bestellung ≠ Schulung. KEIN Auto-Status (EC-10).
    */
   bestelltAls?: BestellungTyp[];
+  /**
+   * Optionale Verknüpfung Bestellung↔zugrundeliegende Schulung (Lane J A1) —
+   * Map BestellungTyp → Referenz (evidenceId/refId des Schulungs-Nachweises).
+   * **Nicht blockierend, KEIN Auto-Status** (EC-10): eine gesetzte Verknüpfung
+   * erzeugt keinerlei „erfüllt"/„qualifiziert"-Aussage. Nullable/optional.
+   */
+  bestellungSchulungLink?: Partial<Record<BestellungTyp, string>>;
+  /**
+   * Persistiertes Generator-Ausgabedatum je Akte (Lane J A3) — globaler Default
+   * + Per-Dokument-Overrides (Schlüssel = Vorlagen-`docId`). Ersetzt den
+   * bisherigen Session-State in `EmployeeAutomationPage`. Reines Ausgabedatum;
+   * KEIN Engine-/Norm-/UE-Eingriff (EC-10). Leeres `global` → „heute".
+   */
+  generatorDates?: GeneratorDates;
+}
+
+/**
+ * Persistiertes Generator-Ausgabedatum (Lane J A3). `global` = Default-Datum
+ * für alle Dokumente dieser Akte (ISO `YYYY-MM-DD` oder leer = heute).
+ * `perDocument` = Override je Dokument, Schlüssel = Vorlagen-`docId`. Reine
+ * Ausgabesteuerung; verändert weder Norm-Werte noch die Vorlagen-Verarbeitung.
+ */
+export interface GeneratorDates {
+  global?: string;
+  perDocument?: Record<string, string>;
 }
 
 /**
