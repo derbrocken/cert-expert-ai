@@ -253,6 +253,32 @@
 
 ## 📥 Von Cursor an Claude (Fragen / Bitten)
 
+### 2026-06-09 — ✅ Executor Lane J (Persistenz-Migration A1+A2+A3): FERTIG + committet (Branch `lane-j-persistenz`, NICHT gepusht/gemergt)
+
+**Branch:** `lane-j-persistenz` (ab `main` HEAD `03a5334`). **`main` unberührt, nicht gepusht/gemergt.** Commit: **`74650ef`**.
+**Gates (alle grün):** `npx tsc --noEmit` = **0** · employee-file-Suite **90/90** (80 alt unverändert + **10 neue** Backfill-Tests `persistence-backfill.test.ts`) · **Engine-Suite unberührt** (requirement-engine.ts nicht im Diff) · **`db push` gegen frische Worktree-DB erfolgreich** (4 neue Spalten verifiziert: alle `notnull=0`, `dflt_value=NULL` → P2023-sicher). **⚠️ Prod-DB-Migration (`db push`) steht beim Deploy noch aus** — Realdaten liegen NICHT im Worktree (additive nullable Spalten → keine Datenmigration nötig, nur Schema-Sync; macht der Planer beim Deploy). **Kein `.env`/`.db`/node_modules committet** (gitignore verifiziert).
+
+**Schema-Diff (`EmployeeFile`, alle nullable/additiv, kein `@default`):**
+- `bestelltAls Json?` (A1) — persistierter Bestell-Status, dokument-unabhängig.
+- `bestellungSchulungLink Json?` (A1) — optionale, nicht blockierende Verknüpfung Bestellung↔Schulung, **KEIN Auto-Status** (EC-10).
+- `setKategorie String?` (A2) — von der Rolle entkoppelt, Default aus `roleId`, überschreibbar.
+- `generatorDates Json?` (A3) — `{ global?, perDocument? }`, ersetzt Session-State.
+
+**Gebaut (echte persistierte Felder statt Projektion + Legacy-Backfill):**
+- **A1 `bestelltAls`:** `getBestelltAls` liest jetzt das echte Feld (Source of Truth); fehlt es auf einer Bestandsakte → tolerant aus `appointmentIds` ableiten (`backfillBestelltAls`). Dossier-Toggle (`EmployeeFileDossierView.tsx`) setzt das Feld direkt; `appointmentIds` bleiben über `setBestelltAlsPatch` synchron, damit der Generator die Bestell-Dokumente unverändert erzeugt (**EC-09**). Optionales `bestellungSchulungLink` (nullable, KEIN Pflicht-Gate, KEIN Auto-Status).
+- **A2 `setKategorie`:** neuer Resolver `resolveSetKategorie()` (persistiertes Feld > Default aus `roleId` > undefined). EmployeeForm liest/schreibt das Feld; Backfill aus `roleId`. Rolle vs. Set-Kategorie entkoppelt.
+- **A3 Generator-Datum:** `EmployeeAutomationPage` lädt die Batch-Ansicht (globaler Default + Per-Doc-Map) aus den persistierten `generatorDates` der Akten (`extractBatchDatesFromEmployees`) und merged Änderungen beim Debounce-Save zurück (`applyBatchDatesToEmployees`) — **kein** `set-state-in-effect` (Lint-sauber bzgl. neuer Effekte; einzige verbleibende `set-state-in-effect`-Meldung ist **pre-existing** auf main, Z. ~566). Reines Ausgabedatum, kein Engine-/Norm-Eingriff (EC-10).
+- **Repository:** Read-Normalisierung `asBestelltAls`/`asBestellungSchulungLink`/`asSetKategorie`/`asGeneratorDates` (Muster `asTrainingPlan`, Müll/Legacy/null tolerant) + **alle 4 Write-Mapping-Stellen** (create `employeeToUpsertData` / upsert-update / replace-update / migrate-update) über gemeinsamen `laneJUpdateFields`-Helfer (`Prisma.JsonNull` für „nicht gesetzt", P2023-sicher).
+
+**FRAGE / Hinweis für Planer-Review:**
+1. **Write-Set-Erweiterung (bewusst, minimal):** `EmployeeFileDossierView.tsx` war NICHT im gelisteten Bounded-Write-Set, ist aber der **einzige** Editor für `bestelltAls` (Toggle). Ohne diese 1-Zeile (`bestelltAls: [...next]` im Patch) würde das neue persistierte Feld aus der UI nie geschrieben → A1 wäre nur read-/backfill-seitig korrekt. Habe den Toggle minimal erweitert (Feld direkt setzen, `appointmentIds` bleiben synchron). **Bitte im Review gegenchecken** (EC-09: Generator-Doc-Auswahl unverändert; EC-10: kein Auto-Status).
+2. **`generate-employee-docs.ts`** (im Write-Set gelistet) **nicht** geändert — A3 fließt über den bestehenden `documentDates`-Parameter + die neue Page-Persistenz; der Generator löst Daten bereits korrekt auf. Keine Generator-Logik-Änderung nötig.
+3. **DB-Doppelpfad** beim `db push` bestätigt (`prisma/prisma/dev.db` ist die reale DB) — bekanntes Tech-Debt, nicht in dieser Lane angefasst.
+
+✅ **Stabiler Punkt** — Lane J abgeschlossen, committet (`74650ef`), nicht gepusht/gemergt. Warten auf Planer-Review + Merge-Gate; Prod-`db push` beim nächsten Deploy.
+
+---
+
 ### 2026-06-09 — ✅ Executor Lane I (Dispatch v6 #10 Datums-Logik/Defaults): FERTIG + committet (Branch `lane-i-datums-defaults`, NICHT gepusht/gemergt)
 
 **Branch:** `lane-i-datums-defaults` (ab `main` HEAD `8e0dd8f`). **`main` unberührt, nicht gepusht/gemergt.** Commit: **`0ec3de6`**.
