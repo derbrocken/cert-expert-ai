@@ -26,6 +26,7 @@ import {
   resolveSetKategorie,
   type SetDocumentSpec,
 } from "@/modules/03-mitarbeiterakte-tool-2/employee-file/vorlagen-set-catalog";
+import { resolveAssignedSchulungDocs } from "@/modules/03-mitarbeiterakte-tool-2/employee-file/training-plan";
 
 /**
  * Lane K (Batch-2 B) — baut den Set→Dokument-Plan-Manifest-Text für einen MA.
@@ -368,6 +369,52 @@ export async function generateEmployeeDocs(
               success: false,
               error: `Failed to process template "${doc.fileName}" for appointment "${appointment.name}"`,
             };
+          }
+        }
+      }
+
+      // Lane S — zugewiesene DIN-1-Schulungen mitgenerieren: für jeden
+      // zugewiesenen Schulungs-Plan-Eintrag (`trainingPlan`, `source:"katalog"`)
+      // die zugehörige `appointments/schulungen/`-`.docx` ins ZIP. Datum =
+      // `plannedDate` (Durchführung von) bzw. der globale Generator-Datum-Wert.
+      // EC-09: fehlt eine Vorlage in S3 (kein Key im Map), wird der Eintrag
+      // ÜBERSPRUNGEN (kein ZIP-Bruch). EC-10/CL-11: rein dokumentenerzeugend,
+      // kein Auto-Ist, keine Freigabe-/Auditaussage.
+      const assignedSchulungen = resolveAssignedSchulungDocs(
+        employee.trainingPlan,
+      );
+      if (assignedSchulungen.length > 0) {
+        const schulungenFolder = employeeFolder.folder("Schulungen");
+        for (const sch of assignedSchulungen) {
+          const objectKey = templateKeyMap.get(sch.logicalPath);
+          if (!objectKey) {
+            // Vorlage fehlt in S3 → überspringen (EC-09), nicht abbrechen.
+            console.warn(
+              `Schulungs-Vorlage nicht gefunden, übersprungen: ${sch.logicalPath} (MA: ${employee.fullName})`,
+            );
+            continue;
+          }
+          // Datum = Durchführung von (plannedDate) bzw. globaler Default.
+          const schulungDate = sch.plannedDate
+            ? formatDocumentOutputDate(sch.plannedDate) || globalDate
+            : globalDate;
+          try {
+            const templateBuffer = await fetchTemplateBufferByKey(objectKey);
+            const processedDoc = await handler.process(templateBuffer, {
+              ...templateData,
+              // Platzhalter wie üblich; ParticipantName als Schulungs-Alias.
+              ParticipantName: employee.fullName,
+              currentDate: schulungDate,
+              SchulungDatum: schulungDate,
+            });
+            schulungenFolder?.file(sch.fileName, processedDoc);
+          } catch (err) {
+            // EC-09: ein Fehler an einer Schulungs-Vorlage darf den ZIP NIE
+            // brechen — loggen, überspringen, weiter.
+            console.error(
+              `Error processing Schulungs-Vorlage ${sch.fileName} for ${employee.fullName}:`,
+              err,
+            );
           }
         }
       }

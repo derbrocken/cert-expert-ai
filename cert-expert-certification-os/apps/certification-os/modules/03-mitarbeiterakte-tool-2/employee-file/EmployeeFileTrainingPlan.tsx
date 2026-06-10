@@ -26,7 +26,11 @@ import {
   isEvidenceChecked,
   type PlanItemStatus,
 } from "./training-plan";
-import { TRAINING_CATALOG, extractUeFromText } from "./training-catalog";
+import {
+  TRAINING_CATALOG,
+  extractUeFromText,
+  schulungTemplateLogicalPath,
+} from "./training-catalog";
 
 /**
  * Termin-Planung Schulungen (Queue C) — gap-getriebener Planungsbereich.
@@ -406,6 +410,17 @@ export const EmployeeFileTrainingPlan: React.FC<
                         ? "Lehrbaustein — kein eigener Norm-UE-Wert"
                         : `Soll-Posten${item.clauseId ? ` · ${item.clauseId}` : ""}`}
                     </p>
+                    {/* Lane S — zugewiesene DIN-1-Schulungen werden beim
+                        Generator-Lauf als .docx mitgeneriert (Datum =
+                        Durchführung von). Reiner Hinweis (EC-10: keine
+                        Freigabe-/Auditaussage). */}
+                    {item.source === "katalog" &&
+                      schulungTemplateLogicalPath(item.refId) && (
+                        <p className="mt-0.5 text-[10px] text-[#6b7280]">
+                          wird beim Generieren als Schulungs-Dokument mit
+                          ausgegeben
+                        </p>
+                      )}
                     {/* #5 — UE-Anerkennung (Variante C) */}
                     <UeAnerkennungInfo
                       item={item}

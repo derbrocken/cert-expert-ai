@@ -25,9 +25,16 @@ import {
   normalizeEvidenceChecks,
   trainingItemIdFromEvidenceId,
   applyTrainingDateFromEvidence,
+  resolveAssignedSchulungDocs,
 } from "./training-plan";
 import { severityOf } from "./compliance-status";
-import { extractUeFromText } from "./training-catalog";
+import {
+  extractUeFromText,
+  TRAINING_CATALOG,
+  findCatalogModule,
+  schulungTemplateLogicalPath,
+  SCHULUNG_TEMPLATE_FOLDER,
+} from "./training-catalog";
 
 const REF = "2026-06-08";
 
@@ -473,4 +480,96 @@ test("P4 (b) idempotent: gleiches Datum erneut anwenden ändert nichts (Referenz
   const once = applyTrainingDateFromEvidence([], "training-plan:erste-hilfe", "2026-05-20");
   const twice = applyTrainingDateFromEvidence(once, "training-plan:erste-hilfe", "2026-05-20");
   assert.equal(twice, once); // identische Referenz (No-op-Pfad)
+});
+
+// --- Lane S: Modul → Dateiname-Mapping + zugewiesene Schulung → Doc --------
+
+test("Lane S: jedes Katalog-Modul hat einen .docx-Dateinamen mit NN_-Präfix", () => {
+  TRAINING_CATALOG.forEach((m, i) => {
+    const nn = String(i + 1).padStart(2, "0");
+    assert.ok(
+      m.templateFileName.startsWith(`${nn}_`),
+      `${m.id} sollte mit ${nn}_ beginnen, war: ${m.templateFileName}`,
+    );
+    assert.ok(m.templateFileName.endsWith(".docx"));
+  });
+});
+
+test("Lane S: bekannte exakte Dateinamen (Auftrag) für Modul 1 und 9", () => {
+  assert.equal(
+    findCatalogModule("din1-modul-1")!.templateFileName,
+    "01_Dokumentation_Wachbuch_Meldewesen_4UE.docx",
+  );
+  assert.equal(
+    findCatalogModule("din1-modul-9")!.templateFileName,
+    "09_Fuehrungskraft_Sicherheitsdienst_DIN_77200-1_8UE.docx",
+  );
+});
+
+test("Lane S: schulungTemplateLogicalPath = appointments/schulungen/<file>; unbekannt → null", () => {
+  assert.equal(
+    schulungTemplateLogicalPath("din1-modul-1"),
+    `${SCHULUNG_TEMPLATE_FOLDER}/01_Dokumentation_Wachbuch_Meldewesen_4UE.docx`,
+  );
+  assert.equal(SCHULUNG_TEMPLATE_FOLDER, "appointments/schulungen");
+  assert.equal(schulungTemplateLogicalPath("erste-hilfe"), null);
+  assert.equal(schulungTemplateLogicalPath("does-not-exist"), null);
+});
+
+test("Lane S: zugewiesene Katalog-Schulung → Doc-Kandidat (Pfad + Datum aus plannedDate)", () => {
+  const plan = [
+    planItem({
+      id: "tp-99",
+      source: "katalog",
+      refId: "din1-modul-3",
+      plannedDate: "2026-07-01",
+    }),
+  ];
+  const docs = resolveAssignedSchulungDocs(plan);
+  assert.equal(docs.length, 1);
+  assert.equal(docs[0]!.itemId, "tp-99");
+  assert.equal(docs[0]!.moduleId, "din1-modul-3");
+  assert.equal(
+    docs[0]!.fileName,
+    "03_Kommunikation_Konflikt_Deeskalation_4UE.docx",
+  );
+  assert.equal(
+    docs[0]!.logicalPath,
+    "appointments/schulungen/03_Kommunikation_Konflikt_Deeskalation_4UE.docx",
+  );
+  assert.equal(docs[0]!.plannedDate, "2026-07-01");
+});
+
+test("Lane S: nur source:katalog mit bekanntem Modul wird zum Doc (Soll-Posten/Tally übersprungen)", () => {
+  const plan = [
+    planItem({ id: "a", source: "katalog", refId: "din1-modul-1" }),
+    // Soll-Posten → kein generierbares Modul-Doc:
+    planItem({ id: "b", source: "soll-posten", refId: "jahres-weiterbildung" }),
+    // Tally-Snapshot (kein Katalog-Modul) → übersprungen, kein erfundener Pfad:
+    planItem({ id: "c", source: "katalog", refId: "erste-hilfe" }),
+  ];
+  const docs = resolveAssignedSchulungDocs(plan);
+  assert.equal(docs.length, 1);
+  assert.equal(docs[0]!.moduleId, "din1-modul-1");
+});
+
+test("Lane S: leerer/fehlender Plan → keine Schulungs-Docs (No-op)", () => {
+  assert.deepEqual(resolveAssignedSchulungDocs(undefined), []);
+  assert.deepEqual(resolveAssignedSchulungDocs([]), []);
+});
+
+test("Lane S: mehrere zugewiesene Module → mehrere Docs, ohne Datum bleibt plannedDate undefined", () => {
+  const plan = [
+    planItem({ id: "m9", source: "katalog", refId: "din1-modul-9" }),
+    planItem({
+      id: "m5",
+      source: "katalog",
+      refId: "din1-modul-5",
+      plannedDate: undefined,
+    }),
+  ];
+  const docs = resolveAssignedSchulungDocs(plan);
+  assert.equal(docs.length, 2);
+  assert.equal(docs[0]!.fileName.startsWith("09_"), true);
+  assert.equal(docs[1]!.plannedDate, undefined);
 });
