@@ -255,6 +255,28 @@
 
 ## 📥 Von Cursor an Claude (Fragen / Bitten)
 
+### 2026-06-10 — ✅ Executor Lane N P1 (Bugs #1 Bestellungen + #4 Schulungs-Auswahl): FERTIG + committet (Branch `lane-n-p1-bugs`, NICHT gepusht/gemergt)
+
+**Branch:** `lane-n-p1-bugs` (ab `main` HEAD `26690af`). **`main` unberührt, nicht gepusht/gemergt.** Commit: **siehe `git log -1` auf `lane-n-p1-bugs`** (zum Zeitpunkt des Schreibens `053460d`; finale Hash nach evtl. Amend mit `git log` prüfen).
+**Gates (alle grün):** `npx tsc --noEmit` = **0** · employee-file-Suite **131/131** (127 Basis + 4 neue: 3 Lane-N-Bestellungen-Persistenz/Patch + 1 Overlay-Logical-Path) · **`next build` = „Compiled successfully"** (17 Worker, 15 Routen, TS-Check ok, `/employee-automation` = EC-09-Pfad compiled). Engine/Suite-untouched: requirement-engine/compliance/training-plan-Tests unverändert grün. **Kein `.env`/`.db`/node_modules committet** (node_modules nur als APFS-Clone in den Worktree zum Build; gitignored).
+
+**Root-Cause #1 (Bestellungen tauchten nicht auf):** `BESTELLUNG_DEFS.appointmentId` zeigte auf die Einzel-Appointment-IDs `safety-training`/`fire-safety`/`compliance-training` — die existierten **NIE im S3-Bucket** (nur in der Legacy-Demo-`employee-config.ts`). Die real eingespielten Vorlagen liegen ALLE in EINEM Ordner `appointments/bestellungen/` als drei `.docx`. → Der `appointmentIds`-basierte Generator-Pfad fand nie eine Vorlage, also kam nie eine Bestellung im ZIP/in der Anzeige an.
+
+**Gebaut (Bounded Write-Set eingehalten — 7 Dateien):**
+- **`employee-display-labels.ts`:** `BestellungDef` von `appointmentId` → `appointmentFolderId` (`"bestellungen"` für alle drei) + `docFileName` (reale `.docx`). Neuer Helfer `bestellungDocId(typ)` = `${folder}-${name}` exakt wie `/api/templates` Doc-IDs vergibt. `getBestelltAls`/`backfillBestelltAls` leiten Backfill jetzt aus den realen Bestell-Doc-Chips (`selectedAppointmentDocIds`) ab (alte tote appointmentIds liefern korrekt **nichts**). `setBestelltAlsPatch` gibt jetzt `{ appointmentIds, selectedAppointmentDocIds }` zurück (Ordner-Sync + genaue Doc-Chips, übrige Auswahl bleibt).
+- **`vorlagen-set-catalog.ts`:** `SetDocumentSpec.templateLogicalPath` (neu, optional); `BESTELLUNG_OVERLAY_DOCS` zeigen jetzt auf `appointments/bestellungen/Bestellungsurkunde_{Ersthelfer|Brandschutzhelfer|Sicherheitsbeauftragter}.docx` (single-source aus `BESTELLUNG_DEFS`).
+- **`EmployeeForm.tsx`:** dedizierter **„Bestellt als (formale Ernennung)"-Multiselect** direkt aus `BESTELLUNG_DEFS` (CL-08/CL-23/CL-74), persistiert nach `bestelltAls`; Submit reconcilet appointmentIds + Bestell-Doc-Chips über `setBestelltAlsPatch`. Der generische Appointment-Multiselect bleibt als „Weitere Termine / Overlays".
+- **`validations/employee-form.ts`:** `bestelltAls`-Feld (enum-Array, optional).
+- **`EmployeeFileDossierView.tsx`:** `BestellungenPanel.toggle` nutzt den neuen Doc-aware Patch (kein appointmentId-basiertes Doc-Sync mehr für die 3-in-1-Ordner-Struktur). „Bestellungen (bestellt als)"-Anzeige in DossierZones unverändert (las schon `getBestelltAls`).
+- **Tests:** `persistence-backfill.test.ts` auf das neue Modell umgestellt + neue Fälle (Doc-Chip-Backfill, tote Legacy-IDs → leer, Patch-Sync, leere Auswahl entfernt Ordner, `bestellungDocId`-Schema); `vorlagen-set-mapping.test.ts` + Overlay-Logical-Path-Test.
+
+**#4 (Schulungs-Auswahl nicht erreichbar):** Diagnose „evtl. read-only" → bei Inspektion ist die `onSave`-Kette **bereits intakt**: `EmployeeAutomationPage` reicht im **Bearbeiten-Modus** `onSavePerson={handleSavePerson}` an `EmployeeFileDossierView`, das `onSave={onSavePerson}` an `EmployeeFileTrainingPlan` durchreicht → `editable = Boolean(onSave)` = true → Schulungs-/Modul-Dropdown bedienbar; `handleSavePerson` → `setEmployees` → debounced Auto-Save (`saveEmployeeQueue`). Read-only ist nur die **Übersicht** (`EmployeeFileOverview`, by design). **Kein Code-Change nötig** — verifiziert, nichts erfunden (EC-10/Rollen-Kontrakt). Browser-Klick-Abnahme durch Mark optional.
+
+**Geparkte Fragen (an Planer/Mark, NICHT selbst entschieden):**
+1. **Inline-Edit-Tabelle** (`EmployeeFilePersonRolleEditTable.tsx`, Zeile „Bestellungen") nutzt weiter einen **generischen Appointment-Multiselect** auf `appointmentIds` — NICHT im P1-Write-Set, daher unangetastet. Soll diese Zeile ebenfalls auf das `bestelltAls`-Modell umgestellt werden? (eigener kleiner Touch, Planer-Gate.)
+2. **Legacy-`employee-config.ts`** (Demo-Appointments `safety-training` etc.) ist VERBOTEN/außerhalb Write-Set — bleibt als Demo-Fixture; in der Live-App kommen Appointments aus `/api/templates`. Kein Handlungsbedarf, nur Hinweis.
+3. **Repository-Read-Norm** (`lib/employee-file-repository.ts`, VERBOTEN) ruft `backfillBestelltAls` ohne `selectedAppointmentDocIds` — Signatur blieb rückwärtskompatibel; Bestandsakten ohne persistiertes `bestelltAls` liefern jetzt `[]` statt aus toten appointmentIds (korrekt, da diese nie reale Bestellungen waren). Falls ein DB-Backfill der `bestelltAls`-Spalte aus Doc-Chips gewünscht ist → Planer/Schema-Slice.
+
 ### 2026-06-09 — ✅ Executor Lane M (Q8 Generator-Datum-Granularität, „sowohl als auch"): FERTIG + committet (Branch `lane-m-datum-granularitaet`, NICHT gepusht/gemergt)
 
 **Branch:** `lane-m-datum-granularitaet` (ab `main` HEAD `7254ab5`). **`main` unberührt, nicht gepusht/gemergt.** Commit: **`7d4f1f3`**.

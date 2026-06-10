@@ -105,6 +105,27 @@ test("Overlay: Bestellungen aus bestelltAls (CL-08/CL-23/CL-74), Reihenfolge sta
   assert.equal(docs[1].clauseId, "CL-74");
 });
 
+test("Overlay (Lane N P1): Bestell-Overlays zeigen auf reale appointments/bestellungen/-Vorlagen", () => {
+  const docs = overlayDocsForEmployee({
+    bestelltAls: ["ersthelfer", "brandschutzhelfer", "sibe"],
+  });
+  const byId = Object.fromEntries(docs.map((d) => [d.id, d]));
+  assert.equal(
+    byId["overlay-bestellung-ersthelfer"].templateLogicalPath,
+    "appointments/bestellungen/Bestellungsurkunde_Ersthelfer.docx",
+  );
+  assert.equal(
+    byId["overlay-bestellung-brandschutzhelfer"].templateLogicalPath,
+    "appointments/bestellungen/Bestellungsurkunde_Brandschutzhelfer.docx",
+  );
+  assert.equal(
+    byId["overlay-bestellung-sibe"].templateLogicalPath,
+    "appointments/bestellungen/Bestellungsurkunde_Sicherheitsbeauftragter.docx",
+  );
+  // Reale Vorlagen liegen vor → kein templateMissing.
+  for (const d of docs) assert.ok(!d.templateMissing, d.id);
+});
+
 test("Overlay: Fahrtätigkeit → Kfz-/Fahr-Anweisung (CL-73, fachlich prüfen, Vorlage fehlt)", () => {
   const docs = overlayDocsForEmployee({ drivesServiceVehicle: true });
   const fahr = docs.find((d) => d.id === "overlay-fahranweisung");

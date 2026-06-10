@@ -32,6 +32,17 @@
  */
 
 import type { BestellungTyp, Employee, Role } from "@/lib/types/employee";
+import { BESTELLUNG_DEFS } from "./employee-display-labels";
+
+/**
+ * Lane N P1 — realer S3-Logical-Path einer Bestell-Vorlage
+ * (`appointments/bestellungen/<docFileName>`). Single-source aus `BESTELLUNG_DEFS`
+ * (gleicher Ordner für alle drei Typen).
+ */
+function bestellungTemplateLogicalPath(typ: BestellungTyp): string {
+  const def = BESTELLUNG_DEFS.find((d) => d.typ === typ)!;
+  return `appointments/${def.appointmentFolderId}/${def.docFileName}`;
+}
 
 /** Set-Kategorie = eigene Vorlagen-Achse (NICHT Norm-Klasse, NICHT Org-Titel). */
 export type SetKategorie =
@@ -252,6 +263,14 @@ export interface SetDocumentSpec {
    * fehlenden Vorlagen.
    */
   templateMissing?: boolean;
+  /**
+   * Lane N P1 — realer S3-Logical-Path der Vorlage
+   * (`category/folderName/fileName.docx`), wenn das Dokument auf eine konkret
+   * eingespielte Vorlage zeigt (z. B. Bestellungen unter
+   * `appointments/bestellungen/`). Dient der Nachvollziehbarkeit im Manifest;
+   * die physische Verarbeitung läuft weiterhin über die Doc-Chips (EC-09).
+   */
+  templateLogicalPath?: string;
   /** Kurzhinweis für UI/Manifest. */
   hint: string;
 }
@@ -342,7 +361,15 @@ export function coreDocsForSetKategorie(
   }
 }
 
-/** Overlay-Spec je Bestell-Typ (positionsunabhängig, bedingt). */
+/**
+ * Overlay-Spec je Bestell-Typ (positionsunabhängig, bedingt).
+ *
+ * Lane N P1 (2026-06-10): `templateLogicalPath` zeigt jetzt auf die real
+ * eingespielten Vorlagen unter `appointments/bestellungen/` (drei `.docx` in
+ * EINEM Ordner) statt auf die nie existenten Einzel-Appointment-IDs
+ * (`safety-training`/`fire-safety`/`compliance-training`). Filenames sind
+ * single-source aus `BESTELLUNG_DEFS` (siehe `employee-display-labels.ts`).
+ */
 const BESTELLUNG_OVERLAY_DOCS: Record<BestellungTyp, SetDocumentSpec> = {
   ersthelfer: {
     id: "overlay-bestellung-ersthelfer",
@@ -350,6 +377,7 @@ const BESTELLUNG_OVERLAY_DOCS: Record<BestellungTyp, SetDocumentSpec> = {
     kind: "overlay",
     clauseId: "CL-08",
     dateSource: "startDate",
+    templateLogicalPath: bestellungTemplateLogicalPath("ersthelfer"),
     hint: "Bestellung (Ernennung) Ersthelfer — unterschriftspflichtig, ≠ Erste-Hilfe-Schulung (CL-08).",
   },
   brandschutzhelfer: {
@@ -358,6 +386,7 @@ const BESTELLUNG_OVERLAY_DOCS: Record<BestellungTyp, SetDocumentSpec> = {
     kind: "overlay",
     clauseId: "CL-23",
     dateSource: "startDate",
+    templateLogicalPath: bestellungTemplateLogicalPath("brandschutzhelfer"),
     hint: "Bestellung (Ernennung) Brandschutzhelfer — unterschriftspflichtig, ≠ Brandschutz-Schulung (CL-23).",
   },
   sibe: {
@@ -366,6 +395,7 @@ const BESTELLUNG_OVERLAY_DOCS: Record<BestellungTyp, SetDocumentSpec> = {
     kind: "overlay",
     clauseId: "CL-74",
     dateSource: "startDate",
+    templateLogicalPath: bestellungTemplateLogicalPath("sibe"),
     hint: "Betriebliche Bestellung SiBe — unterschriftspflichtig (Beauftragung ≠ Schulung, CL-74).",
   },
 };
