@@ -1,5 +1,8 @@
 # Benötigte Dokumentvorlagen (Tool 2 — Set-Mapping + Overlays)
 
+> **✅ ERLEDIGT (2026-06-10, Commit `fe17ad5`, live):** Alle Vorlagen eingespielt + verdrahtet. Mark lieferte: Stellenbeschreibung SMA/FK/BK, Datenschutz/Vertraulichkeit, Dienstausweis, Allgm. Pflichtunterweisung, Arbeitsschutz_DGUV, Jahresweiterbildung 24/40, ODA Einzel/Sammel, Veranstaltung Einzel/Sammel, Bestellung Brandschutzhelfer. Claude erstellte: Bestellung Ersthelfer + SiBe, Kfz-Fahranweisung, Mutterschutz-Merkblatt, Bildschirmarbeitsplatz-Unterweisung (Drafts in `Vorlagen_Bestellung_Betriebsanweisung/generated_drafts/`, Wording „ok" von Mark). 30 Objekte in S3, Set-Mapping auf reale Slugs. **Offen:** alte `appointments/unterweisungen/`-Kopien löschen (gezielt, Mark); modulare-Schulungen-UE-aus-Dateiname für #5 (Folge-Touch). Restliche §-Fragen geklärt (Register belegt).
+
+
 > **Stand:** 2026-06-09. Diese `.docx`-Vorlagen referenziert das Set-Mapping (#D/Lane K) — heute als **Platzhalter** im Generator (ZIP bricht nicht, EC-09). Sobald die echten Dateien im S3-Vorlagen-Bucket liegen, greift das Mapping automatisch. **Bereits vorhanden:** „DIN 77200 Allgemeine" (aktuelles Core-Set).
 > **Konvention je Doc:** Norm-Beleg (`clauseId` / „fachlich prüfen") · unterschriftspflichtig? · Default-Datum.
 > **Platzhalter-Felder, die der Generator füllt:** `{CompanyName}`, `{FullName}`, `{Birthday}`, Datum (Default = Arbeitsvertrags-/Einstellungsdatum, sonst angegeben).

@@ -3,9 +3,11 @@
 > Ziel: **stabile HTTPS-URL** für Tally-Webhooks statt wechselndem cloudflared-Tunnel.  
 > App: `cert-expert-certification-os/apps/certification-os/` · Port **3001** (intern)
 
-## ✅ LIVE-STAND (Redeploy 2026-06-09 #2, Terminal-Planer auf Marks Anweisung)
+## ✅ LIVE-STAND (Redeploy 2026-06-10, Terminal-Planer auf Marks Anweisung)
 
-**App live: https://cos.cert-expert.de** (HTTPS, HTTP→HTTPS-Redirect). Deployter Commit **`03429b2`** (zuvor `5280d9c`, davor `404d55d`).
+**App live: https://cos.cert-expert.de** (HTTPS, HTTP→HTTPS-Redirect). Deployter Commit **`fe17ad5`** (zuvor `03429b2`, `5280d9c`, `404d55d`).
+
+> **Redeploy 2026-06-10 (Vorlagen-Integration):** `03429b2` → `fe17ad5`. **30 Dokumentvorlagen serverseitig in S3 eingespielt** (`roles/sicherheitsmitarbeiter|fuehrungskraft|buerokraft` mit Basis+Stellenbeschreibung; `appointments/bestellungen|betriebsanweisung|mutterschutz|objektbezogen|veranstaltung`). 5 Dokumente neu erstellt (Ersthelfer-, SiBe-Bestellung, Kfz-Fahranweisung, Mutterschutz-Merkblatt, Bildschirmarbeitsplatz — aus Brandschutzhelfer-Shell, §§ korrekt). `vorlagen-set-catalog.ts` auf echte Slugs verdrahtet (FK inkl. Bildschirm). Kein Schema-Change (kein db push). Build grün, `/api/templates` zeigt 4 Rollen, Endpunkte 200. **Offen:** alte `appointments/unterweisungen/`-Kopien (2) noch im Bucket (Route-Filter blendet aus; Mass-Delete vom Auto-Classifier blockiert → Mark löscht gezielt oder gibt OK).
 
 > **Redeploy 2026-06-09 #2:** `5280d9c` → `03429b2`. Enthält: Tool-2-Feedback komplett (#1/#A/#B/#9, #7/#C, #3, #8, #2, #D, #4, #10, #5 + Q8) inkl. **5 neue additive nullable Spalten** (`bestelltAls`, `bestellungSchulungLink`, `setKategorie`, `generatorDates`, `gender`). DB-Backup vor Deploy (`pre-deploy-2026-06-09-210010.db`), `db push` synchron (additiv, kein Datenverlust/Backfill), `next build` Compiled successfully, Restart grün, Live-Endpunkte 200 (inkl. `/?area=mitarbeiterakte`), Log fehlerfrei. **Offen (Server):** S3-Move `Unterweisungsnachweis_Arbeitsschutz_DGUV.docx` (#9, Route-Filter blendet bis dahin aus).
 
