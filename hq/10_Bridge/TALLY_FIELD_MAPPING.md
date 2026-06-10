@@ -1,8 +1,9 @@
-# Tally-Feld-Mapping (Slice 1 + Lane D #3)
+# Tally-Feld-Mapping (Slice 1 + Lane D #3 + Lane Q P4)
 
 > Generiert 2026-06-07 via Tally REST API (`GET /forms`, `GET /forms/{id}/questions`). Keine Secrets.
 > **Review durch Claude vor Verdrahtung.** Slice-1-Intake fokussiert Formular **Mitarbeiterbezogene Unterlagen** (`vGNvY0`).
 > **Lane D #3 (2026-06-09):** Abgleich Tally-Feld → `evidenceId` → Akte-Nachweis-Slot auf **je-Schulung-mit-eigenem-Datum** (Mark-Q3) umgestellt; Lücken/Fehl-Mappings gefixt. Vollständige Abgleich-Tabelle unten (Status `ok`/`fix`). Bezug CL-01/02/03/08/23 — **reine Zuordnung, keine neue Normpflicht.** EC-10: alle eingehenden Nachweise bleiben `unchecked`.
+> **Lane Q P4 #5 (2026-06-10, Mark D4 = b+c):** Neues optionales Feld **`dateQuestionId`** je Schulungs-Datei-Slot (`TallyFileQuestionConfig`, `lib/tally-intake-config.ts`). Ist im Tally-Formular ein **Durchführungs-/Zertifikatsdatum** (DATE) je Schulungsnachweis hinterlegt, trägt Mark dessen Tally-`questionId` hier + in `data/tally-employee-slots.json` ein. Der Intake liest das Datum aus und setzt es als `plannedDate` des Plan-Eintrags `training-plan:{id}` (`applyTrainingDateFromEvidence`, Akte-Termin-Planung). **Kein erfundenes Datum** (fehlt das Feld/kommt kein Datum → kein Plan-Datum). EC-10: der Nachweis bleibt separat `unchecked` (#7) — das Datum ist NUR das Durchführungsdatum, keine Freigabe. (c) Beim manuellen Upload bietet die Akte (Termin-Planung) dasselbe `plannedDate`-Feld als Durchführungsdatum an.
 
 ## Formulare (Übersicht)
 
@@ -42,8 +43,11 @@
 | `7dM6d9` | Ersthelfer / First Aid Certificate | FILE_UPLOAD | **EvidenceItem `training-plan:erste-hilfe` (Schulung, CL-08)** |
 | `5dVbDQ` | Brandschutz | FILE_UPLOAD | **EvidenceItem `training-plan:brandschutz` (Schulung, CL-23)** |
 | `YZ1rRd` |  | FILE_UPLOAD | **EvidenceItem `tally-weitere-nachweise` (Sammel-Slot, sonstige Nachweise)** |
+| *(P4: `dateQuestionId` nachzutragen)* | Durchführungs-/Zertifikatsdatum Ersthelfer | INPUT_DATE | **→ `plannedDate` von `training-plan:erste-hilfe`** (Mark trägt Tally-`questionId` ein) |
+| *(P4: `dateQuestionId` nachzutragen)* | Durchführungs-/Zertifikatsdatum Brandschutz | INPUT_DATE | **→ `plannedDate` von `training-plan:brandschutz`** (Mark trägt Tally-`questionId` ein) |
 
 > **Slots 2–10:** alle `*QuestionId`-Felder + `fileQuestionIds` (mit expliziter `evidenceId`) je Slot in `lib/data/tally-employee-slots.json` (per Tally-Formular-Reihenfolge abgeleitet). Datei-Reihenfolge ist über alle Slots positionsgleich.
+> **P4 (b) `dateQuestionId`:** Pro Schulungs-Datei-Slot (`training-plan:{id}`) kann ein optionales `dateQuestionId` (Tally-DATE-Frage) ergänzt werden — z. B. `{ "questionId": "7dM6d9", "label": "Ersthelfer …", "evidenceId": "training-plan:erste-hilfe", "dateQuestionId": "<DATE-questionId>" }`. Solange Mark im Tally-Formular kein Datum-Feld je Schulung anlegt, bleibt `dateQuestionId` weg (inaktiv) → der Intake setzt **kein** Datum (kein erfundenes Datum).
 
 ---
 
@@ -81,7 +85,7 @@
 
 **EC-10:** Der Intake setzt jede importierte Datei als `EvidenceItem` mit Status **`unchecked`** (`saveEmployeeEvidenceFile`); keine Auto-Freigabe-/Auditaussage. **Keine neue Normpflicht** — reine Zuordnung bestehender Slots.
 
-**Offen / Hinweis (nicht im Lane-D-Write-Set):** Die `training-plan:{id}`-Slots der Akte werden heute mit **benutzergenerierten** Item-Ids (`tp-…`) angelegt (Queue C). Der Tally-Import nutzt **stabile** Ids (`erste-hilfe`/`brandschutz`). Damit der importierte Nachweis automatisch an einem vorhandenen Plan-Eintrag erscheint, müssten Plan-Items dieselbe stabile Id tragen bzw. ein Lookup ergänzt werden — das berührt `modules/03-mitarbeiterakte-tool-2/**` (Lane C/Akte, **außerhalb dieses Write-Sets**) → als Frage an den Planer geparkt.
+**Offen / Hinweis (Lane D) — von Lane Q P4 (2026-06-10) adressiert:** Die `training-plan:{id}`-Slots der Akte werden in der manuellen Planung mit **benutzergenerierten** Item-Ids (`tp-…`) angelegt (Queue C). Der Tally-Import nutzt **stabile** Ids (`erste-hilfe`/`brandschutz`). P4 (b) löst das für den Datums-Pfad: `applyTrainingDateFromEvidence` legt — wenn kein Plan-Eintrag mit der stabilen Id existiert — einen minimalen Plan-Eintrag mit genau dieser stabilen Id an (`erste-hilfe`/`brandschutz`), sodass der importierte Nachweis (`training-plan:erste-hilfe`) und sein Durchführungsdatum am selben Plan-Eintrag erscheinen. **Restliche Konsolidierung** (manuelle `tp-…`-Items vs. stabile Import-Items zusammenführen) bleibt eine optionale Akte-Aufräumung → als Frage an den Planer geparkt.
 
 ## Unternehmensbezogene Unterlagen (`Y5Zq80`) — Auszug
 

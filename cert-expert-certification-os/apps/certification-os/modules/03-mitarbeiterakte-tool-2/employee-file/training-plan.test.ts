@@ -23,6 +23,8 @@ import {
   isEvidenceChecked,
   buildPlanDeadlineRows,
   normalizeEvidenceChecks,
+  trainingItemIdFromEvidenceId,
+  applyTrainingDateFromEvidence,
 } from "./training-plan";
 import { severityOf } from "./compliance-status";
 import { extractUeFromText } from "./training-catalog";
@@ -422,4 +424,53 @@ test("#7 normalizeEvidenceChecks: tolerante am/von (nur Strings) + Idempotenz", 
   assert.deepEqual(normalizeEvidenceChecks(out), {
     u34a: { geprueft: true, am: undefined, von: undefined },
   });
+});
+
+// --- P4 (b) Tally-Durchführungsdatum → Plan-Eintrag -----------------------
+
+test("P4 trainingItemIdFromEvidenceId: training-plan:{id} → id, sonst null", () => {
+  assert.equal(trainingItemIdFromEvidenceId("training-plan:erste-hilfe"), "erste-hilfe");
+  assert.equal(trainingItemIdFromEvidenceId("arbeitsvertrag"), null);
+  assert.equal(trainingItemIdFromEvidenceId("training-plan:"), null);
+});
+
+test("P4 (b) Tally-Datum übernommen: neuer Plan-Eintrag mit plannedDate + stabiler Id", () => {
+  const next = applyTrainingDateFromEvidence([], "training-plan:erste-hilfe", "2026-05-20");
+  assert.equal(next.length, 1);
+  const item = next[0]!;
+  assert.equal(item.id, "erste-hilfe");
+  assert.equal(item.plannedDate, "2026-05-20");
+  assert.equal(item.clauseId, "CL-08");
+  // EC-10 / kein Auto-Ist: keine UE-Anerkennung → recognizedUe = 0.
+  assert.equal(item.ueAnerkennung, undefined);
+  assert.equal(recognizedUe(item), 0);
+});
+
+test("P4 (b) Tally-Datum übernommen: bestehender Eintrag bekommt plannedDate (Id-Match)", () => {
+  const plan = [planItem({ id: "brandschutz", refId: "brandschutz", plannedDate: undefined })];
+  const next = applyTrainingDateFromEvidence(plan, "training-plan:brandschutz", "2026-04-01");
+  assert.equal(next.length, 1);
+  assert.equal(next[0]!.plannedDate, "2026-04-01");
+  // Andere Felder unberührt (nur plannedDate gesetzt).
+  assert.equal(next[0]!.label, "Dokumentation/Wachbuch/Meldewesen");
+});
+
+test("P4 (b) fehlend → leer: kein/leeres/ungültiges Datum = No-op (kein erfundenes Datum)", () => {
+  const plan = [planItem({ id: "erste-hilfe", refId: "erste-hilfe" })];
+  assert.deepEqual(applyTrainingDateFromEvidence(plan, "training-plan:erste-hilfe", ""), plan);
+  assert.deepEqual(applyTrainingDateFromEvidence(plan, "training-plan:erste-hilfe", "  "), plan);
+  assert.deepEqual(applyTrainingDateFromEvidence(plan, "training-plan:erste-hilfe", "20.05.2026"), plan);
+  // Leerer Plan + kein Datum → bleibt leer (kein Eintrag erfunden).
+  assert.deepEqual(applyTrainingDateFromEvidence([], "training-plan:erste-hilfe", ""), []);
+});
+
+test("P4 (b) Nicht-Schulungs-evidenceId → No-op (Dokument-Slot ohne Plan-Datum)", () => {
+  const plan = [planItem({ id: "x" })];
+  assert.deepEqual(applyTrainingDateFromEvidence(plan, "arbeitsvertrag", "2026-05-20"), plan);
+});
+
+test("P4 (b) idempotent: gleiches Datum erneut anwenden ändert nichts (Referenz stabil)", () => {
+  const once = applyTrainingDateFromEvidence([], "training-plan:erste-hilfe", "2026-05-20");
+  const twice = applyTrainingDateFromEvidence(once, "training-plan:erste-hilfe", "2026-05-20");
+  assert.equal(twice, once); // identische Referenz (No-op-Pfad)
 });
