@@ -7,8 +7,12 @@
 
 **Übergabe-Takt (Agent):** Nach Task/Slice/Commit → Mark erinnern: „✅ stabiler Punkt — Committen/Übergeben (neuer Chat)." Bei ~70–80 % Context → „Übergabe empfohlen." Ablauf: stabil → commit → **Abschluss-Eintrag** (fertig/offen/nächster Schritt/Hashes) → neuer Agent liest `CLAUDE.md` + HANDOFF. Gedächtnis = Repo, nicht Chat.
 
-> ## ▶ HIER STARTEN — AKTUELLER STAND (2026-06-10)
-> **▶ JETZT — SCHULUNGEN/BESTELLUNGEN/UPLOAD/PRÜFSTATUS-FLOW KOMPLETT + LIVE (Terminal-Planer, 2026-06-10): `main` = `2242502`, DEPLOYT auf cos.cert-expert.de.** Marks 7 Live-Test-Punkte gebaut, reviewt, gemergt UND live (4 sequenzielle Lanes P1–P4, worktree-isoliert, je Planer-Merge-Gate): #1 Bestellungen-Wiring · #2 eigener Schulungen-Abschnitt · #3 Datum-Default startDate · #4 verifiziert · #5 Tally-/Upload-Datum · #6 Upload Anlegen+Bearbeiten · #7 Prüfstatus („geprüft"-Toggle → Ampel grün, EC-10 kein Auto-Grün). Neue additive Spalte `evidenceChecks Json?` (db push beim Deploy, Backup). Suite **153/153**, next build grün, Endpunkte 200. Register CL-75/76/77 belegt. **Offen (Mark, kein Blocker):** Admin-/Rollen-Gate für „geprüft" (kein Auth-System), reale Tally-date-questionIds (Tally-Feld anlegen), alte `appointments/unterweisungen/`-Kopien löschen (Classifier blockt), EmployeeForm-Master-Edit-Pfad. Review: `CODE_REVIEW.md` (P1–P4), Bauauftrag `CURSOR_TOOL2_SCHULUNGEN_FLOW_AUFTRAG.md`.
+> ## ▶ HIER STARTEN — AKTUELLER STAND (2026-06-10) · ÜBERGABE an neuen Planer
+> **▶ JETZT — STAND BEI ÜBERGABE: `main` = `9b8c0b9`, LIVE auf cos.cert-expert.de = Code `e84e599`.** Suite **160/160**, next build grün. Diese Session (langer Terminal-Planer-Lauf) hat erledigt + deployt: **Tool-2-Feedback (10 Pkt + A–E + Q8)** · **Vorlagen-Integration** (30 Vorlagen in S3 + 5 selbst erstellte Dok. aus Brandschutzhelfer-Shell + Set-Mapping verdrahtet) · **Schulungen/Bestellungen/Upload/Prüfstatus-Flow (P1–P4)** · **Schulung „Durchführung von–bis"** · **modulare DIN-1-Schulungen generierbar** (zugewiesenes Modul → `.docx` im ZIP unter `Schulungen/`, Smoke bestätigt). Register CL-75/76/77 = belegt.
+> **▶ TALLY-KLÄRUNGEN (Mark, 2026-06-10) — für den Tally-Ausbau:** (a) **EH/Brandschutz „gültig bis"** aus Erteilungsdatum ableiten (EH +2 J. CL-08, Brandschutz +3 J. CL-23) — **Datum ist in Tally** (EH+Brandschutz-Schulung). (b) **Norm-Klasse** = Tally-Feld **„1.b Position Rolle"** (roleType). (c) **Geltungsbereich (SDL)** = bewusst **manuell in der App** (Kunde versteht's nicht) — NICHT in Tally. (d) **„Fährt Dienstfahrzeug"** = in Tally hinzugefügt. **OFFEN (Tally-Wiring, Mark liefert questionIds/Test-Submission):** Schulungs-Durchführungsdatum (P4 `dateQuestionId`), Dienstfahrzeug-Feld, EH/Brandschutz-Erteilungsdatum→gültig-bis-Ableitung, Einstellungsdatum (`startDate`) — fehlt noch in Tally-Mapping.
+> **▶ OFFENE FÄDEN (Mark terminiert, kein Blocker):** 1. Login/Rollen-Gate für „geprüft"-Toggle (heute Edit-Modus-gegated, „von"=Admin fix). 2. Tally-questionIds mappen (s. o.) — Mark macht Test-Submission, neuer Planer liest IDs aus Webhook-Log + trägt in `tally-employee-slots.json`. 3. Alte `appointments/unterweisungen/`-Kopien (2 Keys) löschen — **Auto-Classifier blockt agent-Delete**, Mark gezielt/Settings. 4. EmployeeForm-Master-Edit-Pfad (#6 wörtlich im Formular). 5. Modul-Dateinamen 2–8 = verifiziert = echte S3-Namen (ok). Quellen: `CODE_REVIEW.md` (Dispatch v1–v6, Lane J–S, P1–P4), `BENOETIGTE_VORLAGEN.md`, `CURSOR_TOOL2_FEEDBACK_AUFTRAG.md`, `CURSOR_TOOL2_SCHULUNGEN_FLOW_AUFTRAG.md`, `HETZNER_DEPLOY.md` (LIVE-STAND).
+> **▶ ARBEITSMODUS (Mark):** EIN Terminal-Planer plant + baut (Guardrail entfernt). In-Chat-Subagenten (worktree-isoliert) statt Cursor-Chats; Custom-Agents `.claude/agents/executor-a|b.md` (greifen nach Session-Reload). Pro Lane: review (tsc/Suite/next build/Disjunktheit) → merge → push → cleanup → Mark-Go für Deploy. **Deploy NUR auf explizites „deploy" (Classifier-Gate). S3-Deletes blockt der Classifier.** Memory `arbeitsmodus-mehr-kontrolle`.
+> **▶ VORHER — Schulungen/Flow P1–P4 + Vorlagen (2026-06-10):** Marks 7 Live-Test-Punkte gebaut, reviewt, gemergt UND live (4 sequenzielle Lanes P1–P4, worktree-isoliert, je Planer-Merge-Gate): #1 Bestellungen-Wiring · #2 eigener Schulungen-Abschnitt · #3 Datum-Default startDate · #4 verifiziert · #5 Tally-/Upload-Datum · #6 Upload Anlegen+Bearbeiten · #7 Prüfstatus („geprüft"-Toggle → Ampel grün, EC-10 kein Auto-Grün). Neue additive Spalte `evidenceChecks Json?` (db push beim Deploy, Backup). Suite **153/153**, next build grün, Endpunkte 200. Register CL-75/76/77 belegt. **Offen (Mark, kein Blocker):** Admin-/Rollen-Gate für „geprüft" (kein Auth-System), reale Tally-date-questionIds (Tally-Feld anlegen), alte `appointments/unterweisungen/`-Kopien löschen (Classifier blockt), EmployeeForm-Master-Edit-Pfad. Review: `CODE_REVIEW.md` (P1–P4), Bauauftrag `CURSOR_TOOL2_SCHULUNGEN_FLOW_AUFTRAG.md`.
 > **▶ VORHER — Vorlagen-Integration live (2026-06-10): `main` war `fe17ad5`** (30 Vorlagen in S3, Set-Mapping verdrahtet).
 > **▶ EXECUTOR-STATUS (2026-06-10): Lane O P2 (Schulungen-Abschnitt #2 + Datum-Default startDate #3) = FERTIG + committet `a2fe6b9` auf Branch `lane-o-p2-schulungen` (ab `origin/main` `205595a`), NICHT gepusht/gemergt.** Gates grün: tsc 0 · Suite 137/137 (6 neue #3-Tests) · `next build` Compiled successfully. Details + geparkte Fragen → unten „Von Cursor an Claude". **Wartet auf Planer-Review + Mark-Merge-Gate.**
 > **▶ JETZT — VORLAGEN-INTEGRATION KOMPLETT + LIVE (Terminal-Planer, 2026-06-10): `main` = `fe17ad5`, DEPLOYT.** 30 Dokumentvorlagen serverseitig in S3 eingespielt (`roles/sicherheitsmitarbeiter|fuehrungskraft|buerokraft` = Basis+Stellenbeschreibung; `appointments/bestellungen|betriebsanweisung|mutterschutz|objektbezogen|veranstaltung`). **5 Dokumente neu erstellt** (Bestellung Ersthelfer+SiBe, Kfz-Fahranweisung, Mutterschutz-Merkblatt, Bildschirmarbeitsplatz — aus Brandschutzhelfer-Shell, §§ korrekt, Mark-„Wording ok"). `vorlagen-set-catalog.ts` auf **reale Slugs** verdrahtet (FK inkl. Bildschirm), templateMissing-Flags gelöst. Suite **127/127**, next build grün, `/api/templates` zeigt 4 Rollen, kein Schema-Change. Register CL-75/76/77 = **belegt**. **Offen (Mark, gezielt):** alte `appointments/unterweisungen/`-Kopien löschen (Route-Filter blendet aus; Mass-Delete vom Auto-Classifier blockiert); modulare-Schulungen-UE-aus-Dateiname (#5-Folge-Touch). Doku: `BENOETIGTE_VORLAGEN.md`, `HETZNER_DEPLOY.md`.
@@ -56,6 +60,33 @@
 > **Danach (Scope/Planung, NICHT Review):** Executor-FRAGE „**Anlege-Formular auf neues Requirement-Modell migrieren?**" (Legacy `EmployeeForm.tsx`/Tool-1-Modell vs. neues Akte-Modell) als **eigenen Slice** mit Mark abwägen. Plus offene Fäden: **Slice 3b** (Tally-Formular-Feldlücke, gated auf Marks Tally-Arbeit), **Slice 4** (Ampel-/Status-Ansicht, QFD #1), DEKRA (CL-60–62), Legal-Input (CL-70–73), Ist-UE-Auto-Summe.
 >
 > **Guardrails:** EC-09 (Generator/ZIP nie brechen), EC-10 (kein Freigabe-/Auditfähigkeitsstatus), keine erfundene Normpflicht (jede Regel `clauseId`). Verifikation im echten Browser, nicht per Skript. Mark = Gate. Nach stabilem Punkt: Übergabe-Takt + Abschluss-Eintrag.
+
+---
+
+## 📚 Wissensmanagement-Session (Cowork, 2026-06-10)
+
+**Rolle:** Wissensaufbau (kein Produktivcode). Alle verfügbaren PDFs in `inputs/raw_standards/` wurden via PyMuPDF (+ OCR für LAF-Betreiber-Scan) extrahiert und in strukturierte `knowledge/2_regulations/`-MDs mit YAML-Frontmatter überführt.
+
+**Neu erstellt / befüllt (alle `status: reviewed`):**
+
+| Ordner | Quelle | Seiten |
+|--------|--------|--------|
+| `01_sdl/din_77200_3/` | DIN 77200-3:2020-07 | 24 |
+| `01_sdl/laf_berlin_sdl/` | LAF-LQB-SDL 2018+2020 | 10+11 |
+| `01_sdl/laf_berlin_betreiber/` | LAF-Betreibervertrag 2016 (Scan+OCR) | 19 |
+| `00_basis/iso_9001/` | DIN EN ISO 9001:2015 | 71 |
+| `00_basis/iso_14001/` | DIN EN ISO 14001:2015 + Berichtigung | 83 |
+| `00_basis/iso_14001_umsetzung/` | Praxisleitfaden Reimann 2019 | 231 |
+
+**README `knowledge/2_regulations/README.md`** aktualisiert (alle neuen Ordner eingetragen).
+
+**Aktueller Gesamt-Status `2_regulations/`:**
+- `✅ aus PDF` (14 Ordner): bewachv, din_77200_1/-2/-3, dguv_r100-001, dguv_i211-005, dguv_r115-001, dguv_i215-310, laf_berlin_sdl, laf_berlin_betreiber, iso_9001, iso_14001, iso_14001_umsetzung
+- `⚠️ Stub` (2): dguv_v23, vbg
+- `⬜ offen` (4 — keine PDFs vorhanden): gewo_34a, arbstaettv, betrsichv, dsgvo_bdsg
+- `Altbestand` (4 — altes Format, kein YAML): arbschg/, dguv_v1/ + Doppelgänger VStättVO/ + arbschg/ im Root → Mark löscht bei Gelegenheit
+
+**Noch ausstehend:** VBG-PDFs (OneDrive, noch nicht im Repo) · dguv_v23-PDF (nicht vorhanden).
 
 ---
 
