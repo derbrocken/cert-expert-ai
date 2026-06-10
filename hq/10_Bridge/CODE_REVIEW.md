@@ -13,6 +13,20 @@
 
 ---
 
+## 2026-06-10 — Schulungen/Bestellungen/Upload/Prüfstatus-Flow (P1–P4) — **Planer-Review → ABGENOMMEN, gemergt (`1c92696`), Deploy ausstehend**
+
+**Methode:** 4 sequenzielle Lanes (worktree-isoliert), je unabhängig reviewt + gemergt; nach jeder Lane `tsc`/Suite/**next build** auf `main`. Suite wuchs 127→**153/153**. EC-09/EC-10 je Lane geprüft; `requirement-engine.ts` (Norm-Logik) durchgehend unberührt.
+
+- **P1 (`88d9519`) — Bugs:** #1 Bestellungen-Wiring (Root-Cause: `BESTELLUNG_DEFS` zeigte auf nie-existente Appointment-IDs `safety-training` etc.; jetzt eigenes „bestellt als"-Multiselect → `bestelltAls`, Overlays → reale `appointments/bestellungen/`-Vorlagen). #4 Schulungs-Auswahl: `onSave`-Kette war intakt → verifiziert statt erfunden.
+- **P2 (`a2fe6b9`) — #2/#3:** eigener sichtbarer „Schulungen"-Abschnitt (getrennt von Standarddok/Unterweisungen, Dossier + Übersicht); Default-Datum Erst-Standard = `startDate`, überall editierbar (D3).
+- **P3 (`305ae31`) — #6/#7:** Upload beim Anlegen (nach Speichern) + Bearbeiten (D2); **Prüfstatus** `evidenceChecks Json?` (additiv) — „geprüft"-Toggle (Mensch) → Ampel erfüllt, vorher `unchecked`/in-Arbeit. **EC-10 hart: kein Auto-Grün.** **⚠️ Prod-`db push` nötig.**
+- **P4 (`d0993bf`) — #5:** Tally-Durchführungsdatum (b, `dateQuestionId`-Mapping) + Upload-Datum-Input (c); kein erfundenes Datum, `unchecked` bleibt, kein Auto-Ist.
+
+### Verdict
+**P1–P4 abgenommen + gemergt.** Keine Engine-/Norm-Eingriffe. **Deploy ausstehend** (Classifier verlangt explizites Go; DB-Migration `evidenceChecks`). **Geparkte Mark-Punkte:** Admin-Gate für „geprüft" (kein Auth-System — heute Edit-Modus-gegated, echtes Rollen-Gate = C-10-Frage) · reale Tally-date-`questionId`s (Mark legt Tally-Feld an) · EmployeeForm-Master-Edit-Pfad · alte `appointments/unterweisungen/`-Kopien löschen.
+
+---
+
 ## 2026-06-09 — Nachbau Lane L: #5 UE-Anerkennung (`d7d6493`) + 🔴 Build-Blocker-Fix (`36c4509`) — **Planer-Review → ABGENOMMEN, gemergt (`1e4555f`)**
 
 **🔴 Wichtiger Befund (Lane-L-Executor surfacte ihn):** `next build` schlug auf `main` fehl — **„Server Actions must be async"** in `employee-generator/generate-employee-docs.ts:98`. Ursache: **Lane I (#10)** exportierte die synchrone `isErstunterweisungDoc` aus der `"use server"`-Datei. `tsc --noEmit` + `tsx --test` fangen das NICHT (Next-Build-Regel). **Ein Deploy hätte hier gebrochen.** Fix: `export` entfernt (nur modulintern genutzt). → **`next build` ist ab jetzt fester Review-Gate** (Prozesslücke geschlossen).
