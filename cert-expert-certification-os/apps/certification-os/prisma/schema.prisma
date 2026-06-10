@@ -84,6 +84,13 @@ model EmployeeFile {
   // bisherigen Session-State. Nullable/additiv (P2023-sicher); reines
   // Ausgabedatum, kein Engine-/Norm-/UE-Eingriff (EC-10).
   generatorDates             Json?
+  // P3 / #7 — Prüf-/„geschlossen"-Status je Nachweis (Mark D1). Json-Map
+  // evidenceId → { geprueft: boolean; am?: string; von?: string }. Nullable/
+  // additiv (kein @default → P2023-sicher). EC-10 (hart): eingehende Nachweise
+  // bleiben ungeprüft; erst ein menschlicher „geprüft"-Klick zählt in der Ampel
+  // als erfüllt/grün — KEIN Auto-Status. Fehlt das Feld auf Bestandsakten,
+  // liest die Read-Normalisierung tolerant „ungeprüft".
+  evidenceChecks             Json?
   evidenceItems              EvidenceItem[]
   migratedFromLocalStorageAt DateTime?
   createdAt                  DateTime @default(now())

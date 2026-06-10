@@ -256,6 +256,31 @@
 
 ## 📥 Von Cursor an Claude (Fragen / Bitten)
 
+### 2026-06-10 — ✅ Executor Lane P P3 (Upload beim Anlegen/Bearbeiten #6 + „geprüft/geschlossen"-Status #7): FERTIG + committet (Branch `lane-p-p3-upload-pruefstatus`, NICHT gepusht/gemergt)
+
+**Branch:** `lane-p-p3-upload-pruefstatus` (ab `main` HEAD `1253c2c`). **`main` unberührt, nicht gepusht/gemergt.** Commit = **HEAD von `lane-p-p3-upload-pruefstatus`** (`git log -1` auf dem Branch; ein einzelner Commit mit allen P3-Änderungen + diesem HANDOFF-Eintrag).
+**Gates (alle grün, im Worktree mit echten node_modules + frischer Worktree-DB `prisma/worktree-dev.db`):** `tsc --noEmit` = **0** · employee-file-Suite **147/147** (137 Basis + 10 neue #7-Tests: `derivePlanItemStatus` geprüft/ungeprüft, `planStatusToWorkingItemStatus`-Mapping, `isEvidenceChecked`, `buildPlanDeadlineRows` geprüft→erfüllt/ungeprüft→in-Arbeit, `normalizeEvidenceChecks`-Backfill) · **`next build` = „Compiled successfully"** (15 Routen, TS-Check ok). `prisma generate` + `db push` gegen frische Worktree-DB grün (additiv). **Kein `.env`/`.db`/node_modules/Kundendaten committet** (alles gitignored; node_modules nur lokal zum Build).
+
+**⚠️ NEUE SCHEMA-SPALTE → Prod-`db push` beim Deploy nötig:** `EmployeeFile.evidenceChecks Json?` (nullable/additiv, P2023-sicher, kein `@default`). Read-Norm tolerant (fehlt → ungeprüft). Backup vor Prod-push wie üblich.
+
+**Gebaut (Bounded Write-Set + nötige Verdrahtungs-Touches):**
+- **#7 Prüf-/„geschlossen"-Status (Mark D1, EC-10 HART — kein Auto-Grün):**
+  - Datenmodell: `EvidenceCheck`/`EvidenceChecks` in `types/employee.ts` (`evidenceId → { geprueft, am?, von? }`); additive nullable Spalte `evidenceChecks Json?` in `schema.prisma`; Repository (`employee-file-repository.ts`) Read (`asEvidenceChecks` → delegiert an reine `normalizeEvidenceChecks`) + Write (create + DRY `laneJUpdateFields` → alle upsert/replace/migrate-Stellen).
+  - Logik (`training-plan.ts`): neuer Plan-Status `vorhanden-ungeprueft`; `derivePlanItemStatus(item, hasProof, ref?, isChecked=false)` → vorhanden+geprüft = `nachweis-vorhanden` (erfüllt), vorhanden+ungeprüft = `vorhanden-ungeprueft` (→ `beantragt`/severity „offen" = gelb); `buildPlanDeadlineRows` nimmt optionalen `isChecked`-Prädikat (Default = nie geprüft → EC-10-sicher); Helfer `isEvidenceChecked` + pure `normalizeEvidenceChecks`.
+  - Ampel-Merge an der Aufrufstelle (compliance-status.ts **unverändert**, wie Queue C): `EmployeeFileDossierView` + `EmployeeFileOverview` + `app/actions/generate-audit-export.ts` reichen `isChecked` in `buildPlanDeadlineRows`/`derivePlanItemStatus`.
+  - Admin-Toggle „Als geprüft markieren" (nur wenn Handler gesetzt = Admin/Mark): `EmployeeFileEvidenceRow` (Pflichtnachweise + Schulung/Unterweisung via DossierView) + `EmployeeFileTrainingPlan` (Plan-Slots). Toggle persistiert additiv über `employee.evidenceChecks` im bestehenden Akten-Auto-Save (Debounce → `saveEmployeeQueue`/`replaceEmployeeFilesForCompany`) — **kein neuer Server-Action/Storage-Pfad**. Live-Akte aktualisiert sofort (State-Update) + Ampel reagiert.
+- **#6 Upload beim Anlegen/Bearbeiten (Mark D2 = beides):**
+  - (b) Neu-Anlegen: nach `onAdd` springt die Akte direkt in den „Nachweise hochladen"-Schritt (`akteViewMode=bearbeiten` + `evidenceEditMode=true` + Toast) — Person ist da persistiert (ID/companySlug).
+  - (a) Bearbeiten: Upload läuft im Akte-Bearbeiten-Modus (DossierView Evidence-Rows, bestehende Infra) inkl. neuem Prüf-Toggle. Zusätzlich `EmployeeForm` (master) um optionalen, kompakten Nachweis-Upload-Block erweitert (`FormEvidenceUploadSection`, nur bei persistierter Person + Handlern), der die bestehende Evidence-Infra (`onEvidenceUpload`/`saveEmployeeEvidenceFile`) nutzt — **kein neues Storage-Modell**.
+
+**Verdrahtungs-Touches außerhalb des Bounded-Write-Sets (nötig, da einziger Render-/Konsum-Pfad; requirement-engine.ts + lib/tally-* UNBERÜHRT):** `EmployeeFileDossierView.tsx`, `EmployeeFileOverview.tsx`, `EmployeeFileTrainingPlan.tsx`, `app/actions/generate-audit-export.ts` (neuer Plan-Status zwingt dort die exhaustive `PLAN_STATUS_LABEL`-Map zu ergänzen + isChecked durchreichen). Reines Prop-/Predicate-Threading + Label, keine Norm-/Engine-Logik.
+
+**Geparkte Fragen an Planer/Mark:**
+1. **Admin-Gate für „geprüft":** Es gibt (noch) kein Auth-/Rollensystem. Der Prüf-Toggle ist derzeit gegated über „Handler vorhanden" (= Akte-Bearbeiten-Modus). `von` wird hart auf „Admin" gesetzt. Ist das als Admin/Mark-Gate ausreichend, oder soll ein echtes Rollen-/Login-Gate her? (Architektur → C-10-Gate.)
+2. **#6a wörtlich im `EmployeeForm`:** Der reale Bearbeiten-Pfad ist die DossierView-„Bearbeiten"-Ansicht (Upload + Toggle dort funktional). Der EmployeeForm-Upload-Block ist verdrahtet, rendert aber nur in master-Modus mit persistierter Person — derzeit kein master-Edit-Render-Pfad in der App (Create = master/ohne ID, Generator = documents). Soll ein eigener „Akte im Formular bearbeiten"-Render-Pfad aufgemacht werden? (Scope → Planer.)
+
+**Übergabe-Takt:** ✅ Stabiler Punkt — Gates grün, Scope (#6+#7/P3) abgeschlossen. Wartet auf Planer-Review + Mark-Merge-Gate. NICHT gemergt/gepusht.
+
 ### 2026-06-10 — ✅ Executor Lane O P2 (Schulungen-Abschnitt #2 + Datum-Default #3): FERTIG + committet (Branch `lane-o-p2-schulungen`, NICHT gepusht/gemergt)
 
 **Branch:** `lane-o-p2-schulungen` (ab `origin/main` HEAD `205595a` = inkl. Lane-N P1). **`main` unberührt, nicht gepusht/gemergt.** Commit: **`a2fe6b9`**.

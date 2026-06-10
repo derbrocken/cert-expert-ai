@@ -20,7 +20,11 @@ import {
   setUeBestaetigt,
   isErstStandardGruppe1,
   defaultPlannedDateForNewItem,
+  isEvidenceChecked,
+  buildPlanDeadlineRows,
+  normalizeEvidenceChecks,
 } from "./training-plan";
+import { severityOf } from "./compliance-status";
 import { extractUeFromText } from "./training-catalog";
 
 const REF = "2026-06-08";
@@ -108,9 +112,28 @@ test("computeTrainingGaps: soll===null → rest===null (fachlich prüfen)", () =
 
 // --- Plan-Status (deterministisch via referenceDate) ----------------------
 
-test("derivePlanItemStatus: Nachweis vorhanden gewinnt immer", () => {
+test("#7 derivePlanItemStatus: Nachweis vorhanden + UNGEPRÜFT → vorhanden-ungeprueft (kein Auto-Grün)", () => {
   const item = planItem({ plannedDate: "2020-01-01" }); // in der Vergangenheit
-  assert.equal(derivePlanItemStatus(item, true, REF), "nachweis-vorhanden");
+  // EC-10: Default isChecked=false → bloßer Upload macht nicht grün.
+  assert.equal(derivePlanItemStatus(item, true, REF), "vorhanden-ungeprueft");
+  assert.equal(
+    derivePlanItemStatus(item, true, REF, false),
+    "vorhanden-ungeprueft",
+  );
+});
+
+test("#7 derivePlanItemStatus: Nachweis vorhanden + GEPRÜFT → nachweis-vorhanden (erfüllt)", () => {
+  const item = planItem({ plannedDate: "2020-01-01" });
+  assert.equal(
+    derivePlanItemStatus(item, true, REF, true),
+    "nachweis-vorhanden",
+  );
+});
+
+test("#7 derivePlanItemStatus: kein Nachweis → geprüft-Flag irrelevant (überfällig)", () => {
+  const item = planItem({ plannedDate: "2026-06-07" });
+  // Ohne Datei darf isChecked nichts ändern (kein Nachweis = nichts zu prüfen).
+  assert.equal(derivePlanItemStatus(item, false, REF, true), "ueberfaellig");
 });
 
 test("derivePlanItemStatus: kein Datum → ohne-datum", () => {
@@ -135,9 +158,15 @@ test("derivePlanItemStatus: Datum == heute → geplant (nicht überfällig)", ()
 
 // --- Status → WorkingItemStatus-Mapping -----------------------------------
 
-test("planStatusToWorkingItemStatus: alle vier Stati gemappt", () => {
+test("planStatusToWorkingItemStatus: alle Stati gemappt (#7: ungeprüft = gelb/offen, geprüft = erfüllt)", () => {
   assert.equal(planStatusToWorkingItemStatus("geplant"), "beantragt");
   assert.equal(planStatusToWorkingItemStatus("ueberfaellig"), "abgelaufen");
+  // #7: vorhanden, aber ungeprüft → in-Arbeit/gelb (beantragt = severity „offen"),
+  // NICHT „vorhanden"/erfüllt → kein Auto-Grün.
+  assert.equal(
+    planStatusToWorkingItemStatus("vorhanden-ungeprueft"),
+    "beantragt",
+  );
   assert.equal(
     planStatusToWorkingItemStatus("nachweis-vorhanden"),
     "vorhanden",
@@ -310,4 +339,87 @@ test("#3 defaultPlannedDateForNewItem: Default ist nur Default — bleibt übers
     defaultPlannedDateForNewItem(withOwnDate, employee),
     "2026-03-01",
   );
+});
+
+// --- #7 Prüf-/„geschlossen"-Status (Mark D1, EC-10: kein Auto-Grün) --------
+
+test("#7 isEvidenceChecked: fehlende Map / fehlender Eintrag → false (ungeprüft)", () => {
+  assert.equal(isEvidenceChecked(undefined, "training-plan:tp-1"), false);
+  assert.equal(isEvidenceChecked({}, "training-plan:tp-1"), false);
+});
+
+test("#7 isEvidenceChecked: geprueft:true → true; geprueft:false → false", () => {
+  const checks = {
+    "training-plan:tp-1": { geprueft: true, am: "2026-06-10", von: "Admin" },
+    "training-plan:tp-2": { geprueft: false },
+  };
+  assert.equal(isEvidenceChecked(checks, "training-plan:tp-1"), true);
+  assert.equal(isEvidenceChecked(checks, "training-plan:tp-2"), false);
+  assert.equal(isEvidenceChecked(checks, "training-plan:tp-9"), false);
+});
+
+test("#7 buildPlanDeadlineRows: Nachweis vorhanden + ungeprüft → in-Arbeit/gelb (severity offen)", () => {
+  const item = planItem({ id: "tp-1", plannedDate: "2026-12-31" });
+  const rows = buildPlanDeadlineRows(
+    [item],
+    () => true, // Nachweis vorhanden
+    REF,
+    () => false, // aber ungeprüft (EC-10)
+  );
+  assert.equal(rows.length, 1);
+  // beantragt → severity „offen" (in-Arbeit/gelb), NICHT „erfuellt".
+  assert.equal(rows[0]!.status, "beantragt");
+  assert.equal(severityOf(rows[0]!.status), "offen");
+});
+
+test("#7 buildPlanDeadlineRows: Nachweis vorhanden + geprüft → erfüllt/grün (severity erfuellt)", () => {
+  const item = planItem({ id: "tp-1", plannedDate: "2026-12-31" });
+  const rows = buildPlanDeadlineRows(
+    [item],
+    () => true, // Nachweis vorhanden
+    REF,
+    (evidenceId) => evidenceId === planEvidenceId("tp-1"), // geprüft
+  );
+  assert.equal(rows[0]!.status, "vorhanden");
+  assert.equal(severityOf(rows[0]!.status), "erfuellt");
+});
+
+test("#7 buildPlanDeadlineRows: Default ohne isChecked-Predicate bleibt EC-10-konform (kein Auto-Grün)", () => {
+  const item = planItem({ id: "tp-1", plannedDate: "2026-12-31" });
+  // Aufrufer ohne Prüf-Verdrahtung → vorhandener Nachweis NICHT automatisch grün.
+  const rows = buildPlanDeadlineRows([item], () => true, REF);
+  assert.equal(rows[0]!.status, "beantragt");
+  assert.notEqual(severityOf(rows[0]!.status), "erfuellt");
+});
+
+// --- #7 Read-Normalisierung / Backfill (Repository-Lese-Logik) ------------
+
+test("#7 normalizeEvidenceChecks: Backfill — fehlend/null/Array/{} → undefined (ungeprüft)", () => {
+  assert.equal(normalizeEvidenceChecks(undefined), undefined);
+  assert.equal(normalizeEvidenceChecks(null), undefined);
+  assert.equal(normalizeEvidenceChecks([]), undefined);
+  assert.equal(normalizeEvidenceChecks({}), undefined);
+});
+
+test("#7 normalizeEvidenceChecks: nur geprueft===true wird übernommen (EC-10)", () => {
+  const raw = {
+    "training-plan:tp-1": { geprueft: true, am: "2026-06-10", von: "Admin" },
+    "training-plan:tp-2": { geprueft: false },
+    "training-plan:tp-3": { am: "2026-06-10" }, // kein geprueft → verworfen
+    "training-plan:tp-4": "müll", // kein Objekt → verworfen
+  };
+  const out = normalizeEvidenceChecks(raw);
+  assert.deepEqual(out, {
+    "training-plan:tp-1": { geprueft: true, am: "2026-06-10", von: "Admin" },
+  });
+});
+
+test("#7 normalizeEvidenceChecks: tolerante am/von (nur Strings) + Idempotenz", () => {
+  const raw = { "u34a": { geprueft: true, am: 123, von: "" } };
+  const out = normalizeEvidenceChecks(raw);
+  assert.deepEqual(out, { u34a: { geprueft: true, am: undefined, von: undefined } });
+  // Idempotent: erneutes Normalisieren ändert nichts.
+  assert.deepEqual(normalizeEvidenceChecks(out), {
+    u34a: { geprueft: true, am: undefined, von: undefined },
+  });
 });

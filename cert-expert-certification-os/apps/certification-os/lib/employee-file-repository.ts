@@ -1,6 +1,7 @@
 import type {
   BestellungTyp,
   Employee,
+  EvidenceChecks,
   GeneratorDates,
   Geschlecht,
   GlobalProperties,
@@ -34,6 +35,7 @@ import {
   serializeQualifications,
 } from "@/modules/03-mitarbeiterakte-tool-2/employee-file/qualification-catalog";
 import { backfillBestelltAls } from "@/modules/03-mitarbeiterakte-tool-2/employee-file/employee-display-labels";
+import { normalizeEvidenceChecks } from "@/modules/03-mitarbeiterakte-tool-2/employee-file/training-plan";
 import {
   isKnownSetKategorie,
   projectSetKategorieFromRoleId,
@@ -246,6 +248,17 @@ function asGeneratorDates(value: unknown): GeneratorDates | undefined {
     : undefined;
 }
 
+/**
+ * P3 / #7 — Read-Normalisierung des `evidenceChecks Json?` (Muster
+ * `asGeneratorDates`/`asTrainingPlan`). Delegiert an die reine, dependency-freie
+ * `normalizeEvidenceChecks` (auch unit-getestet). Map `evidenceId →
+ * { geprueft, am?, von? }`; nur `geprueft === true` zählt (EC-10, kein
+ * Auto-Status); Müll/Legacy/null/`{}` → `undefined`. P2023-sicher.
+ */
+function asEvidenceChecks(value: unknown): EvidenceChecks | undefined {
+  return normalizeEvidenceChecks(value);
+}
+
 export function employeeFileToEmployee(record: EmployeeFile): Employee {
   return {
     id: record.id,
@@ -305,6 +318,9 @@ export function employeeFileToEmployee(record: EmployeeFile): Employee {
     setKategorie: asSetKategorie(record.setKategorie, record.roleId),
     // Lane J (A3) — persistiertes Generator-Datum (global + per-Doc).
     generatorDates: asGeneratorDates(record.generatorDates),
+    // P3 / #7 — Prüf-Status je Nachweis (Mark D1). Tolerant: fehlend/Müll →
+    // undefined (ungeprüft). EC-10: nur menschlich gesetzte „geprüft"-Vermerke.
+    evidenceChecks: asEvidenceChecks(record.evidenceChecks),
   };
 }
 
@@ -361,6 +377,10 @@ function employeeToUpsertData(
     generatorDates: employee.generatorDates
       ? (employee.generatorDates as unknown as Prisma.InputJsonValue)
       : Prisma.JsonNull,
+    // P3 / #7 — Prüf-Status je Nachweis (nullable/additiv, P2023-sicher).
+    evidenceChecks: employee.evidenceChecks
+      ? (employee.evidenceChecks as unknown as Prisma.InputJsonValue)
+      : Prisma.JsonNull,
   };
 }
 
@@ -381,6 +401,11 @@ function laneJUpdateFields(employee: Employee) {
     setKategorie: employee.setKategorie ?? null,
     generatorDates: employee.generatorDates
       ? (employee.generatorDates as unknown as Prisma.InputJsonValue)
+      : Prisma.JsonNull,
+    // P3 / #7 — Prüf-Status je Nachweis, DRY über alle Update-Mapping-Stellen
+    // (upsert/replace/migrate). Nullable/additiv (P2023-sicher); EC-10.
+    evidenceChecks: employee.evidenceChecks
+      ? (employee.evidenceChecks as unknown as Prisma.InputJsonValue)
       : Prisma.JsonNull,
   };
 }

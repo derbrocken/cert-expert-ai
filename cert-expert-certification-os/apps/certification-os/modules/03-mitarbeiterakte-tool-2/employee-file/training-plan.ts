@@ -11,7 +11,11 @@
  *  - EC-10: Plan-Status ist rechnerisch/operativ — kein Freigabe-/Auditstatus.
  */
 
-import type { Employee, TrainingPlanItem } from "@/lib/types/employee";
+import type {
+  Employee,
+  EvidenceChecks,
+  TrainingPlanItem,
+} from "@/lib/types/employee";
 import type { TrainingTarget, WorkingItemStatus } from "./requirement-engine";
 import type { RequirementRow } from "./employee-file-requirements";
 
@@ -28,10 +32,19 @@ export interface TrainingGap {
   rest: number | null;
 }
 
-/** Operativer Status eines geplanten Schulungs-Eintrags. */
+/**
+ * Operativer Status eines geplanten Schulungs-Eintrags.
+ *
+ * P3 / #7 (Mark D1, EC-10 hart): Ein hochgeladener Nachweis ist eingehend
+ * `unchecked`. Er macht den Eintrag NICHT automatisch grün:
+ *  - `vorhanden-ungeprueft` = Nachweis liegt vor, aber noch nicht (menschlich)
+ *    geprüft → in-Arbeit/gelb (KEIN Auto-Grün).
+ *  - `nachweis-vorhanden`   = Nachweis vorhanden UND „geprüft" gesetzt → erfüllt.
+ */
 export type PlanItemStatus =
   | "geplant"
   | "ueberfaellig"
+  | "vorhanden-ungeprueft"
   | "nachweis-vorhanden"
   | "ohne-datum";
 
@@ -108,13 +121,24 @@ function todayIso(): string {
 /**
  * Plan-Status eines Eintrags. `referenceDate` (ISO) macht Tests deterministisch
  * (analog Engine-`referenceDate`); ohne Angabe = heute.
+ *
+ * P3 / #7 (Mark D1, EC-10 hart — **kein Auto-Grün**): `isChecked` = wurde der
+ * vorhandene Nachweis von einem Menschen auf „geprüft" gesetzt?
+ *  - Nachweis vorhanden + geprüft  → `nachweis-vorhanden` (erfüllt/grün).
+ *  - Nachweis vorhanden + ungeprüft → `vorhanden-ungeprueft` (in-Arbeit/gelb).
+ *  - kein Nachweis                  → geplant / überfällig / ohne-datum.
+ * `isChecked` ist optional und defaultet auf `false` → bestehende Aufrufer ohne
+ * Prüf-Verdrahtung bleiben EC-10-konform (Upload allein wird nie grün).
  */
 export function derivePlanItemStatus(
   item: TrainingPlanItem,
   hasProof: boolean,
   referenceDate?: string,
+  isChecked = false,
 ): PlanItemStatus {
-  if (hasProof) return "nachweis-vorhanden";
+  if (hasProof) {
+    return isChecked ? "nachweis-vorhanden" : "vorhanden-ungeprueft";
+  }
   if (!item.plannedDate) return "ohne-datum";
   const today = referenceDate ?? todayIso();
   if (item.plannedDate < today) return "ueberfaellig";
@@ -122,13 +146,57 @@ export function derivePlanItemStatus(
 }
 
 /**
+ * P3 / #7 — ist der Nachweis-Slot `evidenceId` (menschlich) „geprüft"? Tolerant:
+ * fehlende Map/fehlender Eintrag/`geprueft !== true` → `false` (ungeprüft).
+ * Reine Lese-Hilfe; setzt keinen Status (EC-10).
+ */
+export function isEvidenceChecked(
+  evidenceChecks: EvidenceChecks | undefined,
+  evidenceId: string,
+): boolean {
+  return evidenceChecks?.[evidenceId]?.geprueft === true;
+}
+
+/**
+ * P3 / #7 — tolerante Read-Normalisierung einer roh persistierten Prüf-Map
+ * (`evidenceChecks Json?`). Reine, abhängigkeitsfreie Funktion (für die
+ * Repository-Read-Norm + Unit-Tests, Lane-J-Muster). **EC-10:** nur Einträge mit
+ * `geprueft === true` werden übernommen (ein fehlender/`false`-Eintrag bleibt
+ * ungeprüft — kein Auto-Status). Müll/Legacy/null/`{}` → `undefined`. Idempotent.
+ */
+export function normalizeEvidenceChecks(
+  value: unknown,
+): EvidenceChecks | undefined {
+  if (!value || typeof value !== "object" || Array.isArray(value)) {
+    return undefined;
+  }
+  const out: EvidenceChecks = {};
+  for (const [evidenceId, raw] of Object.entries(
+    value as Record<string, unknown>,
+  )) {
+    if (!evidenceId || !raw || typeof raw !== "object" || Array.isArray(raw)) {
+      continue;
+    }
+    const r = raw as Record<string, unknown>;
+    if (r.geprueft !== true) continue;
+    out[evidenceId] = {
+      geprueft: true,
+      am: typeof r.am === "string" && r.am.length > 0 ? r.am : undefined,
+      von: typeof r.von === "string" && r.von.length > 0 ? r.von : undefined,
+    };
+  }
+  return Object.keys(out).length > 0 ? out : undefined;
+}
+
+/**
  * Mapping Plan-Status → `WorkingItemStatus` (für die Ampel via
  * `compliance-status.ts`). Nutzt ausschließlich bestehende Stati/`severityOf`-
  * Buckets — KEINE neuen Stati:
- *  - geplant            → "beantragt"   (offen)
- *  - ueberfaellig       → "abgelaufen"  (kritisch)
- *  - nachweis-vorhanden → "vorhanden"   (erfüllt)
- *  - ohne-datum         → "offen"       (offen)
+ *  - geplant              → "beantragt"   (offen)
+ *  - ueberfaellig         → "abgelaufen"  (kritisch)
+ *  - vorhanden-ungeprueft → "beantragt"   (offen/gelb — #7: kein Auto-Grün)
+ *  - nachweis-vorhanden   → "vorhanden"   (erfüllt — #7: nur nach „geprüft")
+ *  - ohne-datum           → "offen"       (offen)
  */
 export function planStatusToWorkingItemStatus(
   status: PlanItemStatus,
@@ -138,6 +206,9 @@ export function planStatusToWorkingItemStatus(
       return "beantragt";
     case "ueberfaellig":
       return "abgelaufen";
+    case "vorhanden-ungeprueft":
+      // #7 (EC-10): vorhanden, aber ungeprüft → in-Arbeit/gelb, NICHT erfüllt.
+      return "beantragt";
     case "nachweis-vorhanden":
       return "vorhanden";
     case "ohne-datum":
@@ -323,17 +394,25 @@ export function setUeBestaetigt(
  * EC-10: Plan-Beiträge heben den Gesamtzustand höchstens auf „in Arbeit"/„offen"
  * (geplant→beantragt, ohne-datum→offen) bzw. „überfällig"→kritisch; ein Nachweis
  * zählt nur als „vorhanden"/erfüllt — nie „freigegeben".
+ *
+ * P3 / #7 (Mark D1): `isChecked(evidenceId)` liefert, ob der vorhandene Nachweis
+ * (menschlich) auf „geprüft" gesetzt wurde. Default = nie geprüft → ein bloß
+ * hochgeladener Nachweis bleibt „vorhanden, ungeprüft" = in-Arbeit/gelb (kein
+ * Auto-Grün). Bestehende Aufrufer ohne `isChecked` bleiben EC-10-konform.
  */
 export function buildPlanDeadlineRows(
   plan: TrainingPlanItem[],
   hasProof: (evidenceId: string) => boolean,
   referenceDate?: string,
+  isChecked: (evidenceId: string) => boolean = () => false,
 ): RequirementRow[] {
   return plan.map((item) => {
+    const evidenceId = planEvidenceId(item.id);
     const status = derivePlanItemStatus(
       item,
-      hasProof(planEvidenceId(item.id)),
+      hasProof(evidenceId),
       referenceDate,
+      isChecked(evidenceId),
     );
     return {
       id: `plan-${item.id}`,

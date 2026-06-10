@@ -10,6 +10,7 @@ import {
   X,
   ExternalLink,
   Target,
+  ShieldCheck,
 } from "lucide-react";
 import type { Employee, TrainingPlanItem } from "@/lib/types/employee";
 import type { TrainingTarget } from "./requirement-engine";
@@ -22,6 +23,7 @@ import {
   setUeBestaetigt,
   recognizedUe,
   defaultPlannedDateForNewItem,
+  isEvidenceChecked,
   type PlanItemStatus,
 } from "./training-plan";
 import { TRAINING_CATALOG, extractUeFromText } from "./training-catalog";
@@ -60,8 +62,15 @@ const STATUS_PILL: Record<PlanItemStatus, { label: string; cls: string }> = {
     label: "überfällig",
     cls: "bg-red-50 text-red-800 border-red-200",
   },
+  // P3 / #7: Nachweis liegt vor, aber noch nicht (menschlich) geprüft →
+  // in-Arbeit/gelb (kein Auto-Grün, EC-10).
+  "vorhanden-ungeprueft": {
+    label: "vorhanden · ungeprüft",
+    cls: "bg-amber-50 text-amber-800 border-amber-200",
+  },
+  // P3 / #7: Nachweis vorhanden UND „geprüft" gesetzt → erfüllt/grün.
   "nachweis-vorhanden": {
-    label: "Nachweis vorhanden (ungeprüft)",
+    label: "Nachweis geprüft",
     cls: "bg-green-50 text-green-800 border-green-200",
   },
   "ohne-datum": {
@@ -104,6 +113,31 @@ export const EmployeeFileTrainingPlan: React.FC<
   const writePlan = (next: TrainingPlanItem[]) => {
     if (!onSave) return;
     onSave({ ...employee, trainingPlan: next });
+  };
+
+  // P3 / #7 (Mark D1) — Prüf-/„geschlossen"-Toggle je Plan-Nachweis (nur Admin/
+  // Mark, d. h. nur im Edit-Modus `onSave`). EC-10 (kein Auto-Grün): „geprüft" =
+  // bewusster menschlicher Klick. Persistiert additiv über
+  // `employee.evidenceChecks` (Lane-J-Json) im bestehenden Akten-Save.
+  const togglePlanChecked = (item: TrainingPlanItem) => {
+    if (!onSave) return;
+    const evidenceId = planEvidenceId(item.id);
+    const current = employee.evidenceChecks ?? {};
+    const wasChecked = current[evidenceId]?.geprueft === true;
+    const next = { ...current };
+    if (wasChecked) {
+      delete next[evidenceId];
+    } else {
+      next[evidenceId] = {
+        geprueft: true,
+        am: new Date().toISOString(),
+        von: "Admin",
+      };
+    }
+    onSave({
+      ...employee,
+      evidenceChecks: Object.keys(next).length > 0 ? next : undefined,
+    });
   };
 
   const handleAdd = () => {
@@ -338,7 +372,13 @@ export const EmployeeFileTrainingPlan: React.FC<
             const evidenceId = planEvidenceId(item.id);
             const stored = evidenceFiles[evidenceId];
             const hasProof = Boolean(stored);
-            const status = derivePlanItemStatus(item, hasProof, referenceDate);
+            const checked = isEvidenceChecked(employee.evidenceChecks, evidenceId);
+            const status = derivePlanItemStatus(
+              item,
+              hasProof,
+              referenceDate,
+              checked,
+            );
             const pill = STATUS_PILL[status];
             return (
               <li key={item.id} className="px-4 py-3">
@@ -397,6 +437,29 @@ export const EmployeeFileTrainingPlan: React.FC<
                     onUpload={(_id, file) => handlePlanUpload(item, file)}
                     onRemove={onEvidenceRemove}
                   />
+
+                  {/* P3 / #7 (Mark D1) — Prüf-Toggle, nur Admin/Mark (Edit-Modus)
+                      und nur bei vorhandenem Nachweis. EC-10: kein Auto-Grün. */}
+                  {editable && hasProof ? (
+                    <button
+                      type="button"
+                      onClick={() => togglePlanChecked(item)}
+                      aria-pressed={checked}
+                      className={
+                        checked
+                          ? "inline-flex items-center gap-1 rounded-md border border-green-300 bg-green-50 px-2 py-1 text-xs font-semibold text-green-700 hover:bg-green-100"
+                          : "inline-flex items-center gap-1 rounded-md border border-amber-300 bg-amber-50 px-2 py-1 text-xs font-semibold text-amber-700 hover:bg-amber-100"
+                      }
+                      title={
+                        checked
+                          ? "Prüfung zurücknehmen"
+                          : "Nachweis als geprüft markieren (Admin/Mark)"
+                      }
+                    >
+                      <ShieldCheck className="h-3.5 w-3.5" />
+                      {checked ? "Geprüft ✓" : "Als geprüft markieren"}
+                    </button>
+                  ) : null}
 
                   {editable ? (
                     <button
