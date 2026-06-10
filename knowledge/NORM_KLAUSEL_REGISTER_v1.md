@@ -60,9 +60,9 @@
 | CL-72 | NON-DIN-SDL Pflichtangaben (gesetzlicher Mindeststandard) | BewachV ___ | legal-input |
 | CL-73 | Fahrer-/UVV-Unterweisung (bei „fährt Dienstfahrzeug") | DGUV ___ | legal-input |
 | CL-74 | **Ausbilder-/Anbieter-Befähigung** für **Brandschutzhelfer-** und **Ersthelfer-Schulung** (Schulung muss von befähigtem Ausbilder/ermächtigtem Anbieter durchgeführt werden) — getrennt von der internen **Beauftragung** (Arbeitsschutz) | DGUV/ASR A2.2 / DGUV-Grundsatz ___ | legal-input |
-| CL-75 | **Arbeitsschutz-Grundunterweisung**: Erstunterweisung **vor Aufnahme** der Tätigkeit + **mind. jährlich**; Wiederholung nach >1 Jahr; **Bürotätigkeit = abweichende Vorgaben** (Bildschirmarbeitsplatz-Unterweisung). NICHT DIN 77200. | **§12 ArbSchG i.V.m. §4 DGUV V1**; Wach-/Sicherung zusätzlich **§4 Abs. 2 DGUV V23** [exakte DGUV-Nummern Mark nachreichen] | legal-input |
-| CL-76 | **Waffensachkunde** (Zusatzqualifikation, **additiv** zu §34a Unterrichtung/Sachkunde — ersetzt diese nicht; nur für bewaffnete Tätigkeit) | **§7 WaffG**; Lehrgänge anerkannt **§3 Abs. 2 AWaffV** (getrennt von §34a GewO) | legal-input |
-| CL-77 | **Mutterschutz-Hinweis** (Hinweis auf Meldepflicht Schwangerschaft) — positionsunabhängiges Overlay für **weibliche MA, ALLE Sets** | MuSchG [exakter § Mark nachreichen] | legal-input |
+| CL-75 | **Arbeitsschutz-Grundunterweisung**: Erstunterweisung **vor Aufnahme** + **mind. jährlich**; Wiederholung nach >1 Jahr; **Bürotätigkeit = Bildschirm-Vorgaben**. NICHT DIN 77200. | **§12 Abs.1 ArbSchG**; **§4 DGUV V1** (mind. jährlich, Doku); Wach-/Sicherung zusätzlich **§4 Abs.2 DGUV V23**; Auslegung **DGUV Information 211-005**; Büro: **ArbStättV Anhang Nr.6 + DGUV Information 215-410** | belegt |
+| CL-76 | **Waffensachkunde** (Zusatzqualifikation, **additiv** zu §34a Unterrichtung/Sachkunde — ersetzt diese nicht; nur für bewaffnete Tätigkeit) | **§7 WaffG**; Lehrgänge anerkannt **§3 Abs. 2 AWaffV** (getrennt von §34a GewO) | belegt |
+| CL-77 | **Mutterschutz-Hinweis** (Merkblatt an weibliche MA + Empfangsbestätigung) — positionsunabhängiges Overlay, **ALLE Sets**. Mitteilung der MA freiwillig (keine Form); AG-Pflichten maßgeblich | **MuSchG §10** (Gefährdungsbeurteilung), **§15** (ärztl. Zeugnis), **§27** (Meldung an Aufsichtsbehörde) | belegt |
 
 ---
 *Konvention: Engine-Regeln (Slice 2) tragen `clauseId: "CL-xx"`. Neue Anforderung ohne CL-ID = nicht zulässig (keine erfundenen Pflichten). Bei Norm-Neuausgabe: betroffene CL-IDs prüfen + Status/Edition aktualisieren.*
