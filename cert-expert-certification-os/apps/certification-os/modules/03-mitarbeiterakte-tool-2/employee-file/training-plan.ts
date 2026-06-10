@@ -18,6 +18,10 @@ import type {
 } from "@/lib/types/employee";
 import type { TrainingTarget, WorkingItemStatus } from "./requirement-engine";
 import type { RequirementRow } from "./employee-file-requirements";
+import {
+  findCatalogModule,
+  schulungTemplateLogicalPath,
+} from "./training-catalog";
 
 /** Rechnerische Lücke je Soll-Posten (Soll − Ist). */
 export interface TrainingGap {
@@ -510,4 +514,67 @@ export function buildPlanDeadlineRows(
           : "Geplanter Soll-Posten",
     };
   });
+}
+
+// --- Lane S: zugewiesene DIN-1-Schulungen → generierbare Vorlagen -----------
+//
+// Ziel (Mark 2026-06-10): Für jeden **zugewiesenen** Schulungs-Plan-Eintrag
+// (`source:"katalog"`, refId = Katalog-Modul-Id `din1-modul-N`) das zugehörige
+// `appointments/schulungen/`-`.docx` mit in den Generator-ZIP nehmen. Reine,
+// seiteneffektfreie Auflösung (unit-bar; der Generator macht das S3-Fetch).
+//
+// Leitplanken:
+//  - **Single source:** der Vorlagen-Pfad kommt aus dem Katalog
+//    (`schulungTemplateLogicalPath`, Modul-Nummer → Dateiname). Kein erfundener Pfad.
+//  - **Datum:** `plannedDate` (Durchführung von) des Plan-Eintrags treibt das
+//    Ausgabedatum; fehlt es, fällt der Generator auf seinen Default zurück.
+//  - **CL-11 (informativ):** Module = Lehrbausteine; KEIN neues Norm-Soll,
+//    kein Auto-Ist. Hier wird nur ein Dokument erzeugt, nichts angerechnet.
+//  - **EC-09:** fehlt eine Vorlage in S3, überspringt der Generator den Eintrag
+//    (kein ZIP-Bruch). Diese Funktion liefert nur Kandidaten.
+
+/** Ein zugewiesenes Schulungs-Modul, das als Doc generiert werden soll. */
+export interface AssignedSchulungDoc {
+  /** Plan-Item-Id (stabile UID des Eintrags). */
+  itemId: string;
+  /** Katalog-Modul-Id (`din1-modul-N`). */
+  moduleId: string;
+  /** Anzeige-Label (Katalog-Snapshot bzw. Plan-Label). */
+  label: string;
+  /** Reiner Dateiname der Vorlage (`NN_….docx`) — auch ZIP-Dateiname. */
+  fileName: string;
+  /** Logischer S3-Pfad (`appointments/schulungen/<file>`) für den Key-Lookup. */
+  logicalPath: string;
+  /** Durchführung von (`plannedDate`, ISO) bzw. `undefined`. */
+  plannedDate?: string;
+}
+
+/**
+ * Lane S — bestimmt aus dem `trainingPlan` die zugewiesenen DIN-1-Schulungen, die
+ * als `.docx` generiert werden sollen. Nur `source:"katalog"`-Einträge, deren
+ * `refId` ein bekanntes Katalog-Modul ist (Modul → Dateiname über den Katalog).
+ * Unbekannte/foreign Einträge (z. B. Tally-Snapshots `erste-hilfe`) werden
+ * übersprungen → kein erfundener Pfad. Reine Funktion (kein S3-Zugriff).
+ */
+export function resolveAssignedSchulungDocs(
+  plan: TrainingPlanItem[] | undefined,
+): AssignedSchulungDoc[] {
+  if (!Array.isArray(plan) || plan.length === 0) return [];
+  const out: AssignedSchulungDoc[] = [];
+  for (const item of plan) {
+    if (item.source !== "katalog") continue;
+    const module = findCatalogModule(item.refId);
+    if (!module) continue; // kein erfundener Pfad für Nicht-Katalog-refIds
+    const logicalPath = schulungTemplateLogicalPath(module.id);
+    if (!logicalPath) continue;
+    out.push({
+      itemId: item.id,
+      moduleId: module.id,
+      label: item.label || module.label,
+      fileName: module.templateFileName,
+      logicalPath,
+      plannedDate: item.plannedDate,
+    });
+  }
+  return out;
 }

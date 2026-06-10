@@ -59,6 +59,29 @@
 
 ---
 
+## 🔚 Von Cursor an Claude — Executor (Spur E): Lane S (modulare DIN-1-Schulungen generierbar), 2026-06-10
+
+**Rolle:** Executor. Gebaut wurde NUR der Lane-S-Auftrag (modulare DIN-1-Schulungen generierbar machen). Branch `lane-s-schulungen-generierbar` ab `main`.
+
+**Fertig:**
+- **Katalog↔Vorlage-Mapping (`training-catalog.ts`, single source):** je Modul ein `templateFileName` ergänzt (din1-modul-1 → `01_Dokumentation_Wachbuch_Meldewesen_4UE.docx` … din1-modul-9 → `09_Fuehrungskraft_Sicherheitsdienst_DIN_77200-1_8UE.docx`). Neue Konstante `SCHULUNG_TEMPLATE_FOLDER = "appointments/schulungen"` + Helper `schulungTemplateLogicalPath(moduleId)` → `appointments/schulungen/<file>` bzw. `null` (kein erfundener Pfad).
+- **Generator (`generate-employee-docs.ts`):** für jeden zugewiesenen Schulungs-Plan-Eintrag (`employee.trainingPlan`, `source:"katalog"`, refId = bekanntes Katalog-Modul) wird die zugehörige `appointments/schulungen/`-`.docx` in den Unterordner `Schulungen/` des MA generiert. Templates kommen über das bestehende `listTemplateFiles("appointments")` + `buildLatestTemplateKeyMap` (Schulungen-Ordner ist im Generator-Pfad erreichbar; kein Route-Filter). Datum = `plannedDate` (Durchführung von) bzw. globaler Generator-Default. Platzhalter wie üblich (`{FullName}`/`{CompanyName}`/…) plus `ParticipantName`/`SchulungDatum`. **EC-09:** fehlt eine Vorlage (kein Key im Map) oder wirft die Verarbeitung → übersprungen + geloggt, KEIN ZIP-Bruch.
+- **Reiner Resolver `resolveAssignedSchulungDocs(trainingPlan)` in `training-plan.ts`** (unit-bar, kein S3): liefert nur `source:"katalog"`-Einträge mit bekanntem Katalog-Modul → Soll-Posten + Tally-Snapshots (`erste-hilfe`/`brandschutz`) werden übersprungen (kein erfundener Pfad).
+- **UI-Hinweis (`EmployeeFileTrainingPlan.tsx`):** je zugewiesener Katalog-Schulung Zeile „wird beim Generieren als Schulungs-Dokument mit ausgegeben" (reiner Hinweis, EC-10 — keine Freigabe-/Auditaussage).
+- **CL-11 (informativ):** Module bleiben Lehrbausteine; Lane S erzeugt nur Dokumente — kein neues Norm-Soll, kein Auto-Ist (Engine/UE unberührt).
+
+**Gates (im Worktree, nach `npm install` + `prisma generate`):** `tsc --noEmit` = **0** · `npx tsx --test modules/03-mitarbeiterakte-tool-2/employee-file/*.test.ts` = **160/160** (7 neue Lane-S-Tests: NN_-Präfix je Modul, exakte Namen Modul 1/9, logicalPath/`null`, zugewiesene Schulung→Doc-Kandidat mit Datum, nur Katalog-Module, leerer Plan→No-op, Mehrfachzuweisung) · `npm run build` = **Compiled successfully**.
+
+**Geparkte Fragen an Planer (nicht selbst entschieden):**
+1. **Exakte S3-Dateinamen Modul 2–8:** der Auftrag bestätigte wörtlich nur Modul 01 und 09. Die Namen 02–08 sind aus den Labels abgeleitet (`02_Datenschutz_…` … `08_Veranstaltungsschutz_Allgemein_4UE.docx`). Stimmen sie nicht 1:1 mit den S3-Objektnamen überein, greift sauber der EC-09-Skip (Modul-Doc fehlt dann still). **Bitte Dateinamen 02–08 gegen S3 abgleichen** (`appointments/schulungen/`-Listing) und ggf. in `training-catalog.ts` korrigieren — Single source ist dort.
+2. **S3-Generierungs-Smoke offen:** das lokale `.env.local` enthält nur `HETZNER_BUCKET_NAME`, NICHT `HETZNER_S3_KEY/SECRET/ENDPOINT/REGION` → ein realer „Modul-Doc landet im ZIP"-Lauf gegen S3 war von hier nicht möglich. Mapping + Resolver sind voll unit-getestet, Generator-Pfad tsc/`next build`-verifiziert. Marks Live-Klick (echte Person mit zugewiesenem din1-modul, Generator auslösen, ZIP öffnen) steht als Abnahme aus.
+
+**Commit:** HEAD von Branch `lane-s-schulungen-generierbar` (NICHT gepusht/gemergt). Write-Set eingehalten (`training-catalog.ts`, `generate-employee-docs.ts`, `EmployeeFileTrainingPlan.tsx`, `training-plan.ts` Helper + Test); kein `.env`/`.db`/Kundendaten committet.
+
+✅ **Stabiler Punkt** — Lane S fertig + Gates grün. Wartet auf Planer-Review + Marks Merge-Gate.
+
+---
+
 ## 🔚 Von Cursor an Claude — Executor (Spur E): Lane Q P4 (Tally-Durchführungsdatum #5, D4 = b+c), 2026-06-10
 
 **Rolle:** Executor. Gebaut wurde NUR der Auftrag (`CURSOR_TOOL2_SCHULUNGEN_FLOW_AUFTRAG.md` #5, P4, D4 = b+c). Branch `lane-q-p4-tally-datum` ab `origin/main` `f6e89b1`.
