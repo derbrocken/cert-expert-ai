@@ -88,18 +88,18 @@ test("A2: persistiertes setKategorie hat Vorrang (von Rolle entkoppelt)", () => 
   const emp = baseEmployee({
     setKategorie: "fuehrungskraft",
     // roleId würde sicherheitsmitarbeiter ableiten → persistiertes Feld gewinnt.
-    roleId: "software-engineer",
+    roleId: "sicherheitsmitarbeiter",
   });
   assert.equal(resolveSetKategorie(emp), "fuehrungskraft");
 });
 
 test("A2: fehlendes setKategorie → Default aus roleId ableiten (Backfill)", () => {
-  const emp = baseEmployee({ roleId: "hr-specialist" });
+  const emp = baseEmployee({ roleId: "buerokraft" });
   assert.equal(resolveSetKategorie(emp), "buerokraft");
 });
 
-test("A2: unbekannte roleId ohne setKategorie → undefined", () => {
-  const emp = baseEmployee({ roleId: "din-77200-allgemeine" });
+test("A2: Basis-Rolle ohne setKategorie → undefined (keine eindeutige Set-Zuordnung)", () => {
+  const emp = baseEmployee({ roleId: "din-77200-1-allgemeine" });
   assert.equal(resolveSetKategorie(emp), undefined);
 });
 
@@ -107,7 +107,7 @@ test("A2: ungültiges persistiertes setKategorie → Fallback auf roleId-Backfil
   const emp = baseEmployee({
     // @ts-expect-error — ungültiger Wert simulieren.
     setKategorie: "garbage",
-    roleId: "software-engineer",
+    roleId: "sicherheitsmitarbeiter",
   });
   assert.equal(resolveSetKategorie(emp), "sicherheitsmitarbeiter");
 });

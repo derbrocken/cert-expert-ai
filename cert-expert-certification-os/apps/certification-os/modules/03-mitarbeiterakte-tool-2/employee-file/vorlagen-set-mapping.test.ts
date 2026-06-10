@@ -34,9 +34,11 @@ test("B: Sicherheitsmitarbeiter = Basis + Stellenbeschreibung SMA", () => {
 
 test("B: Führungskraft = Basis + Stellenbeschreibung FK", () => {
   const ids = coreDocsForSetKategorie("fuehrungskraft").map((d) => d.id);
+  // FK bekommt zusätzlich Bildschirmarbeitsplatz (PC-Arbeit, Mark 2026-06-10).
   assert.deepEqual(ids, [
     "basis-arbeitsschutz-unterweisung",
     "basis-datenschutz-verschwiegenheit",
+    "buero-bildschirmarbeitsplatz-unterweisung",
     "stellenbeschreibung-fk",
   ]);
 });
@@ -70,8 +72,8 @@ test("B: Arbeitsschutz/Datenschutz tragen die korrekten CL", () => {
     (d) => d.id === "basis-datenschutz-verschwiegenheit",
   );
   assert.equal(arbeitsschutz?.clauseId, "CL-75");
-  assert.equal(arbeitsschutz?.fachlichPruefen, true);
-  assert.equal(arbeitsschutz?.templateMissing, true);
+  // CL-75 jetzt belegt + Vorlage eingespielt → kein fachlichPruefen/templateMissing mehr.
+  assert.ok(!arbeitsschutz?.templateMissing);
   assert.equal(datenschutz?.clauseId, "CL-04/CL-05");
 });
 
@@ -168,6 +170,7 @@ test("buildSetDocumentPlan: Core + alle Overlays kombiniert", () => {
   assert.deepEqual(ids, [
     "basis-arbeitsschutz-unterweisung",
     "basis-datenschutz-verschwiegenheit",
+    "buero-bildschirmarbeitsplatz-unterweisung",
     "stellenbeschreibung-fk",
     "overlay-bestellung-ersthelfer",
     "overlay-fahranweisung",

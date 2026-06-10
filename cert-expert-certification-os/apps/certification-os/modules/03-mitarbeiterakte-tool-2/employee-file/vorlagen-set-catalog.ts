@@ -92,12 +92,12 @@ export function isKnownSetKategorie(id: string): id is SetKategorie {
  * Logik-Umbau nötig.
  */
 const DEFAULT_SET_ROLE_SLUGS: Record<SetKategorie, readonly string[]> = {
-  // Operative Kraft (SMA)
-  sicherheitsmitarbeiter: ["software-engineer", "security", "sma"],
-  // Führung / Einsatzleitung
-  fuehrungskraft: ["project-manager", "fuehrung", "einsatzleitung"],
-  // Verwaltung / Büro
-  buerokraft: ["hr-specialist", "verwaltung", "buero", "office"],
+  // Reale S3-Rollen-Ordner (2026-06-10 eingespielt), je genau ein Slug → eindeutiges
+  // Reverse-Mapping (projectSetKategorieFromRoleId). Forward-Fallback auf die Basis-
+  // Rolle macht resolveSetKategorieRoleId über roles[0] (din-77200-1-allgemeine).
+  sicherheitsmitarbeiter: ["sicherheitsmitarbeiter"],
+  fuehrungskraft: ["fuehrungskraft"],
+  buerokraft: ["buerokraft"],
 };
 
 /**
@@ -270,10 +270,8 @@ const BASIS_DOCS: readonly SetDocumentSpec[] = [
     label: "Allgemeine (Jahres-)Pflichtunterweisung Arbeitsschutz",
     kind: "core",
     clauseId: "CL-75",
-    fachlichPruefen: true,
     dateSource: "startDate",
-    hint: "Arbeitsschutz-Grundunterweisung (CL-75, legal-input, fachlich prüfen). VORLAGE FEHLT → Platzhalter.",
-    templateMissing: true,
+    hint: "Arbeitsschutz-Grundunterweisung (CL-75: §12 Abs.1 ArbSchG, §4 DGUV V1, §4 Abs.2 DGUV V23).",
   },
   {
     id: "basis-datenschutz-verschwiegenheit",
@@ -285,18 +283,19 @@ const BASIS_DOCS: readonly SetDocumentSpec[] = [
   },
 ] as const;
 
+/** Bildschirmarbeitsplatz-Unterweisung — Büro UND Führungskraft (PC-Arbeit, Mark 2026-06-10). */
+const BILDSCHIRM_DOC: SetDocumentSpec = {
+  id: "buero-bildschirmarbeitsplatz-unterweisung",
+  label: "Bildschirmarbeitsplatz-Unterweisung",
+  kind: "core",
+  clauseId: "CL-75",
+  dateSource: "startDate",
+  hint: "Bildschirm-/Büro-Arbeitsschutz-Unterweisung (CL-75: ArbStättV Anh. Nr.6, DGUV Information 215-410).",
+};
+
 /** Bürokraft-Basis: KEINE SR-Dienstanweisung; Bildschirmarbeitsplatz + Erklärung. */
 const BUEROKRAFT_BASIS: readonly SetDocumentSpec[] = [
-  {
-    id: "buero-bildschirmarbeitsplatz-unterweisung",
-    label: "Bildschirmarbeitsplatz-Unterweisung (Büro)",
-    kind: "core",
-    clauseId: "CL-75",
-    fachlichPruefen: true,
-    dateSource: "startDate",
-    hint: "Büro-Variante der Arbeitsschutz-Unterweisung (CL-75, legal-input, fachlich prüfen). VORLAGE FEHLT → Platzhalter.",
-    templateMissing: true,
-  },
+  BILDSCHIRM_DOC,
   {
     id: "basis-datenschutz-verschwiegenheit",
     label: "Datenschutz-/Verschwiegenheitserklärung",
@@ -313,8 +312,7 @@ const STELLENBESCHREIBUNG_SMA: SetDocumentSpec = {
   kind: "core",
   clauseId: null,
   dateSource: "startDate",
-  hint: "Stellenbeschreibung SMA (Set-Doku, keine Norm-Pflicht). VORLAGE FEHLT → Platzhalter.",
-  templateMissing: true,
+  hint: "Stellenbeschreibung SMA (Set-Doku, keine Norm-Pflicht).",
 };
 
 const STELLENBESCHREIBUNG_FK: SetDocumentSpec = {
@@ -323,8 +321,7 @@ const STELLENBESCHREIBUNG_FK: SetDocumentSpec = {
   kind: "core",
   clauseId: null,
   dateSource: "startDate",
-  hint: "Stellenbeschreibung FK (Set-Doku, keine Norm-Pflicht). VORLAGE FEHLT → Platzhalter.",
-  templateMissing: true,
+  hint: "Stellenbeschreibung FK (Set-Doku, keine Norm-Pflicht).",
 };
 
 /** Core-Dokument-Set je Set-Kategorie (Batch-2 B). */
@@ -335,7 +332,8 @@ export function coreDocsForSetKategorie(
     case "sicherheitsmitarbeiter":
       return [...BASIS_DOCS, STELLENBESCHREIBUNG_SMA];
     case "fuehrungskraft":
-      return [...BASIS_DOCS, STELLENBESCHREIBUNG_FK];
+      // FK arbeitet auch an PCs → Bildschirmarbeitsplatz mit dazu (Mark 2026-06-10).
+      return [...BASIS_DOCS, BILDSCHIRM_DOC, STELLENBESCHREIBUNG_FK];
     case "buerokraft":
       return [...BUEROKRAFT_BASIS];
     default:
