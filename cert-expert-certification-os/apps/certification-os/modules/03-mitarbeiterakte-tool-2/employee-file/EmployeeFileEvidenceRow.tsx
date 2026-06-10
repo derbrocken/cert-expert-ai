@@ -29,6 +29,21 @@ export interface EmployeeFileEvidenceRowProps {
    * nicht setzbar (kein Toggle). EC-10: „geprüft" nur durch bewussten Klick.
    */
   onToggleChecked?: () => void;
+  /**
+   * P4 (c, Mark D4) — optionales **Durchführungsdatum** (ISO `YYYY-MM-DD`) zu
+   * diesem Nachweis (z. B. Schulung/Unterweisung). Nur angezeigt, wenn ein
+   * Änderungs-Handler (`onDateChange`) durchgereicht wird → so kann der
+   * Nachweis-Upload ein Datum-Feld anbieten, ohne dass Slots ohne Datums-Infra
+   * eines bekommen. `undefined`/leer = kein Datum (kein erfundenes Datum).
+   * EC-10: das Datum ist nur das Durchführungsdatum, KEINE Freigabe.
+   */
+  evidenceDate?: string;
+  /**
+   * P4 (c) — Handler für das Durchführungsdatum. Fehlt er, wird KEIN Datum-Feld
+   * gezeigt (Default: bestehende Nachweis-Slots ohne Datums-Struktur bleiben
+   * unverändert). Leerer Wert = Datum entfernen.
+   */
+  onDateChange?: (value: string) => void;
 }
 
 /**
@@ -56,6 +71,8 @@ export const EmployeeFileEvidenceRow: React.FC<EmployeeFileEvidenceRowProps> = (
   signatureRequired,
   checked = false,
   onToggleChecked,
+  evidenceDate,
+  onDateChange,
 }) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const hasFile = Boolean(storedFile);
@@ -149,6 +166,28 @@ export const EmployeeFileEvidenceRow: React.FC<EmployeeFileEvidenceRowProps> = (
             </div>
           </div>
         )}
+
+        {/* P4 (c, Mark D4) — Durchführungsdatum-Input zum Nachweis. Nur sichtbar,
+            wenn ein `onDateChange`-Handler durchgereicht ist (Datums-Infra
+            vorhanden). Kein Auto-Datum (kein erfundenes Datum); Hinweis, wenn
+            Nachweis vorliegt, aber Datum fehlt. EC-10: nur Durchführungsdatum. */}
+        {editMode && onDateChange ? (
+          <label className="flex items-center gap-1.5 text-xs text-[#374151]">
+            Durchführung:
+            <input
+              type="date"
+              value={evidenceDate ?? ""}
+              onChange={(e) => onDateChange(e.target.value)}
+              aria-label="Durchführungsdatum"
+              className="rounded-md border border-[#e5e7eb] px-2 py-1 text-xs text-[#111827] focus:border-[#e30613] focus:outline-none"
+            />
+            {hasFile && !evidenceDate ? (
+              <span className="text-[10px] text-amber-700">
+                Datum eintragen
+              </span>
+            ) : null}
+          </label>
+        ) : null}
 
         {/* P3 / #7 (Mark D1) — Prüf-/„geschlossen"-Toggle, nur Admin/Mark
             (`onToggleChecked` gesetzt) und nur bei vorhandenem Nachweis. EC-10:

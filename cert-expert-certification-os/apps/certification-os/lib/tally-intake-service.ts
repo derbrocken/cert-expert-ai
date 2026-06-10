@@ -15,6 +15,9 @@ import {
   saveEmployeeEvidenceFile,
 } from "@/lib/employee-file-repository";
 import { prisma } from "@/lib/prisma";
+import type { Prisma } from "@prisma/client";
+import type { TrainingPlanItem } from "@/lib/types/employee";
+import { applyTrainingDateFromEvidence } from "@/modules/03-mitarbeiterakte-tool-2/employee-file/training-plan";
 
 const LOG = "[tally-intake]";
 
@@ -174,6 +177,62 @@ function guessMimeType(fileName: string, declared?: string): string {
   if (lower.endsWith(".png")) return "image/png";
   if (lower.endsWith(".jpg") || lower.endsWith(".jpeg")) return "image/jpeg";
   return "application/octet-stream";
+}
+
+/**
+ * P4 (b, Mark D4) — Durchführungs-/Zertifikatsdaten je Schulungsnachweis aus der
+ * Tally-Submission einsammeln. Liefert eine Map `evidenceId → ISO-Datum` nur für
+ * Schulungs-Slots (`training-plan:{id}`) mit konfiguriertem `dateQuestionId` UND
+ * mitgeliefertem, validem Datum. **Kein erfundenes Datum:** fehlt `dateQuestionId`
+ * oder kommt kein/ein leeres/ungültiges Datum → der Slot wird NICHT aufgenommen.
+ */
+function collectTrainingDates(
+  slot: TallyEmployeeSlotConfig,
+  fieldMap: Map<string, TallyWebhookField>,
+): Map<string, string> {
+  const out = new Map<string, string>();
+  for (let position = 0; position < slot.fileQuestionIds.length; position += 1) {
+    const fileField = slot.fileQuestionIds[position];
+    if (!fileField.dateQuestionId) continue;
+    const evidenceId = resolveTallyFileEvidenceId(fileField, position);
+    if (!evidenceId.startsWith("training-plan:")) continue;
+    const date = normalizeDate(
+      asString(fieldMap.get(fileField.dateQuestionId)?.value),
+    );
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) continue; // kein erfundenes Datum
+    out.set(evidenceId, date);
+  }
+  return out;
+}
+
+/** Tolerant: persistiertes `trainingPlan`-Json → Array (Müll/null → []). */
+function asTrainingPlanArray(value: Prisma.JsonValue | null): TrainingPlanItem[] {
+  return Array.isArray(value) ? (value as unknown as TrainingPlanItem[]) : [];
+}
+
+/**
+ * P4 (b) — die eingesammelten Durchführungsdaten als `plannedDate` in den
+ * `trainingPlan` der Akte übernehmen (`applyTrainingDateFromEvidence`). Reiner
+ * Daten-Merge im bestehenden `trainingPlan`-Json (kein Schema-Change). EC-10: der
+ * importierte Nachweis bleibt separat `unchecked` (#7), kein Auto-Ist.
+ */
+async function applyTrainingDates(
+  employeeFileId: string,
+  dates: Map<string, string>,
+): Promise<void> {
+  if (dates.size === 0) return;
+  const record = await prisma.employeeFile.findUnique({
+    where: { id: employeeFileId },
+    select: { trainingPlan: true },
+  });
+  let plan = asTrainingPlanArray(record?.trainingPlan ?? null);
+  for (const [evidenceId, date] of dates) {
+    plan = applyTrainingDateFromEvidence(plan, evidenceId, date);
+  }
+  await prisma.employeeFile.update({
+    where: { id: employeeFileId },
+    data: { trainingPlan: plan as unknown as Prisma.InputJsonValue },
+  });
 }
 
 async function importEvidenceFiles(
@@ -388,6 +447,14 @@ export async function processTallyWebhookPayload(
       employeeFileId,
       slot,
       fieldMap,
+    );
+
+    // P4 (b, Mark D4) — Durchführungs-/Zertifikatsdatum je Schulungsnachweis aus
+    // der Submission in das `plannedDate` des Plan-Eintrags übernehmen. Kein
+    // erfundenes Datum (fehlend → übersprungen); Nachweis bleibt `unchecked`.
+    await applyTrainingDates(
+      employeeFileId,
+      collectTrainingDates(slot, fieldMap),
     );
   }
 

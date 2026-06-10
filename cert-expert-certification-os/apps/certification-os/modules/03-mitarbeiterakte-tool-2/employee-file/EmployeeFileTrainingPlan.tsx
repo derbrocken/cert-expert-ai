@@ -414,8 +414,13 @@ export const EmployeeFileTrainingPlan: React.FC<
                 </div>
 
                 <div className="mt-2 flex flex-wrap items-center gap-3">
+                  {/* P4 (c, Mark D4) — Durchführungs-/geplantes Datum: dasselbe
+                      `plannedDate`-Feld dient als manuelles Durchführungsdatum
+                      beim Nachweis-Upload. Wird NICHT auto-befüllt (kein
+                      erfundenes Datum); Hinweis, wenn ein Nachweis vorliegt, aber
+                      noch kein Datum gesetzt ist. */}
                   <label className="flex items-center gap-1.5 text-xs text-[#374151]">
-                    Geplant:
+                    Durchführung / geplant:
                     <input
                       type="date"
                       value={item.plannedDate ?? ""}
@@ -423,9 +428,15 @@ export const EmployeeFileTrainingPlan: React.FC<
                         handleDateChange(item.id, e.target.value)
                       }
                       disabled={!editable}
+                      aria-label="Durchführungs-/geplantes Datum"
                       className="rounded-md border border-[#e5e7eb] px-2 py-1 text-xs text-[#111827] focus:border-[#e30613] focus:outline-none disabled:bg-[#fafbfc] disabled:text-[#6b7280]"
                     />
                   </label>
+                  {editable && hasProof && !item.plannedDate ? (
+                    <span className="text-[10px] text-amber-700">
+                      Nachweis vorhanden — Durchführungsdatum eintragen
+                    </span>
+                  ) : null}
 
                   {/* Nachweis-Slot (bestehende Evidence-Infra). Upload läuft über
                       handlePlanUpload → speichert Datei + extrahiert externen

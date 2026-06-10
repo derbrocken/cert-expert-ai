@@ -33,6 +33,22 @@ export interface TallyFileQuestionConfig {
    * Reine Zuordnung — KEINE neue Normpflicht.
    */
   evidenceId?: string;
+  /**
+   * P4 (b, Mark D4) — optionale Tally-Frage-Id eines **Durchführungs-/
+   * Zertifikatsdatums** zu DIESEM Schulungsnachweis (DATE-Feld im Tally-
+   * Formular). Wird ausgelesen und als `plannedDate` des zugeordneten Plan-
+   * Eintrags `training-plan:{id}` übernommen (`applyTrainingDateFromEvidence`).
+   *
+   * Nur für Schulungs-Slots sinnvoll (`evidenceId` = `training-plan:{id}`).
+   * Fehlt die Id ODER kommt kein/ein leeres Datum mit → **kein erfundenes
+   * Datum** (No-op). EC-10: der Nachweis bleibt separat `unchecked` (#7); das
+   * Datum ist nur das Durchführungsdatum, KEINE Freigabe.
+   *
+   * Hinweis: Die echten Tally-Frage-Ids für die Datum-Felder trägt Mark im
+   * Tally-Formular nach (DATE-Feld je Schulungsnachweis) und ergänzt sie hier
+   * bzw. in `data/tally-employee-slots.json`. Bis dahin `undefined` = inaktiv.
+   */
+  dateQuestionId?: string;
 }
 
 export interface TallyEmployeeSlotConfig {

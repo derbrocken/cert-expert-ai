@@ -8,6 +8,7 @@
 **Übergabe-Takt (Agent):** Nach Task/Slice/Commit → Mark erinnern: „✅ stabiler Punkt — Committen/Übergeben (neuer Chat)." Bei ~70–80 % Context → „Übergabe empfohlen." Ablauf: stabil → commit → **Abschluss-Eintrag** (fertig/offen/nächster Schritt/Hashes) → neuer Agent liest `CLAUDE.md` + HANDOFF. Gedächtnis = Repo, nicht Chat.
 
 > ## ▶ HIER STARTEN — AKTUELLER STAND (2026-06-10)
+> **▶ EXECUTOR-STATUS (2026-06-10): Lane Q P4 (Tally-Durchführungsdatum #5, Mark D4 = b+c) = FERTIG + committet als HEAD von Branch `lane-q-p4-tally-datum` (ab `origin/main` `f6e89b1`), NICHT gepusht/gemergt.** Gates grün: tsc 0 · employee-file-Suite 153/153 (6 neue P4-Tests) · `next build` Compiled successfully. Details + geparkte Fragen → unten „Von Cursor an Claude". **Wartet auf Planer-Review + Mark-Merge-Gate.**
 > **▶ EXECUTOR-STATUS (2026-06-10): Lane O P2 (Schulungen-Abschnitt #2 + Datum-Default startDate #3) = FERTIG + committet `a2fe6b9` auf Branch `lane-o-p2-schulungen` (ab `origin/main` `205595a`), NICHT gepusht/gemergt.** Gates grün: tsc 0 · Suite 137/137 (6 neue #3-Tests) · `next build` Compiled successfully. Details + geparkte Fragen → unten „Von Cursor an Claude". **Wartet auf Planer-Review + Mark-Merge-Gate.**
 > **▶ JETZT — VORLAGEN-INTEGRATION KOMPLETT + LIVE (Terminal-Planer, 2026-06-10): `main` = `fe17ad5`, DEPLOYT.** 30 Dokumentvorlagen serverseitig in S3 eingespielt (`roles/sicherheitsmitarbeiter|fuehrungskraft|buerokraft` = Basis+Stellenbeschreibung; `appointments/bestellungen|betriebsanweisung|mutterschutz|objektbezogen|veranstaltung`). **5 Dokumente neu erstellt** (Bestellung Ersthelfer+SiBe, Kfz-Fahranweisung, Mutterschutz-Merkblatt, Bildschirmarbeitsplatz — aus Brandschutzhelfer-Shell, §§ korrekt, Mark-„Wording ok"). `vorlagen-set-catalog.ts` auf **reale Slugs** verdrahtet (FK inkl. Bildschirm), templateMissing-Flags gelöst. Suite **127/127**, next build grün, `/api/templates` zeigt 4 Rollen, kein Schema-Change. Register CL-75/76/77 = **belegt**. **Offen (Mark, gezielt):** alte `appointments/unterweisungen/`-Kopien löschen (Route-Filter blendet aus; Mass-Delete vom Auto-Classifier blockiert); modulare-Schulungen-UE-aus-Dateiname (#5-Folge-Touch). Doku: `BENOETIGTE_VORLAGEN.md`, `HETZNER_DEPLOY.md`.
 > **▶ VORHER — TOOL-2-FEEDBACK KOMPLETT + LIVE (2026-06-09): `main` war `03429b2`.** Alle 10 Feedback-Punkte + A–E + Q8 gebaut, reviewt, gemergt UND live (In-Chat-Subagenten `executor-a/b` bzw. generisch, worktree-isoliert, je Planer-Merge-Gate). Reihenfolge: #1/#A/#B/#9 · #7/#C · #3 · #8 · #2 · #D · #4 · #10 · #5 · Persistenz-Migration (A1/A2/A3: `bestelltAls`/`bestellungSchulungLink`/`setKategorie`/`generatorDates`) · Set-Mapping+Org-Titel+Mutterschutz (`gender`) · Q8 (`perDocType`). **5 neue additive nullable Spalten** beim Deploy via `db push` (Backup `pre-deploy-2026-06-09-210010.db`, kein Datenverlust). Suite **127/127**, **`next build` grün** (= jetzt fester Review-Gate, nachdem Lane I einen sync-Export aus „use server" eingeschleust hatte → gefixt `36c4509`, hätte sonst den Deploy gebrochen). **Offen (Mark liefert):** fehlende Vorlagen-`.docx` (`BENOETIGTE_VORLAGEN.md`), exakte DGUV-Nummern (CL-75), CL-76/77-§-Bestätigung, **S3-Move** `appointments/unterweisungen/Unterweisungsnachweis_Arbeitsschutz_DGUV.docx` (#9, Route-Filter blendet bis dahin aus). Review-Details: `CODE_REVIEW.md` (Dispatch v1–v6 + Lane J–M).
@@ -54,6 +55,30 @@
 > **Danach (Scope/Planung, NICHT Review):** Executor-FRAGE „**Anlege-Formular auf neues Requirement-Modell migrieren?**" (Legacy `EmployeeForm.tsx`/Tool-1-Modell vs. neues Akte-Modell) als **eigenen Slice** mit Mark abwägen. Plus offene Fäden: **Slice 3b** (Tally-Formular-Feldlücke, gated auf Marks Tally-Arbeit), **Slice 4** (Ampel-/Status-Ansicht, QFD #1), DEKRA (CL-60–62), Legal-Input (CL-70–73), Ist-UE-Auto-Summe.
 >
 > **Guardrails:** EC-09 (Generator/ZIP nie brechen), EC-10 (kein Freigabe-/Auditfähigkeitsstatus), keine erfundene Normpflicht (jede Regel `clauseId`). Verifikation im echten Browser, nicht per Skript. Mark = Gate. Nach stabilem Punkt: Übergabe-Takt + Abschluss-Eintrag.
+
+---
+
+## 🔚 Von Cursor an Claude — Executor (Spur E): Lane Q P4 (Tally-Durchführungsdatum #5, D4 = b+c), 2026-06-10
+
+**Rolle:** Executor. Gebaut wurde NUR der Auftrag (`CURSOR_TOOL2_SCHULUNGEN_FLOW_AUFTRAG.md` #5, P4, D4 = b+c). Branch `lane-q-p4-tally-datum` ab `origin/main` `f6e89b1`.
+
+**Fertig:**
+- **(b) Tally-Datum:** Neues optionales `dateQuestionId` je Schulungs-Datei-Slot (`TallyFileQuestionConfig`, `lib/tally-intake-config.ts`). Der Intake (`lib/tally-intake-service.ts`) liest je Schulungsnachweis (`training-plan:{id}`) das Durchführungs-/Zertifikatsdatum aus und setzt es als `plannedDate` des zugeordneten Plan-Eintrags (`applyTrainingDateFromEvidence`, neue reine Funktion in `training-plan.ts`). **Kein erfundenes Datum:** fehlt `dateQuestionId`/kommt kein/ungültiges Datum → No-op. Reiner Daten-Merge im bestehenden `trainingPlan`-Json — **kein Schema-Change**.
+- **(c) Upload-Datum-Input:** Termin-Planung (`EmployeeFileTrainingPlan.tsx`) bietet beim manuellen Nachweis-Upload das `plannedDate`-Feld als „Durchführung / geplant" an (+ Hinweis „Durchführungsdatum eintragen", wenn Nachweis ohne Datum). Zusätzlich optionales Durchführungsdatum-Feld in `EmployeeFileEvidenceRow.tsx` (neue optionale Props `evidenceDate`/`onDateChange`) — additiv, nur sichtbar wenn ein Handler durchgereicht wird.
+- **EC-10 gewahrt:** importierte Nachweise bleiben `unchecked` (Prüfstatus #7 unverändert); das Datum ist nur Durchführungsdatum, KEINE Freigabe. Die erzeugten Plan-Einträge tragen KEINE `ueAnerkennung` → kein Auto-Ist (Engine/UE unberührt). CL-Snapshot informativ (Ersthelfer CL-08, Brandschutz CL-23).
+- **Bonus (Datums-Pfad):** der bisher in `TALLY_FIELD_MAPPING.md` geparkte `tp-…` vs. stabile-Id-Konflikt ist für den Datums-Pfad gelöst (P4 legt bei Bedarf einen Plan-Eintrag mit stabiler Id `erste-hilfe`/`brandschutz` an).
+- Doku: `TALLY_FIELD_MAPPING.md` um das neue Feld + Beispiel ergänzt.
+
+**Gates (im Worktree, nach `npm install` + `prisma generate`):** `tsc --noEmit` = **0** · `npx tsx --test modules/03-mitarbeiterakte-tool-2/employee-file/*.test.ts` = **153/153** (6 neue P4-Tests: Datum übernommen, bestehender Eintrag aktualisiert, fehlend→leer/No-op, Nicht-Schulungs-evidenceId→No-op, idempotent, Helper) · `npm run build` = **Compiled successfully** (Exit 0). EC-09: Generator/Build-Pfad grün; ZIP-Live-Klick (OS/Browser) nicht harness-automatisierbar → optionale Mark-Abnahme.
+
+**Geparkte Fragen an Planer (nicht selbst entschieden):**
+1. **Reale Tally-DATE-questionIds:** das Datum-Feld je Schulungsnachweis muss Mark im Tally-Formular anlegen; dann `dateQuestionId` in `data/tally-employee-slots.json` nachtragen. Bis dahin inaktiv (kein erfundenes Datum, JSON daher NICHT verändert).
+2. **(c) Unterweisungs-Datum end-to-end:** Das optionale Datum-Feld in `EmployeeFileEvidenceRow` ist verdrahtbar, aber die Persistenz für generische Unterweisungs-Slots berührt `EmployeeFileDossierView`/`types/employee.ts`/Repository (außerhalb des Write-Sets, z. T. VERBOTEN) → als Frage geparkt. Schulungs-/Plan-Datum (c) ist über `plannedDate` voll funktionsfähig.
+3. **Akte-Aufräumung:** manuelle `tp-…`-Plan-Items vs. stabile Import-Items konsolidieren (optional, außerhalb Write-Set).
+
+**Commit:** HEAD von Branch `lane-q-p4-tally-datum` (NICHT gepusht/gemergt). Write-Set eingehalten; kein `.env`/`.db`/Kundendaten committet.
+
+✅ **Stabiler Punkt** — Lane Q P4 fertig + Gates grün. Wartet auf Planer-Review + Marks Merge-Gate.
 
 ---
 

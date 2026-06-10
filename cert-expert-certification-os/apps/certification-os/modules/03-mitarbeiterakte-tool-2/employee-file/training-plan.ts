@@ -225,6 +225,90 @@ export function planEvidenceId(itemId: string): string {
   return `training-plan:${itemId}`;
 }
 
+/**
+ * Umkehrung von `planEvidenceId`: aus einer `training-plan:{id}`-evidenceId die
+ * Plan-Item-Id ziehen. Liefert `null`, wenn die evidenceId nicht der
+ * Schulungs-/Plan-Konvention folgt (z. B. Dokument-Slots wie `arbeitsvertrag`).
+ */
+export function trainingItemIdFromEvidenceId(
+  evidenceId: string,
+): string | null {
+  const prefix = "training-plan:";
+  if (!evidenceId.startsWith(prefix)) return null;
+  const id = evidenceId.slice(prefix.length).trim();
+  return id.length > 0 ? id : null;
+}
+
+// --- P4 (b) Tally-Durchführungsdatum → Plan-Eintrag ------------------------
+//
+// Mark D4 (b): je Schulungsnachweis kommt aus der Tally-Submission ein
+// **Durchführungs-/Zertifikatsdatum** mit. Es setzt das `plannedDate` des
+// zugeordneten Plan-Eintrags `training-plan:{id}` (gleiche evidenceId wie der
+// importierte Nachweis). Leitplanken:
+//  - **Kein erfundenes Datum:** kommt kein/ein leeres Datum mit → kein Plan-
+//    Eintrag wird angelegt/geändert (No-op).
+//  - **EC-10:** der importierte Nachweis bleibt separat `unchecked` (Prüfstatus
+//    #7). Das Datum ist nur das Durchführungsdatum, KEINE Freigabe/Anerkennung.
+//  - **Kein Auto-Ist:** ein so erzeugter Eintrag trägt KEINE `ueAnerkennung` →
+//    `recognizedUe` = 0 (Engine/Ist unberührt).
+//  - CL-Snapshot (informativ): Ersthelfer CL-08, Brandschutz CL-23 (bekannte
+//    Tally-Schulungs-Slots); sonst `null` (kein erfundener CL).
+
+/** Bekannte CL-Snapshots der Tally-Schulungs-Slots (informativ, kein Norm-Soll). */
+const TALLY_TRAINING_CLAUSE: Readonly<Record<string, string>> = {
+  "erste-hilfe": "CL-08",
+  brandschutz: "CL-23",
+};
+
+/** Anzeige-Label-Snapshot für die bekannten Tally-Schulungs-Slots. */
+const TALLY_TRAINING_LABEL: Readonly<Record<string, string>> = {
+  "erste-hilfe": "Ersthelfer / Erste Hilfe",
+  brandschutz: "Brandschutz",
+};
+
+/**
+ * P4 (b) — setzt das Durchführungs-/Zertifikatsdatum (`date`, ISO) als
+ * `plannedDate` des Plan-Eintrags, der zu `evidenceId` (`training-plan:{id}`)
+ * gehört. Existiert noch kein passender Eintrag, wird ein minimaler Plan-Eintrag
+ * angelegt (operativ, OHNE `ueAnerkennung` → kein Auto-Ist). Reine, seiteneffekt-
+ * freie Funktion (idempotent) — testbar + im Tally-Service nutzbar.
+ *
+ * No-op (Plan unverändert), wenn `date` leer/kein `YYYY-MM-DD` ist oder
+ * `evidenceId` nicht der Schulungs-Konvention folgt → **kein erfundenes Datum**.
+ */
+export function applyTrainingDateFromEvidence(
+  plan: TrainingPlanItem[],
+  evidenceId: string,
+  date: string,
+): TrainingPlanItem[] {
+  const itemId = trainingItemIdFromEvidenceId(evidenceId);
+  if (!itemId) return plan;
+  const iso = typeof date === "string" ? date.trim() : "";
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(iso)) return plan;
+
+  const existingIndex = plan.findIndex((p) => p.id === itemId);
+  if (existingIndex >= 0) {
+    const existing = plan[existingIndex];
+    if (existing.plannedDate === iso) return plan; // idempotent
+    const next = plan.slice();
+    next[existingIndex] = { ...existing, plannedDate: iso };
+    return next;
+  }
+
+  const newItem: TrainingPlanItem = {
+    id: itemId,
+    source: "katalog",
+    refId: itemId,
+    label: TALLY_TRAINING_LABEL[itemId] ?? itemId,
+    ue: null,
+    clauseId: TALLY_TRAINING_CLAUSE[itemId] ?? null,
+    plannedDate: iso,
+    // EC-10 / kein Auto-Ist: KEINE ueAnerkennung — der Eintrag trägt nur das
+    // Durchführungsdatum, der Nachweis bleibt separat `unchecked` (#7).
+  };
+  return [...plan, newItem];
+}
+
 // --- #3 Datum-Default Gruppe 1 (Mark D3) ----------------------------------
 //
 // Mark D3: „Gruppe 1 = Erst-Standardunterweisungen + -erklärungen" → das
