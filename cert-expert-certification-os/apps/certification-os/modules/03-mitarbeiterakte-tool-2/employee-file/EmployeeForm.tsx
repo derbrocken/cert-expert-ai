@@ -29,12 +29,21 @@ import {
   Shield,
   Hash,
 } from "lucide-react";
-import type { Employee, Role, Appointment, RoleClass } from "@/lib/types/employee";
+import type {
+  Employee,
+  Role,
+  Appointment,
+  RoleClass,
+  BestellungTyp,
+} from "@/lib/types/employee";
 import {
   appointmentLabelDe,
   roleLabelDe,
   GRUNDROLLE_HINT,
   ZUSATZBESTELLUNGEN_HINT,
+  BESTELLUNG_DEFS,
+  getBestelltAls,
+  setBestelltAlsPatch,
 } from "./employee-display-labels";
 import {
   ROLE_CLASS_LABEL_MULTI,
@@ -103,6 +112,8 @@ export const EmployeeForm: React.FC<EmployeeFormProps> = ({
           startDate: editingEmployee.startDate,
           roleId: editingEmployee.roleId,
           appointmentIds: editingEmployee.appointmentIds,
+          // Lane N P1 (#1): persistierte/abgeleitete Bestell-Auswahl.
+          bestelltAls: getBestelltAls(editingEmployee),
           roleClasses: resolveRoleClasses(editingEmployee),
           roleType: editingEmployee.roleType || "",
           // #D: gespeichertes Feld gewinnt; sonst aus `roleId` projizieren.
@@ -135,6 +146,7 @@ export const EmployeeForm: React.FC<EmployeeFormProps> = ({
           startDate: "",
           roleId: "",
           appointmentIds: [],
+          bestelltAls: [],
           roleClasses: [],
           roleType: "",
           setKategorie: undefined,
@@ -386,6 +398,20 @@ export const EmployeeForm: React.FC<EmployeeFormProps> = ({
       ? data.guardIDNumber || ""
       : data.employeeIDNumber || "";
 
+    // Lane N P1 (#1): Bestell-Auswahl persistieren + Generator-Auswahl
+    // reconcilen. `bestelltAls` ist die Source of Truth; der Patch hält den
+    // realen `bestellungen`-Ordner (appointmentIds) und die Bestell-Doc-Chips
+    // (selectedAppointmentDocIds) synchron, ohne andere Auswahl zu verlieren.
+    const bestelltAls: BestellungTyp[] = data.bestelltAls ?? [];
+    const bestellPatch = setBestelltAlsPatch(
+      {
+        ...(editingEmployee ?? ({} as Employee)),
+        appointmentIds: data.appointmentIds,
+        selectedAppointmentDocIds: Array.from(selectedAppDocIds),
+      } as Employee,
+      bestelltAls,
+    );
+
     const employee: Employee = {
       // Bestehende Felder erhalten (z. B. Ist-UE, einmaligIstUE) — beim
       // Speichern aus dem Generator-Tab darf nichts verloren gehen.
@@ -395,9 +421,13 @@ export const EmployeeForm: React.FC<EmployeeFormProps> = ({
       birthday: data.birthday,
       startDate: data.startDate,
       roleId: data.roleId,
-      appointmentIds: data.appointmentIds,
+      // Lane N P1 (#1): aus dem Bestell-Reconcile (Ordner-Sync) — behält alle
+      // Nicht-Bestell-Termine.
+      appointmentIds: bestellPatch.appointmentIds,
+      bestelltAls,
       selectedRoleDocIds: Array.from(selectedRoleDocIds),
-      selectedAppointmentDocIds: Array.from(selectedAppDocIds),
+      // Lane N P1 (#1): Bestell-Doc-Chips reconcilet; übrige Overlay-Auswahl bleibt.
+      selectedAppointmentDocIds: bestellPatch.selectedAppointmentDocIds,
       // EK/FK-Refinement — Norm-Klassen-Set (Engine) + Org-Titel (Anzeige)
       roleClasses: data.roleClasses,
       // Legacy-Einfachfelder nicht mehr schreiben (Set ist maßgeblich).
@@ -444,6 +474,7 @@ export const EmployeeForm: React.FC<EmployeeFormProps> = ({
       startDate: "",
       roleId: "",
       appointmentIds: [],
+      bestelltAls: [],
       roleClasses: [],
       roleType: "",
       setKategorie: undefined,
@@ -1037,10 +1068,40 @@ export const EmployeeForm: React.FC<EmployeeFormProps> = ({
                       {ZUSATZBESTELLUNGEN_HINT}
                     </p>
                   ) : null}
+                  {/* Lane N P1 (#1): „bestellt als …" = die DREI formalen
+                      Ernennungen, DIREKT aus BESTELLUNG_DEFS (CL-08/CL-23/CL-74),
+                      persistiert als `bestelltAls`. NICHT mehr aus nicht-existenten
+                      Appointment-IDs. Beim Speichern reconcilet handleFormSubmit
+                      die Generator-Auswahl (appointmentIds + Doc-Chips). */}
+                  {displayMode === "master" ? (
+                    <FormField
+                      label="Bestellt als (formale Ernennung)"
+                      name="bestelltAls"
+                      id="bestelltAls"
+                      description="Ersthelfer (CL-08) / Brandschutzhelfer (CL-23) / SiBe (CL-74) — unterschriftspflichtig. Bestellung ≠ Schulung. Steuert die Bestell-Vorlagen im Generator."
+                    >
+                      <Controller
+                        name="bestelltAls"
+                        control={control}
+                        render={({ field }) => (
+                          <MultiSelect
+                            options={BESTELLUNG_DEFS.map((d) => ({
+                              id: d.typ,
+                              name: `${d.label} (${d.clauseId})`,
+                              description: d.schulungHint,
+                            }))}
+                            value={field.value ?? []}
+                            onChange={field.onChange}
+                            placeholder="Ersthelfer, Brandschutzhelfer, SiBe …"
+                          />
+                        )}
+                      />
+                    </FormField>
+                  ) : null}
                   <FormField
                     label={
                       displayMode === "master"
-                        ? "Bestellungen wählen"
+                        ? "Weitere Termine / Overlays (optional)"
                         : "Select Appointments"
                     }
                     name="appointmentIds"

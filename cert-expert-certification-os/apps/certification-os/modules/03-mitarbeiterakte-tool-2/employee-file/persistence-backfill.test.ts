@@ -13,6 +13,7 @@ import {
   getBestelltAls,
   backfillBestelltAls,
   setBestelltAlsPatch,
+  bestellungDocId,
 } from "./employee-display-labels";
 import { resolveSetKategorie } from "./vorlagen-set-catalog";
 
@@ -32,21 +33,32 @@ function baseEmployee(partial: Partial<Employee> = {}): Employee {
 
 // ── A1: bestelltAls ──────────────────────────────────────────────────────────
 
-test("A1: persistiertes bestelltAls hat Vorrang vor appointmentIds", () => {
+test("A1: persistiertes bestelltAls hat Vorrang vor abgeleiteten Quellen", () => {
   const emp = baseEmployee({
     bestelltAls: ["sibe"],
-    // appointmentIds widersprechen bewusst → persistiertes Feld gewinnt.
-    appointmentIds: ["safety-training"],
+    // Bestell-Doc-Chip widerspricht bewusst → persistiertes Feld gewinnt.
+    selectedAppointmentDocIds: [bestellungDocId("ersthelfer")],
   });
   assert.deepEqual(getBestelltAls(emp), ["sibe"]);
 });
 
-test("A1: fehlendes bestelltAls → Legacy-Backfill aus appointmentIds", () => {
+test("A1 (Lane N P1): fehlendes bestelltAls → Backfill aus realen Bestell-Doc-Chips", () => {
   const emp = baseEmployee({
-    appointmentIds: ["fire-safety", "safety-training"],
+    selectedAppointmentDocIds: [
+      bestellungDocId("brandschutzhelfer"),
+      bestellungDocId("ersthelfer"),
+    ],
   });
-  // Katalog-Reihenfolge: ersthelfer (safety-training) vor brandschutzhelfer (fire-safety).
+  // Katalog-Reihenfolge: ersthelfer vor brandschutzhelfer.
   assert.deepEqual(getBestelltAls(emp), ["ersthelfer", "brandschutzhelfer"]);
+});
+
+test("A1 (Lane N P1): nicht-existente Legacy-appointmentIds liefern KEINE Bestellung", () => {
+  // Diagnose #1: safety-training/fire-safety existierten nie im Bucket.
+  const emp = baseEmployee({
+    appointmentIds: ["safety-training", "fire-safety"],
+  });
+  assert.deepEqual(getBestelltAls(emp), []);
 });
 
 test("A1: bestelltAls wird in Katalog-Reihenfolge normalisiert + dedupliziert", () => {
@@ -68,18 +80,57 @@ test("A1: backfillBestelltAls — leeres persistiertes Array bleibt leer (kein B
   // Leeres Array = bewusst „nichts bestellt", NICHT „Feld fehlt".
   const res = backfillBestelltAls({
     bestelltAls: [],
-    appointmentIds: ["safety-training"],
+    selectedAppointmentDocIds: [bestellungDocId("ersthelfer")],
   });
   assert.deepEqual(res, []);
 });
 
-test("A1: setBestelltAlsPatch hält appointmentIds synchron (Generator-Pfad/EC-09)", () => {
-  const emp = baseEmployee({ appointmentIds: ["onboarding"] });
-  const patched = setBestelltAlsPatch(emp, ["brandschutzhelfer"]);
-  // Nicht-Bestell-appointmentIds bleiben; Bestell-ID wird gesetzt.
-  assert.ok(patched.includes("onboarding"));
-  assert.ok(patched.includes("fire-safety"));
-  assert.ok(!patched.includes("safety-training"));
+test("A1 (Lane N P1): setBestelltAlsPatch — Ordner + Doc-Chips synchron (Generator/EC-09)", () => {
+  const emp = baseEmployee({
+    appointmentIds: ["onboarding"],
+    selectedAppointmentDocIds: ["onboarding-Welcome"],
+  });
+  const patch = setBestelltAlsPatch(emp, ["brandschutzhelfer"]);
+  // Nicht-Bestell-Termine bleiben; realer Bestellungen-Ordner kommt dazu.
+  assert.ok(patch.appointmentIds.includes("onboarding"));
+  assert.ok(patch.appointmentIds.includes("bestellungen"));
+  // Genau der gewählte Bestell-Doc-Chip; übrige Auswahl bleibt erhalten.
+  assert.ok(patch.selectedAppointmentDocIds.includes("onboarding-Welcome"));
+  assert.ok(
+    patch.selectedAppointmentDocIds.includes(
+      bestellungDocId("brandschutzhelfer"),
+    ),
+  );
+  assert.ok(
+    !patch.selectedAppointmentDocIds.includes(bestellungDocId("ersthelfer")),
+  );
+});
+
+test("A1 (Lane N P1): leere Bestell-Auswahl entfernt Ordner + Bestell-Doc-Chips", () => {
+  const emp = baseEmployee({
+    appointmentIds: ["bestellungen", "onboarding"],
+    selectedAppointmentDocIds: [
+      bestellungDocId("sibe"),
+      "onboarding-Welcome",
+    ],
+  });
+  const patch = setBestelltAlsPatch(emp, []);
+  assert.ok(!patch.appointmentIds.includes("bestellungen"));
+  assert.ok(patch.appointmentIds.includes("onboarding"));
+  assert.ok(!patch.selectedAppointmentDocIds.includes(bestellungDocId("sibe")));
+  assert.ok(patch.selectedAppointmentDocIds.includes("onboarding-Welcome"));
+});
+
+test("A1 (Lane N P1): bestellungDocId entspricht dem /api/templates-Schema", () => {
+  // /api/templates: doc.id = `${folderName}-${fileName ohne .docx}`.
+  assert.equal(
+    bestellungDocId("ersthelfer"),
+    "bestellungen-Bestellungsurkunde_Ersthelfer",
+  );
+  assert.equal(
+    bestellungDocId("sibe"),
+    "bestellungen-Bestellungsurkunde_Sicherheitsbeauftragter",
+  );
 });
 
 // ── A2: setKategorie ─────────────────────────────────────────────────────────

@@ -10,6 +10,13 @@ export const employeeFormSchema = z.object({
   // G4: roleId bleibt Pflicht — steuert die Generator-Dokumentenpalette (EC-09).
   roleId: z.string().min(1, "Bitte eine Dokumenten-Vorlage wählen"),
   appointmentIds: z.array(z.string()),
+  // Lane N P1 (#1): „bestellt als …" = die DREI formalen Ernennungen
+  // (Ersthelfer CL-08 / Brandschutzhelfer CL-23 / SiBe CL-74). Persistiert als
+  // echtes `bestelltAls`-Feld (Lane J). Steuert die Bestell-Doc-Chips + den
+  // `bestellungen`-Generator-Ordner (kein Auto-Status, EC-10).
+  bestelltAls: z
+    .array(z.enum(["ersthelfer", "brandschutzhelfer", "sibe"]))
+    .optional(),
   // #A: Norm-Klassen-Set = primärer Engine-Input. Mehrfachauswahl, frei
   // kombinierbar, jede Klasse einzeln abwählbar — KEINE Zwangsvorauswahl. Leere
   // Auswahl ist zulässig; Overview/Engine zeigen dann „Keine Norm-Klasse

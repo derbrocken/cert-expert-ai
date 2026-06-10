@@ -29,7 +29,6 @@ import {
   getBestelltAls,
   setBestelltAlsPatch,
 } from "./employee-display-labels";
-import { applyEmployeePatchWithDocSync } from "./employee-doc-selection-sync";
 import {
   GRUNDROLLE_CATALOG,
   ZUSATZROLLEN_CATALOG,
@@ -283,8 +282,6 @@ function catalogMatch(active: string, catalogLabel: string): boolean {
  */
 function BestellungenPanel({
   employee,
-  roles,
-  appointments,
   onSavePerson,
   evidenceFiles,
   evidenceEditMode,
@@ -293,8 +290,6 @@ function BestellungenPanel({
   onOpenGenerator,
 }: {
   employee: Employee;
-  roles: Role[];
-  appointments: Appointment[];
   onSavePerson?: (employee: Employee) => void;
   evidenceFiles: EmployeeEvidenceMap;
   evidenceEditMode: boolean;
@@ -309,19 +304,22 @@ function BestellungenPanel({
     const next = new Set(active);
     if (next.has(typ)) next.delete(typ);
     else next.add(typ);
-    // Lane J (A1): `bestelltAls` ist jetzt ein echtes persistiertes Feld →
-    // direkt setzen (Source of Truth). `appointmentIds` bleiben über den Patch
-    // synchron, damit der Generator die Bestell-Dokumente unverändert erzeugt
-    // (EC-09). KEIN Auto-Status (EC-10).
-    const appointmentIds = setBestelltAlsPatch(employee, [...next]);
-    onSavePerson(
-      applyEmployeePatchWithDocSync(
-        employee,
-        { appointmentIds, bestelltAls: [...next] },
-        roles,
-        appointments,
-      ),
+    // Lane J / Lane N P1: `bestelltAls` ist die echte persistierte Quelle →
+    // direkt setzen. Die drei Bestellungen liegen in EINEM realen S3-Ordner
+    // (`bestellungen`, drei Dateien); der Patch hält darum sowohl `appointmentIds`
+    // (Ordner) als auch `selectedAppointmentDocIds` (genau die gewählten
+    // Bestell-`.docx`) synchron, damit der Generator nur die ausgewählten
+    // Bestellungen erzeugt (EC-09). KEIN Auto-Status (EC-10).
+    const { appointmentIds, selectedAppointmentDocIds } = setBestelltAlsPatch(
+      employee,
+      [...next],
     );
+    onSavePerson({
+      ...employee,
+      appointmentIds,
+      selectedAppointmentDocIds,
+      bestelltAls: [...next],
+    });
   }
 
   return (
@@ -631,8 +629,6 @@ export const EmployeeFileDossierView: React.FC<EmployeeFileDossierViewProps> = (
             <div className="border-t border-[#e5e7eb] pt-6">
               <BestellungenPanel
                 employee={employee}
-                roles={roles}
-                appointments={appointments}
                 onSavePerson={onSavePerson}
                 evidenceFiles={evidenceFiles}
                 evidenceEditMode={evidenceEditMode}
