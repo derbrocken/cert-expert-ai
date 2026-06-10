@@ -3,9 +3,11 @@
 > Ziel: **stabile HTTPS-URL** für Tally-Webhooks statt wechselndem cloudflared-Tunnel.  
 > App: `cert-expert-certification-os/apps/certification-os/` · Port **3001** (intern)
 
-## ✅ LIVE-STAND (Redeploy 2026-06-10, Terminal-Planer auf Marks Anweisung)
+## ✅ LIVE-STAND (Redeploy 2026-06-10 #2, Terminal-Planer auf Marks Anweisung)
 
-**App live: https://cos.cert-expert.de** (HTTPS, HTTP→HTTPS-Redirect). Deployter Commit **`fe17ad5`** (zuvor `03429b2`, `5280d9c`, `404d55d`).
+**App live: https://cos.cert-expert.de** (HTTPS, HTTP→HTTPS-Redirect). Deployter Commit **`2242502`** (zuvor `fe17ad5`, `03429b2`, `5280d9c`, `404d55d`).
+
+> **Redeploy 2026-06-10 #2 (Schulungen/Bestellungen/Upload/Prüfstatus P1–P4):** `fe17ad5` → `2242502`. #1 Bestellungen-Wiring, #2 Schulungen-Abschnitt, #3 Datum-Default, #5 Tally-/Upload-Datum, #6 Upload Anlegen+Bearbeiten, #7 Prüfstatus (`geprüft`-Toggle). **Neue additive Spalte `evidenceChecks Json?`** via `db push` (Backup `pre-deploy-2026-06-10-033629.db`, kein Datenverlust). Build grün, Endpunkte 200, Log sauber. Suite 153/153. **Offen (Mark):** Admin-/Rollen-Gate für „geprüft" (kein Auth-System), reale Tally-date-questionIds, alte `appointments/unterweisungen/`-Kopien löschen.
 
 > **Redeploy 2026-06-10 (Vorlagen-Integration):** `03429b2` → `fe17ad5`. **30 Dokumentvorlagen serverseitig in S3 eingespielt** (`roles/sicherheitsmitarbeiter|fuehrungskraft|buerokraft` mit Basis+Stellenbeschreibung; `appointments/bestellungen|betriebsanweisung|mutterschutz|objektbezogen|veranstaltung`). 5 Dokumente neu erstellt (Ersthelfer-, SiBe-Bestellung, Kfz-Fahranweisung, Mutterschutz-Merkblatt, Bildschirmarbeitsplatz — aus Brandschutzhelfer-Shell, §§ korrekt). `vorlagen-set-catalog.ts` auf echte Slugs verdrahtet (FK inkl. Bildschirm). Kein Schema-Change (kein db push). Build grün, `/api/templates` zeigt 4 Rollen, Endpunkte 200. **Offen:** alte `appointments/unterweisungen/`-Kopien (2) noch im Bucket (Route-Filter blendet aus; Mass-Delete vom Auto-Classifier blockiert → Mark löscht gezielt oder gibt OK).
 
