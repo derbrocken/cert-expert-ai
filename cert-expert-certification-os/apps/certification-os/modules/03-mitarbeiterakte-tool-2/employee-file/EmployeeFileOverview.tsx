@@ -386,27 +386,6 @@ export const EmployeeFileOverview: React.FC<EmployeeFileOverviewProps> = ({
             </p>
           )}
 
-          {summary.schulungsSoll.length > 0 ? (
-            <div className="mt-6">
-              {/* onSave NICHT übergeben → Ist-Eingaben disabled (read-only). */}
-              <EmployeeFileTrainingTargets
-                targets={summary.schulungsSoll}
-                employee={employee}
-              />
-            </div>
-          ) : null}
-
-          {summary.schulungsSoll.length > 0 ? (
-            <div className="mt-6">
-              {/* read-only — kein onSave/Upload/Remove (Queue C / B). */}
-              <EmployeeFileTrainingPlan
-                targets={summary.schulungsSoll}
-                employee={employee}
-                evidenceFiles={evidenceFiles}
-              />
-            </div>
-          ) : null}
-
           {summary.fristen.length > 0 ? (
             <div className="mt-6">
               <ReadOnlySectionHeader
@@ -433,6 +412,35 @@ export const EmployeeFileOverview: React.FC<EmployeeFileOverviewProps> = ({
             </ul>
           ) : null}
         </section>
+
+        {/* Schulungen — eigener, sichtbar getrennter Abschnitt (#2, read-only).
+            Standarddokumente/Unterweisungen stehen im Akte-Kern oben; hier nur
+            Schulungen (Jahresweiterbildung, DIN-1-Module, einmalige SDL-
+            Schulungen) als Soll/Ist + Termin-Planung. read-only (kein onSave/
+            Upload). EC-10: rechnerisch, kein Freigabe-/Auditstatus. */}
+        {summary.schulungsSoll.length > 0 ? (
+          <section className="p-5">
+            <ReadOnlySectionHeader
+              icon={<GraduationCap className="h-4 w-4 text-[#e30613]" />}
+              title="Schulungen"
+              subtitle="Jahresweiterbildung, modulare DIN-1-Schulungen und einmalige SDL-Schulungen — Soll/Ist + Termin-Planung. Getrennt von Standarddokumenten/Unterweisungen (oben)."
+              level="anforderung"
+            />
+            <div className="space-y-6">
+              {/* onSave NICHT übergeben → read-only (Ist-Eingaben disabled). */}
+              <EmployeeFileTrainingTargets
+                targets={summary.schulungsSoll}
+                employee={employee}
+              />
+              {/* read-only — kein onSave/Upload/Remove (Queue B). */}
+              <EmployeeFileTrainingPlan
+                targets={summary.schulungsSoll}
+                employee={employee}
+                evidenceFiles={evidenceFiles}
+              />
+            </div>
+          </section>
+        ) : null}
 
         {/* Offene Punkte (read-only) */}
         <section className="bg-[#fafbfc] p-5">

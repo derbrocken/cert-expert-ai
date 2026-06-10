@@ -21,6 +21,7 @@ import {
   attachExternerUeVorschlag,
   setUeBestaetigt,
   recognizedUe,
+  defaultPlannedDateForNewItem,
   type PlanItemStatus,
 } from "./training-plan";
 import { TRAINING_CATALOG, extractUeFromText } from "./training-catalog";
@@ -140,6 +141,12 @@ export const EmployeeFileTrainingPlan: React.FC<
       }
     }
     if (item) {
+      // #3 (Mark D3) — Default-Datum eines NEU erzeugten Eintrags = Einstellungs-/
+      // Unterschriftsdatum (`startDate`) für Gruppe-1-Erst-Standardposten;
+      // Einzelschulungen (Katalog-Module) bleiben ohne Datum. In jedem Fall frei
+      // überschreibbar (das Datum-Feld unten ist immer editierbar).
+      const defaultDate = defaultPlannedDateForNewItem(item, employee);
+      if (defaultDate) item = { ...item, plannedDate: defaultDate };
       writePlan([...plan, item]);
       setSelection("");
     }
@@ -411,8 +418,10 @@ export const EmployeeFileTrainingPlan: React.FC<
 
       <p className="border-t border-[#e5e7eb] px-4 py-2.5 text-[10px] text-[#9ca3af]">
         Operative Planung — Module füllen das CL-11-Jahres-Soll, sie verändern es
-        nicht. Hochgeladene Nachweise gelten als ungeprüft; keine Freigabe-,
-        Auditfähigkeits- oder Zertifizierungsaussage.
+        nicht. Erst-Standardposten (Gruppe 1) erhalten beim Zuweisen das
+        Einstellungsdatum als Default — jederzeit überschreibbar; Einzelschulungen
+        bekommen ein manuelles Datum. Hochgeladene Nachweise gelten als ungeprüft;
+        keine Freigabe-, Auditfähigkeits- oder Zertifizierungsaussage.
       </p>
     </div>
   );

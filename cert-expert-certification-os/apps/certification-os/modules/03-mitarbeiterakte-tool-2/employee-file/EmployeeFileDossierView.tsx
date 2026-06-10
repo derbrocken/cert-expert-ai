@@ -724,29 +724,6 @@ export const EmployeeFileDossierView: React.FC<EmployeeFileDossierViewProps> = (
             </p>
           )}
 
-          {summary.schulungsSoll.length > 0 ? (
-            <div className="mt-6">
-              <EmployeeFileTrainingTargets
-                targets={summary.schulungsSoll}
-                employee={employee}
-                onSave={onSavePerson}
-              />
-            </div>
-          ) : null}
-
-          {summary.schulungsSoll.length > 0 ? (
-            <div className="mt-6">
-              <EmployeeFileTrainingPlan
-                targets={summary.schulungsSoll}
-                employee={employee}
-                evidenceFiles={evidenceFiles}
-                onSave={onSavePerson}
-                onEvidenceUpload={onEvidenceUpload}
-                onEvidenceRemove={onEvidenceRemove}
-              />
-            </div>
-          ) : null}
-
           {summary.fristen.length > 0 ? (
             <div className="mt-6">
               <SubSectionHeader
@@ -773,6 +750,38 @@ export const EmployeeFileDossierView: React.FC<EmployeeFileDossierViewProps> = (
             </ul>
           ) : null}
         </section>
+
+        {/* 1c. Schulungen — eigener, sichtbar getrennter Abschnitt (#2).
+            (a) Standarddokumente/Unterweisungen liegen im Akte-Kern oben
+            („Schulung & Unterweisung" + „Pflichtnachweise"); (b) Schulungen
+            (Jahresweiterbildung, modulare DIN-1-Schulungen, einmalige SDL-
+            Schulungen) = Soll/Ist + Termin-Planung hier. EC-10: rechnerisch,
+            kein Freigabe-/Auditstatus. */}
+        {summary.schulungsSoll.length > 0 ? (
+          <section className="p-5">
+            <SectionHeader
+              icon={<GraduationCap className="h-4 w-4 text-[#e30613]" />}
+              title="Schulungen"
+              subtitle="Jahresweiterbildung, modulare DIN-1-Schulungen und einmalige SDL-Schulungen — Soll/Ist + Termin-Planung. Getrennt von Standarddokumenten/Unterweisungen (Akte-Kern oben)."
+              level="anforderung"
+            />
+            <div className="space-y-6">
+              <EmployeeFileTrainingTargets
+                targets={summary.schulungsSoll}
+                employee={employee}
+                onSave={onSavePerson}
+              />
+              <EmployeeFileTrainingPlan
+                targets={summary.schulungsSoll}
+                employee={employee}
+                evidenceFiles={evidenceFiles}
+                onSave={onSavePerson}
+                onEvidenceUpload={onEvidenceUpload}
+                onEvidenceRemove={onEvidenceRemove}
+              />
+            </div>
+          </section>
+        ) : null}
 
         {/* 2. Offene Punkte */}
         <section className="bg-[#fafbfc] p-5">

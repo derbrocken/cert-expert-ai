@@ -18,6 +18,8 @@ import {
   markEigenKatalogAnerkennung,
   attachExternerUeVorschlag,
   setUeBestaetigt,
+  isErstStandardGruppe1,
+  defaultPlannedDateForNewItem,
 } from "./training-plan";
 import { extractUeFromText } from "./training-catalog";
 
@@ -260,4 +262,52 @@ test("#5 extractUeFromText: kein Muster → null (kein Auto-Ist)", () => {
   assert.equal(extractUeFromText("Teilnahmebescheinigung.pdf"), null);
   assert.equal(extractUeFromText(""), null);
   assert.equal(extractUeFromText(undefined), null);
+});
+
+// --- #3 Datum-Default Gruppe 1 (Mark D3) ----------------------------------
+
+test("#3 isErstStandardGruppe1: Soll-Posten = Gruppe 1", () => {
+  assert.equal(
+    isErstStandardGruppe1(planItem({ source: "soll-posten" })),
+    true,
+  );
+});
+
+test("#3 isErstStandardGruppe1: Katalog-Modul (Einzelschulung) = NICHT Gruppe 1", () => {
+  assert.equal(isErstStandardGruppe1(planItem({ source: "katalog" })), false);
+});
+
+test("#3 defaultPlannedDateForNewItem: Gruppe-1-Posten → Default = startDate", () => {
+  const employee = baseEmployee({ startDate: "2026-03-01" });
+  const item = planItem({ source: "soll-posten" });
+  assert.equal(defaultPlannedDateForNewItem(item, employee), "2026-03-01");
+});
+
+test("#3 defaultPlannedDateForNewItem: Einzelschulung (Katalog) → kein Default (manuell)", () => {
+  const employee = baseEmployee({ startDate: "2026-03-01" });
+  const item = planItem({ source: "katalog" });
+  assert.equal(defaultPlannedDateForNewItem(item, employee), undefined);
+});
+
+test("#3 defaultPlannedDateForNewItem: Gruppe 1 ohne startDate → undefined (kein erfundenes Datum)", () => {
+  const employee = baseEmployee({ startDate: "" });
+  const item = planItem({ source: "soll-posten" });
+  assert.equal(defaultPlannedDateForNewItem(item, employee), undefined);
+});
+
+test("#3 defaultPlannedDateForNewItem: Default ist nur Default — bleibt überschreibbar", () => {
+  // Der Default verändert ein bereits gesetztes plannedDate NICHT; die Funktion
+  // liefert nur den Vorschlag für einen NEU erzeugten Eintrag.
+  const employee = baseEmployee({ startDate: "2026-03-01" });
+  const withOwnDate = planItem({
+    source: "soll-posten",
+    plannedDate: "2026-09-09",
+  });
+  // Aufrufer setzt den Default nur, wenn noch kein Datum vorliegt; die Helper-
+  // Funktion selbst kennt den aktuellen plannedDate nicht und schlägt startDate
+  // vor — die Überschreibbarkeit liegt beim editierbaren Datum-Feld.
+  assert.equal(
+    defaultPlannedDateForNewItem(withOwnDate, employee),
+    "2026-03-01",
+  );
 });

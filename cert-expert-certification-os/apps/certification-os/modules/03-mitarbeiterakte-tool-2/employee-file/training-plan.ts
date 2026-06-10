@@ -154,6 +154,46 @@ export function planEvidenceId(itemId: string): string {
   return `training-plan:${itemId}`;
 }
 
+// --- #3 Datum-Default Gruppe 1 (Mark D3) ----------------------------------
+//
+// Mark D3: „Gruppe 1 = Erst-Standardunterweisungen + -erklärungen" → das
+// Default-Datum eines neu erzeugten Plan-/Unterweisungs-Eintrags ist das
+// **Einstellungs-/Unterschriftsdatum** (`startDate`), überall + immer
+// editierbar (kein gesperrtes Datum). **Einzelschulungen = manuelles Datum**
+// (kein Default).
+//
+// Klassifizierung (rein operativ, KEINE neue Normpflicht, kein Auto-Status):
+//  - Engine-Soll-Posten (`source:"soll-posten"`) = Erst-/Standard-Anforderung
+//    aus dem abgeleiteten Pflicht-Set → Gruppe 1 → Default = `startDate`.
+//  - DIN-1-Katalog-Module (`source:"katalog"`) = einzelne Lehrbaustein-
+//    Schulungen → manuelles Datum (kein Default).
+// Das gesetzte Datum bleibt in jedem Fall frei überschreibbar (#3).
+
+/**
+ * Gehört ein Plan-Eintrag zur „Gruppe 1" (Erst-Standardunterweisungen/
+ * -erklärungen, Mark D3)? Nur dann bekommt er das `startDate`-Default.
+ * Einzel-/Katalog-Schulungen → `false` (manuelles Datum).
+ */
+export function isErstStandardGruppe1(item: TrainingPlanItem): boolean {
+  return item.source === "soll-posten";
+}
+
+/**
+ * Default-`plannedDate` für einen **neu erzeugten** Plan-/Unterweisungs-Eintrag
+ * (Mark D3). Gruppe-1-Einträge erhalten das Einstellungs-/Unterschriftsdatum
+ * (`startDate`); Einzelschulungen bleiben ohne Datum (manuell zu setzen).
+ * Liefert `undefined`, wenn kein `startDate` erfasst ist → kein erfundenes Datum.
+ * Das Ergebnis ist nur ein **Default**: an jeder Stelle frei überschreibbar.
+ */
+export function defaultPlannedDateForNewItem(
+  item: TrainingPlanItem,
+  employee: Pick<Employee, "startDate">,
+): string | undefined {
+  if (!isErstStandardGruppe1(item)) return undefined;
+  const start = employee.startDate;
+  return typeof start === "string" && start.length > 0 ? start : undefined;
+}
+
 // --- #5 UE-Anerkennung (Variante C) --------------------------------------
 //
 // Norm-Leitplanken (hart):

@@ -94,10 +94,10 @@ export const EmployeeFileDossierZones: React.FC<
             Slices.
           </li>
           <li>
-            <span className="font-medium text-[#111827]">
-              Schulung / Unterweisung:
-            </span>{" "}
-            Placeholder — kein LMS in diesem Slice.
+            <span className="font-medium text-[#111827]">Schulungen:</span>{" "}
+            Eigener Abschnitt „Schulungen" in der Akte/Übersicht
+            (Jahresweiterbildung, modulare DIN-1-Schulungen, einmalige
+            SDL-Schulungen) — getrennt von Standarddokumenten/Unterweisungen.
           </li>
         </ul>
       </ZoneAccordion>
