@@ -37,6 +37,12 @@
 **❌ fehlen noch:** Stellenbeschreibung **Sicherheitsmitarbeiter** (#3) · Stellenbeschreibung **Führungskraft** (#4) · **Bildschirmarbeitsplatz-Unterweisung** (Büro, #5 — oder bestätigen, dass „Allgm. Pflichtunterweisung" das abdeckt) · **Kfz-/Fahr-Anweisung** (#6 CL-73) · **Mutterschutz-Hinweis** (#8 CL-77) · **Bestellungsurkunde Ersthelfer** (#9 CL-08) · **Bestellungsurkunde SiBe** (#11 CL-74).
 **Integration:** Dateien via **Upload-Manager** in den S3-Vorlagen-Bucket → dann wird `vorlagen-set-catalog.ts` auf die realen Dateinamen verdrahtet (`templateMissing` raus). Variantenpaare ODA/Veranstaltung (Einzel vs. Sammel) ggf. als Auswahl modellieren.
 
+## 📥 Eingang 2026-06-10 #2 + Klärungen
+**✅ neu erhalten:** Stellenbeschreibung **SMA** (F-20) · Stellenbeschreibung **Führungskraft** (F-20).
+**Zugehörigkeit geklärt (Mark):** **FK bekommt Bildschirmarbeitsplatz mit** (arbeiten an PCs) → Bildschirmarbeitsplatz-Unterweisung gehört zu **Bürokraft UND Führungskraft**.
+**🔨 Claude erstellt:** **Kfz-/Fahranweisung** (nach Cert-Expert-Stil, Platzhalter `{Automodell}`/`{Kennzeichen}` etc.) · **Mutterschutz-Hinweis** (recherchiert: Merkblatt + Empfangsbestätigung; CL-77 = **MuSchG §10 Gefährdungsbeurteilung / §15 ärztl. Zeugnis / §27 Meldung an Behörde**; Mitteilung der MA freiwillig, keine Form).
+**❓ noch offen (Vorlagen):** **Bildschirmarbeitsplatz-Unterweisung** (Template — lieferst du, oder soll ich erstellen?) · **Bestellung Ersthelfer** + **Bestellung SiBe** (lieferst du, oder aus Brandschutzhelfer-Urkunde ableiten?).
+
 ## Noch von Mark nachzureichen (separat)
 - **Exakte DGUV-Nummern** für die Allgemeine Unterweisung (CL-75).
 - Bestätigung **CL-76** (§7 WaffG / §3 Abs.2 AWaffV) und **CL-77** (MuSchG-§).
