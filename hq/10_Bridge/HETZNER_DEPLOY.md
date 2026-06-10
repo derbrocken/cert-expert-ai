@@ -3,9 +3,11 @@
 > Ziel: **stabile HTTPS-URL** für Tally-Webhooks statt wechselndem cloudflared-Tunnel.  
 > App: `cert-expert-certification-os/apps/certification-os/` · Port **3001** (intern)
 
-## ✅ LIVE-STAND (Redeploy 2026-06-10 #2, Terminal-Planer auf Marks Anweisung)
+## ✅ LIVE-STAND (Redeploy 2026-06-10 #4, Terminal-Planer auf Marks Anweisung)
 
-**App live: https://cos.cert-expert.de** (HTTPS, HTTP→HTTPS-Redirect). Deployter Commit **`2242502`** (zuvor `fe17ad5`, `03429b2`, `5280d9c`, `404d55d`).
+**App live: https://cos.cert-expert.de** (HTTPS, HTTP→HTTPS-Redirect). Deployter Commit **`e84e599`** (zuvor `d5c9086`, `2242502`, `fe17ad5`, `03429b2`, `5280d9c`, `404d55d`).
+
+> **Redeploys 2026-06-10 #3/#4:** `2242502`→`d5c9086` (Schulung „Durchführung von–bis") →`e84e599` (modulare DIN-1-Schulungen **generierbar**: zugewiesenes Modul → Schulungsnachweis-`.docx` im Export-ZIP unter `Schulungen/`; Generierungs-Smoke bestätigt). + 9 modulare Schulungen serverseitig in S3 (`appointments/schulungen/`). Keine Schema-Changes (Daten im `trainingPlan`-Json). Build grün, Endpunkte 200. Suite 160/160.
 
 > **Redeploy 2026-06-10 #2 (Schulungen/Bestellungen/Upload/Prüfstatus P1–P4):** `fe17ad5` → `2242502`. #1 Bestellungen-Wiring, #2 Schulungen-Abschnitt, #3 Datum-Default, #5 Tally-/Upload-Datum, #6 Upload Anlegen+Bearbeiten, #7 Prüfstatus (`geprüft`-Toggle). **Neue additive Spalte `evidenceChecks Json?`** via `db push` (Backup `pre-deploy-2026-06-10-033629.db`, kein Datenverlust). Build grün, Endpunkte 200, Log sauber. Suite 153/153. **Offen (Mark):** Admin-/Rollen-Gate für „geprüft" (kein Auth-System), reale Tally-date-questionIds, alte `appointments/unterweisungen/`-Kopien löschen.
 
