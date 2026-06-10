@@ -476,8 +476,13 @@ function EmployeeAutomationPageContent() {
       setEmployees((prev) => [...prev, employee]);
       setBatchSelectedIds((prev) => new Set(prev).add(employee.id));
       openEmployee(employee);
+      // P3 / #6 (Mark D2, Neu-Anlegen): die Person ist jetzt persistiert
+      // (ID/companySlug) → direkt in den „Nachweise hochladen"-Schritt der Akte
+      // (Edit-Modus an), damit der Upload ohne Umweg möglich ist.
+      setAkteViewMode("bearbeiten");
+      setEvidenceEditMode(true);
       setToast({
-        message: "Person angelegt — Dokumente optional unter „Generator“.",
+        message: "Person angelegt — jetzt Nachweise hochladen (oder „Generator“).",
         type: "success",
       });
     },
@@ -536,6 +541,45 @@ function EmployeeAutomationPageContent() {
       });
     },
     [focusEmployee, companySlug],
+  );
+
+  // P3 / #7 (Mark D1) — Prüf-/„geschlossen"-Toggle je Nachweis (nur Admin/Mark).
+  // EC-10 (hart, KEIN Auto-Grün): „geprüft" ist ein bewusster menschlicher Klick.
+  // Persistiert additiv über `employee.evidenceChecks` (Lane-J-Json) im
+  // bestehenden Akten-Auto-Save (Debounce → saveEmployeeQueue) — kein neuer
+  // Storage-Pfad. Toggle false → Eintrag wieder entfernen (zurück auf ungeprüft).
+  const handleToggleEvidenceChecked = useCallback(
+    (evidenceId: string) => {
+      const id = focusEmployee?.id;
+      if (!id) return;
+      setEmployees((prev) =>
+        prev.map((e) => {
+          if (e.id !== id) return e;
+          const current = e.evidenceChecks ?? {};
+          const wasChecked = current[evidenceId]?.geprueft === true;
+          const next = { ...current };
+          if (wasChecked) {
+            delete next[evidenceId];
+          } else {
+            next[evidenceId] = {
+              geprueft: true,
+              am: new Date().toISOString(),
+              von: "Admin",
+            };
+          }
+          const updated: Employee = {
+            ...e,
+            evidenceChecks: Object.keys(next).length > 0 ? next : undefined,
+          };
+          // editingEmployee/State konsistent halten, damit die Live-Akte sofort
+          // re-rendert (Ampel + Badge aktualisieren ohne Reload).
+          setEditingEmployee((cur) => (cur?.id === id ? updated : cur));
+          return updated;
+        }),
+      );
+      setToast({ message: "Prüf-Status aktualisiert.", type: "success" });
+    },
+    [focusEmployee],
   );
 
   const handleCompanyChange = useCallback(
@@ -943,6 +987,7 @@ function EmployeeAutomationPageContent() {
                 evidenceFiles={focusEmployeeId ? evidenceFiles : {}}
                 onEvidenceUpload={handleEvidenceUpload}
                 onEvidenceRemove={handleEvidenceRemove}
+                onToggleEvidenceChecked={handleToggleEvidenceChecked}
                 onSavePerson={handleSavePerson}
                 onOpenGenerator={() => {
                   setEvidenceEditMode(false);

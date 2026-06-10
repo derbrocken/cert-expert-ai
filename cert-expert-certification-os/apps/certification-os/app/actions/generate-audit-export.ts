@@ -23,6 +23,7 @@ import {
   buildPlanDeadlineRows,
   computeTrainingGaps,
   derivePlanItemStatus,
+  isEvidenceChecked,
   planEvidenceId,
   type PlanItemStatus,
 } from "@/modules/03-mitarbeiterakte-tool-2/employee-file/training-plan";
@@ -64,7 +65,10 @@ const ROLE_CLASS_LABELS: Record<string, string> = Object.fromEntries(
 const PLAN_STATUS_LABEL: Record<PlanItemStatus, string> = {
   geplant: "geplant",
   ueberfaellig: "überfällig",
-  "nachweis-vorhanden": "Nachweis vorhanden",
+  // P3 / #7: Nachweis vorhanden, aber (noch) nicht geprüft → in-Arbeit/gelb.
+  "vorhanden-ungeprueft": "vorhanden, ungeprüft",
+  // P3 / #7: erst nach menschlicher Prüfung „geprüft".
+  "nachweis-vorhanden": "Nachweis geprüft",
   "ohne-datum": "ohne Datum",
 };
 
@@ -105,8 +109,17 @@ async function buildPerson(
     evidence = {};
   }
   const hasProof = (evidenceId: string) => Boolean(evidence[evidenceId]);
+  // P3 / #7: ein vorhandener Nachweis zählt erst nach menschlicher Prüfung als
+  // erfüllt (EC-10, kein Auto-Grün).
+  const isChecked = (evidenceId: string) =>
+    isEvidenceChecked(emp.evidenceChecks, evidenceId);
 
-  const planRows = buildPlanDeadlineRows(emp.trainingPlan ?? [], hasProof);
+  const planRows = buildPlanDeadlineRows(
+    emp.trainingPlan ?? [],
+    hasProof,
+    undefined,
+    isChecked,
+  );
   const mergedFristen = [...summary.fristen, ...planRows];
 
   const compliance = computeComplianceStatus(
@@ -133,6 +146,8 @@ async function buildPerson(
     const status: PlanItemStatus = derivePlanItemStatus(
       item,
       Boolean(evidence[eId]),
+      undefined,
+      isChecked(eId),
     );
     return {
       modul: item.label,

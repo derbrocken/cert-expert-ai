@@ -28,7 +28,7 @@ import { EmployeeFileStatusBadge } from "./EmployeeFileStatusBadge";
 import { EmployeeFilePflichtStatusPanel } from "./EmployeeFilePflichtStatusPanel";
 import { EmployeeFileTrainingTargets } from "./EmployeeFileTrainingTargets";
 import { EmployeeFileTrainingPlan } from "./EmployeeFileTrainingPlan";
-import { buildPlanDeadlineRows } from "./training-plan";
+import { buildPlanDeadlineRows, isEvidenceChecked } from "./training-plan";
 import type { EmployeeEvidenceMap } from "./employee-evidence-storage";
 import { CopyButton } from "./CopyButton";
 
@@ -218,9 +218,13 @@ export const EmployeeFileOverview: React.FC<EmployeeFileOverviewProps> = ({
   );
 
   // Queue C — Plan-Fristen operativ in die Ampel mergen (read-only).
+  // P3 / #7: vorhandener Nachweis zählt erst nach menschlicher Prüfung als
+  // erfüllt; ungeprüft = in-Arbeit/gelb (kein Auto-Grün, EC-10).
   const planDeadlineRows = buildPlanDeadlineRows(
     employee.trainingPlan ?? [],
     (evidenceId) => Boolean(evidenceFiles[evidenceId]),
+    undefined,
+    (evidenceId) => isEvidenceChecked(employee.evidenceChecks, evidenceId),
   );
   const mergedFristen = [...summary.fristen, ...planDeadlineRows];
 

@@ -28,6 +28,8 @@ import {
   Calendar,
   Shield,
   Hash,
+  Upload,
+  X,
 } from "lucide-react";
 import type {
   Employee,
@@ -70,6 +72,7 @@ import {
   OVERLAY_DEFS,
   type SetKategorie,
 } from "./vorlagen-set-catalog";
+import type { EmployeeEvidenceMap } from "./employee-evidence-storage";
 
 export type EmployeeFormDisplayMode = "full" | "master" | "documents";
 
@@ -82,6 +85,16 @@ export interface EmployeeFormProps {
   appointments: Appointment[];
   /** master = Stammdaten only; documents = doc chips only; full = legacy combined */
   displayMode?: EmployeeFormDisplayMode;
+  /**
+   * P3 / #6 (Mark D2) — Nachweis-Upload direkt im Formular beim **Bearbeiten**
+   * einer bereits gespeicherten Person. Wird nur gerendert, wenn `editingEmployee`
+   * eine ID hat (Person persistiert) UND diese Handler gesetzt sind. Nutzt die
+   * bestehende Evidence-Infra (kein neues Storage-Modell). EC-10: eingehende
+   * Nachweise bleiben `unchecked` (Prüfung = separater Admin-Toggle, #7).
+   */
+  evidenceFiles?: EmployeeEvidenceMap;
+  onEvidenceUpload?: (evidenceId: string, file: File) => void;
+  onEvidenceRemove?: (evidenceId: string) => void;
 }
 
 export const EmployeeForm: React.FC<EmployeeFormProps> = ({
@@ -92,6 +105,9 @@ export const EmployeeForm: React.FC<EmployeeFormProps> = ({
   roles,
   appointments,
   displayMode = "full",
+  evidenceFiles,
+  onEvidenceUpload,
+  onEvidenceRemove,
 }) => {
   const {
     register,
@@ -1366,6 +1382,21 @@ export const EmployeeForm: React.FC<EmployeeFormProps> = ({
           </div>
         </CardContent>
 
+        {/* P3 / #6 (Mark D2) — Nachweis-Upload direkt im Formular beim
+            Bearbeiten einer bereits gespeicherten Person. Nur Master-Modus +
+            persistierte Person (ID) + Upload-Handler. Bewusst AUSSERHALB des
+            <form>-Submit-Pfads (type="button"). EC-10: eingehend `unchecked`. */}
+        {showMaster &&
+        editingEmployee?.id &&
+        onEvidenceUpload &&
+        evidenceFiles ? (
+          <FormEvidenceUploadSection
+            evidenceFiles={evidenceFiles}
+            onUpload={onEvidenceUpload}
+            onRemove={onEvidenceRemove}
+          />
+        ) : null}
+
         <div className="border-t border-gray-200 px-6 py-4">
           <div className="flex justify-end">
             <Button
@@ -1385,3 +1416,85 @@ export const EmployeeForm: React.FC<EmployeeFormProps> = ({
 };
 
 EmployeeForm.displayName = "EmployeeForm";
+
+/**
+ * P3 / #6 (Mark D2) — kompakter Nachweis-Upload-Block für das Bearbeiten-Formular
+ * einer bereits gespeicherten Person. Nutzt die bestehende Evidence-Infra über
+ * die durchgereichten Handler (kein neues Storage-Modell). Drei häufige Kern-
+ * Slots; weitere/feinere Nachweise + Prüf-Toggle bleiben in der Akte/im Dossier.
+ * EC-10: eingehende Nachweise sind `unchecked`; die fachliche Prüfung (#7) erfolgt
+ * über den Admin-Toggle in der Akte — hier wird KEIN Status gesetzt.
+ */
+const FORM_EVIDENCE_SLOTS: { id: string; label: string }[] = [
+  { id: "arbeitsvertrag", label: "Arbeitsvertrag / Beschäftigungsnachweis" },
+  { id: "schulungsnachweise", label: "Schulungsnachweise" },
+  { id: "unterweisungsnachweise", label: "Unterweisungsnachweise" },
+];
+
+const FormEvidenceUploadSection: React.FC<{
+  evidenceFiles: EmployeeEvidenceMap;
+  onUpload: (evidenceId: string, file: File) => void;
+  onRemove?: (evidenceId: string) => void;
+}> = ({ evidenceFiles, onUpload, onRemove }) => {
+  return (
+    <div className="border-t border-gray-200 px-6 py-4">
+      <p className="flex items-center gap-2 text-sm font-semibold text-gray-700">
+        <Upload className="h-4 w-4 text-orange-500" />
+        Nachweise hochladen
+      </p>
+      <p className="mt-0.5 text-xs text-gray-400">
+        Person ist gespeichert — PDFs direkt anhängen. Eingehende Nachweise gelten
+        als ungeprüft; die fachliche Prüfung erfolgt in der Akte.
+      </p>
+      <ul className="mt-3 space-y-2">
+        {FORM_EVIDENCE_SLOTS.map((slot) => {
+          const stored = evidenceFiles[slot.id];
+          return (
+            <li
+              key={slot.id}
+              className="flex flex-wrap items-center gap-2 rounded-lg border border-gray-200 bg-white px-3 py-2"
+            >
+              <FileText
+                className={`h-5 w-5 shrink-0 ${stored ? "text-orange-500" : "text-gray-300"}`}
+              />
+              <div className="min-w-0 flex-1">
+                <p className="truncate text-xs font-medium text-gray-700">
+                  {slot.label}
+                </p>
+                <p className="text-[10px] text-gray-400">
+                  {stored ? `${stored.fileName} · ungeprüft` : "Noch keine Datei"}
+                </p>
+              </div>
+              <label className="inline-flex cursor-pointer items-center gap-1 rounded-md border border-orange-200 bg-orange-50 px-2 py-1 text-[11px] font-semibold text-orange-700 hover:bg-orange-100">
+                <Upload className="h-3 w-3" />
+                {stored ? "Ersetzen" : "Hochladen"}
+                <input
+                  type="file"
+                  accept=".pdf,application/pdf,image/*"
+                  className="hidden"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (file) onUpload(slot.id, file);
+                    e.target.value = "";
+                  }}
+                />
+              </label>
+              {stored && onRemove ? (
+                <button
+                  type="button"
+                  onClick={() => onRemove(slot.id)}
+                  className="rounded p-1 text-gray-400 hover:bg-red-50 hover:text-red-600"
+                  title="Datei entfernen"
+                >
+                  <X className="h-4 w-4" />
+                </button>
+              ) : null}
+            </li>
+          );
+        })}
+      </ul>
+    </div>
+  );
+};
+
+FormEvidenceUploadSection.displayName = "FormEvidenceUploadSection";

@@ -41,7 +41,7 @@ import { EmployeeFileEvidenceRow } from "./EmployeeFileEvidenceRow";
 import { EmployeeFilePersonRolleEditTable } from "./EmployeeFilePersonRolleEditTable";
 import { EmployeeFileTrainingTargets } from "./EmployeeFileTrainingTargets";
 import { EmployeeFileTrainingPlan } from "./EmployeeFileTrainingPlan";
-import { buildPlanDeadlineRows } from "./training-plan";
+import { buildPlanDeadlineRows, isEvidenceChecked } from "./training-plan";
 import type { EmployeeEvidenceMap } from "./employee-evidence-storage";
 
 export interface EmployeeFileDossierViewProps {
@@ -54,6 +54,11 @@ export interface EmployeeFileDossierViewProps {
   evidenceFiles?: EmployeeEvidenceMap;
   onEvidenceUpload?: (evidenceId: string, file: File) => void;
   onEvidenceRemove?: (evidenceId: string) => void;
+  /**
+   * P3 / #7 (Mark D1) — Prüf-Toggle je Nachweis (nur Admin/Mark). Fehlt der
+   * Handler, ist die Prüfung nicht setzbar. EC-10: „geprüft" = bewusster Klick.
+   */
+  onToggleEvidenceChecked?: (evidenceId: string) => void;
   onSavePerson?: (employee: Employee) => void;
   onOpenGenerator?: () => void;
 }
@@ -453,11 +458,17 @@ export const EmployeeFileDossierView: React.FC<EmployeeFileDossierViewProps> = (
   evidenceFiles = {},
   onEvidenceUpload,
   onEvidenceRemove,
+  onToggleEvidenceChecked,
   onSavePerson,
   onOpenGenerator,
 }) => {
   const role = roles.find((r) => r.id === employee.roleId);
   const apiRoleName = role?.name ?? employee.roleId;
+  // P3 / #7 — Prüf-Status je Nachweis (Mark D1). Lese-Helfer; EC-10: nur
+  // explizit gesetzte „geprüft"-Vermerke gelten.
+  const evidenceChecks = employee.evidenceChecks;
+  const isChecked = (evidenceId: string) =>
+    isEvidenceChecked(evidenceChecks, evidenceId);
 
   const summary = getEmployeeFileSummary(
     employee,
@@ -471,9 +482,13 @@ export const EmployeeFileDossierView: React.FC<EmployeeFileDossierViewProps> = (
     employee.selectedAppointmentDocIds.length;
 
   // Queue C — Plan-Fristen operativ in die Ampel mergen (Engine unberührt).
+  // P3 / #7: ein vorhandener Nachweis zählt erst nach menschlicher Prüfung als
+  // erfüllt; ungeprüft bleibt er in-Arbeit/gelb (kein Auto-Grün, EC-10).
   const planDeadlineRows = buildPlanDeadlineRows(
     employee.trainingPlan ?? [],
     (evidenceId) => Boolean(evidenceFiles[evidenceId]),
+    undefined,
+    isChecked,
   );
   const mergedFristen = [...summary.fristen, ...planDeadlineRows];
 
@@ -659,6 +674,12 @@ export const EmployeeFileDossierView: React.FC<EmployeeFileDossierViewProps> = (
                     signatureRequired={PFLICHTNACHWEIS_SIGNATURE[row.id]}
                     onUpload={(file) => onEvidenceUpload?.(row.id, file)}
                     onRemove={() => onEvidenceRemove?.(row.id)}
+                    checked={isChecked(row.id)}
+                    onToggleChecked={
+                      onToggleEvidenceChecked
+                        ? () => onToggleEvidenceChecked(row.id)
+                        : undefined
+                    }
                   />
                 ))}
               </ul>
@@ -689,6 +710,12 @@ export const EmployeeFileDossierView: React.FC<EmployeeFileDossierViewProps> = (
                       }
                       onUpload={(file) => onEvidenceUpload?.(evidenceId, file)}
                       onRemove={() => onEvidenceRemove?.(evidenceId)}
+                      checked={isChecked(evidenceId)}
+                      onToggleChecked={
+                        onToggleEvidenceChecked
+                          ? () => onToggleEvidenceChecked(evidenceId)
+                          : undefined
+                      }
                     />
                   );
                 })}

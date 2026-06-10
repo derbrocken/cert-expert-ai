@@ -153,6 +153,41 @@ export interface Employee {
    * KEIN Engine-/Norm-/UE-Eingriff (EC-10). Leeres `global` → „heute".
    */
   generatorDates?: GeneratorDates;
+  /**
+   * P3 / #7 — Prüf-/„geschlossen"-Status je hochgeladenem Nachweis (Mark D1).
+   * Map `evidenceId → { geprueft, am?, von? }`. **EC-10 (hart): eingehende
+   * Nachweise sind `unchecked`; ein Nachweis zählt erst dann als erfüllt/grün,
+   * wenn ein Mensch (Admin/Mark) ihn hier explizit auf `geprueft: true` setzt.**
+   * Kein Auto-Grün: ein vorhandener, aber ungeprüfter Nachweis bleibt
+   * „vorhanden, ungeprüft" = in-Arbeit/gelb.
+   *
+   * **Persistenz (Lane-J-Muster):** echte additive **nullable** DB-Spalte
+   * `evidenceChecks Json?` am `EmployeeFile`. Fehlt das Feld/ein Key auf einer
+   * Bestandsakte → tolerant als „ungeprüft" gelesen (kein P2023, kein
+   * Auto-Status). Nullable/optional.
+   */
+  evidenceChecks?: EvidenceChecks;
+}
+
+/**
+ * P3 / #7 — Prüf-Status-Map je Nachweis (`evidenceId → EvidenceCheck`). Nur
+ * geprüfte (`geprueft: true`) Einträge wirken in der Ampel. Fehlender Eintrag =
+ * ungeprüft. EC-10: ausschließlich durch einen menschlichen Klick gesetzt.
+ */
+export type EvidenceChecks = Record<string, EvidenceCheck>;
+
+/**
+ * P3 / #7 — ein einzelner Prüf-Vermerk (Mark D1). `geprueft: true` schließt den
+ * Nachweis fachlich → erst dann erfüllt/grün. `am`/`von` sind optionale
+ * Audit-Metadaten (Zeitpunkt/Prüfer). KEIN Norm-/Engine-Eingriff (EC-10).
+ */
+export interface EvidenceCheck {
+  /** Vom Menschen gesetzt: Nachweis fachlich geprüft („geschlossen"). */
+  geprueft: boolean;
+  /** Optionaler Prüf-Zeitpunkt (ISO). */
+  am?: string;
+  /** Optionaler Prüfer (Anzeige), z. B. „Admin"/„Mark". */
+  von?: string;
 }
 
 /**

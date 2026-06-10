@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useRef } from "react";
-import { FileText, Upload, X, ExternalLink } from "lucide-react";
+import { FileText, Upload, X, ExternalLink, ShieldCheck } from "lucide-react";
 import type { RequirementRow, WorkingItemStatus } from "./employee-file-requirements";
 import type { StoredEvidenceFile } from "./employee-evidence-storage";
 import { EmployeeFileStatusBadge } from "./EmployeeFileStatusBadge";
@@ -19,13 +19,30 @@ export interface EmployeeFileEvidenceRowProps {
    * Pflichtnachweise/Dokument-Slots ohne explizite Unterschrifts-Aussage).
    */
   signatureRequired?: boolean;
+  /**
+   * P3 / #7 (Mark D1) — wurde der vorhandene Nachweis (menschlich) „geprüft"?
+   * EC-10: eingehend `false` (ungeprüft). Nur `true` macht den Status erfüllt/grün.
+   */
+  checked?: boolean;
+  /**
+   * P3 / #7 — Prüf-Toggle-Handler (nur Admin/Mark). Fehlt er, ist die Prüfung
+   * nicht setzbar (kein Toggle). EC-10: „geprüft" nur durch bewussten Klick.
+   */
+  onToggleChecked?: () => void;
 }
 
+/**
+ * P3 / #7 (EC-10, **kein Auto-Grün**): Nachweis-Status für die Anzeige.
+ *  - kein File         → die rohe Anforderung (fehlt/offen/…).
+ *  - File + ungeprüft  → `beantragt` (vorhanden, ungeprüft = in-Arbeit/gelb).
+ *  - File + geprüft     → `vorhanden` (erfüllt/grün — erst nach menschl. Prüfung).
+ */
 function displayStatus(
   row: RequirementRow,
   hasFile: boolean,
+  checked: boolean,
 ): WorkingItemStatus {
-  if (hasFile) return "vorhanden";
+  if (hasFile) return checked ? "vorhanden" : "beantragt";
   if (row.status === "nicht erforderlich") return "nicht erforderlich";
   return row.status;
 }
@@ -37,10 +54,12 @@ export const EmployeeFileEvidenceRow: React.FC<EmployeeFileEvidenceRowProps> = (
   onUpload,
   onRemove,
   signatureRequired,
+  checked = false,
+  onToggleChecked,
 }) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const hasFile = Boolean(storedFile);
-  const status = displayStatus(row, hasFile);
+  const status = displayStatus(row, hasFile, checked);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -87,9 +106,16 @@ export const EmployeeFileEvidenceRow: React.FC<EmployeeFileEvidenceRowProps> = (
               </p>
               <p className="flex items-center gap-1.5 text-[10px] text-[#6b7280]">
                 PDF / Nachweisdatei
-                <span className="rounded border border-[#e5e7eb] bg-[#f9fafb] px-1 py-0.5 text-[9px] font-semibold uppercase tracking-wide text-[#9ca3af]">
-                  unchecked
-                </span>
+                {checked ? (
+                  <span className="inline-flex items-center gap-1 rounded border border-green-200 bg-green-50 px-1 py-0.5 text-[9px] font-semibold uppercase tracking-wide text-green-700">
+                    <ShieldCheck className="h-2.5 w-2.5" />
+                    geprüft
+                  </span>
+                ) : (
+                  <span className="rounded border border-amber-200 bg-amber-50 px-1 py-0.5 text-[9px] font-semibold uppercase tracking-wide text-amber-700">
+                    vorhanden · ungeprüft
+                  </span>
+                )}
               </p>
             </div>
             {storedFile!.dataUrl ? (
@@ -123,6 +149,30 @@ export const EmployeeFileEvidenceRow: React.FC<EmployeeFileEvidenceRowProps> = (
             </div>
           </div>
         )}
+
+        {/* P3 / #7 (Mark D1) — Prüf-/„geschlossen"-Toggle, nur Admin/Mark
+            (`onToggleChecked` gesetzt) und nur bei vorhandenem Nachweis. EC-10:
+            „geprüft" ist ein bewusster menschlicher Klick — erst dann grün. */}
+        {hasFile && onToggleChecked ? (
+          <button
+            type="button"
+            onClick={onToggleChecked}
+            aria-pressed={checked}
+            className={
+              checked
+                ? "inline-flex items-center gap-1.5 rounded-lg border border-green-300 bg-green-50 px-3 py-2 text-xs font-semibold text-green-700 hover:bg-green-100"
+                : "inline-flex items-center gap-1.5 rounded-lg border border-amber-300 bg-amber-50 px-3 py-2 text-xs font-semibold text-amber-700 hover:bg-amber-100"
+            }
+            title={
+              checked
+                ? "Prüfung zurücknehmen (Nachweis wird wieder als ungeprüft gewertet)"
+                : "Nachweis als geprüft markieren (Admin/Mark) — zählt erst dann als erfüllt"
+            }
+          >
+            <ShieldCheck className="h-3.5 w-3.5" />
+            {checked ? "Geprüft ✓" : "Als geprüft markieren"}
+          </button>
+        ) : null}
 
         {editMode ? (
           <>
