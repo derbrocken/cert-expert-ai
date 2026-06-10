@@ -224,8 +224,10 @@ export interface TrainingPlanItem {
   ue: number | null;
   /** Snapshot der CL (informativ). */
   clauseId: string | null;
-  /** Geplantes Datum (ISO YYYY-MM-DD). */
+  /** Durchführung VON / geplantes Datum (ISO YYYY-MM-DD). Treibt den Plan-Status. */
   plannedDate?: string;
+  /** Durchführung BIS (ISO) — Ende des Durchführungszeitraums (Mark 2026-06-10, „von–bis" = Durchführung). */
+  plannedBis?: string;
   /** Optionale Gültigkeit (ISO) — Zukunfts-Hook (Brandschutz/EH-Muster). */
   validUntil?: string;
   /** Freitext-Notiz (optional). */

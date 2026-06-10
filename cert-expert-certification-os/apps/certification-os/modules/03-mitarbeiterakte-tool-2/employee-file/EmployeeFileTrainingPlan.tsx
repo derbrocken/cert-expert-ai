@@ -196,6 +196,15 @@ export const EmployeeFileTrainingPlan: React.FC<
     );
   };
 
+  // „von–bis" = Durchführungszeitraum (Mark 2026-06-10, D=a). `plannedDate` = von.
+  const handleBisChange = (itemId: string, value: string) => {
+    writePlan(
+      plan.map((p) =>
+        p.id === itemId ? { ...p, plannedBis: value || undefined } : p,
+      ),
+    );
+  };
+
   const handleBulkApply = () => {
     if (!bulkDate || plan.length === 0) return;
     writePlan(plan.map((p) => ({ ...p, plannedDate: bulkDate })));
@@ -420,7 +429,7 @@ export const EmployeeFileTrainingPlan: React.FC<
                       erfundenes Datum); Hinweis, wenn ein Nachweis vorliegt, aber
                       noch kein Datum gesetzt ist. */}
                   <label className="flex items-center gap-1.5 text-xs text-[#374151]">
-                    Durchführung / geplant:
+                    Durchführung von:
                     <input
                       type="date"
                       value={item.plannedDate ?? ""}
@@ -428,7 +437,19 @@ export const EmployeeFileTrainingPlan: React.FC<
                         handleDateChange(item.id, e.target.value)
                       }
                       disabled={!editable}
-                      aria-label="Durchführungs-/geplantes Datum"
+                      aria-label="Durchführung von (geplant)"
+                      className="rounded-md border border-[#e5e7eb] px-2 py-1 text-xs text-[#111827] focus:border-[#e30613] focus:outline-none disabled:bg-[#fafbfc] disabled:text-[#6b7280]"
+                    />
+                  </label>
+                  <label className="flex items-center gap-1.5 text-xs text-[#374151]">
+                    bis:
+                    <input
+                      type="date"
+                      value={item.plannedBis ?? ""}
+                      min={item.plannedDate || undefined}
+                      onChange={(e) => handleBisChange(item.id, e.target.value)}
+                      disabled={!editable}
+                      aria-label="Durchführung bis"
                       className="rounded-md border border-[#e5e7eb] px-2 py-1 text-xs text-[#111827] focus:border-[#e30613] focus:outline-none disabled:bg-[#fafbfc] disabled:text-[#6b7280]"
                     />
                   </label>

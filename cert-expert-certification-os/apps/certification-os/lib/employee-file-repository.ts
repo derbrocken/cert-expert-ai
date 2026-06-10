@@ -112,6 +112,7 @@ function asTrainingPlan(value: unknown): TrainingPlanItem[] {
       ue: typeof r.ue === "number" && Number.isFinite(r.ue) ? r.ue : null,
       clauseId: typeof r.clauseId === "string" ? r.clauseId : null,
       plannedDate: typeof r.plannedDate === "string" ? r.plannedDate : undefined,
+      plannedBis: typeof r.plannedBis === "string" ? r.plannedBis : undefined,
       validUntil: typeof r.validUntil === "string" ? r.validUntil : undefined,
       note: typeof r.note === "string" ? r.note : undefined,
       // #5 UE-Anerkennung (Variante C) — im trainingPlan-Json mitgeführt (keine
