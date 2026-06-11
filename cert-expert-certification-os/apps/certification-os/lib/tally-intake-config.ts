@@ -11,6 +11,19 @@ export const TALLY_GLOBAL_QUESTIONS = {
   companySlug: null as string | null,
 } as const;
 
+/**
+ * P2 — Company-Tally „Unternehmensbezogene Unterlagen". questionIds via Tally
+ * REST API verifiziert (2026-06-12, `GET /forms/Y5Zq80/questions`). P2-A nutzt
+ * Name/E-Mail/Logo; die Firmen-Dokument-FILE_UPLOADs = P2-B (eigene Phase).
+ */
+export const TALLY_COMPANY_FORM_ID = "Y5Zq80";
+
+export const TALLY_COMPANY_QUESTIONS = {
+  companyName: "7dM2QA",
+  companyEmail: "blvxao",
+  logo: "J2MA7d", // „10. Logo des Unternehmens." (FILE_UPLOAD)
+} as const;
+
 export interface TallyFileQuestionConfig {
   questionId: string;
   /** Human label from the Tally form (empty for slots 3–10 in the REST export). */

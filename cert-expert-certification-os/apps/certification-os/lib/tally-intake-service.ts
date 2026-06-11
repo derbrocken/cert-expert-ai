@@ -8,12 +8,16 @@ import {
   TALLY_EMPLOYEE_FORM_ID,
   TALLY_EMPLOYEE_SLOTS,
   TALLY_GLOBAL_QUESTIONS,
+  TALLY_COMPANY_FORM_ID,
+  TALLY_COMPANY_QUESTIONS,
   type TallyEmployeeSlotConfig,
 } from "@/lib/tally-intake-config";
 import {
   ensureCompaniesSeeded,
   saveEmployeeEvidenceFile,
 } from "@/lib/employee-file-repository";
+import { buildCompanyLogoKey, putCeaObject } from "@/lib/cea-blob-storage";
+import { parseCompanyIntake, logoMime } from "@/lib/tally-company-intake";
 import { prisma } from "@/lib/prisma";
 import type { Prisma } from "@prisma/client";
 import type { TrainingPlanItem } from "@/lib/types/employee";
@@ -170,6 +174,76 @@ async function downloadTallyFile(url: string): Promise<Buffer> {
   return Buffer.from(arrayBuffer);
 }
 
+/**
+ * P2-A — Company-Tally-Intake (`Y5Zq80`): Firma auflösen → zentrales
+ * `CompanyExportSettings` upserten (Name/E-Mail) + Logo nach S3 laden. Tolerant:
+ * fehlt Logo/Feld → kein Bruch. EC-10: reine Stammdaten, kein Freigabe-Status.
+ * Firmen-Dokumente (FILE_UPLOADs) = P2-B (eigene Phase), hier NICHT verarbeitet.
+ */
+async function processCompanyIntake(
+  responseId: string,
+  formId: string,
+  fields: TallyWebhookField[],
+): Promise<TallyIntakeResult> {
+  await ensureCompaniesSeeded();
+  const fieldMap = buildFieldMap(fields);
+  const parsed = parseCompanyIntake(
+    (id) => fieldMap.get(id)?.value,
+    TALLY_COMPANY_QUESTIONS,
+  );
+  const slugHint = extractCompanySlugHint(fieldMap);
+  const companySlug = resolveCompanySlug({
+    slugHint,
+    companyName: parsed.companyName,
+  });
+
+  let logoStorageKey: string | undefined;
+  if (parsed.logo) {
+    try {
+      const buffer = await downloadTallyFile(parsed.logo.url);
+      const key = buildCompanyLogoKey(companySlug, parsed.logo.ext);
+      await putCeaObject(key, buffer, logoMime(parsed.logo.ext));
+      logoStorageKey = key;
+    } catch (err) {
+      console.error(`${LOG} Company logo download/store failed`, err);
+      // tolerant — Profil wird trotzdem aktualisiert (ohne Logo).
+    }
+  }
+
+  await prisma.companyExportSettings.upsert({
+    where: { companySlug },
+    create: {
+      companySlug,
+      companyName: parsed.companyName || companySlug,
+      companyEmail: parsed.companyEmail,
+      ...(logoStorageKey ? { logoStorageKey } : {}),
+    },
+    update: {
+      ...(parsed.companyName ? { companyName: parsed.companyName } : {}),
+      ...(parsed.companyEmail ? { companyEmail: parsed.companyEmail } : {}),
+      ...(logoStorageKey ? { logoStorageKey } : {}),
+    },
+  });
+
+  await prisma.tallyIntakeRecord.create({
+    data: { responseId, formId, companySlug, employeeIds: [] },
+  });
+
+  console.info(`${LOG} Company intake processed`, {
+    companySlug,
+    logo: Boolean(logoStorageKey),
+  });
+
+  return {
+    skipped: false,
+    responseId,
+    companySlug,
+    employeeIds: [],
+    evidenceImported: logoStorageKey ? 1 : 0,
+    reason: "company-intake",
+  };
+}
+
 function guessMimeType(fileName: string, declared?: string): string {
   if (declared?.trim()) return declared;
   const lower = fileName.toLowerCase();
@@ -316,6 +390,10 @@ export async function processTallyWebhookPayload(
   }
 
   const formId = data.formId ?? "";
+  // P2-A — Company-Tally „Unternehmensunterlagen" → zentrales Firmen-Profil.
+  if (formId === TALLY_COMPANY_FORM_ID) {
+    return processCompanyIntake(responseId, formId, data.fields ?? []);
+  }
   if (formId !== TALLY_EMPLOYEE_FORM_ID) {
     console.warn(`${LOG} Unsupported form — stored as skipped`, { formId });
     await prisma.tallyIntakeRecord.create({
