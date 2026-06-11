@@ -3,9 +3,11 @@
 > Ziel: **stabile HTTPS-URL** für Tally-Webhooks statt wechselndem cloudflared-Tunnel.  
 > App: `cert-expert-certification-os/apps/certification-os/` · Port **3001** (intern)
 
-## ✅ LIVE-STAND (Redeploy 2026-06-12 #2, Terminal-Planer auf Marks „deploy")
+## ✅ LIVE-STAND (Redeploy 2026-06-12 #3, Terminal-Planer auf Marks „deploy")
 
-**App live: https://cos.cert-expert.de** (HTTPS, HTTP→HTTPS-Redirect). Deployter Commit **`7cb3915`** (zuvor `23bd82c`, `dde4f7a`, `0ad7936`, `e84e599`, `d5c9086`, `2242502`, `fe17ad5`, `03429b2`, `5280d9c`, `404d55d`).
+**App live: https://cos.cert-expert.de** (HTTPS, HTTP→HTTPS-Redirect). Deployter Commit **`0ae0a20`** (zuvor `7cb3915`, `23bd82c`, `dde4f7a`, `0ad7936`, `e84e599`, `d5c9086`, `2242502`, `fe17ad5`, `03429b2`, `5280d9c`, `404d55d`).
+
+> **Redeploy 2026-06-12 #3 (Framework P2-A): `7cb3915` → `0ae0a20`.** Company-Tally `Y5Zq80` → zentrales Firmen-Profil (Name/E-Mail/Logo→S3). **Kein Schema-Change.** `next build` grün, Restart aktiv, Endpunkte 200, Webhook-Endpoint 405 (POST-only). **AKTIVIERUNG offen (Mark/Tally-UI):** `Y5Zq80`-Webhook auf `https://cos.cert-expert.de/api/webhooks/tally` (gleicher Signing-Secret) + 1 Test-Submission → Profil+Logo verifizieren. Feld-Keys API-verifiziert (`7dM2QA`/`blvxao`/`J2MA7d`). Plan: `FRAMEWORK_P2_COMPANY_TALLY.md`.
 
 > **Redeploy 2026-06-12 #2 (Framework P3b): `23bd82c` → `7cb3915`.** Mitarbeiter-Formular konsumiert Sammlungen (Selektor „Vorlagen-Sammlung", Pflicht-Lock, unsupported-Hinweis). **Additive Spalte `collectionId` — DB-Backup `pre-deploy-2026-06-11-230623.db` + `db push` additiv**, kein Datenverlust. Generator/Engine unberührt (EC-09). `next build` grün, Restart aktiv, Endpunkte 200. Tests 189/189. Plan: `FRAMEWORK_P3B_FORMULAR_KONSUM.md`. Offen: P3c (Katalog↔Sammlungen zu einer Quelle).
 
