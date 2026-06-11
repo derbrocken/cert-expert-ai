@@ -73,6 +73,14 @@ import {
   type SetKategorie,
 } from "./vorlagen-set-catalog";
 import type { EmployeeEvidenceMap } from "./employee-evidence-storage";
+// P3b — Sammlungen (Document Collections) als Vorauswahl-Quelle.
+import { fetchCollectionsAction } from "@/app/actions/collection-actions";
+import type { CollectionDto } from "@/lib/document-collection-repository";
+import {
+  mapCollectionToSelection,
+  type CollectionSelectionResult,
+  type UnsupportedItem,
+} from "./collection-employee-mapping";
 
 export type EmployeeFormDisplayMode = "full" | "master" | "documents";
 
@@ -260,6 +268,41 @@ export const EmployeeForm: React.FC<EmployeeFormProps> = ({
     () => new Set(editingEmployee?.selectedAppointmentDocIds || []),
   );
 
+  // ── P3b — Sammlungen ──
+  const [collections, setCollections] = useState<CollectionDto[]>([]);
+  const [collectionId, setCollectionId] = useState<string | undefined>(
+    editingEmployee?.collectionId,
+  );
+  const [lockedDocIds, setLockedDocIds] = useState<Set<string>>(
+    () => new Set(),
+  );
+  const [unsupportedItems, setUnsupportedItems] = useState<UnsupportedItem[]>([]);
+  // Wird im handleCollectionChange gesetzt; ein NACHGELAGERTER Effekt wendet die
+  // Doc-Auswahl an, nachdem die Rollen-/Appointment-Effekte gelaufen sind
+  // (deterministische Reihenfolge → kein Effect-Fighting).
+  const [pendingApply, setPendingApply] =
+    useState<CollectionSelectionResult | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    fetchCollectionsAction()
+      .then((list) => {
+        if (cancelled) return;
+        setCollections(list);
+        // Edit-Vorauswahl: gespeicherte collectionId, sonst Seed zur setKategorie.
+        if (!editingEmployee?.collectionId && editingEmployee?.setKategorie) {
+          const seed = list.find((c) => c.seedKey === editingEmployee.setKategorie);
+          if (seed) setCollectionId(seed.id);
+        }
+      })
+      .catch(() => {
+        if (!cancelled) setCollections([]);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [editingEmployee]);
+
   const selectedRole = useMemo(
     () => roles.find((r) => r.id === selectedRoleId),
     [selectedRoleId, roles],
@@ -344,6 +387,19 @@ export const EmployeeForm: React.FC<EmployeeFormProps> = ({
     appointments,
   ]);
 
+  // P3b — wendet die Sammlungs-Doc-Auswahl NACH den Rollen-/Appointment-Effekten
+  // an (dieser Effekt ist bewusst danach deklariert → läuft danach → gewinnt).
+  // Seed = bisheriges Verhalten (alle Rollen-Doks, Appointments unberührt);
+  // Custom = exakte Subset-Auswahl inkl. optional-aus + Appointments.
+  useEffect(() => {
+    if (!pendingApply) return;
+    setSelectedRoleDocIds(new Set(pendingApply.selectedRoleDocIds));
+    if (pendingApply.kind === "custom") {
+      setSelectedAppDocIds(new Set(pendingApply.selectedAppointmentDocIds));
+    }
+    setPendingApply(null);
+  }, [pendingApply]);
+
   const toggleRoleDoc = (docId: string) => {
     setSelectedRoleDocIds((prev) => {
       const next = new Set(prev);
@@ -380,6 +436,31 @@ export const EmployeeForm: React.FC<EmployeeFormProps> = ({
 
   const deselectAllAppDocs = () => {
     setSelectedAppDocIds(new Set());
+  };
+
+  // P3b — Sammlung gewählt → Doc-Vorauswahl ableiten + anwenden.
+  const handleCollectionChange = (id: string) => {
+    setCollectionId(id || undefined);
+    const coll = collections.find((c) => c.id === id);
+    if (!coll) {
+      setLockedDocIds(new Set());
+      setUnsupportedItems([]);
+      return;
+    }
+    const result = mapCollectionToSelection(
+      { seedKey: coll.seedKey, items: coll.items },
+      roles,
+      appointments,
+    );
+    setValue("setKategorie", result.setKategorie, { shouldValidate: true });
+    setValue("roleId", result.roleId, { shouldValidate: true });
+    if (result.kind === "custom") {
+      setValue("appointmentIds", result.appointmentIds, { shouldValidate: true });
+    }
+    setLockedDocIds(new Set(result.lockedDocIds));
+    setUnsupportedItems(result.unsupported);
+    // Doc-Auswahl wird im nachgelagerten Effekt angewandt (nach Rollen-Effekt).
+    setPendingApply(result);
   };
 
   const roleOptions = useMemo(
@@ -455,6 +536,8 @@ export const EmployeeForm: React.FC<EmployeeFormProps> = ({
       // entkoppelt. Default wird aus `roleId` abgeleitet (s. resolveSetKategorie/
       // vorlagen-set-catalog.ts), ist hier aber überschreibbar.
       setKategorie: data.setKategorie,
+      // P3b — gewählte Sammlung (Vorauswahl-Quelle) mitpersistieren.
+      collectionId,
       sdlScopes: data.sdlScopes ?? [],
       drivesServiceVehicle: data.drivesServiceVehicle,
       ersteHilfeGueltigBis: data.ersteHilfeGueltigBis || undefined,
@@ -509,6 +592,9 @@ export const EmployeeForm: React.FC<EmployeeFormProps> = ({
     setOrgTitleOther(false);
     setSelectedRoleDocIds(new Set());
     setSelectedAppDocIds(new Set());
+    setCollectionId(undefined);
+    setLockedDocIds(new Set());
+    setUnsupportedItems([]);
     onCancelEdit?.();
   };
 
@@ -748,20 +834,20 @@ export const EmployeeForm: React.FC<EmployeeFormProps> = ({
                         </FormField>
                       ) : null}
                       <FormField
-                        label="Set-Kategorie (Vorlagen-Set)"
-                        name="setKategorie"
-                        id="setKategorie"
-                        description="Eigene Vorlagen-Achse — leitet das Core-Vorlagen-Set ab. NICHT die Norm-Klasse, NICHT der Org-Titel."
+                        label="Vorlagen-Sammlung"
+                        name="collectionId"
+                        id="collectionId"
+                        description="Vordefinierte oder eigene Sammlung — leitet die Dokument-Vorauswahl ab (überschreibbar)."
                       >
                         <Select
-                          options={SET_KATEGORIE_DEFS.map((s) => ({
-                            id: s.id,
-                            name: s.label,
-                            description: s.description,
+                          options={collections.map((c) => ({
+                            id: c.id,
+                            name: c.isSeed ? `${c.name} (vordefiniert)` : c.name,
+                            description: c.description ?? undefined,
                           }))}
-                          value={selectedSetKategorie ?? ""}
-                          onChange={handleSetKategorieChange}
-                          placeholder="Sicherheitsmitarbeiter / Führungskraft / Bürokraft …"
+                          value={collectionId ?? ""}
+                          onChange={handleCollectionChange}
+                          placeholder="Sammlung wählen…"
                         />
                       </FormField>
                       <FormField
@@ -1159,20 +1245,35 @@ export const EmployeeForm: React.FC<EmployeeFormProps> = ({
                   Vorlagen-Set
                 </h3>
                 <p className="mb-3 text-xs text-gray-500">
-                  Set-Kategorie wählen → leitet das Core-Dokumenten-Set ab.
-                  Bestellungen + Fahr-Anweisung bleiben positionsunabhängige
-                  Overlays.
+                  Vorlagen-Sammlung wählen → leitet die Dokument-Vorauswahl ab
+                  (Pflicht = gesperrt, optional umschaltbar). Bestellungen +
+                  Fahr-Anweisung bleiben positionsunabhängige Overlays.
                 </p>
                 <Select
-                  options={SET_KATEGORIE_DEFS.map((s) => ({
-                    id: s.id,
-                    name: s.label,
-                    description: s.description,
+                  options={collections.map((c) => ({
+                    id: c.id,
+                    name: c.isSeed ? `${c.name} (vordefiniert)` : c.name,
+                    description: c.description ?? undefined,
                   }))}
-                  value={selectedSetKategorie ?? ""}
-                  onChange={handleSetKategorieChange}
-                  placeholder="Sicherheitsmitarbeiter / Führungskraft / Bürokraft …"
+                  value={collectionId ?? ""}
+                  onChange={handleCollectionChange}
+                  placeholder="Sammlung wählen…"
                 />
+                {unsupportedItems.length > 0 && (
+                  <div className="mt-3 rounded-xl border border-amber-200 bg-amber-50 p-3">
+                    <p className="text-xs font-medium text-amber-800">
+                      {unsupportedItems.length} Posten der Sammlung sind hier
+                      nicht vorausgewählt:
+                    </p>
+                    <ul className="mt-1 list-disc pl-5 text-[11px] text-amber-700">
+                      {unsupportedItems.map((u, i) => (
+                        <li key={`${u.label}-${i}`}>
+                          {u.label} — {u.reason}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
                 <ul className="mt-3 space-y-1">
                   {OVERLAY_DEFS.map((o) => (
                     <li
@@ -1231,12 +1332,18 @@ export const EmployeeForm: React.FC<EmployeeFormProps> = ({
                   <div className="space-y-2">
                     {selectedRole.documents.map((doc) => {
                       const isChecked = selectedRoleDocIds.has(doc.id);
+                      const locked = lockedDocIds.has(doc.id);
                       return (
                         <button
                           key={doc.id}
                           type="button"
-                          onClick={() => toggleRoleDoc(doc.id)}
-                          className={`flex w-full items-center gap-3 rounded-xl border px-4 py-3 shadow-sm transition-all cursor-pointer ${
+                          disabled={locked}
+                          onClick={() => {
+                            if (!locked) toggleRoleDoc(doc.id);
+                          }}
+                          className={`flex w-full items-center gap-3 rounded-xl border px-4 py-3 shadow-sm transition-all ${
+                            locked ? "cursor-not-allowed" : "cursor-pointer"
+                          } ${
                             isChecked
                               ? "border-blue-200 bg-white hover:border-blue-300 hover:shadow-md"
                               : "border-gray-200 bg-gray-50 opacity-60 hover:opacity-80"
@@ -1256,6 +1363,11 @@ export const EmployeeForm: React.FC<EmployeeFormProps> = ({
                           >
                             {doc.name}
                           </span>
+                          {locked && (
+                            <span className="shrink-0 rounded-full bg-blue-100 px-2 py-0.5 text-[10px] font-semibold text-blue-700">
+                              Pflicht
+                            </span>
+                          )}
                           <div
                             className={`flex h-5 w-5 items-center justify-center rounded border-2 transition-colors ${
                               isChecked
@@ -1319,12 +1431,18 @@ export const EmployeeForm: React.FC<EmployeeFormProps> = ({
                     {selectedAppointments.map((appointment) =>
                       appointment.documents.map((doc) => {
                         const isChecked = selectedAppDocIds.has(doc.id);
+                        const locked = lockedDocIds.has(doc.id);
                         return (
                           <button
                             key={doc.id}
                             type="button"
-                            onClick={() => toggleAppDoc(doc.id)}
-                            className={`flex w-full items-center gap-3 rounded-xl border px-4 py-3 shadow-sm transition-all cursor-pointer ${
+                            disabled={locked}
+                            onClick={() => {
+                              if (!locked) toggleAppDoc(doc.id);
+                            }}
+                            className={`flex w-full items-center gap-3 rounded-xl border px-4 py-3 shadow-sm transition-all ${
+                              locked ? "cursor-not-allowed" : "cursor-pointer"
+                            } ${
                               isChecked
                                 ? "border-emerald-200 bg-white hover:border-emerald-300 hover:shadow-md"
                                 : "border-gray-200 bg-gray-50 opacity-60 hover:opacity-80"
@@ -1348,6 +1466,11 @@ export const EmployeeForm: React.FC<EmployeeFormProps> = ({
                               <span className="ml-2 text-xs text-gray-400">
                                 ({appointment.name})
                               </span>
+                              {locked && (
+                                <span className="ml-2 rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] font-semibold text-emerald-700">
+                                  Pflicht
+                                </span>
+                              )}
                             </div>
                             <div
                               className={`flex h-5 w-5 items-center justify-center rounded border-2 transition-colors ${

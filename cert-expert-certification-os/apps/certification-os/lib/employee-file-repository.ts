@@ -317,6 +317,8 @@ export function employeeFileToEmployee(record: EmployeeFile): Employee {
     bestellungSchulungLink: asBestellungSchulungLink(record.bestellungSchulungLink),
     // Lane J (A2) — echtes persistiertes Feld; fehlend → Default aus `roleId`.
     setKategorie: asSetKategorie(record.setKategorie, record.roleId),
+    // P3b — gewählte Sammlung (Vorauswahl-Quelle).
+    collectionId: record.collectionId ?? undefined,
     // Lane J (A3) — persistiertes Generator-Datum (global + per-Doc).
     generatorDates: asGeneratorDates(record.generatorDates),
     // P3 / #7 — Prüf-Status je Nachweis (Mark D1). Tolerant: fehlend/Müll →
@@ -375,6 +377,7 @@ function employeeToUpsertData(
       ? (employee.bestellungSchulungLink as unknown as Prisma.InputJsonValue)
       : Prisma.JsonNull,
     setKategorie: employee.setKategorie ?? null,
+    collectionId: employee.collectionId ?? null,
     generatorDates: employee.generatorDates
       ? (employee.generatorDates as unknown as Prisma.InputJsonValue)
       : Prisma.JsonNull,
@@ -400,6 +403,7 @@ function laneJUpdateFields(employee: Employee) {
       ? (employee.bestellungSchulungLink as unknown as Prisma.InputJsonValue)
       : Prisma.JsonNull,
     setKategorie: employee.setKategorie ?? null,
+    collectionId: employee.collectionId ?? null,
     generatorDates: employee.generatorDates
       ? (employee.generatorDates as unknown as Prisma.InputJsonValue)
       : Prisma.JsonNull,

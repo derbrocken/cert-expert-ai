@@ -79,6 +79,7 @@ model EmployeeFile {
   // Rolle/`roleId` abgeleitet, ist aber überschreibbar. Fehlt das Feld, leitet
   // die Read-Normalisierung aus `roleId` ab (Legacy-Backfill). Nullable/additiv.
   setKategorie               String?
+  collectionId               String? // P3b — gewählte Sammlung (Vorauswahl-Quelle)
   // Lane J (A3) — persistiertes Generator-Ausgabedatum je Akte: Json
   // { global?: string; perDocument?: Record<docId,string> }. Ersetzt den
   // bisherigen Session-State. Nullable/additiv (P2023-sicher); reines

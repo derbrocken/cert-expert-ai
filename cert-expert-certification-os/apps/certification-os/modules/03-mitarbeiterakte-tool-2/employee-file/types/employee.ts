@@ -86,6 +86,8 @@ export interface Employee {
    * fehlt die Spalte auf einer Bestandsakte → aus `roleId` ableiten.
    */
   setKategorie?: SetKategorie;
+  /** P3b — gewählte Sammlung (Document Collection) als Vorauswahl-Quelle. */
+  collectionId?: string;
   employmentType?: string;
   /**
    * Qualifikation als strukturiertes Multiselect (#2) — Katalog-IDs aus
