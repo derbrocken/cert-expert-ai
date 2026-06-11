@@ -3,9 +3,11 @@
 > Ziel: **stabile HTTPS-URL** für Tally-Webhooks statt wechselndem cloudflared-Tunnel.  
 > App: `cert-expert-certification-os/apps/certification-os/` · Port **3001** (intern)
 
-## ✅ LIVE-STAND (Redeploy 2026-06-12, Terminal-Planer auf Marks „deploy")
+## ✅ LIVE-STAND (Redeploy 2026-06-12 #2, Terminal-Planer auf Marks „deploy")
 
-**App live: https://cos.cert-expert.de** (HTTPS, HTTP→HTTPS-Redirect). Deployter Commit **`23bd82c`** (zuvor `dde4f7a`, `0ad7936`, `e84e599`, `d5c9086`, `2242502`, `fe17ad5`, `03429b2`, `5280d9c`, `404d55d`).
+**App live: https://cos.cert-expert.de** (HTTPS, HTTP→HTTPS-Redirect). Deployter Commit **`7cb3915`** (zuvor `23bd82c`, `dde4f7a`, `0ad7936`, `e84e599`, `d5c9086`, `2242502`, `fe17ad5`, `03429b2`, `5280d9c`, `404d55d`).
+
+> **Redeploy 2026-06-12 #2 (Framework P3b): `23bd82c` → `7cb3915`.** Mitarbeiter-Formular konsumiert Sammlungen (Selektor „Vorlagen-Sammlung", Pflicht-Lock, unsupported-Hinweis). **Additive Spalte `collectionId` — DB-Backup `pre-deploy-2026-06-11-230623.db` + `db push` additiv**, kein Datenverlust. Generator/Engine unberührt (EC-09). `next build` grün, Restart aktiv, Endpunkte 200. Tests 189/189. Plan: `FRAMEWORK_P3B_FORMULAR_KONSUM.md`. Offen: P3c (Katalog↔Sammlungen zu einer Quelle).
 
 > **Redeploy 2026-06-12 (Framework P3a + Navigation): `dde4f7a` → `23bd82c`.** Enthält: **P3a editierbare Sammlungen** (2 additive Tabellen `DocumentCollection`+`DocumentCollectionItem` — **DB-Backup `pre-deploy-2026-06-11-221127.db` + `db push` additiv**, kein Datenverlust; Admin-Tab „Sammlungen" im Upload-Manager, Seeds der 3 Vordefinierten) **+ Navbar-3er-Leiste** (Mitarbeiterakte/Dokument-Generator/Upload-Manager, Aktiv-State). `npm ci` + `next build` grün, Restart aktiv, Endpunkte 200 (`/`, `/model-creator`, `/employee-automation`, `/uploads`), Navbar live verifiziert. Tool-2-Generator/Akte unberührt (Suite 160/160). Plan: `FRAMEWORK_P3A_DATENMODELL_ADMIN.md`, `FRAMEWORK_NAV_ORIENTIERUNG.md`. Offen: P3b (Formular konsumiert Sammlungen), P3c (Quellen-Zusammenführung).
 
