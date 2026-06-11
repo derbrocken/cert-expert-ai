@@ -3,9 +3,11 @@
 > Ziel: **stabile HTTPS-URL** für Tally-Webhooks statt wechselndem cloudflared-Tunnel.  
 > App: `cert-expert-certification-os/apps/certification-os/` · Port **3001** (intern)
 
-## ✅ LIVE-STAND (Redeploy 2026-06-11, Terminal-Planer auf Marks „deploy")
+## ✅ LIVE-STAND (Redeploy 2026-06-11 #2, Terminal-Planer auf Marks „deploy")
 
-**App live: https://cos.cert-expert.de** (HTTPS, HTTP→HTTPS-Redirect). Deployter Commit **`0ad7936`** (zuvor `e84e599`, `d5c9086`, `2242502`, `fe17ad5`, `03429b2`, `5280d9c`, `404d55d`).
+**App live: https://cos.cert-expert.de** (HTTPS, HTTP→HTTPS-Redirect). Deployter Commit **`dde4f7a`** (zuvor `0ad7936`, `e84e599`, `d5c9086`, `2242502`, `fe17ad5`, `03429b2`, `5280d9c`, `404d55d`).
+
+> **Redeploy 2026-06-11 #2 (Framework P1 — Tool 1 ans zentrale Firmen-Profil):** `0ad7936` → `dde4f7a`. Tool 1 hat jetzt Firmen-Dropdown → zieht Name/Adresse/Logo/Doc-Meta aus demselben `CompanyExportSettings` wie Tool 2 (Logo: manuell>Profil>keins). **Kein Schema-Change** (kein `db push`). `npm ci` + `next build` grün, Restart aktiv, Endpunkte 200, Firma-Section live verifiziert. Tool 2 unberührt (Suite 160/160). Plan: `FRAMEWORK_TOOL1_TOOL2_UPLOAD.md` (P0) + `FRAMEWORK_P1_TOOL1_FIRMENPROFIL.md`. Nächste Phasen: P2 Company-Tally `Y5Zq80`, P3 editierbare Sammlungen.
 
 > **Redeploy 2026-06-11 (Tool-1 Bug-Fix-Pass):** `e84e599` → `0ad7936`. Tool 1 (Document Creator) Bugs #1–#7: Datum-Guard, Leer-Guard (kein leeres ZIP), defektes Template → skip+log statt Abbruch (EC-09), Logo-try/catch, Dead-Payload raus, UI komplett DE, pure Plan-Logik + 8 Unit-Tests. **Kein Schema-Change** (kein `db push`, kein DB-Risiko). `npm ci` + `next build` grün, Restart aktiv, Endpunkte 200 (`/`, `/model-creator`, `/employee-automation`, `/api/standard-models`), DE-Strings live verifiziert. Tool 2 unberührt (Suite 160/160).
 
