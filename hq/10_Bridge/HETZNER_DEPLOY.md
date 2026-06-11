@@ -3,9 +3,11 @@
 > Ziel: **stabile HTTPS-URL** für Tally-Webhooks statt wechselndem cloudflared-Tunnel.  
 > App: `cert-expert-certification-os/apps/certification-os/` · Port **3001** (intern)
 
-## ✅ LIVE-STAND (Redeploy 2026-06-11 #2, Terminal-Planer auf Marks „deploy")
+## ✅ LIVE-STAND (Redeploy 2026-06-12, Terminal-Planer auf Marks „deploy")
 
-**App live: https://cos.cert-expert.de** (HTTPS, HTTP→HTTPS-Redirect). Deployter Commit **`dde4f7a`** (zuvor `0ad7936`, `e84e599`, `d5c9086`, `2242502`, `fe17ad5`, `03429b2`, `5280d9c`, `404d55d`).
+**App live: https://cos.cert-expert.de** (HTTPS, HTTP→HTTPS-Redirect). Deployter Commit **`23bd82c`** (zuvor `dde4f7a`, `0ad7936`, `e84e599`, `d5c9086`, `2242502`, `fe17ad5`, `03429b2`, `5280d9c`, `404d55d`).
+
+> **Redeploy 2026-06-12 (Framework P3a + Navigation): `dde4f7a` → `23bd82c`.** Enthält: **P3a editierbare Sammlungen** (2 additive Tabellen `DocumentCollection`+`DocumentCollectionItem` — **DB-Backup `pre-deploy-2026-06-11-221127.db` + `db push` additiv**, kein Datenverlust; Admin-Tab „Sammlungen" im Upload-Manager, Seeds der 3 Vordefinierten) **+ Navbar-3er-Leiste** (Mitarbeiterakte/Dokument-Generator/Upload-Manager, Aktiv-State). `npm ci` + `next build` grün, Restart aktiv, Endpunkte 200 (`/`, `/model-creator`, `/employee-automation`, `/uploads`), Navbar live verifiziert. Tool-2-Generator/Akte unberührt (Suite 160/160). Plan: `FRAMEWORK_P3A_DATENMODELL_ADMIN.md`, `FRAMEWORK_NAV_ORIENTIERUNG.md`. Offen: P3b (Formular konsumiert Sammlungen), P3c (Quellen-Zusammenführung).
 
 > **Redeploy 2026-06-11 #2 (Framework P1 — Tool 1 ans zentrale Firmen-Profil):** `0ad7936` → `dde4f7a`. Tool 1 hat jetzt Firmen-Dropdown → zieht Name/Adresse/Logo/Doc-Meta aus demselben `CompanyExportSettings` wie Tool 2 (Logo: manuell>Profil>keins). **Kein Schema-Change** (kein `db push`). `npm ci` + `next build` grün, Restart aktiv, Endpunkte 200, Firma-Section live verifiziert. Tool 2 unberührt (Suite 160/160). Plan: `FRAMEWORK_TOOL1_TOOL2_UPLOAD.md` (P0) + `FRAMEWORK_P1_TOOL1_FIRMENPROFIL.md`. Nächste Phasen: P2 Company-Tally `Y5Zq80`, P3 editierbare Sammlungen.
 
