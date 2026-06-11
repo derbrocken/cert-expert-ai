@@ -127,3 +127,28 @@ model TallyIntakeRecord {
   employeeIds  Json     @default("[]")
   processedAt  DateTime @default(now())
 }
+
+// P3a — editierbare Sammlungen (Framework). Additiv, global (kein Firmen-Scope in P3a).
+model DocumentCollection {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  isSeed      Boolean  @default(false) // die 3 Vordefinierten (read-only)
+  seedKey     String?  @unique // "sicherheitsmitarbeiter" | "fuehrungskraft" | "buerokraft"
+  items       DocumentCollectionItem[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model DocumentCollectionItem {
+  id                  String             @id @default(cuid())
+  collectionId        String
+  collection          DocumentCollection @relation(fields: [collectionId], references: [id], onDelete: Cascade)
+  templateLogicalPath String? // "roles/<slug>/<file>.docx" (null = Seed-Posten ohne Vorlage)
+  label               String
+  inclusion           String             @default("optional-on") // "mandatory" | "optional-on" | "optional-off"
+  dateSource          String             @default("startDate") // "startDate" | "manual"
+  clauseId            String?
+  templateMissing     Boolean            @default(false)
+  sortOrder           Int                @default(0)
+}

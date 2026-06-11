@@ -27,6 +27,7 @@ import {
   Layers,
 } from "lucide-react";
 import { CompanyExportSettingsPanel } from "@/modules/03-mitarbeiterakte-tool-2/employee-file/CompanyExportSettingsPanel";
+import { CollectionsManager } from "./CollectionsManager";
 
 interface TemplateFolder {
   id: string;
@@ -591,6 +592,9 @@ export default function UploadsPage() {
             <LoadingGrid />
           ) : (
             <div className="space-y-10">
+              {/* ===== SAMMLUNGEN (P3a) ===== */}
+              <CollectionsManager />
+
               {/* ===== ROLES ===== */}
               <section>
                 <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between mb-5">
