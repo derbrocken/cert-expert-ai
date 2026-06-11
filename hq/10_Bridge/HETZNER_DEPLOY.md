@@ -3,9 +3,11 @@
 > Ziel: **stabile HTTPS-URL** für Tally-Webhooks statt wechselndem cloudflared-Tunnel.  
 > App: `cert-expert-certification-os/apps/certification-os/` · Port **3001** (intern)
 
-## ✅ LIVE-STAND (Redeploy 2026-06-10 #4, Terminal-Planer auf Marks Anweisung)
+## ✅ LIVE-STAND (Redeploy 2026-06-11, Terminal-Planer auf Marks „deploy")
 
-**App live: https://cos.cert-expert.de** (HTTPS, HTTP→HTTPS-Redirect). Deployter Commit **`e84e599`** (zuvor `d5c9086`, `2242502`, `fe17ad5`, `03429b2`, `5280d9c`, `404d55d`).
+**App live: https://cos.cert-expert.de** (HTTPS, HTTP→HTTPS-Redirect). Deployter Commit **`0ad7936`** (zuvor `e84e599`, `d5c9086`, `2242502`, `fe17ad5`, `03429b2`, `5280d9c`, `404d55d`).
+
+> **Redeploy 2026-06-11 (Tool-1 Bug-Fix-Pass):** `e84e599` → `0ad7936`. Tool 1 (Document Creator) Bugs #1–#7: Datum-Guard, Leer-Guard (kein leeres ZIP), defektes Template → skip+log statt Abbruch (EC-09), Logo-try/catch, Dead-Payload raus, UI komplett DE, pure Plan-Logik + 8 Unit-Tests. **Kein Schema-Change** (kein `db push`, kein DB-Risiko). `npm ci` + `next build` grün, Restart aktiv, Endpunkte 200 (`/`, `/model-creator`, `/employee-automation`, `/api/standard-models`), DE-Strings live verifiziert. Tool 2 unberührt (Suite 160/160).
 
 > **Redeploys 2026-06-10 #3/#4:** `2242502`→`d5c9086` (Schulung „Durchführung von–bis") →`e84e599` (modulare DIN-1-Schulungen **generierbar**: zugewiesenes Modul → Schulungsnachweis-`.docx` im Export-ZIP unter `Schulungen/`; Generierungs-Smoke bestätigt). + 9 modulare Schulungen serverseitig in S3 (`appointments/schulungen/`). Keine Schema-Changes (Daten im `trainingPlan`-Json). Build grün, Endpunkte 200. Suite 160/160.
 
