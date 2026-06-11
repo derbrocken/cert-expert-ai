@@ -12,7 +12,9 @@ import {
   LOGO_MAX_BYTES,
   LOGO_MAX_SIZE_LABEL,
 } from "@/lib/constants/logo-upload";
+import { getExportSettings } from "@/lib/employee-file-repository";
 import { planDocuments } from "./model-document-plan";
+import { resolveTool1LogoSource, decodeDataUrl } from "./tool1-company-profile";
 
 export type GenerateState = {
   success: boolean;
@@ -63,6 +65,25 @@ export async function generateDocument(
     const companyCountry = (formData.get("companyCountry") as string) || "";
     const companyAddressLine =
       (formData.get("companyAddressLine") as string) || "";
+    // P1: gewählte Firma → Logo (und Felder, client-seitig vorbefüllt) aus dem
+    // zentralen Profil (CompanyExportSettings), sofern kein manuelles Logo da ist.
+    const companySlug = (formData.get("companySlug") as string) || "";
+
+    // ── Logo-Quelle auflösen: manueller Upload gewinnt → sonst Firmen-Profil → sonst keins ──
+    const hasManualLogo = !!(logoFile && logoFile.size > 0);
+    let profileLogoDataUrl: string | undefined;
+    if (!hasManualLogo && companySlug) {
+      try {
+        profileLogoDataUrl = (await getExportSettings(companySlug)).companyLogo;
+      } catch (err) {
+        console.error("Firmen-Profil konnte nicht geladen werden:", err);
+        // kein harter Fehler — ohne Profil-Logo wird einfach keins eingebettet
+      }
+    }
+    const logoSource = resolveTool1LogoSource({
+      hasManualLogo,
+      hasProfileLogo: !!profileLogoDataUrl,
+    });
 
     // ── Logo (#4: eigenes try/catch → klare Meldung statt generischem Fehler) ──
     let logoData: Buffer | null = null;
@@ -70,10 +91,19 @@ export async function generateDocument(
     let finalWidth = 0;
     let finalHeight = 0;
 
-    if (logoFile && logoFile.size > 0) {
+    if (logoSource !== "none") {
       try {
-        const arrayBuffer = await logoFile.arrayBuffer();
-        logoData = Buffer.from(arrayBuffer);
+        let mime: string;
+        if (logoSource === "manual") {
+          const arrayBuffer = await logoFile!.arrayBuffer();
+          logoData = Buffer.from(arrayBuffer);
+          mime = logoFile!.type;
+        } else {
+          const decoded = decodeDataUrl(profileLogoDataUrl);
+          if (!decoded) throw new Error("Profil-Logo nicht dekodierbar");
+          logoData = decoded.buffer;
+          mime = decoded.mime;
+        }
 
         const supportedMimeTypes = [
           "image/png",
@@ -82,8 +112,8 @@ export async function generateDocument(
           "image/bmp",
           "image/svg+xml",
         ];
-        if (supportedMimeTypes.includes(logoFile.type)) {
-          imageMimeType = logoFile.type;
+        if (supportedMimeTypes.includes(mime)) {
+          imageMimeType = mime;
         }
 
         const dimensions = sizeOf(logoData);

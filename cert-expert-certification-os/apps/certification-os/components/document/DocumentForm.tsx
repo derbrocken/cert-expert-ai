@@ -18,9 +18,15 @@ import {
   FormField,
   Input,
   MultiSelect,
+  Select,
   FileDropzone,
   DatePicker,
 } from "@/components/ui";
+import {
+  fetchCompaniesAction,
+  fetchExportSettingsAction,
+} from "@/app/actions/employee-file-actions";
+import { mapProfileToTool1Fields } from "@/app/actions/tool1-company-profile";
 import {
   LOGO_MAX_BYTES,
   LOGO_MAX_SIZE_LABEL,
@@ -80,6 +86,30 @@ export const DocumentForm: React.FC<DocumentFormProps> = ({
   const [folders, setFolders] = useState<StandardModelFolder[]>([]);
   const [foldersLoaded, setFoldersLoaded] = useState(false);
   const [foldersLoadError, setFoldersLoadError] = useState<string | null>(null);
+
+  // P1: zentrales Firmen-Profil (gemeinsam mit Tool 2)
+  const [companies, setCompanies] = useState<
+    { slug: string; displayName: string }[]
+  >([]);
+  const [selectedCompanySlug, setSelectedCompanySlug] = useState<string>("");
+  const [profileLogoPreview, setProfileLogoPreview] = useState<string | null>(
+    null,
+  );
+  const [companyLoading, setCompanyLoading] = useState(false);
+
+  useEffect(() => {
+    let cancelled = false;
+    fetchCompaniesAction()
+      .then((list) => {
+        if (!cancelled) setCompanies(list);
+      })
+      .catch(() => {
+        if (!cancelled) setCompanies([]);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -166,10 +196,38 @@ export const DocumentForm: React.FC<DocumentFormProps> = ({
     return acc + included;
   }, 0);
 
+  // P1: Firma gewählt → Felder + Logo-Vorschau aus zentralem Profil vorbefüllen (überschreibbar)
+  const handleCompanyChange = async (slug: string) => {
+    setSelectedCompanySlug(slug);
+    if (!slug) {
+      setProfileLogoPreview(null);
+      return;
+    }
+    setCompanyLoading(true);
+    try {
+      const props = await fetchExportSettingsAction(slug);
+      const f = mapProfileToTool1Fields(props);
+      const opts = { shouldValidate: true, shouldDirty: true } as const;
+      setValue("companyName", f.companyName, opts);
+      setValue("companyAddressLine", f.companyAddressLine, opts);
+      setValue("docVersion", f.docVersion, opts);
+      setValue("docDate", f.docDate, opts);
+      setValue("createdBy", f.createdBy, opts);
+      setValue("approvedBy", f.approvedBy, opts);
+      setProfileLogoPreview(props.companyLogo ?? null);
+    } catch {
+      setProfileLogoPreview(null);
+    } finally {
+      setCompanyLoading(false);
+    }
+  };
+
   const handleReset = () => {
     reset();
     setLogoFile(null);
     setLogoSizeError(null);
+    setSelectedCompanySlug("");
+    setProfileLogoPreview(null);
     onReset?.();
   };
 
@@ -191,6 +249,8 @@ export const DocumentForm: React.FC<DocumentFormProps> = ({
 
     const formData = new FormData();
     formData.append("folders", JSON.stringify(data.folders));
+    // P1: gewählte Firma → Server zieht Logo (und ggf. Profil) aus CompanyExportSettings
+    if (selectedCompanySlug) formData.append("companySlug", selectedCompanySlug);
     // Pass excluded doc IDs so server can skip them
     if (excludedDocIds && excludedDocIds.size > 0) {
       formData.append(
@@ -254,6 +314,45 @@ export const DocumentForm: React.FC<DocumentFormProps> = ({
 
       <form onSubmit={handleSubmit(handleFormSubmit)}>
         <CardContent className="space-y-6">
+          {/* ═══ Firma (zentrales Profil — gemeinsam mit Tool 2) ═══ */}
+          <div>
+            <h3 className="flex items-center gap-2 text-sm font-bold text-gray-700 uppercase tracking-wider mb-3">
+              <Building2 className="h-4 w-4 text-orange-500" />
+              Firma
+              <span className="text-[10px] font-medium text-gray-400 normal-case">
+                (zentrales Profil)
+              </span>
+            </h3>
+            <FormField
+              label="Firma wählen"
+              name="company"
+              description="Firmendaten + Logo automatisch aus dem zentralen Profil vorausfüllen (überschreibbar)"
+            >
+              <Select
+                options={companies.map((c) => ({
+                  id: c.slug,
+                  name: c.displayName,
+                }))}
+                value={selectedCompanySlug}
+                onChange={handleCompanyChange}
+                placeholder={
+                  companies.length
+                    ? "Firma wählen…"
+                    : "Keine Firmen vorhanden"
+                }
+                disabled={companies.length === 0}
+              />
+            </FormField>
+            {companyLoading && (
+              <p className="mt-2 text-xs text-gray-400">Profil wird geladen…</p>
+            )}
+            {selectedCompanySlug && !companyLoading && (
+              <p className="mt-2 text-xs text-emerald-600">
+                Firmendaten vorausgefüllt — Felder unten sind überschreibbar.
+              </p>
+            )}
+          </div>
+
           {/* ═══ Standard Model Selection ═══ */}
           <div>
             <h3 className="flex items-center gap-2 text-sm font-bold text-gray-700 uppercase tracking-wider mb-3">
@@ -367,6 +466,20 @@ export const DocumentForm: React.FC<DocumentFormProps> = ({
                 hasError={!!logoSizeError}
               />
             </FormField>
+            {profileLogoPreview && !logoFile && (
+              <div className="mt-2 flex items-center gap-3 rounded-lg border border-gray-200 bg-gray-50 p-2">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={profileLogoPreview}
+                  alt="Firmenlogo aus Profil"
+                  className="h-10 w-auto object-contain"
+                />
+                <p className="text-xs text-gray-500">
+                  Logo aus Firmenprofil — wird verwendet, sofern kein neues
+                  hochgeladen wird.
+                </p>
+              </div>
+            )}
           </div>
 
           {/* ═══ Footer Metadata ═══ */}
