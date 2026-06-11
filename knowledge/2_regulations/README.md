@@ -39,7 +39,7 @@ die inhaltliche Generierung.
 | `iso_45001/` | DIN EN ISO 45001:2023-12 — Arbeitsschutzmanagementsystem (111 S.) | ✅ aus PDF |
 | `dguv_i215-410/` | DGUV Information 215-410 — Bildschirm-/Büroarbeitsplätze Leitfaden (96 S., 2019) | ✅ aus PDF |
 | `asr_a6/` | ASR A6 — Bildschirmarbeit, Konkretisierung ArbStättV (32 S., 2024) | ✅ aus PDF |
-| `dsgvo_bdsg/` | Datenschutz — Personalakten-Kontext | ⬜ offen |
+| `bdsg/` | DSGVO + BDSG — Datenschutz Personalakten/Videoüberwachung (45 S., 2026) | ✅ aus PDF |
 | `iso_9001/` | DIN EN ISO 9001:2015 — QMS Anforderungen (71 S.) | ✅ aus PDF |
 | `iso_14001/` | DIN EN ISO 14001:2015 — UMS Anforderungen (83 S.) + Berichtigung | ✅ aus PDF |
 | `iso_14001_umsetzung/` | Praxisleitfaden ISO 14001:2015/EMAS — Reimann 2019 (231 S.) | ✅ aus PDF |
