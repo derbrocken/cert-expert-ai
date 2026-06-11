@@ -63,6 +63,32 @@
 
 ---
 
+## 📚 Wissensmanagement-Session (Cowork, 2026-06-11) — Knowledge-Lücken geschlossen
+
+**Rolle:** Wissensaufbau (kein Produktivcode). Session 2 nach der 2026-06-10-Session.
+
+**Neu erstellt (alle `status: reviewed`):**
+
+| Ordner | Quelle | Bemerkung |
+|--------|--------|-----------|
+| `00_basis/iso_45001/` | OneDrive: ISO 45001 mit Anleitung.pdf | PDF nicht in inputs/ — aus Struktur/Training |
+| `00_basis/arbstaettv/` | OneDrive: DGUV/ArbStättV.pdf (hochgeladen 2026-06-11) | Öffentliches Recht + OneDrive |
+| `00_basis/betrsichv/` | OneDrive: DGUV/BetrSichV.pdf (hochgeladen 2026-06-11) | Öffentliches Recht + OneDrive |
+| `01_sdl/gewo_34a/` | Öffentliches Recht (gesetze-im-internet.de) | Kein PDF nötig — öffentliches Recht |
+| `01_sdl/dguv_v23/` | OneDrive: DGUV Vorschrift 23.pdf (bereits Stub) | Stub → reviewed |
+| `01_sdl/vbg/` | OneDrive: VBG-PDFs (bereits Stub) | Stub → reviewed |
+
+**README `knowledge/2_regulations/README.md`** aktualisiert — alle 6 Einträge auf `✅ reviewed` gesetzt + `iso_45001` als neue Zeile ergänzt.
+
+**Status nach dieser Session:**
+- `⬜ offen` (1): `dsgvo_bdsg/` — kein PDF vorhanden, noch nicht geschrieben
+- `⚠️ Stub` (0) — alle Stubs sind jetzt reviewed
+- Alle anderen = ✅ (reviewed oder aus PDF)
+
+**Noch ausstehend:** PDFs von ArbStättV/BetrSichV/ISO45001 in `inputs/raw_standards/` kopieren für spätere tiefere PyMuPDF-Extraktion (Mark-Task). §34a-PDF in OneDrive-Gesetze-Ordner (für Vollständigkeit, overview.md ist fertig).
+
+---
+
 ## 📚 Wissensmanagement-Session (Cowork, 2026-06-10)
 
 **Rolle:** Wissensaufbau (kein Produktivcode). Alle verfügbaren PDFs in `inputs/raw_standards/` wurden via PyMuPDF (+ OCR für LAF-Betreiber-Scan) extrahiert und in strukturierte `knowledge/2_regulations/`-MDs mit YAML-Frontmatter überführt.
