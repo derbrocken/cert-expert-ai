@@ -12,18 +12,14 @@ import {
   LOGO_MAX_BYTES,
   LOGO_MAX_SIZE_LABEL,
 } from "@/lib/constants/logo-upload";
-
-export interface GeneratedDocument {
-  modelId: string;
-  modelName: string;
-  fileBase64: string;
-}
+import { planDocuments } from "./model-document-plan";
 
 export type GenerateState = {
   success: boolean;
-  documents?: GeneratedDocument[];
   zipBase64?: string;
   error?: string;
+  /** Übersprungene Vorlagen (defekt/nicht verarbeitbar) — ZIP enthält den Rest. */
+  skipped?: string[];
   timestamp?: string | number;
 };
 
@@ -38,7 +34,7 @@ export async function generateDocument(
     if (!selectedFolders || selectedFolders.length === 0) {
       return {
         success: false,
-        error: "Please select at least one Standard Model folder",
+        error: "Bitte mindestens einen Standard-Model-Ordner auswählen.",
       };
     }
 
@@ -52,7 +48,7 @@ export async function generateDocument(
     if (logoFile && logoFile.size > 0 && logoFile.size > LOGO_MAX_BYTES) {
       return {
         success: false,
-        error: `Logo file exceeds ${LOGO_MAX_SIZE_LABEL} limit`,
+        error: `Logo überschreitet das Limit von ${LOGO_MAX_SIZE_LABEL}.`,
       };
     }
 
@@ -68,37 +64,47 @@ export async function generateDocument(
     const companyAddressLine =
       (formData.get("companyAddressLine") as string) || "";
 
-    let logoData = null;
+    // ── Logo (#4: eigenes try/catch → klare Meldung statt generischem Fehler) ──
+    let logoData: Buffer | null = null;
     let imageMimeType = "image/png";
     let finalWidth = 0;
     let finalHeight = 0;
 
     if (logoFile && logoFile.size > 0) {
-      const arrayBuffer = await logoFile.arrayBuffer();
-      logoData = Buffer.from(arrayBuffer);
+      try {
+        const arrayBuffer = await logoFile.arrayBuffer();
+        logoData = Buffer.from(arrayBuffer);
 
-      const supportedMimeTypes = [
-        "image/png",
-        "image/jpeg",
-        "image/gif",
-        "image/bmp",
-        "image/svg+xml",
-      ];
-      if (supportedMimeTypes.includes(logoFile.type)) {
-        imageMimeType = logoFile.type;
+        const supportedMimeTypes = [
+          "image/png",
+          "image/jpeg",
+          "image/gif",
+          "image/bmp",
+          "image/svg+xml",
+        ];
+        if (supportedMimeTypes.includes(logoFile.type)) {
+          imageMimeType = logoFile.type;
+        }
+
+        const dimensions = sizeOf(logoData);
+        const originalWidth = dimensions.width || 100;
+        const originalHeight = dimensions.height || 100;
+        const MAX_WIDTH = 150;
+        const MAX_HEIGHT = 60;
+        const scale = Math.min(
+          MAX_WIDTH / originalWidth,
+          MAX_HEIGHT / originalHeight,
+        );
+        finalWidth = Math.round(originalWidth * scale);
+        finalHeight = Math.round(originalHeight * scale);
+      } catch (err) {
+        console.error("Logo konnte nicht gelesen werden:", err);
+        return {
+          success: false,
+          error:
+            "Logo konnte nicht gelesen werden. Bitte eine gültige PNG/JPG/SVG-Datei verwenden.",
+        };
       }
-
-      const dimensions = sizeOf(logoData);
-      const originalWidth = dimensions.width || 100;
-      const originalHeight = dimensions.height || 100;
-      const MAX_WIDTH = 150;
-      const MAX_HEIGHT = 60;
-      const scale = Math.min(
-        MAX_WIDTH / originalWidth,
-        MAX_HEIGHT / originalHeight,
-      );
-      finalWidth = Math.round(originalWidth * scale);
-      finalHeight = Math.round(originalHeight * scale);
     }
 
     const templateData: TemplateData = {
@@ -126,53 +132,58 @@ export async function generateDocument(
     const standardModelFiles = await listTemplateFiles("standard-models");
     const templateKeyMap = buildLatestTemplateKeyMap(standardModelFiles);
 
+    const plan = planDocuments(
+      templateKeyMap.entries(),
+      selectedFolders,
+      excludedDocIds,
+    );
+
+    // Gewählter Ordner existiert nicht / ist leer in der Storage → harter Fehler.
+    if (plan.missingFolders.length > 0) {
+      return {
+        success: false,
+        error: `Ordner nicht gefunden oder leer: ${plan.missingFolders.join(", ")}`,
+      };
+    }
+
+    // #2: alles abgewählt → kein leeres "Erfolgs"-ZIP, sondern klare Meldung.
+    if (plan.items.length === 0) {
+      return {
+        success: false,
+        error: "Keine Dokumente ausgewählt. Bitte mindestens ein Dokument behalten.",
+      };
+    }
+
     const handler = new TemplateHandler();
     const zip = new JSZip();
-    const generatedDocuments: GeneratedDocument[] = [];
+    const skipped: string[] = [];
+    const folderHandles = new Map<string, JSZip>();
 
-    for (const folderId of selectedFolders) {
-      const prefix = `standard-models/${folderId}/`;
-      const folderEntries = [...templateKeyMap.entries()].filter(
-        ([logicalPath]) =>
-          logicalPath.startsWith(prefix) && logicalPath.endsWith(".docx"),
-      );
-
-      if (folderEntries.length === 0) {
-        return {
-          success: false,
-          error: `Folder "${folderId}" not found or empty`,
-        };
-      }
-
-      const folderName = folderId
-        .replace(/[-_]/g, " ")
-        .replace(/\b\w/g, (c) => c.toUpperCase());
-
-      const zipFolder = zip.folder(folderName);
-
-      for (const [logicalPath, key] of folderEntries) {
-        const fileName = logicalPath.slice(prefix.length);
-        const docId = `${folderId}-${fileName.replace(".docx", "")}`;
-        if (excludedDocIds.has(docId)) continue;
-
-        try {
-          const templateBuffer = await fetchTemplateBufferByKey(key);
-          const processedDoc = await handler.process(templateBuffer, templateData);
-          zipFolder?.file(fileName, processedDoc);
-
-          generatedDocuments.push({
-            modelId: `${folderId}/${fileName}`,
-            modelName: `${folderName} - ${fileName.replace(".docx", "")}`,
-            fileBase64: Buffer.from(processedDoc).toString("base64"),
-          });
-        } catch (err) {
-          console.error(`Error processing ${fileName}:`, err);
-          return {
-            success: false,
-            error: `Failed to process template "${fileName}" in "${folderName}"`,
-          };
+    // #3: pro Dokument verarbeiten — ein defektes Template wird übersprungen
+    // (skip + log), NICHT der ganze Lauf abgebrochen (EC-09-Konsistenz mit Tool-2-Generator).
+    for (const item of plan.items) {
+      try {
+        const templateBuffer = await fetchTemplateBufferByKey(item.key);
+        const processedDoc = await handler.process(templateBuffer, templateData);
+        let zipFolder = folderHandles.get(item.folderName);
+        if (!zipFolder) {
+          zipFolder = zip.folder(item.folderName) ?? zip;
+          folderHandles.set(item.folderName, zipFolder);
         }
+        zipFolder.file(item.fileName, processedDoc);
+      } catch (err) {
+        console.error(`Vorlage übersprungen: ${item.folderName}/${item.fileName}`, err);
+        skipped.push(`${item.folderName}/${item.fileName}`);
       }
+    }
+
+    // Alle Dokumente fehlgeschlagen → kein leeres ZIP ausliefern.
+    if (skipped.length === plan.items.length) {
+      return {
+        success: false,
+        error: "Keine der ausgewählten Vorlagen konnte verarbeitet werden.",
+        skipped,
+      };
     }
 
     const zipBuffer = await zip.generateAsync({ type: "nodebuffer" });
@@ -180,16 +191,18 @@ export async function generateDocument(
 
     return {
       success: true,
-      documents: generatedDocuments,
       zipBase64,
+      skipped: skipped.length > 0 ? skipped : undefined,
       timestamp: Date.now(),
     };
   } catch (error) {
-    console.error("Error generating doc:", error);
+    console.error("Fehler bei der Dokumentgenerierung:", error);
     return {
       success: false,
       error:
-        error instanceof Error ? error.message : "Failed to generate document",
+        error instanceof Error
+          ? error.message
+          : "Dokumente konnten nicht generiert werden.",
     };
   }
 }

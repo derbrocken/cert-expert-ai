@@ -4,26 +4,29 @@ import { z } from "zod";
 export const modelFormSchema = z.object({
   folders: z
     .array(z.string())
-    .min(1, "Please select at least one Standard Model"),
+    .min(1, "Bitte mindestens einen Standard-Model-Ordner auswählen"),
   docVersion: z
     .string()
-    .min(1, "Document version is required")
-    .max(50, "Version too long"),
+    .min(1, "Dokumentversion ist erforderlich")
+    .max(50, "Version zu lang"),
   createdBy: z
     .string()
-    .min(2, "Created by must be at least 2 characters")
-    .max(100, "Created by too long"),
+    .min(2, "Erstellt von muss mindestens 2 Zeichen haben")
+    .max(100, "Erstellt von zu lang"),
   approvedBy: z
     .string()
-    .min(2, "Approved by must be at least 2 characters")
-    .max(100, "Approved by too long"),
-  docDate: z.string().transform((val) => {
-    return format(val, "DD.MM.YYYY");
-  }),
+    .min(2, "Freigegeben von muss mindestens 2 Zeichen haben")
+    .max(100, "Freigegeben von zu lang"),
+  docDate: z
+    .string()
+    .min(1, "Dokumentdatum ist erforderlich")
+    .transform((val) => {
+      return format(val, "DD.MM.YYYY");
+    }),
   companyName: z
     .string()
-    .min(1, "Company name is required")
-    .max(200, "Company name too long"),
+    .min(1, "Firmenname ist erforderlich")
+    .max(200, "Firmenname zu lang"),
   companyStreet: z.string().optional(),
   companyZip: z.string().optional(),
   companyCity: z.string().optional(),

@@ -53,6 +53,8 @@ export interface DocumentFormProps {
   hasDocument: boolean;
   zipBase64?: string;
   error?: string;
+  /** Übersprungene Vorlagen (defekt) — ZIP enthält den Rest */
+  skipped?: string[];
   /** Called when user clicks a folder pill */
   onFolderClick?: (folder: StandardModelFolder) => void;
   /** Active folder (highlighted in the list) */
@@ -68,6 +70,7 @@ export const DocumentForm: React.FC<DocumentFormProps> = ({
   hasDocument,
   zipBase64,
   error,
+  skipped,
   onFolderClick,
   activeFolderId,
   excludedDocIds,
@@ -240,10 +243,10 @@ export const DocumentForm: React.FC<DocumentFormProps> = ({
           </div>
           <div>
             <CardTitle className="text-lg sm:text-2xl">
-              Document Generator
+              Dokument-Generator
             </CardTitle>
             <CardDescription className="text-xs sm:text-sm">
-              Select Standard Model folders, fill placeholders, download as ZIP
+              Standard-Model-Ordner wählen, Platzhalter ausfüllen, als ZIP laden
             </CardDescription>
           </div>
         </div>
@@ -255,14 +258,14 @@ export const DocumentForm: React.FC<DocumentFormProps> = ({
           <div>
             <h3 className="flex items-center gap-2 text-sm font-bold text-gray-700 uppercase tracking-wider mb-3">
               <FolderOpen className="h-4 w-4 text-blue-500" />
-              Standard Models
+              Standard-Models
             </h3>
             <FormField
-              label="Select Folders"
+              label="Ordner auswählen"
               name="folders"
               required
               error={errors.folders?.message}
-              description="Choose model folders to process"
+              description="Zu verarbeitende Ordner wählen"
             >
               <MultiSelect
                 options={folderOptions}
@@ -270,8 +273,8 @@ export const DocumentForm: React.FC<DocumentFormProps> = ({
                 onChange={(value) => setValue("folders", value)}
                 placeholder={
                   foldersLoaded
-                    ? "Select standard model folders..."
-                    : "Loading folders..."
+                    ? "Standard-Model-Ordner wählen…"
+                    : "Ordner werden geladen…"
                 }
                 hasError={!!errors.folders}
               />
@@ -283,8 +286,8 @@ export const DocumentForm: React.FC<DocumentFormProps> = ({
 
             {foldersLoaded && !foldersLoadError && folders.length === 0 && (
               <p className="mt-2 text-sm text-gray-500">
-                No standard models in storage yet. Upload folders via Upload
-                Manager → Standard Models.
+                Noch keine Standard-Models in der Storage. Ordner über den
+                Upload-Manager → Standard-Models hochladen.
               </p>
             )}
 
@@ -332,7 +335,7 @@ export const DocumentForm: React.FC<DocumentFormProps> = ({
                   );
                 })}
                 <p className="text-xs text-gray-400 pt-1">
-                  Click a folder to view & filter its documents →
+                  Ordner anklicken, um seine Dokumente zu sehen & zu filtern →
                 </p>
               </div>
             )}
@@ -342,12 +345,12 @@ export const DocumentForm: React.FC<DocumentFormProps> = ({
           <div>
             <h3 className="flex items-center gap-2 text-sm font-bold text-gray-700 uppercase tracking-wider mb-3">
               <FileText className="h-4 w-4 text-purple-500" />
-              Header
+              Kopfzeile
             </h3>
             <FormField
-              label="Company Logo"
+              label="Firmenlogo"
               name="logo"
-              description={`Optional — replaces {Logo} placeholder (max ${LOGO_MAX_SIZE_LABEL})`}
+              description={`Optional — ersetzt Platzhalter {Logo} (max. ${LOGO_MAX_SIZE_LABEL})`}
               error={logoSizeError ?? undefined}
             >
               <FileDropzone
@@ -359,8 +362,8 @@ export const DocumentForm: React.FC<DocumentFormProps> = ({
                 value={logoFile}
                 maxSize={LOGO_MAX_BYTES}
                 accept={{ "image/*": [".png", ".jpg", ".jpeg", ".svg"] }}
-                placeholder="Drop your logo here"
-                description={`PNG, JPG, or SVG up to ${LOGO_MAX_SIZE_LABEL}`}
+                placeholder="Logo hier ablegen"
+                description={`PNG, JPG oder SVG bis ${LOGO_MAX_SIZE_LABEL}`}
                 hasError={!!logoSizeError}
               />
             </FormField>
@@ -370,30 +373,30 @@ export const DocumentForm: React.FC<DocumentFormProps> = ({
           <div>
             <h3 className="flex items-center gap-2 text-sm font-bold text-gray-700 uppercase tracking-wider mb-3">
               <Hash className="h-4 w-4 text-indigo-500" />
-              Footer Metadata
+              Fußzeile / Metadaten
             </h3>
             <div className="space-y-4">
               <div className="grid gap-4 sm:grid-cols-2">
                 <FormField
-                  label="Document Version"
+                  label="Dokumentversion"
                   name="docVersion"
                   id="docVersion"
                   required
-                  description="{DocVersion} placeholder"
+                  description="Platzhalter {DocVersion}"
                   error={errors.docVersion?.message}
                 >
                   <Input
                     id="docVersion"
                     {...register("docVersion")}
-                    placeholder="e.g. v1.0"
+                    placeholder="z. B. v1.0"
                     leftIcon={<Hash className="h-4 w-4" />}
                     hasError={!!errors.docVersion}
                   />
                 </FormField>
                 <FormField
-                  label="Document Date"
+                  label="Dokumentdatum"
                   name="docDate"
-                  description="{DocDate} placeholder"
+                  description="Platzhalter {DocDate}"
                   required
                   error={errors.docDate?.message}
                 >
@@ -404,7 +407,7 @@ export const DocumentForm: React.FC<DocumentFormProps> = ({
                       <DatePicker
                         value={field.value}
                         onChange={field.onChange}
-                        placeholder="Select date"
+                        placeholder="Datum wählen"
                         hasError={!!errors.docDate}
                       />
                     )}
@@ -413,33 +416,33 @@ export const DocumentForm: React.FC<DocumentFormProps> = ({
               </div>
               <div className="grid gap-4 sm:grid-cols-2">
                 <FormField
-                  label="Created By"
+                  label="Erstellt von"
                   name="createdBy"
                   id="createdBy"
-                  description="{CreatedBy} placeholder"
+                  description="Platzhalter {CreatedBy}"
                   required
                   error={errors.createdBy?.message}
                 >
                   <Input
                     {...register("createdBy")}
                     id="createdBy"
-                    placeholder="Author name"
+                    placeholder="Name des Erstellers"
                     leftIcon={<User className="h-4 w-4" />}
                     hasError={!!errors.createdBy}
                   />
                 </FormField>
                 <FormField
-                  label="Approved By"
+                  label="Freigegeben von"
                   name="approvedBy"
                   id="approvedBy"
-                  description="{ApprovedBy} placeholder"
+                  description="Platzhalter {ApprovedBy}"
                   required
                   error={errors.approvedBy?.message}
                 >
                   <Input
                     {...register("approvedBy")}
                     id="approvedBy"
-                    placeholder="Approver name"
+                    placeholder="Name des Freigebenden"
                     leftIcon={<UserCheck className="h-4 w-4" />}
                     hasError={!!errors.approvedBy}
                   />
@@ -452,45 +455,45 @@ export const DocumentForm: React.FC<DocumentFormProps> = ({
           <div>
             <h3 className="flex items-center gap-2 text-sm font-bold text-gray-700 uppercase tracking-wider mb-3">
               <Building2 className="h-4 w-4 text-orange-500" />
-              Company Data
+              Firmendaten
               <span className="text-[10px] font-medium text-gray-400 normal-case">
                 (global)
               </span>
             </h3>
             <div className="space-y-4">
               <FormField
-                label="Company Name"
+                label="Firmenname"
                 name="companyName"
                 id="companyName"
-                description="{CompanyName} placeholder"
+                description="Platzhalter {CompanyName}"
                 required
                 error={errors.companyName?.message}
               >
                 <Input
                   {...register("companyName")}
                   id="companyName"
-                  placeholder="Acme Corp"
+                  placeholder="Muster GmbH"
                   leftIcon={<Building2 className="h-4 w-4" />}
                   hasError={!!errors.companyName}
                 />
               </FormField>
               <div className="grid gap-4 sm:grid-cols-2">
                 <FormField
-                  description="{companyStreet} placeholder"
-                  label="Street"
+                  description="Platzhalter {CompanyStreet}"
+                  label="Straße"
                   name="companyStreet"
                   id="companyStreet"
                 >
                   <Input
                     {...register("companyStreet")}
                     id="companyStreet"
-                    placeholder="123 Main Street"
+                    placeholder="Musterstraße 1"
                     leftIcon={<MapPin className="h-4 w-4" />}
                   />
                 </FormField>
                 <FormField
-                  description="{CompanyZip} placeholder"
-                  label="ZIP Code"
+                  description="Platzhalter {CompanyZip}"
+                  label="PLZ"
                   name="companyZip"
                   id="companyZip"
                 >
@@ -503,8 +506,8 @@ export const DocumentForm: React.FC<DocumentFormProps> = ({
               </div>
               <div className="grid gap-4 sm:grid-cols-2">
                 <FormField
-                  description="{CompanyCity} placeholder"
-                  label="City"
+                  description="Platzhalter {CompanyCity}"
+                  label="Stadt"
                   name="companyCity"
                   id="companyCity"
                 >
@@ -515,29 +518,29 @@ export const DocumentForm: React.FC<DocumentFormProps> = ({
                   />
                 </FormField>
                 <FormField
-                  description="{CompanyCountry} placeholder"
-                  label="Country"
+                  description="Platzhalter {CompanyCountry}"
+                  label="Land"
                   name="companyCountry"
                   id="companyCountry"
                 >
                   <Input
                     id="companyCountry"
                     {...register("companyCountry")}
-                    placeholder="Germany"
+                    placeholder="Deutschland"
                     leftIcon={<Globe className="h-4 w-4" />}
                   />
                 </FormField>
               </div>
               <FormField
-                label="Full Address Line"
+                label="Vollständige Adresszeile"
                 name="companyAddressLine"
                 id="companyAddressLine"
-                description="Combined address (auto-fills {CompanyAddressLine})"
+                description="Kombinierte Adresse (füllt {CompanyAddressLine})"
               >
                 <Input
                   id="companyAddressLine"
                   {...register("companyAddressLine")}
-                  placeholder="123 Main St, 12345 Berlin, Germany"
+                  placeholder="Musterstraße 1, 12345 Berlin, Deutschland"
                 />
               </FormField>
             </div>
@@ -547,6 +550,23 @@ export const DocumentForm: React.FC<DocumentFormProps> = ({
           {error && (
             <div className="rounded-xl bg-red-50 border border-red-200 p-4">
               <p className="text-sm font-medium text-red-800">{error}</p>
+            </div>
+          )}
+
+          {/* Skipped templates note (EC-09: ZIP wurde trotzdem erzeugt) */}
+          {skipped && skipped.length > 0 && (
+            <div className="rounded-xl bg-amber-50 border border-amber-200 p-4">
+              <p className="text-sm font-medium text-amber-800">
+                {skipped.length} Vorlage{skipped.length !== 1 ? "n" : ""} konnte
+                {skipped.length !== 1 ? "n" : ""} nicht verarbeitet werden und
+                wurde{skipped.length !== 1 ? "n" : ""} übersprungen. Das ZIP
+                enthält die übrigen Dokumente.
+              </p>
+              <ul className="mt-2 list-disc pl-5 text-xs text-amber-700">
+                {skipped.map((name) => (
+                  <li key={name}>{name}</li>
+                ))}
+              </ul>
             </div>
           )}
         </CardContent>
@@ -560,8 +580,8 @@ export const DocumentForm: React.FC<DocumentFormProps> = ({
             leftIcon={<Sparkles className="h-5 w-5" />}
           >
             {isPending
-              ? "Generating..."
-              : `Generate ${totalDocs > 0 ? `${totalDocs} Documents` : "Documents"}`}
+              ? "Wird generiert…"
+              : `${totalDocs > 0 ? `${totalDocs} Dokumente` : "Dokumente"} generieren`}
           </Button>
 
           {hasDocument && zipBase64 && (
@@ -573,7 +593,7 @@ export const DocumentForm: React.FC<DocumentFormProps> = ({
                 onClick={handleDownloadZip}
                 leftIcon={<Download className="h-5 w-5" />}
               >
-                Download ZIP
+                ZIP herunterladen
               </Button>
               <Button
                 type="button"
@@ -582,7 +602,7 @@ export const DocumentForm: React.FC<DocumentFormProps> = ({
                 onClick={handleReset}
                 leftIcon={<RotateCcw className="h-5 w-5" />}
               >
-                Start Over
+                Neu starten
               </Button>
             </div>
           )}
@@ -595,7 +615,7 @@ export const DocumentForm: React.FC<DocumentFormProps> = ({
               onClick={handleReset}
               leftIcon={<RotateCcw className="h-4 w-4" />}
             >
-              Clear Form
+              Formular leeren
             </Button>
           )}
         </CardFooter>

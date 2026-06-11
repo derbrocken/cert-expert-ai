@@ -56,15 +56,15 @@ export async function GET() {
     if (error instanceof HetznerStorageNotConfiguredError) {
       return NextResponse.json(
         {
-          error: "Template storage not configured",
+          error: "Template-Storage nicht konfiguriert",
           detail:
-            "Set HETZNER_S3_KEY, HETZNER_S3_SECRET, HETZNER_BUCKET_NAME, HETZNER_S3_ENDPOINT, and HETZNER_S3_REGION in .env.local.",
+            "HETZNER_S3_KEY, HETZNER_S3_SECRET, HETZNER_BUCKET_NAME, HETZNER_S3_ENDPOINT und HETZNER_S3_REGION in .env.local setzen.",
         },
         { status: 503 },
       );
     }
     return NextResponse.json(
-      { error: "Failed to list standard models" },
+      { error: "Standard-Models konnten nicht geladen werden" },
       { status: 500 },
     );
   }

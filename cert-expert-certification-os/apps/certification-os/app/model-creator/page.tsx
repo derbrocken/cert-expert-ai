@@ -22,7 +22,6 @@ import {
 
 const initialState: GenerateState = {
   success: false,
-  documents: undefined,
   zipBase64: undefined,
   error: undefined,
 };
@@ -104,12 +103,12 @@ export default function ModelCreatorPage() {
             <div className="flex justify-center gap-4">
               <CEBadge />
               <h1 className="text-2xl font-bold text-gray-900 sm:text-3xl lg:text-4xl">
-                Document Creator
+                Dokument-Generator
               </h1>
             </div>
             <p className="mt-2 text-sm text-gray-600 sm:text-base lg:text-lg">
-              Select Standard Model folders, fill in placeholders, and generate
-              a ZIP bundle
+              Standard-Model-Ordner wählen, Platzhalter ausfüllen und als
+              ZIP-Paket generieren
             </p>
           </div>
 
@@ -125,6 +124,7 @@ export default function ModelCreatorPage() {
                 hasDocument={!isReset && state.success}
                 zipBase64={!isReset ? state.zipBase64 : undefined}
                 error={!isReset ? state.error : undefined}
+                skipped={!isReset ? state.skipped : undefined}
                 onFolderClick={handleFolderClick}
                 activeFolderId={activeFolder?.id}
                 excludedDocIds={excludedDocIds}
@@ -147,8 +147,8 @@ export default function ModelCreatorPage() {
                             {activeFolder.name}
                           </h2>
                           <p className="text-xs text-gray-500">
-                            {includedCount} of {activeFolder.documents.length}{" "}
-                            documents selected
+                            {includedCount} von {activeFolder.documents.length}{" "}
+                            Dokumenten ausgewählt
                           </p>
                         </div>
                       </div>
@@ -167,14 +167,14 @@ export default function ModelCreatorPage() {
                         onClick={selectAll}
                         className="rounded-lg bg-white/80 px-3 py-1.5 text-xs font-medium text-blue-700 hover:bg-white transition-colors cursor-pointer border border-blue-200"
                       >
-                        Select All
+                        Alle auswählen
                       </button>
                       <button
                         type="button"
                         onClick={deselectAll}
                         className="rounded-lg bg-white/80 px-3 py-1.5 text-xs font-medium text-gray-600 hover:bg-white transition-colors cursor-pointer border border-gray-200"
                       >
-                        Deselect All
+                        Alle abwählen
                       </button>
                     </div>
                   </div>
@@ -272,20 +272,20 @@ export default function ModelCreatorPage() {
                       <p className="text-xs text-gray-500">
                         {includedCount === activeFolder.documents.length ? (
                           <span className="text-emerald-600 font-medium">
-                            All documents included
+                            Alle Dokumente enthalten
                           </span>
                         ) : includedCount === 0 ? (
                           <span className="text-red-500 font-medium">
-                            No documents selected
+                            Keine Dokumente ausgewählt
                           </span>
                         ) : (
                           <span className="text-amber-600 font-medium">
                             {activeFolder.documents.length - includedCount}{" "}
-                            document
+                            Dokument
                             {activeFolder.documents.length - includedCount !== 1
-                              ? "s"
+                              ? "e"
                               : ""}{" "}
-                            excluded
+                            ausgeschlossen
                           </span>
                         )}
                       </p>
@@ -298,15 +298,15 @@ export default function ModelCreatorPage() {
                     <FolderOpen className="h-8 w-8" />
                   </div>
                   <h3 className="text-lg font-semibold text-gray-500">
-                    Document Explorer
+                    Dokument-Explorer
                   </h3>
                   <p className="mt-2 max-w-xs text-sm text-gray-400">
-                    Select a Standard Model folder on the left, then click it to
-                    explore and filter its documents here.
+                    Links einen Standard-Model-Ordner wählen und anklicken, um
+                    seine Dokumente hier zu sehen und zu filtern.
                   </p>
                   <div className="mt-4 flex items-center gap-1 text-xs text-gray-400">
                     <ChevronRight className="h-3 w-3" />
-                    <span>Click a folder to get started</span>
+                    <span>Ordner anklicken zum Starten</span>
                   </div>
                 </div>
               )}
