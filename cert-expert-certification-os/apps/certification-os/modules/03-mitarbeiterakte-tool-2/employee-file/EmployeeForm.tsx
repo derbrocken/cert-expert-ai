@@ -478,14 +478,19 @@ export const EmployeeForm: React.FC<EmployeeFormProps> = ({
 
   const appointmentOptions = useMemo(
     () =>
-      appointments.map((a) => ({
-        id: a.id,
-        name:
-          displayMode === "master" || displayMode === "full"
-            ? appointmentLabelDe(a.id, a.name)
-            : a.name,
-        description: a.description,
-      })),
+      appointments
+        // #1-Fix: Im Master-Modus den „bestellungen"-Ordner ausblenden — die
+        // formalen Bestellungen laufen über „Bestellt als" (BESTELLUNG_DEFS).
+        // Sonst tauchen „Bestellungen" doppelt auf → Verwechslung (Mark 2026-06-12).
+        .filter((a) => !(displayMode === "master" && a.id === "bestellungen"))
+        .map((a) => ({
+          id: a.id,
+          name:
+            displayMode === "master" || displayMode === "full"
+              ? appointmentLabelDe(a.id, a.name)
+              : a.name,
+          description: a.description,
+        })),
     [appointments, displayMode],
   );
 
@@ -1203,11 +1208,16 @@ export const EmployeeForm: React.FC<EmployeeFormProps> = ({
                   <FormField
                     label={
                       displayMode === "master"
-                        ? "Weitere Termine / Overlays (optional)"
+                        ? "Weitere Dokumenten-Ordner (optional)"
                         : "Select Appointments"
                     }
                     name="appointmentIds"
                     id="appointmentIds"
+                    description={
+                      displayMode === "master"
+                        ? "Betriebsanweisung / Mutterschutz / Objektbezogen / Veranstaltung — NICHT die Bestellungen (die oben)."
+                        : undefined
+                    }
                     error={errors.appointmentIds?.message}
                   >
                     <Controller
@@ -1218,7 +1228,11 @@ export const EmployeeForm: React.FC<EmployeeFormProps> = ({
                           options={appointmentOptions}
                           value={field.value || []}
                           onChange={field.onChange}
-                          placeholder="Select appointment type"
+                          placeholder={
+                            displayMode === "master"
+                              ? "Betriebsanweisung, Mutterschutz, Objektbezogen …"
+                              : "Select appointment type"
+                          }
                           hasError={!!errors.appointmentIds}
                         />
                       )}
