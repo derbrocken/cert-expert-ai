@@ -187,29 +187,18 @@ async function processCompanyIntake(
 ): Promise<TallyIntakeResult> {
   await ensureCompaniesSeeded();
   const fieldMap = buildFieldMap(fields);
-  const parsed = parseCompanyIntake(
-    (id) => fieldMap.get(id)?.value,
-    TALLY_COMPANY_QUESTIONS,
-  );
+  const intakeFields = fields.map((f) => ({
+    questionId: questionIdFromFieldKey(f.key) ?? "",
+    type: f.type,
+    label: f.label ?? "",
+    value: f.value,
+  }));
+  const parsed = parseCompanyIntake(intakeFields, TALLY_COMPANY_QUESTIONS);
   const slugHint = extractCompanySlugHint(fieldMap);
   const companySlug = resolveCompanySlug({
     slugHint,
     companyName: parsed.companyName,
   });
-
-  if (!parsed.logo) {
-    // TEMP-Diagnose (P2-A) — alle befüllten Felder zeigen (wo liegt das Logo?).
-    const filled = fields
-      .filter((f) => f.value != null && f.value !== "" &&
-        !(Array.isArray(f.value) && f.value.length === 0))
-      .map((f) => ({
-        qid: questionIdFromFieldKey(f.key),
-        type: f.type,
-        label: (f.label || "").slice(0, 40),
-        v: JSON.stringify(f.value)?.slice(0, 120),
-      }));
-    console.warn(`${LOG} Logo-Diagnose: befuellte Felder`, JSON.stringify(filled));
-  }
 
   let logoStorageKey: string | undefined;
   if (parsed.logo) {
@@ -239,8 +228,13 @@ async function processCompanyIntake(
     },
   });
 
-  await prisma.tallyIntakeRecord.create({
-    data: { responseId, formId, companySlug, employeeIds: [] },
+  // upsert statt create: Tally stellt FORM_RESPONSE teils doppelt zu → die
+  // Top-Dedup greift bei der Near-Simultan-Zustellung evtl. nicht (Race);
+  // idempotenter Upsert verhindert die Unique-Constraint-Verletzung.
+  await prisma.tallyIntakeRecord.upsert({
+    where: { responseId },
+    create: { responseId, formId, companySlug, employeeIds: [] },
+    update: {},
   });
 
   console.info(`${LOG} Company intake processed`, {
