@@ -198,16 +198,17 @@ async function processCompanyIntake(
   });
 
   if (!parsed.logo) {
-    // TEMP-Diagnose (P2-A) — echte Logo-Feld-Struktur sichtbar machen.
-    const lf = fieldMap.get(TALLY_COMPANY_QUESTIONS.logo);
-    console.warn(`${LOG} Logo-Feld-Diagnose`, {
-      questionId: TALLY_COMPANY_QUESTIONS.logo,
-      present: Boolean(lf),
-      key: lf?.key,
-      type: lf?.type,
-      valuePreview: JSON.stringify(lf?.value)?.slice(0, 400) ?? "undefined",
-      allKeys: fields.map((f) => questionIdFromFieldKey(f.key)).join(","),
-    });
+    // TEMP-Diagnose (P2-A) — alle befüllten Felder zeigen (wo liegt das Logo?).
+    const filled = fields
+      .filter((f) => f.value != null && f.value !== "" &&
+        !(Array.isArray(f.value) && f.value.length === 0))
+      .map((f) => ({
+        qid: questionIdFromFieldKey(f.key),
+        type: f.type,
+        label: (f.label || "").slice(0, 40),
+        v: JSON.stringify(f.value)?.slice(0, 120),
+      }));
+    console.warn(`${LOG} Logo-Diagnose: befuellte Felder`, JSON.stringify(filled));
   }
 
   let logoStorageKey: string | undefined;
