@@ -3,9 +3,13 @@
 > Ziel: **stabile HTTPS-URL** für Tally-Webhooks statt wechselndem cloudflared-Tunnel.  
 > App: `cert-expert-certification-os/apps/certification-os/` · Port **3001** (intern)
 
-## ✅ LIVE-STAND (Redeploy 2026-06-12 #3, Terminal-Planer auf Marks „deploy")
+## ✅ LIVE-STAND (Redeploy 2026-06-12 #4, P2-A end-to-end verifiziert)
 
-**App live: https://cos.cert-expert.de** (HTTPS, HTTP→HTTPS-Redirect). Deployter Commit **`0ae0a20`** (zuvor `7cb3915`, `23bd82c`, `dde4f7a`, `0ad7936`, `e84e599`, `d5c9086`, `2242502`, `fe17ad5`, `03429b2`, `5280d9c`, `404d55d`).
+**App live: https://cos.cert-expert.de** (HTTPS, HTTP→HTTPS-Redirect). Deployter Commit **`5af2720`** (zuvor `0ae0a20`, `7cb3915`, `23bd82c`, `dde4f7a`, `0ad7936`, `e84e599`, `d5c9086`, `2242502`, `fe17ad5`, `03429b2`, `5280d9c`, `404d55d`).
+
+> **P2-A LIVE + VERIFIZIERT (2026-06-12):** Company-Tally `Y5Zq80` → zentrales Firmen-Profil. **Tally-Webhook `3EQpao` per API angelegt** (`Y5Zq80` → `…/api/webhooks/tally`, eventTypes `FORM_RESPONSE`, signingSecret = `cea-tally-webhook-test-secret-2026` wie Mitarbeiter-Webhook `wMzjM0`). Echte Submission verifiziert: `Wolf Street GmbH` + Logo → DB `CompanyExportSettings.logoStorageKey = cea/companies/Wolf_Street/logo.jpg`, `logo: true`. **Logo-Erkennung robust** (Mark lud das Logo ins unbeschriftete Feld `lN267B`, nicht ins gelabelte `J2MA7d` → Fallback „logo" in Label/Dateiname fängt es). **Race-Fix**: `tallyIntakeRecord` create→upsert (Tally stellt FORM_RESPONSE doppelt zu). **Tally-API-Key wieder gültig** (`GET /forms/{id}/questions` + `/webhooks` ok; `/responses` = 401, anderer Scope). **Offen P2-B:** Firmen-Dokumente (FILE_UPLOADs) → company-level Dok-Lager (eigene Phase). **Form-Hinweis (Mark):** `Y5Zq80` ist ein Entwurf mit vielen unbeschrifteten Datei-Feldern — UX-Aufräumen sinnvoll.
+
+> **Redeploy 2026-06-12 #3 (Framework P2-A): `7cb3915` → `0ae0a20`.** Company-Tally Code (vor Webhook-Aktivierung). Zwischen-Deploys `cf1d09f`/`0a33d69` (temp Logo-Diagnose) → in `5af2720` entfernt.
 
 > **Redeploy 2026-06-12 #3 (Framework P2-A): `7cb3915` → `0ae0a20`.** Company-Tally `Y5Zq80` → zentrales Firmen-Profil (Name/E-Mail/Logo→S3). **Kein Schema-Change.** `next build` grün, Restart aktiv, Endpunkte 200, Webhook-Endpoint 405 (POST-only). **AKTIVIERUNG offen (Mark/Tally-UI):** `Y5Zq80`-Webhook auf `https://cos.cert-expert.de/api/webhooks/tally` (gleicher Signing-Secret) + 1 Test-Submission → Profil+Logo verifizieren. Feld-Keys API-verifiziert (`7dM2QA`/`blvxao`/`J2MA7d`). Plan: `FRAMEWORK_P2_COMPANY_TALLY.md`.
 
