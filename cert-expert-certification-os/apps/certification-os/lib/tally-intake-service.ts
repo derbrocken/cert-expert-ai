@@ -197,6 +197,19 @@ async function processCompanyIntake(
     companyName: parsed.companyName,
   });
 
+  if (!parsed.logo) {
+    // TEMP-Diagnose (P2-A) — echte Logo-Feld-Struktur sichtbar machen.
+    const lf = fieldMap.get(TALLY_COMPANY_QUESTIONS.logo);
+    console.warn(`${LOG} Logo-Feld-Diagnose`, {
+      questionId: TALLY_COMPANY_QUESTIONS.logo,
+      present: Boolean(lf),
+      key: lf?.key,
+      type: lf?.type,
+      valuePreview: JSON.stringify(lf?.value)?.slice(0, 400) ?? "undefined",
+      allKeys: fields.map((f) => questionIdFromFieldKey(f.key)).join(","),
+    });
+  }
+
   let logoStorageKey: string | undefined;
   if (parsed.logo) {
     try {
