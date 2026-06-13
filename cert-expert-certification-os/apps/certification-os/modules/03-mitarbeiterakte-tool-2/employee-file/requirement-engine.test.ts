@@ -554,12 +554,25 @@ test("Invariante — jede Regel ohne clauseId ist 'fachlich prüfen' oder 'nicht
 // #2 — Qualifikation als Multiselect (Katalog) — Stufen, Zusätze, Migration
 // ===========================================================================
 
-// Q-Katalog: jede Option ist CL-belegt ODER ein „fachlich prüfen"-Zusatz.
-test("Q-Katalog — jede Option hat eine CL-ID oder ist additiver Zusatz (keine erfundene Pflicht)", () => {
+// Q-Katalog: jede Option ist CL-belegt ODER (clauseId null) erzeugt KEINE
+// Engine-Pflicht — d. h. additiver Zusatz ODER reine „fachlich prüfen"-Option
+// ohne Stufe und ohne Sachkunde-/FK-Effekt-Flags (keine erfundene Pflicht).
+test("Q-Katalog — jede Option hat eine CL-ID oder erzeugt keine Engine-Pflicht (keine erfundene Pflicht)", () => {
   for (const opt of QUALIFICATION_CATALOG) {
+    if (opt.clauseId !== null) continue;
+    const erzeugtKeinePflicht =
+      opt.zusatz === true ||
+      (opt.stufe == null &&
+        opt.erfuelltSachkunde !== true &&
+        opt.fkQualifizierend !== true &&
+        opt.istUnterrichtung !== true);
     assert.ok(
-      opt.clauseId !== null || opt.zusatz === true,
-      `Katalog-Option ${opt.id} ohne clauseId muss ein Zusatz sein`,
+      erzeugtKeinePflicht,
+      `Katalog-Option ${opt.id} ohne clauseId darf keine Engine-Pflicht erzeugen (Stufe/Sachkunde/FK-Flags) → "fachlich prüfen"`,
+    );
+    assert.ok(
+      typeof opt.hint === "string" && opt.hint.length > 0,
+      `Katalog-Option ${opt.id} ohne clauseId muss einen "fachlich prüfen"-Hinweis tragen`,
     );
   }
 });

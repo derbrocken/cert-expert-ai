@@ -128,6 +128,28 @@ export const QUALIFICATION_CATALOG: readonly QualificationOption[] = [
     zusatz: true,
     hint: "Fachlich prüfen (CL-76, legal-input) — additiv, keine neue DIN-Pflicht.",
   },
+  {
+    // Höhere Qualifikation — Anrechnung als Sachkunde/FK ist eine Norm-/Legal-
+    // Frage (noch KEINE CL belegt) → clauseId null = „fachlich prüfen", KEINE
+    // automatische Engine-Wirkung (kein erfuelltSachkunde/fkQualifizierend,
+    // keine Stufe). Wird nur erfasst; Anrechnung bestätigt Mark/Fachstelle.
+    id: "studium-sicherheit",
+    label: "Studium im Sicherheitsbereich (z. B. Sicherheitsmanagement)",
+    description:
+      "Höhere Qualifikation — Gleichwertigkeit/Anrechnung fachlich prüfen.",
+    clauseId: null,
+    stufe: null,
+    hint: "Fachlich prüfen — Anrechnung als Sachkunde/FK-Qualifikation gesondert bestätigen (keine automatische Norm-Wirkung).",
+  },
+  {
+    id: "polizei-zeugnis",
+    label: "Polizei-/Vollzugs-Laufbahnzeugnis (z. B. Polizeimeister)",
+    description:
+      "Behördliche Laufbahnqualifikation — Gleichwertigkeit fachlich prüfen.",
+    clauseId: null,
+    stufe: null,
+    hint: "Fachlich prüfen — Anrechnung als Sachkunde/FK-Qualifikation gesondert bestätigen (keine automatische Norm-Wirkung).",
+  },
 ] as const;
 
 const CATALOG_BY_ID = new Map(QUALIFICATION_CATALOG.map((o) => [o.id, o]));

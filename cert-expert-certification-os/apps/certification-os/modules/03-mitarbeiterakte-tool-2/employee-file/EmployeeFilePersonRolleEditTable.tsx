@@ -28,6 +28,11 @@ import {
   type RequirementRow,
 } from "./employee-file-requirements";
 import {
+  QUALIFICATION_CATALOG,
+  parseQualifications,
+  serializeQualifications,
+} from "./qualification-catalog";
+import {
   applyEmployeePatchWithDocSync,
 } from "./employee-doc-selection-sync";
 import { EmployeeFileStatusBadge } from "./EmployeeFileStatusBadge";
@@ -83,6 +88,23 @@ export const EmployeeFilePersonRolleEditTable: React.FC<
       })),
     [],
   );
+
+  // Qualifikation als strukturierte Mehrfachauswahl (DM5) statt Freitext.
+  const qualificationOptions = useMemo(
+    () =>
+      QUALIFICATION_CATALOG.map((q) => ({
+        id: q.id,
+        name: q.label,
+        description: q.description,
+      })),
+    [],
+  );
+  // Aktuelle Auswahl: strukturiertes Feld gewinnt; sonst tolerant aus dem
+  // Legacy-Freitext ableiten (round-trip-stabil, kein Datenverlust).
+  const currentQualificationIds =
+    employee.qualifications && employee.qualifications.length > 0
+      ? employee.qualifications
+      : parseQualifications(employee.qualification).ids;
 
   const dienstfahrzeugValue =
     employee.drivesServiceVehicle === true
@@ -432,12 +454,25 @@ export const EmployeeFilePersonRolleEditTable: React.FC<
           {rowShell(
             "qualifikation",
             "Qualifikation",
-            <Input
-              value={employee.qualification || ""}
-              onChange={(e) => patch({ qualification: e.target.value })}
-              placeholder="z. B. Sachkunde §34a"
-              className="py-2 text-sm"
-            />,
+            <div className={COMPACT_SELECT}>
+              <MultiSelect
+                options={qualificationOptions}
+                value={currentQualificationIds}
+                onChange={(ids) =>
+                  patch({
+                    qualifications: ids,
+                    // Legacy-Freitext round-trip-stabil mitschreiben (Engine-/
+                    // Presenter-Fallback). Leere Auswahl → Freitext leeren.
+                    qualification:
+                      ids.length > 0
+                        ? serializeQualifications(ids)
+                        : undefined,
+                  })
+                }
+                placeholder="Unterrichtung, Sachkunde, Meister, Studium, Polizei …"
+              />
+            </div>,
+            "Mehrfachauswahl — höchste Stufe zählt; Studium/Polizei = fachlich prüfen (keine Auto-Anrechnung)",
           )}
           {rowShell(
             "erste-hilfe-frist",
