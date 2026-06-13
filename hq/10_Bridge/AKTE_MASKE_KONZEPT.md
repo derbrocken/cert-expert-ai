@@ -85,10 +85,64 @@ Doc-Auswahl (`selectedRoleDocIds`, `selectedAppointmentDocIds`, `setKategorie`-W
 
 > **Visual-Direction (verbindlich, `DESIGN_VISUAL_DIRECTION.md`):** „Premium Audit File OS" — Dossier-/Akten-Logik, Cards/Sektionen/Status-Chips, viel Whitespace, BG weiß/hellgrau, Text anthrazit/navy. **Brand-Accent = Vermillion** nur für aktive Nav/primäre Aktionen/Selected/Fokus — **nicht** als Fehlerfarbe. **Status-Farben getrennt vom Brand:** Grau=nicht bewertet · Amber=offen/prüfen · Rot=fehlt/kritisch · Grün=vollständig. Das Herkunfts-Badge (◆ importiert) ist eine **neutrale** Herkunft-Markierung (nicht Brand-Vermillion, nicht Status-Rot) — im Visual-Pass eine neutrale Nuance (blau/grau) festlegen. ⚠️ Brand-Vermillion (`#e30613`) und Status-Rot (fehlt/kritisch) müssen unterscheidbar sein.
 
-### 3.1 Etabliertes Muster als Anker
-Das schon gebaute Muster im `EmployeeFileDossierView` ist **„Ansehen ↔ Bearbeiten" per Stift-Toggle** (`evidenceEditMode`, Pencil-Icon, „Bearbeiten"/„Fertig"). Das ist ein bewährtes Pattern (versehentliches Überschreiben vermeiden). Das neue Konzept **behält die Stift-Affordanz**, verfeinert sie aber von „alles-oder-nichts" zu **sektionsweisem Edit**, und macht **Quelle (Tally/manuell/fehlend)** + **Pflicht-Lücken** sichtbar — das fehlt heute komplett.
+### 3.1 Kern-Entscheidung: zwei Modi (Mark, 2026-06-14)
 
-### 3.2 Darstellung von Wert-Herkunft (Kern-Neuerung)
+**Eingabe ≠ Ansicht.** Die Akte hat zwei klar getrennte Modi, die unterschiedliche Aufgaben haben:
+
+| Modus | Form | Wofür |
+|-------|------|-------|
+| **ANSICHT** | **horizontal, Kapitel-Reiter** (Dossier-Cockpit) | Lesen/Auditieren/schnell springen: Übersicht · Stammdaten · Rolle · Geltungsbereich · Bestellungen · Qualifikationen · Nachweise |
+| **EINGABE / ANLEGEN** | **vertikal, geführter Fluss** | Erfassen ohne etwas zu vergessen (Pflicht- + Norm-Felder), Lücken nachtragen |
+
+So liest sich die Akte wie ein **Audit-Ordner mit Kapiteln** (premium, ruhig), während das Erfassen ein **geführter vertikaler Fluss** ist. Das ersetzt das heutige „eine lange vertikale Liste"-Verhalten (S1a) durch eine kapitelbasierte Ansicht — die schon gebaute **vertikale Inline-Eingabe (S1b)** wird zum vertikalen Eingabe-Fluss ausgebaut.
+
+### 3.2 ANSICHT-Modus — horizontale Kapitel (Dossier-Cockpit)
+
+Kopf der Akte: Person (Name, Org-Titel, Norm-Klasse-Chips, Gesamt-Status-Chip). Darunter eine **horizontale Kapitel-Navigation** (Reiter/Segmented), **Vermillion-Akzent nur am aktiven Reiter** (Visual-Direction). Jedes Kapitel = fokussiertes Panel aus **Cards + Status-Chips**, viel Whitespace, subtile Rahmen — keine überladene Tabelle.
+
+```
+┌ Max Mustermann · SMA · [EK][FK]                   ● offen ┐
+│ ‹Übersicht›  Stammdaten  Rolle  SDL  Bestellungen  Quali  Nachweise │   ← aktiver Reiter Vermillion
+├───────────────────────────────────────────────────────────┤
+│  PFLICHT-SET (abgeleitet)                offene Punkte: 3   │
+│  ┌ Sachkunde §34a  ● vorhanden ┐  ┌ Erste Hilfe  ○ fehlt ┐ │
+│  └──────────────────────────────┘  └────────────────────┘ │
+│  Fristen:  Brandschutz gültig bis 03/2026  ▲ läuft ab      │
+│  Was fehlt:  Norm-Klasse ok · SDL leer · 2 Nachweise offen │
+└───────────────────────────────────────────────────────────┘
+```
+
+- **Übersicht** (Default-Kapitel) = das Cockpit: Pflicht-Set-Ampel, offene Punkte, Fristen, „was fehlt". Rein informativ (EC-10, kein Auto-Grün).
+- **Stammdaten / Rolle / SDL / Bestellungen / Quali** = die Erfassungs-Kapitel (read-only Cards + Stift → vertikale Edit-Form).
+- **Nachweise** = Uploads + Prüfstatus (Lebenszyklus ④, menschlicher „geprüft"-Schritt).
+- **Audit** = später (nach Projektakte, DA3).
+- **Generator** bleibt **außerhalb** (eigener Tab, EC-09).
+
+### 3.3 EINGABE / ANLEGEN — vertikaler geführter Fluss
+
+„Neue Person" (und das Nachtragen vieler Lücken) läuft als **vertikale, geführte Sequenz** durch die Kapitel in sinnvoller Reihenfolge — mit vertikalem Fortschritt + Herkunfts-/Lücken-Badges, sodass Pflicht- und Norm-Felder nicht vergessen werden. Persistenz erst per **„Speichern"** (S1b-Muster, kein Auto-Speichern).
+
+```
+┌ Neue Person anlegen ───────────────────────────────────────┐
+│ ① Stammdaten        ●  vollständig                          │
+│ ② Beschäftigung     ○  ← hier                               │
+│      Vertragsbeginn   [ 01.03.2024 ]   ◆ aus Tally          │
+│      Beschäftigungsart[ Vollzeit ▼ ]   ○ Pflicht (Engine)   │
+│ ③ Rolle & Norm-Klasse ◇                                     │
+│ ④ Geltungsbereich     ◇                                     │
+│ ⑤ Bestellungen        ◇                                     │
+│ ⑥ Qualifik./Fristen   ◇                                     │
+│                              [Verwerfen]  [Person speichern] │
+└────────────────────────────────────────────────────────────┘
+```
+
+Nach „Speichern" → landet in der **Ansicht** (Kapitel „Übersicht"). Beim **Import aus Tally** entsteht die Akte direkt in der Ansicht; ein deutlicher Hinweis „X Pflicht-Lücken nachtragen" führt per Klick in den vertikalen Fluss, der nur die offenen Kapitel zeigt.
+
+### 3.4 Bearbeiten in der Ansicht (Stift je Kapitel)
+
+In der Ansicht ist alles **read-only** (Standard). Pro Kapitel ein **Stift „Bearbeiten"** → öffnet die **vertikale Edit-Form genau dieses Kapitels** (gleiche Controls wie der Anlege-Fluss) → „Speichern"/„Abbrechen" → zurück zur Ansicht. So ist schnelles Lücken-Nachtragen (Kapitel anspringen → Stift → speichern) und versehentliches Überschreiben ausgeschlossen.
+
+### 3.5 Herkunft & Status (Visual-Direction-konform)
 Jedes Feld bekommt ein kleines **Herkunfts-/Status-Badge** links der Zeile, konsistent über alle Sektionen:
 
 ```
@@ -101,81 +155,25 @@ Jedes Feld bekommt ein kleines **Herkunfts-/Status-Badge** links der Zeile, kons
 
 Wichtig (EC-10): „importiert" = **ungeprüft**, niemals „grün/erledigt". Tally-Werte werden angezeigt, sind aber **editierbar/überschreibbar** und tragen das blaue ◆-Badge, bis ein Mensch sie ändert oder (in der Prüf-Sektion) prüft.
 
-### 3.3 Inline-Validierung, Pflicht-Lücken, Ampel
+### 3.6 Inline-Validierung, Pflicht-Lücken, Ampel
 - **Pflichtfelder** (`fullName`, `birthday`, `startDate`, `roleId`): rotes ○-Badge + Inline-Hinweis solange leer; blockieren **nicht** das Tippen, aber zeigen Akte-Status „unvollständig".
 - **Engine-relevante Lücken** (kein `roleClasses`, kein `sdlScopes`): **kein** Save-Blocker, aber sichtbarer neutraler Hinweis „Keine Norm-Klasse erfasst → Pflicht-Set unvollständig" (entspricht heutiger Engine-Ausgabe).
-- **Ampel:** Die Maske zeigt **pro Sektion** den aggregierten `WorkingItemStatus` aus `employee-file-requirements.ts` (`vorhanden`/`fehlt`/`offen`/`fachlich prüfen` …) als kleine Status-Pille — **rein Anzeige**, keine Auto-Freigabe (EC-10, B6.5: nur Grau live, R/G/G nur wo Engine belegt).
+- **Ampel:** je Kapitel ein aggregierter `WorkingItemStatus` aus `employee-file-requirements.ts` (`vorhanden`/`fehlt`/`offen`/`fachlich prüfen` …) als Status-Chip am Reiter — **rein Anzeige**, keine Auto-Freigabe (EC-10, B6.5: nur Grau live, R/G/G nur wo Engine belegt).
 
-### 3.4 Edit-Affordanz konsistent zum Bestehenden
-- Ansehen-Modus: read-only Wert + Herkunfts-Badge, rechts kleiner **Stift** je Sektion → öffnet **nur diese Sektion** zum Editieren (Inline-Controls wie heute: `Input`, `Select`, `MultiSelect`, `DatePicker`, `RoleClassSelector`).
-- Bearbeiten-Modus je Sektion: „Speichern" / „Abbrechen". Speichern ruft denselben `onSave(employee)`-Pfad + `applyEmployeePatchWithDocSync` wie heute (Doc-Sync für `roleId`/`appointmentIds` bleibt erhalten).
-- Optional global „Alles bearbeiten" (heutiges Verhalten) als Sekundär-Button — Rückwärtskompatibilität.
+### 3.7 Edit-Technik (Speichern-Pfad, unverändert)
+- Bearbeiten je Kapitel → „Speichern"/„Abbrechen". Speichern ruft denselben `onSave(employee)`-Pfad + `applyEmployeePatchWithDocSync` wie heute (Doc-Sync für `roleId`/`appointmentIds` bleibt erhalten, EC-09).
+- Kein Auto-Speichern beim Tippen (S1b-Lehre): Eingaben werden gepuffert, erst „Speichern" persistiert.
+- Controls bleiben die bestehenden: `Input`, `Select`, `MultiSelect`, `DatePicker`, `RoleClassSelector`.
 
-### 3.5 Mobile/Desktop
-- **Desktop:** zweispaltig je Zeile (Label + Hint | Control), Status-Badge in eigener schmaler Spalte — wie heute `rowShell` (`sm:flex-row`).
-- **Mobile:** gestapelt (Label oben, Control darunter, Badge inline) — `flex-col` Fallback ist schon im Code vorhanden.
+### 3.8 Mobile/Desktop
+- **Desktop:** Kapitel-Reiter horizontal; im Kapitel zweispaltige Card-Zeilen (Label + Hint | Control), Status-Chip eigene Spalte.
+- **Mobile:** Kapitel-Reiter als scrollbare Segmented/Dropdown; im Kapitel gestapelt (Label oben, Control darunter, Badge inline) — `flex-col`-Fallback ist im Code vorhanden.
 
----
-
-## 3.6 Drei Layout-Varianten (Mark entscheidet)
-
-### Variante 1 — „Sektions-Akkordeon" (progressive disclosure)
-Sechs zusammenklappbare Sektionen A–F, je mit Sektion-Status-Pille + Stift. Eine Sektion zur Zeit editierbar.
-
-```
-┌ AKTE: Max Mustermann ──────────────── Status: unvollständig ┐
-│ ▸ A Stammdaten            ● 6/7    [✎]                       │
-│ ▾ B Beschäftigung         ○ Lücke  [✎ aktiv]                 │
-│     Vertragsbeginn  ◆ 01.03.2024  (aus Tally)               │
-│     Beschäftigungsart ○ [Vollzeit ▼]   ← Pflicht-Engine     │
-│     Austrittsdatum  ◇ —                                     │
-│     [Speichern] [Abbrechen]                                  │
-│ ▸ C Rolle & Norm-Klasse   ▲ prüfen [✎]                      │
-│ ▸ D Geltungsbereich (SDL) ◇ leer   [✎]                      │
-│ ▸ E Bestellungen          ● 1      [✎]                       │
-│ ▸ F Qualifikationen/Frist ○ Lücke  [✎]                      │
-└─────────────────────────────────────────────────────────────┘
-```
-**Pro:** wenig Scroll, klare Fokussierung, skaliert mit künftigen Feldern. **Contra:** Überblick „was fehlt insgesamt" erst nach Aufklappen (gemildert durch Status-Pillen in den Kopfzeilen).
-
-### Variante 2 — „Vertikale Liste, sektionsweise editierbar" (nah am Ist)
-Alle Sektionen offen untereinander (wie heute `rowShell`-Liste), aber gruppiert mit Zwischenüberschriften + je Sektion ein Stift. Kein Akkordeon.
-
-```
-┌ AKTE: Max Mustermann ──────────────── Status: unvollständig ┐
-│ A · STAMMDATEN                                   [✎]         │
-│   Vorname     ● Max                                          │
-│   Geburtsdatum● 12.05.1990                                  │
-│   Geschlecht  ◇ —      (weiblich → Mutterschutz-Hinweis)   │
-│ B · BESCHÄFTIGUNG                                 [✎]         │
-│   Vertragsbeginn ◆ 01.03.2024 (Tally)                       │
-│   Beschäftigungsart ○ —   ← Pflicht-Engine                  │
-│ C · ROLLE & NORM-KLASSE                           [✎]        │
-│   Norm-Klasse ● EK + FK                                      │
-│   Org-Titel   ◆ SMA (Tally)                                 │
-│ … D SDL · E Bestellungen · F Qualifikationen/Fristen …      │
-└─────────────────────────────────────────────────────────────┘
-```
-**Pro:** voller Überblick auf einen Blick, minimaler Umbau (näher an `EmployeeFilePersonRolleEditTable`). **Contra:** lange Seite, viel Scroll; auf Mobile zäh.
-
-### Variante 3 — „Geführter Lebenszyklus-Stepper" (Anlege-zentriert)
-Horizontaler Stepper A→F oben, eine Sektion füllt den Hauptbereich; „Weiter/Zurück". Beim **Anlegen** geführt, beim **Bearbeiten** direkt zur Sektion springbar.
-
-```
-┌ Neue SMA anlegen ──────────────────────────────────────────┐
-│ [A Stamm]→[B Besch.]→[C Rolle]→[D SDL]→[E Best.]→[F Qual.]  │
-│ ─────────────────────  C Rolle & Norm-Klasse  ───────────── │
-│   Norm-Klasse  [ EK ✓ ] [ FK ✓ ] [ Verw. ] [ Prakt. ] …    │
-│   Org-Titel    [ SMA ▼ ]                                    │
-│   Set-Kategorie[ Sicherheitsmitarbeiter ▼ ]                 │
-│   Dok-Vorlage  [ DIN 77200-1 allgemein ▼ ]  ← Pflicht       │
-│                              [Zurück]  [Weiter →]           │
-└─────────────────────────────────────────────────────────────┘
-```
-**Pro:** ideal fürs **manuelle Anlegen** (führt durch alle Engine-Inputs, nichts vergessen). **Contra:** für schnelles Nachtragen einer Lücke umständlich; passt schlechter zum „Akte ist eine durchscrollbare Sicht"-Bild des Zieldesigns.
-
-### → Empfehlung: **Variante 1 (Sektions-Akkordeon)**
-Begründung: (a) Sie behält das etablierte Stift-/„Ansehen↔Bearbeiten"-Muster, verfeinert es aber sinnvoll auf Sektions-Ebene. (b) Status-Pillen in den Sektion-Kopfzeilen geben den geforderten „was fehlt"-Überblick **ohne** die ganze Seite scrollen zu müssen — passt zum Lebenszyklus-Statusband (②). (c) Skaliert mit den vielen Feldern (28+) und künftigen Erweiterungen, ohne die Akte zu einer endlosen Liste zu machen. (d) Mobile-tauglich (eine Sektion offen). Für den **Anlege-Fall** (DM/DA1) wird das Akkordeon initial mit der ersten unvollständigen Sektion aufgeklappt geöffnet — so bekommt man 80 % des Stepper-Vorteils ohne dessen Nachteil beim Nachtragen.
+### 3.9 Alternativen kurz erwogen (verworfen zugunsten des Mode-Splits)
+- **Akkordeon (alle Kapitel auf einer Seite, aufklappbar):** ok, aber liest sich weniger wie ein Audit-Ordner mit Kapiteln; verworfen zugunsten horizontaler Kapitel-Reiter.
+- **Reine flache Liste (heutiges S1a):** voller Überblick, aber lange Seite/viel Scroll, mobil zäh.
+- **Reiner Stepper für alles:** gut fürs Anlegen, umständlich fürs schnelle Nachtragen → daher Stepper-Idee **nur** im Eingabe-Modus (3.3), nicht in der Ansicht.
+> Der gewählte **Mode-Split** (Ansicht = horizontale Kapitel · Eingabe = vertikal geführt, 3.1–3.4) nimmt von jeder Alternative das Beste.
 
 ---
 
@@ -183,9 +181,9 @@ Begründung: (a) Sie behält das etablierte Stift-/„Ansehen↔Bearbeiten"-Must
 
 | Fluss | Einstieg | Verhalten der Maske |
 |-------|----------|---------------------|
-| **Anlegen (manuell)** | Index „Neue Person" → leere Akte | Akkordeon öffnet erste unvollständige Sektion (A). Alle Felder leer mit ◇/○-Badges. Pflicht-Lücken rot. Speichern legt Akte an (`onSave` → Repository). Empfehlung DA1: **leere Akte inline**, killt das 68-KB-`EmployeeForm`. |
-| **Bearbeiten (bestehend)** | Index/Klick → Akte im Ansehen-Modus | Read-only + Herkunfts-Badges. Stift je Sektion → inline editieren → Speichern (`applyEmployeePatchWithDocSync`). Doc-Sync für `roleId`/`appointmentIds` bleibt. |
-| **Import (Tally `vGNvY0`)** | Webhook → `tally-intake-service` legt Akte + `EvidenceItem`s (`unchecked`) an | Maske zeigt importierte Felder mit blauem ◆-Badge + Tooltip „aus Tally, ungeprüft". **Lücken** (was Tally nicht liefert: `roleClasses`, `sdlScopes`, `drivesServiceVehicle`, `gender`, Fristdaten, `qualifications`-Struktur) tragen ○/◇-Badges → klar als „manuell nachtragen" markiert. Engine läuft sofort auf dem Teil-Stand. |
+| **Anlegen (manuell)** | Index „Neue Person" → **vertikaler geführter Fluss** (3.3) | Felder leer mit ◇/○-Badges, Pflicht-Lücken rot, vertikaler Fortschritt durch die Kapitel. „Person speichern" legt Akte an (`onSave` → Repository, S1b schon gebaut) → danach **Ansicht** (Kapitel Übersicht). DA1: leere Akte inline, `EmployeeForm` abschmelzen. |
+| **Bearbeiten (bestehend)** | Index/Klick → Akte in der **Ansicht** (horizontale Kapitel) | Read-only Cards + Herkunfts-Badges. Stift am Kapitel → vertikale Edit-Form dieses Kapitels → Speichern (`applyEmployeePatchWithDocSync`). Doc-Sync bleibt. |
+| **Import (Tally `vGNvY0`)** | Webhook → `tally-intake-service` legt Akte + `EvidenceItem`s (`unchecked`) an | Ansicht zeigt importierte Felder mit ◆-Badge „aus Tally, ungeprüft". **Lücken** (was Tally nicht liefert: `roleClasses`, `sdlScopes`, `drivesServiceVehicle`, `gender`, Fristdaten, `qualifications`-Struktur) tragen ○/◇-Badges; Hinweis „X Pflicht-Lücken nachtragen" → vertikaler Fluss nur über die offenen Kapitel. Engine läuft sofort auf dem Teil-Stand. |
 
 **Tally-Lücken-Hinweis (konkret, aus `TALLY_FIELD_MAPPING.md`):** Tally liefert `fullName`, `birthday`, `roleType` (Org-Titel), `employmentType`, `qualification` (Freitext), `guardIDNumber`, `employeeIDNumber` + Datei-Nachweise. **Nicht** geliefert und damit immer Nachtrag-Lücke: `roleClasses` (Norm-Klasse — wird höchstens aus `roleType` *vorgeschlagen*), `sdlScopes`, `drivesServiceVehicle`, `gender`, `setKategorie`, strukturierte `qualifications[]`, `ersteHilfeGueltigBis`/`brandschutzGueltigBis`, `bestelltAls`. Diese Lücken **prominent** zu machen ist eine Hauptaufgabe der Maske.
 
@@ -211,8 +209,8 @@ Begründung: (a) Sie behält das etablierte Stift-/„Ansehen↔Bearbeiten"-Must
 - Hints mit CL-Bezug stehen schon dran (CL-08, CL-23, CL-73).
 
 **Was fehlt / Soll-Neuerung:**
-- **Keine Herkunfts-Unterscheidung** (Tally vs. manuell vs. fehlend) — heute sieht alles gleich aus. → ◆/●/○/◇/▲-Badge-System (§3.2).
-- **Keine Sektions-Gruppierung** — heute eine flache 22-Zeilen-Liste. → 6 Sektionen A–F (§2), Akkordeon (Variante 1).
+- **Keine Herkunfts-Unterscheidung** (Tally vs. manuell vs. fehlend) — heute sieht alles gleich aus. → ◆/●/○/◇/▲-Badge-System (§3.5).
+- **Keine Kapitel-Gruppierung** — heute eine flache 22-Zeilen-Liste. → 6 Kapitel A–F (§2) + horizontale Kapitel-Ansicht (§3.2).
 - **`gender` (CL-77) fehlt in der Inline-Maske** (im Schema vorhanden, im Edit-Table nicht gerendert) → Sektion A aufnehmen, Mutterschutz-Hinweis-Overlay nur bei `weiblich`.
 - **`qualifications[]` (strukturiert) fehlt** — heute nur Freitext `qualification`. → strukturiertes Multiselect (Sektion F), Freitext als Legacy-Fallback.
 - **`setKategorie` nicht editierbar in der Maske** (nur im Generator) → optional in Sektion C anzeigen.
@@ -225,12 +223,13 @@ Begründung: (a) Sie behält das etablierte Stift-/„Ansehen↔Bearbeiten"-Must
 
 ## 7. Offene Design-Entscheidungen für Mark
 
-- **DM1 — Layout-Variante:** Empfehlung **Variante 1 (Sektions-Akkordeon)**. Alternativ V2 (flache Liste, minimaler Umbau) oder V3 (Stepper, anlege-stark). → Welche?
-- **DM2 — Herkunfts-Badge:** ◆/●/○/◇/▲-System (§3.2) einführen? Empfehlung **ja** — das ist der größte UX-Gewinn (Tally-Lücken sichtbar). Alternative: nur 2-stufig (importiert/manuell). → ok?
-- **DM3 — Sektionsweiser Edit vs. global:** Empfehlung **Stift je Sektion** + optional „Alles bearbeiten". Alternative: heutiges globales Toggle behalten. → ok?
+- **DM1 — Layout:** ✅ **ENTSCHIEDEN (Mark, 2026-06-14): Mode-Split** — Ansicht = horizontale Kapitel-Reiter (Dossier-Cockpit), Eingabe/Anlegen = vertikaler geführter Fluss (§3.1–3.4). Visual-Direction angewandt.
+- **DM2 — Herkunfts-Badge:** ◆/●/○/◇/▲-System (§3.5) einführen? Empfehlung **ja** — größter UX-Gewinn (Tally-Lücken sichtbar). ◆ neutral (nicht Brand-Vermillion). → ok?
+- **DM3 — Edit je Kapitel vs. global:** Empfehlung **Stift je Kapitel** (öffnet vertikale Edit-Form des Kapitels). Alternative: heutiges globales Toggle behalten. → ok?
 - **DM4 — `gender` (CL-77) aufnehmen:** Empfehlung **ja**, Sektion A, nur `weiblich` triggert Mutterschutz-Hinweis-Overlay („fachlich prüfen", EC-10, kein Engine-Eingriff). → ok?
 - **DM5 — strukturierte `qualifications[]` in der Maske:** Empfehlung **ja** (besserer Engine-Input als Freitext), Freitext bleibt Round-trip-/Legacy-Träger. → ok?
 - **DM6 — Austrittsdatum als echtes Feld:** Heute disabled-Platzhalter, kein Modell-Feld (additive nullable Spalte nötig). Empfehlung **als echtes optionales Feld** (Lebenszyklus „inaktiv"). → jetzt oder später?
+- **DM6b — Erstunterweisungs-Datum (CL-75) als echtes Feld:** existiert **nicht** im Modell (Planer-Korrektur). Additive nullable Spalte nötig, Default = `startDate`. Empfehlung **später** zusammen mit DM6. → ok?
 - **DM7 — Tally-Wert vs. manueller Wert bei Konflikt:** Wenn ein Mensch einen importierten Wert überschreibt — Badge auf ● (manuell) kippen und Tally-Original im Tooltip behalten? Empfehlung **ja** (Audit-Spur). → ok?
 - **DM8 — `setKategorie` editierbar in der Maske (Sektion C) oder nur im Generator?** Empfehlung **read-only-Anzeige in C mit Sprung zum Generator** (vermeidet Doppel-Editier-Stellen). → ok?
 - **DM9 — Anlege-Fluss:** Empfehlung **leere Akte inline (DA1)** → `EmployeeForm` abschmelzen. Alternative: separates Anlege-Formular behalten. → ok?
@@ -241,16 +240,19 @@ Begründung: (a) Sie behält das etablierte Stift-/„Ansehen↔Bearbeiten"-Must
 
 > Reihenfolge so, dass sichtbarer Nutzen früh kommt; jeder Slice: `tsc --noEmit` 0 · Test-Suite grün · `next build` grün · **EC-09-ZIP-Smoke** · Mark-Abnahme. **Kein** Slice ohne Mark-Freigabe.
 
+> Baut auf dem schon Gebauten auf: S1a (EINE Akte-Ansicht + Stift) und S1b (Inline-Anlegen, „Person speichern", keine Geister-Akten) sind live (`20e6bf9`).
+
 | Slice | Inhalt | Risiko | EC-09 |
 |-------|--------|--------|-------|
-| **M0** | **Dieses Konzept abnehmen** + DM1–DM9 entscheiden (Mark-Gate) | — | — |
-| **M1** | **Sektions-Gruppierung** der bestehenden `EmployeeFilePersonRolleEditTable` in A–F (reine Reorganisation der `rowShell`-Zeilen, keine neuen Felder, kein Datenmodell). | gering | unberührt, Smoke |
-| **M2** | **Herkunfts-Badge-System** (◆/●/○/◇/▲) — braucht Quellen-Info aus dem Intake (Flag „aus Tally" je Feld) + Rendering. Reine Anzeige. | gering–mittel | unberührt |
-| **M3** | **Sektionsweiser Edit** (Stift je Sektion statt globalem Toggle); `onSave`/Doc-Sync-Pfad unverändert. | mittel | Smoke (Doc-Sync) |
-| **M4** | **Fehlende Felder aufnehmen:** `gender` (DM4, Overlay-Trigger), strukturierte `qualifications[]` (DM5), `weiterbildungIstUE`/`einmaligIstUE`/`erstunterweisungDatum`, `setKategorie`-Anzeige (DM8). Additive Felder, alle schon im Modell außer Austritt. | mittel | unberührt |
-| **M5** | (falls DM6 ja) **Austrittsdatum** als echte nullable Spalte + Feld. Schema-Migration nach Lane-J-Muster. | mittel | unberührt |
-| **M6** | (falls DM9 ja) **Anlege-Fluss = leere Akte inline**; `EmployeeForm` (68 KB) final abschmelzen. | mittel | Smoke (Generator-Pfad bleibt) |
+| **M0** | **Dieses Konzept abnehmen** (DM1 entschieden) + DM2–DM9 (Mark-Gate) | — | — |
+| **M1** | **Kapitel-Gruppierung:** die heutige flache `EmployeeFilePersonRolleEditTable` in die 6 Kapitel A–F gliedern (reine Reorganisation der `rowShell`-Zeilen, keine neuen Felder, kein Datenmodell). | gering | unberührt, Smoke |
+| **M2** | **Ansicht = horizontale Kapitel-Reiter** (Dossier-Cockpit) statt langem Vertikal-Scroll; aktiver Reiter Vermillion, Status-Chip je Reiter. Kapitel „Übersicht" als Cockpit. Reine IA/Anzeige. | mittel | unberührt |
+| **M3** | **Herkunfts-Badge-System** (◆/●/○/◇/▲) — Quellen-Flag „aus Tally" je Feld aus dem Intake + Rendering. Reine Anzeige (EC-10). | gering–mittel | unberührt |
+| **M4** | **Edit je Kapitel** (Stift am Kapitel → vertikale Edit-Form) + **vertikaler geführter Anlege-Fluss** (S1b-Basis ausbauen: Fortschritt durch Kapitel). `onSave`/Doc-Sync unverändert. | mittel | Smoke (Doc-Sync) |
+| **M5** | **Fehlende Felder:** `gender` (DM4, Overlay-Trigger), strukturierte `qualifications[]` (DM5), `weiterbildungIstUE`/`einmaligIstUE`, `setKategorie`-Anzeige (DM8). Additive Felder, alle schon im Modell. | mittel | unberührt |
+| **M6** | (falls DM6 ja) **Austrittsdatum** + (DM6b) **Erstunterweisungs-Datum** als echte nullable Spalten + Felder. Schema-Migration nach Lane-J-Muster (additiv, `db push`). | mittel | unberührt |
+| **M7** | (falls DM9 ja) `EmployeeForm` (68 KB) final abschmelzen, sobald M1–M4 die Maske vollständig tragen. | mittel | Smoke (Generator-Pfad bleibt) |
 
 ---
 
-> **→ Mark:** Konzept so ok? DM1–DM9 entscheiden → dann baue ich (Spur E) M1 als ersten gegateten Slice (reine Sektions-Reorganisation, kein EC-09-Risiko, Engine + Modell unberührt).
+> **→ Mark:** Konzept so ok (DM1 = Mode-Split steht)? DM2–DM9 entscheiden → dann baue ich (Spur E) **M1** als ersten gegateten Slice (Kapitel-Gruppierung, kein EC-09-Risiko, Engine + Modell unberührt).
