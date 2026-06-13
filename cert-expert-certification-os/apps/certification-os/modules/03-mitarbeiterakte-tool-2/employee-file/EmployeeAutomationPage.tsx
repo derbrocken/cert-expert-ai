@@ -193,6 +193,9 @@ function EmployeeAutomationPageContent() {
   // Akte schaltet akte-weit auf Bearbeiten. Kein separater Bearbeiten/Übersicht-
   // Umschalter mehr.
   const [evidenceEditMode, setEvidenceEditMode] = useState(false);
+  // S1b — zuletzt geladene Akte-id (Evidence-Load): unterscheidet echtes Öffnen
+  // einer anderen Akte vom Entwurf→echte-Akte-Übergang (gleiche id).
+  const lastLoadedFocusIdRef = useRef<string | null>(null);
   const [evidenceFiles, setEvidenceFiles] = useState<EmployeeEvidenceMap>({});
   const [batchSelectedIds, setBatchSelectedIds] = useState<Set<string>>(
     () => new Set(),
@@ -494,13 +497,16 @@ function EmployeeAutomationPageContent() {
     if (!focusEmployeeId || !queueHydrated) {
       return;
     }
+    // Nur beim echten Öffnen einer ANDEREN Akte auf Ansehen zurück. Nicht beim
+    // Anlegen (Entwurf) und nicht beim Übergang Entwurf→echte Akte (gleiche id) —
+    // sonst würde der Bearbeiten-Modus beim Speichern „zuklappen".
+    const changedFocus = lastLoadedFocusIdRef.current !== focusEmployeeId;
+    lastLoadedFocusIdRef.current = focusEmployeeId;
     let cancelled = false;
     void loadEmployeeEvidence(companySlug, focusEmployeeId).then((map) => {
       if (!cancelled) {
         setEvidenceFiles(map);
-        // S1b — Entwurf (Neu-Anlegen) bleibt im Bearbeiten-Modus; sonst beim
-        // Öffnen einer bestehenden Akte auf Ansehen zurück.
-        if (!isCreatingNew) setEvidenceEditMode(false);
+        if (changedFocus && !isCreatingNew) setEvidenceEditMode(false);
       }
     });
     return () => {
@@ -542,27 +548,40 @@ function EmployeeAutomationPageContent() {
 
   const handleSavePerson = useCallback(
     (employee: Employee) => {
+      // S1b — Entwurf (noch nicht gespeichert): nur den Puffer (editingEmployee)
+      // aktualisieren, NICHT persistieren/indexieren und NICHT aus dem
+      // Bearbeiten-Modus werfen. Persistenz erst über „Person speichern"
+      // (handleCommitDraft). Kein Auto-Speichern beim Tippen.
+      if (isCreatingNew) {
+        setEditingEmployee(employee);
+        return;
+      }
       setEmployees((prev) =>
-        prev.some((e) => e.id === employee.id)
-          ? prev.map((e) => (e.id === employee.id ? employee : e))
-          : // S1b — Entwurf erst in den Index aufnehmen, wenn ein Name gesetzt
-            // ist (keine leeren Geister-Akten).
-            employee.fullName.trim()
-            ? [...prev, employee]
-            : prev,
+        prev.map((e) => (e.id === employee.id ? employee : e)),
       );
       setEditingEmployee(employee);
-      // S1b — beim ersten benannten Speichern wird der Entwurf zur echten Akte.
-      if (isCreatingNew && employee.fullName.trim()) {
-        setIsCreatingNew(false);
-        setBatchSelectedIds((prev) => new Set(prev).add(employee.id));
-        router.replace(`/employee-automation?id=${employee.id}`, {
-          scroll: false,
-        });
-      }
     },
-    [isCreatingNew, router],
+    [isCreatingNew],
   );
+
+  // S1b — Entwurf explizit speichern: jetzt in den Index aufnehmen + persistieren
+  // (Name Pflicht). Bleibt danach im Bearbeiten-Modus, damit man direkt
+  // weiter ergänzen kann (Bestellungen/Nachweise).
+  const handleCommitDraft = useCallback(() => {
+    const draft = editingEmployee;
+    if (!draft || !draft.fullName.trim()) return;
+    setEmployees((prev) =>
+      prev.some((e) => e.id === draft.id) ? prev : [...prev, draft],
+    );
+    setBatchSelectedIds((prev) => new Set(prev).add(draft.id));
+    setIsCreatingNew(false);
+    setEvidenceEditMode(true);
+    router.replace(`/employee-automation?id=${draft.id}`, { scroll: false });
+    setToast({
+      message: "Person gespeichert — du kannst weiter ergänzen.",
+      type: "success",
+    });
+  }, [editingEmployee, router]);
 
   const handleEvidenceUpload = useCallback(
     async (evidenceId: string, file: File) => {
@@ -973,13 +992,39 @@ function EmployeeAutomationPageContent() {
             (mit Namen) gespeichert ist. */}
         {isCreatingNew ? (
           <div className="rounded-lg border border-[rgba(227,6,19,0.25)] bg-[rgba(227,6,19,0.04)] px-4 py-3">
-            <p className="text-[0.65rem] font-semibold uppercase tracking-[0.14em] text-[#e30613]">
-              Neue Person anlegen
-            </p>
-            <p className="mt-1 text-sm text-[#6b7280]">
-              Name & Grundrolle ausfüllen — die Akte erscheint im Index, sobald
-              ein Name gespeichert ist. Danach Nachweise/Bestellungen ergänzen.
-            </p>
+            <div className="flex flex-wrap items-start justify-between gap-3">
+              <div className="min-w-0">
+                <p className="text-[0.65rem] font-semibold uppercase tracking-[0.14em] text-[#e30613]">
+                  Neue Person anlegen
+                </p>
+                <p className="mt-1 text-sm text-[#6b7280]">
+                  Name & Grundrolle ausfüllen, dann „Person speichern". Bis dahin
+                  wird nichts gespeichert.
+                </p>
+              </div>
+              <div className="flex shrink-0 items-center gap-2">
+                <button
+                  type="button"
+                  onClick={handleBackToOverview}
+                  className="rounded-lg border border-[#e5e7eb] px-3 py-2 text-xs font-semibold text-[#6b7280] hover:border-[rgba(227,6,19,0.35)] hover:text-[#e30613]"
+                >
+                  Verwerfen
+                </button>
+                <button
+                  type="button"
+                  onClick={handleCommitDraft}
+                  disabled={!focusEmployee.fullName.trim()}
+                  className="inline-flex items-center gap-1.5 rounded-lg border border-[#e30613] bg-[#e30613] px-3 py-2 text-xs font-semibold text-white hover:bg-[#b80510] disabled:cursor-not-allowed disabled:opacity-50"
+                  title={
+                    focusEmployee.fullName.trim()
+                      ? "Person speichern"
+                      : "Bitte zuerst einen Namen eintragen"
+                  }
+                >
+                  Person speichern
+                </button>
+              </div>
+            </div>
           </div>
         ) : null}
         {/* S1a — EINE Akte-Ansicht: kein „Bearbeiten/Übersicht"-Umschalter mehr.
@@ -993,7 +1038,9 @@ function EmployeeAutomationPageContent() {
             appointments={appointments}
             companyName={globalProps.companyName}
             evidenceEditMode={evidenceEditMode}
-            onToggleEvidenceEdit={() => setEvidenceEditMode((v) => !v)}
+            onToggleEvidenceEdit={
+              isCreatingNew ? undefined : () => setEvidenceEditMode((v) => !v)
+            }
             evidenceFiles={focusEmployeeId ? evidenceFiles : {}}
             onEvidenceUpload={handleEvidenceUpload}
             onEvidenceRemove={handleEvidenceRemove}
