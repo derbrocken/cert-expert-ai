@@ -3,9 +3,11 @@
 > Ziel: **stabile HTTPS-URL** für Tally-Webhooks statt wechselndem cloudflared-Tunnel.  
 > App: `cert-expert-certification-os/apps/certification-os/` · Port **3001** (intern)
 
-## ✅ LIVE-STAND (Redeploy 2026-06-12 #4, P2-A end-to-end verifiziert)
+## ✅ LIVE-STAND (Redeploy 2026-06-13, P2-B Firmen-Dokumenten-Lager)
 
-**App live: https://cos.cert-expert.de** (HTTPS, HTTP→HTTPS-Redirect). Deployter Commit **`5af2720`** (zuvor `0ae0a20`, `7cb3915`, `23bd82c`, `dde4f7a`, `0ad7936`, `e84e599`, `d5c9086`, `2242502`, `fe17ad5`, `03429b2`, `5280d9c`, `404d55d`).
+**App live: https://cos.cert-expert.de** (HTTPS, HTTP→HTTPS-Redirect). Deployter Commit **`15cac89`** (zuvor `5af2720`, `0ae0a20`, `7cb3915`, `23bd82c`, `dde4f7a`, `0ad7936`, `e84e599`, `d5c9086`, `2242502`, `fe17ad5`, `03429b2`, `5280d9c`, `404d55d`).
+
+> **Redeploy 2026-06-13 (Framework P2-B): `5af2720` → `15cac89`.** Firmen-Dokumenten-Lager (Company-Tally `Y5Zq80` FILE_UPLOADs + manueller Upload). **Neue additive Tabelle `CompanyDocumentItem`** → **DB-Backup `/var/backups/certification-os/pre-deploy-2026-06-13-180038.db` + `db push` additiv** („in sync", kein Datenverlust: 6 Mitarbeiter + 6 CompanyExportSettings unverändert, CompanyDocumentItem=0/frisch). `npm ci` + `next build` grün, Restart aktiv, Endpunkte 200 (`/`, `/uploads`, `/employee-automation`, `/model-creator`), Webhook 405 (POST-only). Tabelle verifiziert vorhanden. Suite 198/198. **Abnahme offen (Mark):** echte `Y5Zq80`-Submission mit Firmen-Dokumenten → Lager + Anzeige im Upload-Manager-Abschnitt „Firmen-Dokumente"; manueller Upload/geprüft-Toggle live klicken. Plan: `FRAMEWORK_P2_COMPANY_TALLY.md` §3.
 
 > **P2-A LIVE + VERIFIZIERT (2026-06-12):** Company-Tally `Y5Zq80` → zentrales Firmen-Profil. **Tally-Webhook `3EQpao` per API angelegt** (`Y5Zq80` → `…/api/webhooks/tally`, eventTypes `FORM_RESPONSE`, signingSecret = `cea-tally-webhook-test-secret-2026` wie Mitarbeiter-Webhook `wMzjM0`). Echte Submission verifiziert: `Wolf Street GmbH` + Logo → DB `CompanyExportSettings.logoStorageKey = cea/companies/Wolf_Street/logo.jpg`, `logo: true`. **Logo-Erkennung robust** (Mark lud das Logo ins unbeschriftete Feld `lN267B`, nicht ins gelabelte `J2MA7d` → Fallback „logo" in Label/Dateiname fängt es). **Race-Fix**: `tallyIntakeRecord` create→upsert (Tally stellt FORM_RESPONSE doppelt zu). **Tally-API-Key wieder gültig** (`GET /forms/{id}/questions` + `/webhooks` ok; `/responses` = 401, anderer Scope). **Offen P2-B:** Firmen-Dokumente (FILE_UPLOADs) → company-level Dok-Lager (eigene Phase). **Form-Hinweis (Mark):** `Y5Zq80` ist ein Entwurf mit vielen unbeschrifteten Datei-Feldern — UX-Aufräumen sinnvoll.
 
