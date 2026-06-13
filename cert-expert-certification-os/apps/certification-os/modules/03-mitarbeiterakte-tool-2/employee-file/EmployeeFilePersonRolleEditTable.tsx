@@ -132,304 +132,342 @@ export const EmployeeFilePersonRolleEditTable: React.FC<
     </li>
   );
 
+  // M1 — Felder in die 6 Kapitel gruppiert (Stammdaten → Beschäftigung → Rolle &
+  // Norm → Geltungsbereich → Bestellungen → Qualifikationen/Fristen). Reine
+  // Reorganisation: alle rowShell-Zeilen + Logik (patch/onSave/Doc-Sync)
+  // unverändert, nur visuell in Kapitel-Cards mit Überschrift gegliedert.
+  const chapter = (title: string, children: React.ReactNode) => (
+    <section className="space-y-2">
+      <h4 className="text-[10px] font-semibold uppercase tracking-wide text-[#6b7280]">
+        {title}
+      </h4>
+      <ul className="divide-y divide-[#e5e7eb] rounded-lg border border-[#e5e7eb]">
+        {children}
+      </ul>
+    </section>
+  );
+
   return (
-    <ul className="divide-y divide-[#e5e7eb] rounded-lg border border-[#e5e7eb]">
-      {rowShell(
-        "norm-klasse",
-        ROLE_CLASS_LABEL_MULTI,
-        <RoleClassSelector
-          value={currentRoleClasses}
-          onChange={(roleClasses) => patch({ roleClasses })}
-          compact
-        />,
-        "DIN 77200: EK + FK frei kombinierbar; Verwaltung/Praktikant/Sub mit EK/FK kombinierbar (Doppelrolle) — maßgeblich fürs Pflicht-Set.",
-        currentRoleClasses.length > 0 ? "vorhanden" : "offen",
+    <div className="space-y-5">
+      {chapter(
+        "Stammdaten",
+        <>
+          {rowShell(
+            "vorname",
+            "Vorname",
+            <Input
+              value={vorname}
+              onChange={(e) => handleNameChange("vorname", e.target.value)}
+              placeholder="Vorname"
+              className="py-2 text-sm"
+            />,
+          )}
+          {rowShell(
+            "nachname",
+            "Nachname",
+            <Input
+              value={nachname}
+              onChange={(e) => handleNameChange("nachname", e.target.value)}
+              placeholder="Nachname"
+              className="py-2 text-sm"
+            />,
+          )}
+          {rowShell(
+            "geburtsdatum",
+            "Geburtsdatum",
+            <DatePicker
+              value={employee.birthday}
+              onChange={(birthday) => patch({ birthday })}
+              placeholder="TT.MM.JJJJ"
+              className="text-sm"
+            />,
+          )}
+          {rowShell(
+            "bewacher-id",
+            "Bewacher-ID",
+            <Input
+              value={employee.guardIDNumber || ""}
+              onChange={(e) => handleGuardIdChange(e.target.value)}
+              placeholder="Bewacher-ID"
+              className="py-2 text-sm"
+            />,
+            "Stammdaten — getrennt vom Bundesauszug",
+          )}
+          {rowShell(
+            "dienst-id",
+            "Dienstausweisnummer",
+            <div className="space-y-2">
+              <Input
+                value={employee.employeeIDNumber || ""}
+                onChange={(e) => patch({ employeeIDNumber: e.target.value })}
+                placeholder="Dienstausweisnummer"
+                disabled={employee.useGuardAsEmployeeId}
+                className="py-2 text-sm"
+              />
+              <label className="flex items-center gap-2 text-xs text-[#374151]">
+                <button
+                  type="button"
+                  role="checkbox"
+                  aria-checked={employee.useGuardAsEmployeeId}
+                  onClick={() => {
+                    const useGuard = !employee.useGuardAsEmployeeId;
+                    patch({
+                      useGuardAsEmployeeId: useGuard,
+                      employeeIDNumber: useGuard
+                        ? employee.guardIDNumber || ""
+                        : employee.employeeIDNumber,
+                    });
+                  }}
+                  className={`flex h-4 w-4 shrink-0 items-center justify-center rounded border-2 ${
+                    employee.useGuardAsEmployeeId
+                      ? "border-[#e30613] bg-[#e30613]"
+                      : "border-[#d1d5db] bg-white"
+                  }`}
+                >
+                  {employee.useGuardAsEmployeeId ? (
+                    <Check className="h-2.5 w-2.5 text-white" strokeWidth={3} />
+                  ) : null}
+                </button>
+                Bewacher-ID als Dienstausweisnummer verwenden
+              </label>
+            </div>,
+          )}
+        </>,
       )}
 
-      {rowShell(
-        "org-titel",
-        "Org-Titel (Anzeige)",
-        <div className={COMPACT_SELECT}>
-          <Select
-            options={[...ROLLE_TYPE_OPTIONS]}
-            value={employee.roleType || ""}
-            onChange={(roleType) => {
-              const def = ORG_TITLE_OPTIONS.find(
-                (o) => o.id === roleType,
-              )?.defaultClass;
-              patch({
-                roleType,
-                // Default-Klasse nur setzen, wenn noch keine Norm-Klasse erfasst
-                // ist (Org-Titel überschreibt eine bewusst gewählte Klasse nicht).
-                ...(def && currentRoleClasses.length === 0
-                  ? { roleClasses: [def as RoleClass] }
-                  : {}),
-              });
-            }}
-            placeholder="Org-Titel wählen…"
-          />
-        </div>,
-        "Org-Chart-Titel — keine direkte Engine-Wirkung (G4).",
+      {chapter(
+        "Beschäftigung",
+        <>
+          {rowShell(
+            "vertragsbeginn",
+            "Vertragsbeginn",
+            <DatePicker
+              value={employee.startDate}
+              onChange={(startDate) => patch({ startDate })}
+              placeholder="Vertragsbeginn"
+              className="text-sm"
+            />,
+          )}
+          {rowShell(
+            "austritt",
+            "Austrittsdatum",
+            <Input
+              value=""
+              disabled
+              placeholder="Nur bei Beendigung"
+              className="bg-[#fafbfc] py-2 text-sm"
+            />,
+            "Nur bei Beendigung erfassen",
+          )}
+          {rowShell(
+            "beschaeftigungsart",
+            "Beschäftigungsart",
+            <div className={COMPACT_SELECT}>
+              <Select
+                options={[...BESCHAEFTIGUNGSART_OPTIONS]}
+                value={employee.employmentType || ""}
+                onChange={(employmentType) => patch({ employmentType })}
+                placeholder="Beschäftigungsart wählen…"
+              />
+            </div>,
+          )}
+          {rowShell(
+            "aktiv",
+            "Aktiver Status",
+            <Input
+              value="aktiv"
+              disabled
+              className="bg-[#fafbfc] py-2 text-sm"
+            />,
+            "Working UI",
+          )}
+          {rowShell(
+            "unternehmen",
+            "Unternehmen",
+            <div>
+              <Input
+                value={companyName || "— nicht hinterlegt"}
+                disabled
+                className="bg-[#fafbfc] py-2 text-sm"
+              />
+              <Link
+                href="/uploads"
+                className="mt-1 inline-flex items-center gap-1 text-[10px] text-[#e30613] hover:underline"
+              >
+                <Settings2 className="h-3 w-3" />
+                Firmendaten im Upload Manager
+              </Link>
+            </div>,
+            "Aus Firmendaten",
+          )}
+        </>,
       )}
 
-      {rowShell(
-        "dokumenten-vorlage",
-        "Dokumenten-Vorlage",
-        <div className={COMPACT_SELECT}>
-          <Select
-            options={roleOptions}
-            value={employee.roleId}
-            onChange={(roleId) => patch({ roleId })}
-            placeholder="Vorlagen-Rolle wählen…"
-          />
-        </div>,
-        "Steuert die Generator-Dokumentenpalette",
+      {chapter(
+        "Rolle & Norm-Klasse",
+        <>
+          {rowShell(
+            "norm-klasse",
+            ROLE_CLASS_LABEL_MULTI,
+            <RoleClassSelector
+              value={currentRoleClasses}
+              onChange={(roleClasses) => patch({ roleClasses })}
+              compact
+            />,
+            "DIN 77200: EK + FK frei kombinierbar; Verwaltung/Praktikant/Sub mit EK/FK kombinierbar (Doppelrolle) — maßgeblich fürs Pflicht-Set.",
+            currentRoleClasses.length > 0 ? "vorhanden" : "offen",
+          )}
+          {rowShell(
+            "org-titel",
+            "Org-Titel (Anzeige)",
+            <div className={COMPACT_SELECT}>
+              <Select
+                options={[...ROLLE_TYPE_OPTIONS]}
+                value={employee.roleType || ""}
+                onChange={(roleType) => {
+                  const def = ORG_TITLE_OPTIONS.find(
+                    (o) => o.id === roleType,
+                  )?.defaultClass;
+                  patch({
+                    roleType,
+                    // Default-Klasse nur setzen, wenn noch keine Norm-Klasse
+                    // erfasst ist (Org-Titel überschreibt eine bewusst gewählte
+                    // Klasse nicht).
+                    ...(def && currentRoleClasses.length === 0
+                      ? { roleClasses: [def as RoleClass] }
+                      : {}),
+                  });
+                }}
+                placeholder="Org-Titel wählen…"
+              />
+            </div>,
+            "Org-Chart-Titel — keine direkte Engine-Wirkung (G4).",
+          )}
+          {rowShell(
+            "dokumenten-vorlage",
+            "Dokumenten-Vorlage",
+            <div className={COMPACT_SELECT}>
+              <Select
+                options={roleOptions}
+                value={employee.roleId}
+                onChange={(roleId) => patch({ roleId })}
+                placeholder="Vorlagen-Rolle wählen…"
+              />
+            </div>,
+            "Steuert die Generator-Dokumentenpalette",
+          )}
+        </>,
       )}
 
-      {rowShell(
-        "bestellungen",
+      {chapter(
+        "Geltungsbereich (SDL)",
+        <>
+          {rowShell(
+            "sdl-scopes",
+            "SDL / Geltungsbereich",
+            <div className={COMPACT_SELECT}>
+              <MultiSelect
+                options={sdlOptions}
+                value={employee.sdlScopes ?? []}
+                onChange={(sdlScopes) => patch({ sdlScopes })}
+                placeholder="DIN 77200-1/-2, Veranstaltung, Objekt, Asyl …"
+              />
+            </div>,
+            "Eingang der Pflicht-Engine — Mehrfachauswahl",
+          )}
+          {rowShell(
+            "dienstfahrzeug",
+            "Fährt Dienstfahrzeug?",
+            <div className={COMPACT_SELECT}>
+              <Select
+                options={[...DIENSTFAHRZEUG_OPTIONS]}
+                value={dienstfahrzeugValue}
+                onChange={(v) =>
+                  patch({
+                    drivesServiceVehicle:
+                      v === "ja" ? true : v === "nein" ? false : undefined,
+                  })
+                }
+                placeholder="unbekannt"
+              />
+            </div>,
+            "Ja → Fahrer-/UVV-Unterweisung (fachlich prüfen, CL-73)",
+          )}
+          {rowShell(
+            "projekte",
+            "Projektzuordnung",
+            <Input
+              value=""
+              disabled
+              placeholder="SDL/Projekt — folgt"
+              className="bg-[#fafbfc] py-2 text-sm"
+            />,
+            "SDL/Projekt-Referenz folgt",
+          )}
+        </>,
+      )}
+
+      {chapter(
         "Bestellungen",
-        <div className={COMPACT_SELECT}>
-          <MultiSelect
-            options={bestellungOptions}
-            value={employee.appointmentIds}
-            onChange={(appointmentIds) => patch({ appointmentIds })}
-            placeholder="Ersthelfer, Brandschutzhelfer, SiBe …"
-          />
-        </div>,
-        "Mehrfachauswahl — ergänzt die Grundrolle",
+        <>
+          {rowShell(
+            "bestellungen",
+            "Bestellungen",
+            <div className={COMPACT_SELECT}>
+              <MultiSelect
+                options={bestellungOptions}
+                value={employee.appointmentIds}
+                onChange={(appointmentIds) => patch({ appointmentIds })}
+                placeholder="Ersthelfer, Brandschutzhelfer, SiBe …"
+              />
+            </div>,
+            "Mehrfachauswahl — ergänzt die Grundrolle",
+          )}
+        </>,
       )}
 
-      {rowShell(
-        "vorname",
-        "Vorname",
-        <Input
-          value={vorname}
-          onChange={(e) => handleNameChange("vorname", e.target.value)}
-          placeholder="Vorname"
-          className="py-2 text-sm"
-        />,
+      {chapter(
+        "Qualifikationen & Fristen",
+        <>
+          {rowShell(
+            "qualifikation",
+            "Qualifikation",
+            <Input
+              value={employee.qualification || ""}
+              onChange={(e) => patch({ qualification: e.target.value })}
+              placeholder="z. B. Sachkunde §34a"
+              className="py-2 text-sm"
+            />,
+          )}
+          {rowShell(
+            "erste-hilfe-frist",
+            "Erste Hilfe gültig bis",
+            <DatePicker
+              value={employee.ersteHilfeGueltigBis || ""}
+              onChange={(ersteHilfeGueltigBis) =>
+                patch({ ersteHilfeGueltigBis })
+              }
+              placeholder="Ablaufdatum Erste Hilfe"
+              className="text-sm"
+            />,
+            "2-Jahres-Frist (CL-08)",
+          )}
+          {rowShell(
+            "brandschutz-frist",
+            "Brandschutzhelfer gültig bis",
+            <DatePicker
+              value={employee.brandschutzGueltigBis || ""}
+              onChange={(brandschutzGueltigBis) =>
+                patch({ brandschutzGueltigBis })
+              }
+              placeholder="Ablaufdatum Brandschutzhelfer"
+              className="text-sm"
+            />,
+            "3-Jahres-Frist (CL-23)",
+          )}
+        </>,
       )}
-
-      {rowShell(
-        "nachname",
-        "Nachname",
-        <Input
-          value={nachname}
-          onChange={(e) => handleNameChange("nachname", e.target.value)}
-          placeholder="Nachname"
-          className="py-2 text-sm"
-        />,
-      )}
-
-      {rowShell(
-        "geburtsdatum",
-        "Geburtsdatum",
-        <DatePicker
-          value={employee.birthday}
-          onChange={(birthday) => patch({ birthday })}
-          placeholder="TT.MM.JJJJ"
-          className="text-sm"
-        />,
-      )}
-
-      {rowShell(
-        "vertragsbeginn",
-        "Vertragsbeginn",
-        <DatePicker
-          value={employee.startDate}
-          onChange={(startDate) => patch({ startDate })}
-          placeholder="Vertragsbeginn"
-          className="text-sm"
-        />,
-      )}
-
-      {rowShell(
-        "austritt",
-        "Austrittsdatum",
-        <Input
-          value=""
-          disabled
-          placeholder="Nur bei Beendigung"
-          className="bg-[#fafbfc] py-2 text-sm"
-        />,
-        "Nur bei Beendigung erfassen",
-      )}
-
-      {rowShell(
-        "beschaeftigungsart",
-        "Beschäftigungsart",
-        <div className={COMPACT_SELECT}>
-          <Select
-            options={[...BESCHAEFTIGUNGSART_OPTIONS]}
-            value={employee.employmentType || ""}
-            onChange={(employmentType) => patch({ employmentType })}
-            placeholder="Beschäftigungsart wählen…"
-          />
-        </div>,
-      )}
-
-      {rowShell(
-        "qualifikation",
-        "Qualifikation",
-        <Input
-          value={employee.qualification || ""}
-          onChange={(e) => patch({ qualification: e.target.value })}
-          placeholder="z. B. Sachkunde §34a"
-          className="py-2 text-sm"
-        />,
-      )}
-
-      {rowShell(
-        "sdl-scopes",
-        "SDL / Geltungsbereich",
-        <div className={COMPACT_SELECT}>
-          <MultiSelect
-            options={sdlOptions}
-            value={employee.sdlScopes ?? []}
-            onChange={(sdlScopes) => patch({ sdlScopes })}
-            placeholder="DIN 77200-1/-2, Veranstaltung, Objekt, Asyl …"
-          />
-        </div>,
-        "Eingang der Pflicht-Engine — Mehrfachauswahl",
-      )}
-
-      {rowShell(
-        "dienstfahrzeug",
-        "Fährt Dienstfahrzeug?",
-        <div className={COMPACT_SELECT}>
-          <Select
-            options={[...DIENSTFAHRZEUG_OPTIONS]}
-            value={dienstfahrzeugValue}
-            onChange={(v) =>
-              patch({
-                drivesServiceVehicle:
-                  v === "ja" ? true : v === "nein" ? false : undefined,
-              })
-            }
-            placeholder="unbekannt"
-          />
-        </div>,
-        "Ja → Fahrer-/UVV-Unterweisung (fachlich prüfen, CL-73)",
-      )}
-
-      {rowShell(
-        "erste-hilfe-frist",
-        "Erste Hilfe gültig bis",
-        <DatePicker
-          value={employee.ersteHilfeGueltigBis || ""}
-          onChange={(ersteHilfeGueltigBis) => patch({ ersteHilfeGueltigBis })}
-          placeholder="Ablaufdatum Erste Hilfe"
-          className="text-sm"
-        />,
-        "2-Jahres-Frist (CL-08)",
-      )}
-
-      {rowShell(
-        "brandschutz-frist",
-        "Brandschutzhelfer gültig bis",
-        <DatePicker
-          value={employee.brandschutzGueltigBis || ""}
-          onChange={(brandschutzGueltigBis) =>
-            patch({ brandschutzGueltigBis })
-          }
-          placeholder="Ablaufdatum Brandschutzhelfer"
-          className="text-sm"
-        />,
-        "3-Jahres-Frist (CL-23)",
-      )}
-
-      {rowShell(
-        "unternehmen",
-        "Unternehmen",
-        <div>
-          <Input
-            value={companyName || "— nicht hinterlegt"}
-            disabled
-            className="bg-[#fafbfc] py-2 text-sm"
-          />
-          <Link
-            href="/uploads"
-            className="mt-1 inline-flex items-center gap-1 text-[10px] text-[#e30613] hover:underline"
-          >
-            <Settings2 className="h-3 w-3" />
-            Firmendaten im Upload Manager
-          </Link>
-        </div>,
-        "Aus Firmendaten",
-      )}
-
-      {rowShell(
-        "bewacher-id",
-        "Bewacher-ID",
-        <Input
-          value={employee.guardIDNumber || ""}
-          onChange={(e) => handleGuardIdChange(e.target.value)}
-          placeholder="Bewacher-ID"
-          className="py-2 text-sm"
-        />,
-        "Stammdaten — getrennt vom Bundesauszug",
-      )}
-
-      {rowShell(
-        "dienst-id",
-        "Dienstausweisnummer",
-        <div className="space-y-2">
-          <Input
-            value={employee.employeeIDNumber || ""}
-            onChange={(e) => patch({ employeeIDNumber: e.target.value })}
-            placeholder="Dienstausweisnummer"
-            disabled={employee.useGuardAsEmployeeId}
-            className="py-2 text-sm"
-          />
-          <label className="flex items-center gap-2 text-xs text-[#374151]">
-            <button
-              type="button"
-              role="checkbox"
-              aria-checked={employee.useGuardAsEmployeeId}
-              onClick={() => {
-                const useGuard = !employee.useGuardAsEmployeeId;
-                patch({
-                  useGuardAsEmployeeId: useGuard,
-                  employeeIDNumber: useGuard
-                    ? employee.guardIDNumber || ""
-                    : employee.employeeIDNumber,
-                });
-              }}
-              className={`flex h-4 w-4 shrink-0 items-center justify-center rounded border-2 ${
-                employee.useGuardAsEmployeeId
-                  ? "border-[#e30613] bg-[#e30613]"
-                  : "border-[#d1d5db] bg-white"
-              }`}
-            >
-              {employee.useGuardAsEmployeeId ? (
-                <Check className="h-2.5 w-2.5 text-white" strokeWidth={3} />
-              ) : null}
-            </button>
-            Bewacher-ID als Dienstausweisnummer verwenden
-          </label>
-        </div>,
-      )}
-
-      {rowShell(
-        "aktiv",
-        "Aktiver Status",
-        <Input value="aktiv" disabled className="bg-[#fafbfc] py-2 text-sm" />,
-        "Working UI",
-      )}
-
-      {rowShell(
-        "projekte",
-        "Projektzuordnung",
-        <Input
-          value=""
-          disabled
-          placeholder="SDL/Projekt — folgt"
-          className="bg-[#fafbfc] py-2 text-sm"
-        />,
-        "SDL/Projekt-Referenz folgt",
-      )}
-    </ul>
+    </div>
   );
 };
 
