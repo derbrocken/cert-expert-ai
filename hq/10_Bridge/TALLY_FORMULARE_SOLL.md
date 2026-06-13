@@ -60,11 +60,12 @@
 |-----------------------|----------------|----------------------------------------|
 | Dienstleistungsvertrag | Vertrag | Vertrag Kunde ↔ Dienstleister |
 | Angebot | Angebot | Angebot/Kalkulation |
-| Objekt-Dienstanweisung | **ODA** | ⚠️ Annahme: **O**bjekt-**D**ienst**a**nweisung |
+| Objekt-Dienstanweisung | **ODA** | ✅ bestätigt (Mark): Objekt-Dienstanweisung |
 | Gefährdungsbeurteilung | **GBU** | Gefährdungsbeurteilung (ArbSchG/DGUV) |
-| Sicherheitskonzept | **SK** | ⚠️ Annahme: **S**icherheits**k**onzept (oder Sachkunde-Nachweis?) |
-| Freigabe-/Abnahmedokument (falls vorhanden) | Freigabe | ⚠️ Annahme: unterschriebene Freigabe/Abnahme (die Freigabe-**Logik** lebt im Projektordner) |
+| Sicherheitskonzept | **SK** | ✅ bestätigt (Mark): Sicherheitskonzept |
 | Subunternehmer-Unterlagen (falls vorhanden) | Subunternehmer | bedingt — nur wenn Sub eingesetzt |
+
+> **Freigabe = STATUS, kein Datei-Feld (Mark bestätigt).** Die „Freigabe" ist **kein** hochzuladendes Dokument, sondern ein **Zustand/Gate im Projektordner** (Projektakte). Sie gehört daher **NICHT** ins Tally-Formular, sondern in die App-Logik der Projektakte (`GESCHAEFTSMODELL_VINCENT_WOLF_PROJEKTAKTE.md`): der Projektordner zeigt selbst, was zu tun ist, und trägt den Freigabe-Status.
 
 **Wiederkehrende Dokumente (periodisch — „falls vorhanden"):**
 
@@ -76,10 +77,12 @@
 
 > **Wichtige Architektur-Frage (für später, nicht jetzt entscheiden):** Die wiederkehrenden Doks (Monatsplan/Wachbuch/Monatsbericht) sind **periodisch**, nicht einmalig. Ein einmaliges Projekt-Setup-Tally erfasst sie nur als „Erst-Upload, falls vorhanden". Für den laufenden Betrieb braucht der **Projektordner** vermutlich einen eigenen Mechanismus (Upload je Monat / wiederkehrender Slot). → Gehört in die Projektakte-Architektur, nicht in dieses Setup-Formular.
 
-**Offene Bestätigungen (Mark):**
-1. **ODA** = Objekt-Dienstanweisung? ✅/Korrektur
-2. **SK** = Sicherheitskonzept **oder** Sachkundenachweis?
-3. **Freigabe** = ein hochzuladendes Dokument **oder** ein Status/Gate (dann gehört es NICHT als Datei-Feld ins Tally, sondern in die Projektordner-Logik)?
-4. Sollen die 4 Kontextfelder (Firma/Projektname/Adresse/Nr.) so rein?
+**Bestätigt (Mark, 2026-06-13):**
+1. ✅ **ODA** = Objekt-Dienstanweisung.
+2. ✅ **SK** = Sicherheitskonzept.
+3. ✅ **Freigabe** = **Status** (kein Datei-Feld) → in die Projektakte-Logik, nicht ins Tally.
+
+**Noch offen:**
+4. Sollen die 4 Kontextfelder (Firma/Projektname/Adresse/Nr.) so rein? (Vorschlag steht oben.)
 
 > Nach Bestätigung: Du baust das Tally-Formular, schickst eine Test-Submission → ich lese die echten `questionId`s aus dem Webhook-Log und baue den App-Intake (analog Y5Zq80) **gegen die Projektakte** — wenn die Projektakte-Architektur steht (eigener Planungs-Schritt, `GESCHAEFTSMODELL_VINCENT_WOLF_PROJEKTAKTE.md`).
