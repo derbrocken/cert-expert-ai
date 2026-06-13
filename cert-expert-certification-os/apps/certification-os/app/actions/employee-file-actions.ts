@@ -8,13 +8,18 @@ import {
   getExportSettings,
   listCompanies,
   listEmployeeFiles,
+  loadCompanyDocumentsDto,
   loadEmployeeEvidenceDto,
   migrateFromLocalStoragePayload,
+  removeCompanyDocumentFile,
   removeEmployeeEvidenceFile,
   replaceEmployeeFilesForCompany,
+  saveCompanyDocumentFile,
   saveEmployeeEvidenceFile,
   saveExportSettings,
+  setCompanyDocumentChecked,
   upsertEmployeeFile,
+  type CompanyDocumentMapDto,
   type EmployeeEvidenceMapDto,
   type LocalStorageMigrationPayload,
   type MigrationResult,
@@ -112,6 +117,47 @@ export async function removeEmployeeEvidenceAction(
   evidenceId: string,
 ): Promise<void> {
   await removeEmployeeEvidenceFile(companySlug, employeeFileId, evidenceId);
+}
+
+// ── P2-B — firmen-ebene Dokumente (Company-Tally `Y5Zq80` + manueller Upload) ──
+
+export async function fetchCompanyDocumentsAction(
+  companySlug: string,
+): Promise<CompanyDocumentMapDto> {
+  return loadCompanyDocumentsDto(companySlug);
+}
+
+export async function uploadCompanyDocumentAction(
+  companySlug: string,
+  documentId: string,
+  fileName: string,
+  mimeType: string,
+  fileBase64: string,
+) {
+  const buffer = Buffer.from(fileBase64, "base64");
+  return saveCompanyDocumentFile(
+    companySlug,
+    documentId,
+    fileName,
+    mimeType,
+    buffer,
+  );
+}
+
+export async function removeCompanyDocumentAction(
+  companySlug: string,
+  documentId: string,
+): Promise<void> {
+  await removeCompanyDocumentFile(companySlug, documentId);
+}
+
+export async function setCompanyDocumentCheckedAction(
+  companySlug: string,
+  documentId: string,
+  checked: boolean,
+  von?: string,
+) {
+  return setCompanyDocumentChecked(companySlug, documentId, checked, von);
 }
 
 export async function migrateLocalStorageAction(

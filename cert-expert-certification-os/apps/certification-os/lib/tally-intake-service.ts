@@ -14,10 +14,16 @@ import {
 } from "@/lib/tally-intake-config";
 import {
   ensureCompaniesSeeded,
+  saveCompanyDocumentFile,
   saveEmployeeEvidenceFile,
 } from "@/lib/employee-file-repository";
 import { buildCompanyLogoKey, putCeaObject } from "@/lib/cea-blob-storage";
-import { parseCompanyIntake, logoMime } from "@/lib/tally-company-intake";
+import {
+  parseCompanyIntake,
+  parseCompanyDocuments,
+  logoMime,
+} from "@/lib/tally-company-intake";
+import { COMPANY_DOCUMENT_CATALOG } from "@/lib/company-documents-catalog";
 import { prisma } from "@/lib/prisma";
 import type { Prisma } from "@prisma/client";
 import type { TrainingPlanItem } from "@/lib/types/employee";
@@ -228,6 +234,31 @@ async function processCompanyIntake(
     },
   });
 
+  // P2-B — Firmen-Dokumente (FILE_UPLOADs) → company-ebenes Dok-Lager (S3 + DB).
+  // Läuft NACH dem Settings-Upsert (Company-Row sicher vorhanden → FK ok).
+  // Tolerant: schlägt ein Download/Upload fehl, werden die übrigen weiter
+  // verarbeitet. EC-10: jedes Dokument landet als `unchecked` im Lager.
+  let documentsImported = 0;
+  const documents = parseCompanyDocuments(intakeFields, COMPANY_DOCUMENT_CATALOG);
+  for (const doc of documents) {
+    try {
+      const buffer = await downloadTallyFile(doc.url);
+      await saveCompanyDocumentFile(
+        companySlug,
+        doc.documentId,
+        doc.fileName,
+        doc.mimeType,
+        buffer,
+      );
+      documentsImported += 1;
+    } catch (err) {
+      console.error(`${LOG} Company document download/store failed`, {
+        documentId: doc.documentId,
+        err,
+      });
+    }
+  }
+
   // upsert statt create: Tally stellt FORM_RESPONSE teils doppelt zu → die
   // Top-Dedup greift bei der Near-Simultan-Zustellung evtl. nicht (Race);
   // idempotenter Upsert verhindert die Unique-Constraint-Verletzung.
@@ -240,6 +271,7 @@ async function processCompanyIntake(
   console.info(`${LOG} Company intake processed`, {
     companySlug,
     logo: Boolean(logoStorageKey),
+    documents: documentsImported,
   });
 
   return {
@@ -247,7 +279,7 @@ async function processCompanyIntake(
     responseId,
     companySlug,
     employeeIds: [],
-    evidenceImported: logoStorageKey ? 1 : 0,
+    evidenceImported: (logoStorageKey ? 1 : 0) + documentsImported,
     reason: "company-intake",
   };
 }

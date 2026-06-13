@@ -24,6 +24,16 @@ export function buildEvidenceKey(
   return `cea/companies/${companySlug}/evidence/${employeeFileId}/${evidenceId}/${safeName}`;
 }
 
+/** P2-B — S3-Key eines firmen-ebenen Dokuments (analog `buildEvidenceKey`). */
+export function buildCompanyDocumentKey(
+  companySlug: string,
+  documentId: string,
+  fileName: string,
+): string {
+  const safeName = fileName.replace(/[^a-zA-Z0-9._-]/g, "_");
+  return `cea/companies/${companySlug}/documents/${documentId}/${safeName}`;
+}
+
 async function streamToBuffer(
   body: AsyncIterable<Uint8Array> | ReadableStream | undefined,
 ): Promise<Buffer> {

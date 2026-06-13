@@ -6,12 +6,18 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import {
   parseCompanyIntake,
+  parseCompanyDocuments,
   firstUploadedFile,
   findLogoFile,
   logoExt,
   logoMime,
   type IntakeField,
 } from "./tally-company-intake";
+import {
+  COMPANY_DOCUMENT_CATALOG,
+  COMPANY_DOCUMENT_IDS,
+  isKnownCompanyDocumentId,
+} from "./company-documents-catalog";
 
 const Q = { companyName: "7dM2QA", companyEmail: "blvxao", logo: "J2MA7d" };
 
@@ -73,6 +79,60 @@ test("firstUploadedFile: Array, Einzelobjekt, leer", () => {
   assert.equal(firstUploadedFile({ url: "x" })?.url, "x");
   assert.equal(firstUploadedFile(null), null);
   assert.equal(firstUploadedFile([{ foo: 1 }]), null);
+});
+
+// ── P2-B — Firmen-Dokumente ──────────────────────────────────────────────────
+
+test("Katalog: 9 Slots, eindeutige documentId + questionId, alle erwarteten Keys", () => {
+  assert.equal(COMPANY_DOCUMENT_CATALOG.length, 9);
+  const ids = new Set(COMPANY_DOCUMENT_IDS);
+  assert.equal(ids.size, 9, "documentId eindeutig");
+  const qids = new Set(COMPANY_DOCUMENT_CATALOG.map((d) => d.questionId));
+  assert.equal(qids.size, 9, "questionId eindeutig");
+  for (const key of [
+    "AlyLkk",
+    "BG0kvN",
+    "kYv6LM",
+    "vNKyRQ",
+    "KMklX7",
+    "LdkWl1",
+    "pLvBab",
+    "1r678W",
+    "MAMzBX",
+  ]) {
+    assert.ok(qids.has(key), `questionId ${key} im Katalog`);
+  }
+  assert.ok(isKnownCompanyDocumentId("handelsregister"));
+  assert.ok(!isKnownCompanyDocumentId("nope"));
+});
+
+test("parseCompanyDocuments: extrahiert vorhandene Dokumente, überspringt fehlende", () => {
+  const docs = parseCompanyDocuments(
+    [
+      f("AlyLkk", "FILE_UPLOAD", [{ url: "u/unb.pdf", name: "Unbedenklich.pdf" }], "1. Unbedenklichkeit"),
+      f("vNKyRQ", "FILE_UPLOAD", [{ url: "u/hr.pdf", name: "HR-Auszug.pdf", mimeType: "application/pdf" }], "Handelsregister"),
+      f("KMklX7", "FILE_UPLOAD", [], "Bewachungserlaubnis"), // leer → übersprungen
+    ],
+    COMPANY_DOCUMENT_CATALOG,
+  );
+  assert.equal(docs.length, 2);
+  const unb = docs.find((d) => d.documentId === "unbedenklichkeit-1");
+  assert.equal(unb?.url, "u/unb.pdf");
+  assert.equal(unb?.fileName, "Unbedenklich.pdf");
+  assert.equal(unb?.mimeType, "application/pdf");
+  assert.ok(docs.find((d) => d.documentId === "handelsregister"));
+  assert.ok(!docs.find((d) => d.documentId === "bewachungserlaubnis"));
+});
+
+test("parseCompanyDocuments: leeres Formular → []; Fallback-Dateiname + MIME aus Endung", () => {
+  assert.deepEqual(parseCompanyDocuments([], COMPANY_DOCUMENT_CATALOG), []);
+  const docs = parseCompanyDocuments(
+    [f("LdkWl1", "FILE_UPLOAD", [{ url: "u/x" }], "Versicherung")], // kein name/mime
+    COMPANY_DOCUMENT_CATALOG,
+  );
+  assert.equal(docs.length, 1);
+  assert.equal(docs[0].fileName, "versicherung.pdf");
+  assert.equal(docs[0].mimeType, "application/pdf");
 });
 
 test("logoExt + logoMime", () => {

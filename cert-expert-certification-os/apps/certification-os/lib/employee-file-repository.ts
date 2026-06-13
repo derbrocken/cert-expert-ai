@@ -7,9 +7,14 @@ import type {
   GlobalProperties,
   TrainingPlanItem,
 } from "@/lib/types/employee";
-import type { EmployeeFile, EvidenceItem } from "@prisma/client";
+import type {
+  CompanyDocumentItem,
+  EmployeeFile,
+  EvidenceItem,
+} from "@prisma/client";
 import { Prisma } from "@prisma/client";
 import {
+  buildCompanyDocumentKey,
   buildCompanyLogoKey,
   buildEvidenceKey,
   deleteCeaObject,
@@ -55,6 +60,24 @@ export interface StoredEvidenceFileDto {
 }
 
 export type EmployeeEvidenceMapDto = Record<string, StoredEvidenceFileDto>;
+
+/** P2-B — firmen-ebenes Dokument für die UI (Map documentId → Dto). */
+export interface CompanyDocumentDto {
+  documentId: string;
+  fileName: string;
+  mimeType: string;
+  uploadedAt: string;
+  /** "unchecked" | "geprueft" — EC-10, kein Auto-Status. */
+  status: string;
+  /** Komfort-Flag: status === "geprueft". */
+  checked: boolean;
+  checkedBy?: string;
+  checkedAt?: string;
+  previewUrl?: string;
+  dataUrl?: string;
+}
+
+export type CompanyDocumentMapDto = Record<string, CompanyDocumentDto>;
 
 function asStringArray(value: unknown): string[] {
   if (!Array.isArray(value)) return [];
@@ -784,6 +807,130 @@ export async function saveExportSettings(
   });
 
   return getExportSettings(companySlug);
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// P2-B — firmen-ebenes Dokumenten-Lager (Company-Tally `Y5Zq80` + manuell).
+// Spiegelt das Employee-Evidence-Muster auf Company-Ebene. EC-10: eingehend
+// „unchecked"; nur ein bewusster „geprüft"-Klick (setCompanyDocumentChecked)
+// macht den Status erfüllt. Ein neuer Upload setzt den Status wieder zurück.
+// ─────────────────────────────────────────────────────────────────────────────
+
+async function companyDocumentToDto(
+  item: CompanyDocumentItem,
+): Promise<CompanyDocumentDto> {
+  const previewUrl = await getCeaPresignedUrl(item.storageKey);
+  return {
+    documentId: item.documentId,
+    fileName: item.fileName,
+    mimeType: item.mimeType,
+    uploadedAt: item.uploadedAt.toISOString(),
+    status: item.status,
+    checked: item.status === "geprueft",
+    checkedBy: item.checkedBy ?? undefined,
+    checkedAt: item.checkedAt?.toISOString(),
+    previewUrl: previewUrl ?? undefined,
+    dataUrl: previewUrl ?? undefined,
+  };
+}
+
+export async function loadCompanyDocumentsDto(
+  companySlug: string,
+): Promise<CompanyDocumentMapDto> {
+  await ensureCompaniesSeeded();
+  const items = await prisma.companyDocumentItem.findMany({
+    where: { companySlug },
+  });
+  const map: CompanyDocumentMapDto = {};
+  for (const item of items) {
+    map[item.documentId] = await companyDocumentToDto(item);
+  }
+  return map;
+}
+
+export async function saveCompanyDocumentFile(
+  companySlug: string,
+  documentId: string,
+  fileName: string,
+  mimeType: string,
+  buffer: Buffer,
+): Promise<CompanyDocumentDto> {
+  if (!isS3Configured()) {
+    throw new Error("Hetzner S3 is not configured for company document storage");
+  }
+  await ensureCompaniesSeeded();
+  const storageKey = buildCompanyDocumentKey(companySlug, documentId, fileName);
+  await putCeaObject(storageKey, buffer, mimeType || "application/octet-stream");
+
+  const existing = await prisma.companyDocumentItem.findUnique({
+    where: { companySlug_documentId: { companySlug, documentId } },
+  });
+  if (existing?.storageKey && existing.storageKey !== storageKey) {
+    await deleteCeaObject(existing.storageKey);
+  }
+
+  const row = await prisma.companyDocumentItem.upsert({
+    where: { companySlug_documentId: { companySlug, documentId } },
+    create: {
+      companySlug,
+      documentId,
+      fileName,
+      mimeType: mimeType || "application/octet-stream",
+      storageKey,
+      status: "unchecked",
+      uploadedAt: new Date(),
+    },
+    // EC-10: neue Datei = neu prüfen → Status zurücksetzen, alte Prüfung löschen.
+    update: {
+      fileName,
+      mimeType: mimeType || "application/octet-stream",
+      storageKey,
+      status: "unchecked",
+      checkedBy: null,
+      checkedAt: null,
+      uploadedAt: new Date(),
+    },
+  });
+
+  return companyDocumentToDto(row);
+}
+
+export async function removeCompanyDocumentFile(
+  companySlug: string,
+  documentId: string,
+): Promise<void> {
+  const row = await prisma.companyDocumentItem.findUnique({
+    where: { companySlug_documentId: { companySlug, documentId } },
+  });
+  if (!row) return;
+  await deleteCeaObject(row.storageKey);
+  await prisma.companyDocumentItem.delete({
+    where: { companySlug_documentId: { companySlug, documentId } },
+  });
+}
+
+/**
+ * P2-B — Prüf-Status eines Firmen-Dokuments setzen (EC-10: bewusster Klick).
+ * `checked=true` → status "geprueft" + checkedAt/checkedBy; `false` → zurück auf
+ * "unchecked". No-op, wenn kein Dokument vorhanden (man kann nichts Leeres prüfen).
+ */
+export async function setCompanyDocumentChecked(
+  companySlug: string,
+  documentId: string,
+  checked: boolean,
+  von?: string,
+): Promise<CompanyDocumentDto | null> {
+  const row = await prisma.companyDocumentItem.findUnique({
+    where: { companySlug_documentId: { companySlug, documentId } },
+  });
+  if (!row) return null;
+  const updated = await prisma.companyDocumentItem.update({
+    where: { companySlug_documentId: { companySlug, documentId } },
+    data: checked
+      ? { status: "geprueft", checkedAt: new Date(), checkedBy: von ?? null }
+      : { status: "unchecked", checkedAt: null, checkedBy: null },
+  });
+  return companyDocumentToDto(updated);
 }
 
 async function evidenceToDto(item: EvidenceItem): Promise<StoredEvidenceFileDto> {

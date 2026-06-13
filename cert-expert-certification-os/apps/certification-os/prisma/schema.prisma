@@ -13,6 +13,7 @@ model Company {
   active        Boolean  @default(true)
   employeeFiles EmployeeFile[]
   exportSettings CompanyExportSettings?
+  documents     CompanyDocumentItem[]
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 }
@@ -112,6 +113,30 @@ model EvidenceItem {
   uploadedAt     DateTime
 
   @@unique([employeeFileId, evidenceId])
+}
+
+// P2-B — firmen-ebenes Dokumenten-/Nachweis-Lager (Company-Tally `Y5Zq80`
+// FILE_UPLOADs + manueller Upload). Additiv; spiegelt `EvidenceItem` auf
+// Company-Ebene (eine Datei pro Katalog-`documentId` pro Firma). EC-10 (hart):
+// eingehende Dokumente sind `status:"unchecked"`; erst ein bewusster
+// menschlicher „geprüft"-Klick (setzt `checkedAt`/`checkedBy`, status
+// "geprueft") wertet das Dokument als geprüft — KEIN Auto-Status. Ein neuer
+// Upload (auch via Tally) setzt den Status wieder auf „unchecked" (neue Datei =
+// neu prüfen). Katalog = `lib/company-documents-catalog.ts`.
+model CompanyDocumentItem {
+  id          String    @id @default(cuid())
+  companySlug String
+  company     Company   @relation(fields: [companySlug], references: [slug], onDelete: Cascade)
+  documentId  String
+  fileName    String
+  mimeType    String
+  storageKey  String
+  status      String    @default("unchecked")
+  checkedBy   String?
+  checkedAt   DateTime?
+  uploadedAt  DateTime
+
+  @@unique([companySlug, documentId])
 }
 
 model MigrationRecord {

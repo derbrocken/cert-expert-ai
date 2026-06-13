@@ -27,6 +27,7 @@ import {
   Layers,
 } from "lucide-react";
 import { CompanyExportSettingsPanel } from "@/modules/03-mitarbeiterakte-tool-2/employee-file/CompanyExportSettingsPanel";
+import { CompanyDocumentsPanel } from "@/modules/03-mitarbeiterakte-tool-2/employee-file/CompanyDocumentsPanel";
 import { CollectionsManager } from "./CollectionsManager";
 
 interface TemplateFolder {
@@ -585,6 +586,13 @@ export default function UploadsPage() {
           <Card variant="default" className="mb-8 overflow-hidden">
             <CardContent className="p-5 sm:p-6">
               <CompanyExportSettingsPanel compact />
+            </CardContent>
+          </Card>
+
+          {/* P2-B — firmen-ebenes Dokumenten-Lager (Company-Tally + manuell) */}
+          <Card variant="default" className="mb-8 overflow-hidden">
+            <CardContent className="p-5 sm:p-6">
+              <CompanyDocumentsPanel compact />
             </CardContent>
           </Card>
 

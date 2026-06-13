@@ -111,3 +111,60 @@ export function parseCompanyIntake(
   const logo = file ? { url: file.url, ext: logoExt(file.name, file.mimeType) } : null;
   return { companyName, companyEmail, logo };
 }
+
+/** Eine eingehende Firmen-Dokument-Datei (Tally FILE_UPLOAD → S3-Lager). */
+export interface CompanyDocumentUpload {
+  documentId: string;
+  url: string;
+  fileName: string;
+  mimeType: string;
+}
+
+/** Best-effort MIME aus dem Dateinamen (Fallback application/pdf — meist PDFs). */
+function docMimeFromName(name?: string): string {
+  const ext = name?.split(".").pop()?.toLowerCase();
+  switch (ext) {
+    case "pdf":
+      return "application/pdf";
+    case "png":
+      return "image/png";
+    case "jpg":
+    case "jpeg":
+      return "image/jpeg";
+    case "webp":
+      return "image/webp";
+    case "doc":
+      return "application/msword";
+    case "docx":
+      return "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+    default:
+      return "application/pdf";
+  }
+}
+
+/**
+ * P2-B — alle konfigurierten Firmen-Dokument-FILE_UPLOADs aus der Tally-
+ * Submission extrahieren (je Katalog-Eintrag die erste hochgeladene Datei).
+ * Tolerant: fehlt ein Feld / keine Datei → übersprungen (kein Eintrag, kein
+ * Fehler). Kein DB/IO → unit-testbar. EC-10: reine Stammdaten-Übernahme; der
+ * Prüfstatus wird erst im Lager gesetzt (eingehend „unchecked").
+ */
+export function parseCompanyDocuments(
+  fields: IntakeField[],
+  catalog: ReadonlyArray<{ documentId: string; questionId: string }>,
+): CompanyDocumentUpload[] {
+  const byId = new Map(fields.map((f) => [f.questionId, f]));
+  const out: CompanyDocumentUpload[] = [];
+  for (const def of catalog) {
+    const file = firstUploadedFile(byId.get(def.questionId)?.value);
+    if (!file?.url) continue;
+    const fileName = file.name?.trim() || `${def.documentId}.pdf`;
+    out.push({
+      documentId: def.documentId,
+      url: file.url,
+      fileName,
+      mimeType: file.mimeType?.trim() || docMimeFromName(file.name),
+    });
+  }
+  return out;
+}
