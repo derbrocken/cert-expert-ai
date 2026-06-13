@@ -52,6 +52,29 @@ import { CompanyHubView } from "./CompanyHubView";
 type DossierTab = "akte" | "generator";
 
 /**
+ * S1b — Anlegen inline in der Akte: ein leerer Entwurf (noch NICHT im Index/
+ * persistiert). Spiegelt die Leer-Defaults des Anlege-Formulars (roleId "",
+ * leere Arrays). Wird erst beim ersten Speichern MIT Namen zur echten Akte
+ * (`handleSavePerson`) → keine leeren Geister-Akten.
+ */
+function createDraftEmployee(): Employee {
+  return {
+    id: crypto.randomUUID(),
+    fullName: "",
+    birthday: "",
+    startDate: "",
+    roleId: "",
+    appointmentIds: [],
+    bestelltAls: [],
+    selectedRoleDocIds: [],
+    selectedAppointmentDocIds: [],
+    roleClasses: [],
+    sdlScopes: [],
+    qualifications: [],
+  } as Employee;
+}
+
+/**
  * Lane J (A3) + Q8 — Generator-Datum ist **persistiert** (`generatorDates` je
  * Akte) statt Session-State. Diese reinen Helfer übersetzen zwischen der
  * Batch-Ansicht der UI (globaler Default + flacher Per-Person+Doc-Override-Map,
@@ -392,10 +415,19 @@ function EmployeeAutomationPageContent() {
   if (queueHydrated && !initialUrlSynced) {
     setInitialUrlSynced(true);
     if (searchParams.get("new") === "1") {
-      setSelectedEmployeeId(null);
-      setEditingEmployee(null);
+      // S1b — Anlegen öffnet einen Akte-Entwurf im Bearbeiten-Modus. Einen
+      // vorhandenen (noch nicht persistierten) Entwurf behalten, sonst neu
+      // erzeugen (z. B. direkter ?new=1-Aufruf/Bookmark).
+      const hasDraft =
+        editingEmployee != null &&
+        !employees.some((e) => e.id === editingEmployee.id);
+      if (!hasDraft) {
+        setSelectedEmployeeId(null);
+        setEditingEmployee(createDraftEmployee());
+      }
       setIsCreatingNew(true);
-      setEvidenceEditMode(false);
+      setEvidenceEditMode(true);
+      setDossierTab("akte");
     } else {
       const id = searchParams.get("id");
       if (id) {
@@ -413,10 +445,19 @@ function EmployeeAutomationPageContent() {
   if (queueHydrated && searchKey !== syncedSearchKey) {
     setSyncedSearchKey(searchKey);
     if (searchParams.get("new") === "1") {
-      setSelectedEmployeeId(null);
-      setEditingEmployee(null);
+      // S1b — Anlegen öffnet einen Akte-Entwurf im Bearbeiten-Modus. Einen
+      // vorhandenen (noch nicht persistierten) Entwurf behalten, sonst neu
+      // erzeugen (z. B. direkter ?new=1-Aufruf/Bookmark).
+      const hasDraft =
+        editingEmployee != null &&
+        !employees.some((e) => e.id === editingEmployee.id);
+      if (!hasDraft) {
+        setSelectedEmployeeId(null);
+        setEditingEmployee(createDraftEmployee());
+      }
       setIsCreatingNew(true);
-      setEvidenceEditMode(false);
+      setEvidenceEditMode(true);
+      setDossierTab("akte");
     } else {
       const id = searchParams.get("id");
       if (id) {
@@ -439,12 +480,13 @@ function EmployeeAutomationPageContent() {
     router.replace("/employee-automation", { scroll: false });
   }, [router]);
 
+  // S1b — auch beim Anlegen (isCreatingNew) liefert focusEmployee den Entwurf
+  // (editingEmployee), damit die Person direkt in der Akte ausgefüllt wird.
   const focusEmployee = useMemo(() => {
-    if (isCreatingNew) return null;
     const id = editingEmployee?.id ?? selectedEmployeeId;
     if (!id) return null;
     return employees.find((e) => e.id === id) ?? editingEmployee;
-  }, [editingEmployee, selectedEmployeeId, employees, isCreatingNew]);
+  }, [editingEmployee, selectedEmployeeId, employees]);
 
   const focusEmployeeId = focusEmployee?.id ?? null;
 
@@ -456,13 +498,15 @@ function EmployeeAutomationPageContent() {
     void loadEmployeeEvidence(companySlug, focusEmployeeId).then((map) => {
       if (!cancelled) {
         setEvidenceFiles(map);
-        setEvidenceEditMode(false);
+        // S1b — Entwurf (Neu-Anlegen) bleibt im Bearbeiten-Modus; sonst beim
+        // Öffnen einer bestehenden Akte auf Ansehen zurück.
+        if (!isCreatingNew) setEvidenceEditMode(false);
       }
     });
     return () => {
       cancelled = true;
     };
-  }, [focusEmployeeId, companySlug, queueHydrated]);
+  }, [focusEmployeeId, companySlug, queueHydrated, isCreatingNew]);
 
   const formInstanceKey = isCreatingNew
     ? "new"
@@ -496,12 +540,29 @@ function EmployeeAutomationPageContent() {
     });
   }, []);
 
-  const handleSavePerson = useCallback((employee: Employee) => {
-    setEmployees((prev) =>
-      prev.map((e) => (e.id === employee.id ? employee : e)),
-    );
-    setEditingEmployee(employee);
-  }, []);
+  const handleSavePerson = useCallback(
+    (employee: Employee) => {
+      setEmployees((prev) =>
+        prev.some((e) => e.id === employee.id)
+          ? prev.map((e) => (e.id === employee.id ? employee : e))
+          : // S1b — Entwurf erst in den Index aufnehmen, wenn ein Name gesetzt
+            // ist (keine leeren Geister-Akten).
+            employee.fullName.trim()
+            ? [...prev, employee]
+            : prev,
+      );
+      setEditingEmployee(employee);
+      // S1b — beim ersten benannten Speichern wird der Entwurf zur echten Akte.
+      if (isCreatingNew && employee.fullName.trim()) {
+        setIsCreatingNew(false);
+        setBatchSelectedIds((prev) => new Set(prev).add(employee.id));
+        router.replace(`/employee-automation?id=${employee.id}`, {
+          scroll: false,
+        });
+      }
+    },
+    [isCreatingNew, router],
+  );
 
   const handleEvidenceUpload = useCallback(
     async (evidenceId: string, file: File) => {
@@ -649,12 +710,14 @@ function EmployeeAutomationPageContent() {
   );
 
   const handleCreateNew = useCallback(() => {
+    // S1b — Anlegen inline: leeren Entwurf öffnen, direkt im Bearbeiten-Modus
+    // der Akte ausfüllen (kein separates Voll-Formular mehr). Persistenz erst
+    // beim ersten benannten Speichern (handleSavePerson) → keine Geister-Akten.
     setSelectedEmployeeId(null);
-    setEditingEmployee(null);
+    setEditingEmployee(createDraftEmployee());
     setIsCreatingNew(true);
-    setEvidenceEditMode(false);
-    // ?new=1 macht die Anlege-Ansicht teilbar/bookmarkbar (wird beim Laden
-    // wieder ausgewertet, s. searchParams-Sync oben).
+    setEvidenceEditMode(true);
+    setDossierTab("akte");
     router.replace("/employee-automation?new=1", { scroll: false });
   }, [router]);
 
@@ -872,31 +935,6 @@ function EmployeeAutomationPageContent() {
         {templatesLoadError}
       </p>
     </div>
-  ) : isCreatingNew ? (
-    <div className="mx-auto max-w-3xl space-y-4 p-4 sm:p-6">
-      <div className="rounded-lg border border-[#e5e7eb] bg-white px-4 py-4">
-        <p className="text-[0.65rem] font-semibold uppercase tracking-[0.14em] text-[#e30613]">
-          Personal erfassen
-        </p>
-        <h2 className="mt-1 text-lg font-bold text-[#111827]">
-          Neue Person anlegen
-        </h2>
-        <p className="mt-1 text-sm text-[#6b7280]">
-          Name, Geburtsdatum, Vertrag, Grundrolle und Zusatzbestellungen — danach
-          eigene Akte im Index.
-        </p>
-      </div>
-      <EmployeeForm
-        key="new-person"
-        displayMode="master"
-        onAdd={handleAddEmployee}
-        onUpdate={handleUpdateEmployee}
-        editingEmployee={null}
-        onCancelEdit={handleCancelEdit}
-        roles={roles}
-        appointments={appointments}
-      />
-    </div>
   ) : focusEmployee ? (
     <>
       <nav
@@ -931,6 +969,19 @@ function EmployeeAutomationPageContent() {
       </nav>
 
       <div className="mx-auto max-w-3xl space-y-4 p-4 sm:p-6">
+        {/* S1b — Anlegen inline: Hinweis, solange der Entwurf noch nicht
+            (mit Namen) gespeichert ist. */}
+        {isCreatingNew ? (
+          <div className="rounded-lg border border-[rgba(227,6,19,0.25)] bg-[rgba(227,6,19,0.04)] px-4 py-3">
+            <p className="text-[0.65rem] font-semibold uppercase tracking-[0.14em] text-[#e30613]">
+              Neue Person anlegen
+            </p>
+            <p className="mt-1 text-sm text-[#6b7280]">
+              Name & Grundrolle ausfüllen — die Akte erscheint im Index, sobald
+              ein Name gespeichert ist. Danach Nachweise/Bestellungen ergänzen.
+            </p>
+          </div>
+        ) : null}
         {/* S1a — EINE Akte-Ansicht: kein „Bearbeiten/Übersicht"-Umschalter mehr.
             Standard = Ansehen (read-only); der Stift in der Akte schaltet
             akte-weit auf Bearbeiten. Read-only Vorschau/Export bleibt über die
