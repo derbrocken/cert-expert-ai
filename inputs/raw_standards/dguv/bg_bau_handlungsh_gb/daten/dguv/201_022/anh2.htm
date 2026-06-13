@@ -1,0 +1,62 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="de">
+
+<head>
+<meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+<title>DGUV Information 201-022: Handlungsanleitung für die Arbeit mit Geräten zur provisorischen Rohrabsperrung, Anhang 2: Ermittlung der Dimensionierung einer Ausschubsicherung mittels Kanthölzern</title>
+<meta name="Copyright" content="Copyright BC GmbH Verlags- und Mediengesellschaft, 2022" />
+<link rel="stylesheet" type="text/css" href="../../daten.css" />
+<link rel="stylesheet" type="text/css" href="../../gv.css" />
+</head>
+<body>
+<script type="text/javascript" src="ord.js">
+</script><script type="text/javascript" src="../../buttons.js">
+</script>
+
+<h2>Anhang 2<br />
+Ermittlung der Dimensionierung einer Ausschubsicherung mittels Kanthölzern</h2>
+
+<p>Beispielhaft wurde eine Berechnung der notwendigen Kräfte zur Sicherung eines Rohrabsperrgerätes DN 1000 gegen Ausschub durchgeführt. Die sich ergebenden Kräfte werden über zwei Querriegel verteilt und durch vier Stützen aufgenommen.</p>
+<p>Die sich hierbei ergebende Dimensionierung der einzubauenden Hölzer können Sie auf alle anderen Fälle übertragen, bei denen die nachfolgenden Annahmen unterschritten werden:</p>
+<ul>
+  <li>Der Rohrdurchmesser muss kleiner oder gleich 1000 mm sein</li>
+  <li>Die Wassersäule darf nicht größer als 5,00 m sein</li>
+  <li>Die Knicklänge (somit im Allgemeinen der Schachtdurchmesser) muss kleiner oder gleich 4,00 m sein</li>
+</ul>
+<p>Wenn diese Randbedingungen eingehalten werden, können die hier gewählten Dimensionierungen und die Anzahl der Kanthölzer übernommen werden.</p>
+<p>Ermittlung der ankommenden Kraft in einem Rohr DN 1000 bei 5,00 m Wassersäule:</p>
+<p>Rohrdurchmesser DN: 1000 mm<br />Tiefe der Rohrsohle unter Geländeoberkante (GOK): 5,0 m</p>
+<p>Hydrostatischer Wasserdruck (GOK bis Mitte Absperrblase hier: 4,50 m):<br />4,50 m × 0,1 bar = 0,45 bar &#x2259; 0,45 kg/cm²</p>
+<p>Fläche des Rohres:<br />&pi; × d² / 4 = &pi; × 100² / 4 = 7853,98 cm²</p>
+<p>Masse Wasser mit 5 m Wassersäule welche auf dem Rohr lastet:<br />0,45 kg / cm² × 7853,98 cm² = 3534,29 kg<br />Umrechnung in die wirksame Kraft &asymp; 35,34 kN</p>
+<p>Berücksichtigung des Sicherheitsfaktors von 1,5 (wie unter <a href="4.htm">4.4</a> der DGUV Information 201-022 "Handlungsanleitung für die Arbeit mit Geräten zur provisorischen Rohrabsperrung" beschrieben):<br />35,34 kN × 1,5 = 53,01 kN</p>
+<p>Konstruktiv wird die ankommende Kraft über zwei Querriegel in die Druckstäbe eingeleitet.</p>
+<p>Die Konstruktion soll baustellennah mit Handelsware aus Kanthölzern Vollholz NH Sortierklasse 10 erfolgen. Es werden zuerst die beiden Querriegel, welche auf Biegung beansprucht werden, bemessen. Anschließend werden die Druckstäbe bemessen.</p>
+<p>Es wird davon ausgegangen, dass zwei Querriegel zur Aufnahme der Kräfte benötigt werden. Diese sollten so dicht wie möglich zum Mittelpunkt des Absperrorgans eingebaut werden.<br />53,01 kN / 2 Querriegel = 26,505 kN, diese Kraft wirkt als Linienlast auf die Querriegel. In unserem Fall ist der Durchmesser 1000 mm also 1,00 m. Die Gesamtlänge der Querriegel wird mit max. 1,40 m angenommen, d.h. die Querriegel ragen nach rechts und links 0,20 m über die Rohreinbindung hinaus.</p>
+
+<img src="3.jpg" width="521" height="282" alt="Abb. 3 Statisches System" /><br />
+<p class="bildFuss" style="font-size:80%"><b>Abb. 3</b> &nbsp;Statisches System</p>
+
+<p><b>Ermittlung der Gleichstreckenlast:</b><br />26,505 [kN] / 1,00 [m] = 26,505 [kN/m] = q</p>
+<p><b>Ermittlung der Auflagerkräfte:</b><br />A = B = 0,5 × 26,505 [kN/m] × 1,00 [m]<br />A = B &asymp; 13,26 [kN]</p>
+<p><b>Ermittlung des maximalen Biegemomentes:</b><br />max. M = q × b/8 × (2 × l-b)<br />= 26,505 × 1,0 [m]/8 × (2 × 1,40 [m] -1,0 [m])<br />max. M &asymp; 5,96 [kNm]</p>
+<p><b>Nachweis der zulässigen Biegespannung:</b><br />Vollholz NH Sortierklasse 10 Spannungsnachweis: zul. &delta; = 10 [kN/cm²]<br />erf. W = max. M / zul. &delta;<br />= 596 [kNcm] / 10,0 [kN/cm²] &asymp; 59,6 [cm³]</p>
+<p><b>Nachweis der Durchbiegung:</b> <br />Durchbiegung f = l/200</p>
+<p>Es wurde der ungünstige Lastfall mit einer gleichmäßig verteilten Streckenlast auf einem Einfeldträger gewählt. Dann ergibt sich a für zul. f = l/200 zu a = 208 [dimensionslos, Konstante welche sich aus der Festigkeitslehre ableitet, hier aus einschlägigen Tabellenbüchern]. Bei Berücksichtigung des maximalen Momentes in [kNm] und der Länge des Balkens (hier des Querriegels) in [m] ergibt sich<br />erf. I [cm<sup>4</sup>] = a × max. M [kNm] × l [m]<br />= 208 × 5,96 [kNm] × 1,40 [m]<br />= 1735,6 [cm<sup>4</sup>]</p>
+
+<p>gewählt Vollholz NH Sortierklasse 10:<br />2 x <img src="phi.jpg" width="9" height="13" alt="Phi eckig" /> 10/14 mit vorh. Iy = 2287 cm<sup>4</sup><br />vorh. Wy = 327 cm³<br />erf. I &lt; vorh. Iy hierbei muss jedoch die Belastung der Hölzer über die "starke" Achse erfolgen.</p>
+<p><b>Abstützung oder auch Längsverbau: </b><br />
+Die beiden Auflagerkräfte ergeben sich zu A = B = 13,26 kN. Gewählt wird handelsübliches Kantholz 10/10 cm. Da zwei Querriegel vorhanden sind, diese beidseitig gestützt werden müssen, ergeben sich vier Stützen <img src="phi.jpg" width="9" height="13" alt="Phi eckig" /> 10. Da bei schlanken Holzstützen die Knicklänge maßgebend ist, darf diese bei den vorhanden Randbedingungen max. 4,0 m betragen.<br />
+Gewählt: 4 x Holzstützen <img src="phi.jpg" width="9" height="13" alt="Phi eckig" /> 10 mit einer Knicklänge &le; 4,00 m</p>
+<p><i>Wenn von den Rahmenbedingungen abgewichen wird, z. B. größerer Durchmesser, höhere Wassersäule, längere Stützen, muss ein entsprechender statischer Nachweis durchgeführt werden!</i></p>
+
+<img src="4.jpg" width="414" height="651" alt="Abb. 4 Prinzipskizze eines Rohrabsperrgerätes DN 1000" /><br />
+<p class="bildFuss" style="font-size:80%"><b>Abb. 4</b> &nbsp;Prinzipskizze eines Rohrabsperrgerätes DN 1000</p>
+
+<p>&nbsp;</p>
+
+<script type="text/javascript" src="../../buttons2.js">
+</script>
+</body>
+</html>

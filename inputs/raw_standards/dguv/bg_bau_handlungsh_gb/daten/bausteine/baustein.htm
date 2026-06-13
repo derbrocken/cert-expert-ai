@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<!-- ä ü ß test -->
+   <meta name="viewport" content="width=device-width, initial-scale=1">
+   <title>sehen + verstehen</title>
+<link rel="stylesheet" type="text/css" href="../daten.css">
+<style type="text/css">
+
+.bsv_header h1 { color:#58595B; font-size:20px;margin:0; }
+.bsv_header img { float:right; margin-left:10px;margin-bottom:10px }
+.bsv_header { background-image:url(img/verlauf.gif); background-size:34px 100px; background-repeat:repeat-x;padding:20px;padding-left:10px;padding-right:10px;height:60px }
+.bsv_tab { width:100% }
+.bsv_spalte1_2 img { display:block;  }
+.bsv_spalte1_2 { padding-right:10px; padding-bottom:10px }
+.bsv_spalte3 { vertical-align:middle; background-color:#DCDDDE; font-weight:bold; padding:5px; border-bottom:9px solid white}
+.bsv_padd { height:10px }
+
+.bsv_button { display:table; background-image:url(img/gelbe_flaeche.png);background-size:180px 60px; width:180px; height:60px; margin-top:2px }
+a.bsv_button { text-decoration:none; color:#000 }
+.bsv_button span { display:table-cell; padding-left:34px; vertical-align:middle }
+#bst_sv_erl_text {
+    background-image: url(img/verlauf.gif);
+    background-size: 34px 115px;
+    background-repeat: repeat-x;
+    padding: 5px;
+    background-color: white;
+}
+</style>
+<script>
+var bst_sv_img='<p style="margin-top:18px; margin-bottom:10px"><img src="img/sehen_und_verstehen_kl.png" width="180" alt="sehen + verstehen" style="margin-top:-20px;"></p>';
+var bst_sv_html='<p style="margin-top:18px; margin-bottom:10px"><img src="img/sehen_und_verstehen_kl.png" width="180" alt="sehen + verstehen" style="display:block;cursor:pointer; margin-top:-20px;" \
+onclick="bst_sv_open()"></p>\
+<p id="bst_sv_erl_text" style="display:none">Mit den Bausteinen haben Sie ein kompetentes Medium zur Unterweisung. \
+Nach dem Motto &#x201E;suchen und finden&rdquo; kommen Sie immer zum \
+Ziel und zur gew&uuml;nschten Information. Jetzt haben Sie f&uuml;r eine ganze Reihe von Bausteinen zus&auml;tzlich die M&ouml;glichkeit, Ihren \
+Mitarbeitern etwas an die Hand zu geben.<br>\
+Das Wichtigste - ohne viele Worte: &bdquo;sehen + verstehen&rdquo;.</p>';
+
+function bst_sv_open()
+{
+   if (document.getElementById('bst_sv_erl_text').style.display=='block') document.getElementById('bst_sv_erl_text').style.display='none';
+   else document.getElementById('bst_sv_erl_text').style.display='block';
+}
+</script>
+</head>
+<body>
+<script src="ord.js"></script>
+<script src="../buttons.js"></script>
+
+<div style="width:533px; float:left">
+
+<script>
+   var baustein_nr="B100-1";
+   var sprache="de";
+   var s=location.search.substring(1).split("&");
+   for(var i=0; i<s.length; i++) {
+   	   var q=s[i].split("=");
+   	   if (q[0]=='nr') baustein_nr=q[1];
+   	   if (q[0]=='lang') sprache=q[1];
+   }
+
+var bst=new Array();
+</script>
+<script src="bst.js"></script>
+<script>
+
+   if (typeof bst[baustein_nr+'-'+sprache]=="undefined") { 
+   	   document.write('Fehler: Sprache/Baustein-Nr nicht gefunden.');
+   }
+   else {
+   	   b=bst[baustein_nr+'-'+sprache];
+   
+	document.write('\r\n\
+<div class="bsv_header">\r\n\
+	<img src="img/'+baustein_nr+'/logo.gif" width="155" height="53" alt="'+baustein_nr+'">\r\n\
+	<h1 id="b_titel">'+b.titel+'</h1>\r\n\
+</div>\r\n\
+\r\n\
+<table cellpadding="0" cellspacing="0" border="0" class="bsv_tab">\r\n\
+<colgroup>\r\n\
+	<col width="38%">\r\n\
+	<col width="38%">\r\n\
+	<col width="24%">\r\n\
+</colgroup>\r\n\
+');
+
+for(var i=0; i<b.texte.length; i++) document.write('<tr>\r\n\
+	<td class="bsv_spalte1_2"><img src="img/'+baustein_nr+'/'+(i*2+1)+'.jpg" width="100%" alt=""></td>\r\n\
+	<td class="bsv_spalte1_2"><img src="img/'+baustein_nr+'/'+(i*2+2)+'.jpg" width="100%" alt=""></td>\r\n\
+	<td class="bsv_spalte3" id="b_text'+i+'">'+b.texte[i]+'</td>\r\n\
+</tr>\r\n');
+
+
+var stand='Stand 01/2018';
+
+if (baustein_nr=='D506-1'|| 
+    baustein_nr=='C480-1'|| 
+    baustein_nr=='C470-1'|| 
+    baustein_nr=='C469-1'|| 
+    baustein_nr=='C345-1'|| 
+    baustein_nr=='C335-1'|| 
+    baustein_nr=='B274-1'|| 
+    baustein_nr=='B251-1'|| 
+    baustein_nr=='B184-1'|| 
+    baustein_nr=='B184-2'|| 
+    baustein_nr=='B184-1'|| 
+    baustein_nr=='B181-1'|| 
+    baustein_nr=='B111-1'
+    ) stand='Stand 07/2020';
+
+document.write('</table>	\r\n\
+<br><img src="img/bgbau.gif" width="97" height="21" alt="BG BAU" style="vertical-align:top"> <span style="line-height:34px; margin-left:12px">'+stand+'</span><br><br>\r\n\
+');
+}
+
+function ch_lang(spracheneu)
+{
+   if (typeof bst[baustein_nr+'-'+spracheneu]=="undefined")
+   	   return;
+   sprache=spracheneu;
+  var b=bst[baustein_nr+'-'+sprache];
+	document.getElementById("b_titel").innerHTML=b.titel;
+
+  for(var i=0; i<b.texte.length; i++)	
+	   document.getElementById("b_text"+i).innerHTML=b.texte[i];
+	   
+
+	var bnr=baustein_nr.toLowerCase();
+	var bnr=bnr.charAt(0)+'_'+bnr.substring(1);
+	bnr=bnr.split("-")[0];
+	document.getElementById("bst_pdflink").href=bnr+'/'+b1+'-'+sprache+'.pdf';
+}
+
+var baustein_code=baustein_nr.split("-")[0];
+var re_spalte=bst_sv_img;
+
+for(var i=1; i<=10; i++) {
+	if (typeof bst[baustein_code+'-'+i+'-'+sprache]!="undefined") 
+	    re_spalte+='<a href="javascript:zu_baustein(\''+baustein_code+'-'+i+'\')" class="bsv_button"><span>'+bst[baustein_code+'-'+i+'-de'].titel+'</span></a>';
+}
+re_spalte+='<div align="left">\
+<p>\
+<img src="img/de.png" onclick="ch_lang(\'de\')"     style="width:45px;cursor:pointer" title="deutsch">\
+<img src="img/en.png" onclick="ch_lang(\'en\')"     style="width:45px;cursor:pointer" title="englisch">\
+<img src="img/bg.png" onclick="ch_lang(\'bg\')"     style="width:45px;cursor:pointer" title="bulgarisch">\
+<img src="img/fr.png" onclick="ch_lang(\'fr\')"     style="width:45px;cursor:pointer" title="franzoesisch">\
+<img src="img/hr.png" onclick="ch_lang(\'hr\')"     style="width:45px;cursor:pointer" title="kroatisch">\
+<img src="img/hu.png" onclick="ch_lang(\'hu\')"     style="width:45px;cursor:pointer" title="ungarisch">\
+<img src="img/pl.png" onclick="ch_lang(\'pl\')"     style="width:45px;cursor:pointer" title="polnisch">\
+<img src="img/pt.png" onclick="ch_lang(\'pt\')"     style="width:45px;cursor:pointer" title="portugiesisch">\
+<img src="img/ru.png" onclick="ch_lang(\'ru\')"     style="width:45px;cursor:pointer" title="russisch">\
+<img src="img/tk.png" onclick="ch_lang(\'tk\')"     style="width:45px;cursor:pointer" title="tuerkisch">\
+<img src="img/tsch.png" onclick="ch_lang(\'tsch\')" style="width:45px;cursor:pointer" title="tschechisch">\
+<img src="img/ro.png" onclick="ch_lang(\'ro\')" style="width:45px;cursor:pointer" title="rumaenisch">\
+</p></div>';
+
+	var b=baustein_nr.toLowerCase();
+	var b1=b.charAt(0)+'_'+b.substring(1);
+	b=b1.split("-")[0];
+re_spalte+='<p align="left" style="position:absolute; top:643px;"><a id="bst_pdflink" href="'+b+'/'+b1+'-'+sprache+'.pdf" target="_blank"><img src="img/drucken.jpg" title="PDF"></a></p>';
+
+function zu_baustein(baustein_nr)
+{
+	location.href=xpath+'bausteine/baustein.htm?nr='+baustein_nr+'&lang='+sprache;
+}
+
+</script>
+</div>
+<div style="width:179px; margin-left:10px; background-color:#DEDCDD; float:left; min-height: 695px;">
+	<script>
+		document.write(re_spalte);
+	</script>
+</div>
+<script src="../buttons2.js"></script>
+</script>
+</body>
+</html>

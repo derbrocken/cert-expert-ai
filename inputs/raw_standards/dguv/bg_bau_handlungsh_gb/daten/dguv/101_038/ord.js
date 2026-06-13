@@ -1,0 +1,19 @@
+ord=new Array(
+"titel.htm	#Titel",
+"inhalt.htm	#Inhaltsverzeichnis",
+"vor.htm	#Vorbemerkung",
+"einf.htm	#Einführung",
+"1.htm	#1 Geltungsbereich",
+"2.htm	#2 Begriffsbestimmungen",
+"3.htm	#3 Leitung, Aufsicht und Sicherungsaufgaben",
+"4.htm	#4 Anweisungen",
+"5.htm	#5 Standsicherheit und Tragfähigkeit",
+"6.htm	#6 Bestehende Anlagen und Verkehrsgefahren",
+"7.htm	#7 Betrieb von selbstfahrenden Arbeitsmitteln und Fahrzeugen auf Baustellen",
+"8.htm	#8 Arbeitsplätze und Verkehrswege",
+"9.htm	#9 Absturz",
+"10.htm	#10 Sicherung von Öffnungen und Vertiefungen",
+"11.htm	#11 Herabfallende Gegenstände",
+"12.htm	#12 Ordnungswidrigkeiten",
+"13.htm	#13 Inkrafttreten"
+);

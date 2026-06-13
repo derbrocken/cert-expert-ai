@@ -1,0 +1,322 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+<meta name="Copyright" content="Copyright 2021 BC GmbH, Ingelheim" />
+<title>Weitere Tätigkeiten ergänzen/ändern</title>
+<link rel="stylesheet" type="text/css" href="../daten.css" />
+<script type="text/javascript">var flag_bearbeiten=1;</script>
+<script type="text/javascript">
+   var akt_nr=location.search.substring(5).split("&")[0];
+   var suchbegriff='';
+   if (location.search.indexOf("&")!=-1)  suchbegriff=location.search.split("&")[1].substring(5);
+   document.cookie="hauptkap="+akt_nr;
+   
+function pruefe_aenderungen()
+{
+	if (parent.eigene_struktur!=hole_neue_auswahl(0)) {
+	    if (confirm("Möchten Sie die geänderte Auswahl speichern?")) parent.eigene_struktur=hole_neue_auswahl(1);
+	}
+}
+var nicht_merk_flag=0;
+</script>
+<style type="text/css">
+.box1 { background-color:#F0F4CC; padding:5px; padding-left:50px; margin-top:4px; min-height:24px;
+  background-image:url(#PATH#img/pfeil_rt.gif);background-repeat:no-repeat;background-position:20px 3px; }
+</style>
+</head>
+
+<body onunload="if (!nicht_merk_flag) pruefe_aenderungen();">
+<script type="text/javascript" src="ord.js"></script>
+<script type="text/javascript" src="../buttons.js"></script>
+<script type="text/javascript" src="../struktur_alles.js"></script>
+<script type="text/javascript" src="faktoren.js"></script>
+<script type="text/javascript" src="suche_in_faktoren.js"></script>
+
+<h3 style="color:#B2C900">Gefährdungsbeurteilung ergänzen/ändern</h3>
+
+<script type="text/javascript">
+	  parent.struktur_alles_merk=struktur1['alles'];
+//   suche_in_faktoren();
+
+   document.write('\
+<p>Hier können Sie die Gefährdungsbeurteilung an ihre betrieblichen Gegebenheiten anpassen.\
+	Dazu können Sie weitere Tätigkeiten ergänzen bzw. vorhandene streichen.	</p>\
+<p><b style="color:#004B93">Streichen:</b> Klicken Sie auf die Kontrollkästchen in der unten angezeigten "Vorhandenen Zusammenstellung".<br />\
+<b style="color:#004B93">Ergänzen:</b> Unter "Ergänzungen für '+bereichtxt+'" und in "Ergänzungen aus allen Gewerken" finden Sie weitere \
+Tätigkeiten und Arbeitsbereiche für Ihre Gefährdungsbeurteilung, die Sie durch Anklicken auswählen können.</p><form name="form1" action="javascript:;">');
+
+   var vorhandene='';
+   var ergaenzungen='';   
+   var e2=0;
+
+   var vorhandene_faktoren_nrn=new Array();
+   
+   for(var i=0; i<struktur.length-1; i++) {
+       s=struktur[i].split("#");
+       if (s.length<3) ergaenzend_flag=0;
+       if (s.length==3 && s[2]!="") {
+     	  if (ergaenzend_flag==1) continue;
+     	  if (s[2].charAt(0)=='$') ergaenzend_flag=1;
+     	  e2++;
+     	  }
+       if (s.length==5 && s[3]!="" && akt_nr==e2) {
+           	       if (s[0].charAt(0)=='\t') ergaenzungen+='<input type="checkbox" name="erg_'+i+'" /><a href="ga.htm?preview_'+s[4]+'" title="Nur zur Ansicht">'+s[3]+'</a><br />\r\n';
+           	       else {
+           	       	  vorhandene+='<input type="checkbox" checked="checked" name="loesch_'+i+'" /><a href="ga.htm?preview_'+s[0]+'" title="Nur zur Ansicht">'+s[3]+'</a>\
+           	       	    <a href="javascript:nachoben('+vorhandene_faktoren_nrn.length+')">&uArr;</a> <a href="javascript:nachunten('+vorhandene_faktoren_nrn.length+')">&dArr;</a>\
+           	       	    <a href="javascript:name_aendern('+i+')" title="Faktor-Bezeichnung ändern\r\nHier können Sie den Titel des Auswahbogens konkretisieren.">&#x270E;</a><br />\r\n';
+           	       	  vorhandene_faktoren_nrn.push(i);
+           	       	  }
+       	   }
+       }
+
+   // ersten und letzten Hoch/Runter-Pfeil wieder löschen
+   vorhandene=vorhandene.replace("&uArr;","");
+   var o1=vorhandene.lastIndexOf("&dArr;");
+   vorhandene=vorhandene.substring(0,o1)+vorhandene.substring(o1+6);
+
+   var button_ok='<input type="button" value="Auswahl bestätigen" style="float:right;background-color:#B2C900; color:white" onclick="auswahl_bestaetigen()" />';
+   document.write('<div class="box1">'+button_ok+'Vorhandene Zusammenstellung</div><div style="padding-left:40px">');
+   document.write(vorhandene);
+   document.write('</div><div class="box1">'+button_ok+'Ergänzungen für '+bereichtxt+'</div><div style="padding-left:40px">');
+   if (ergaenzungen=='') ergaenzungen='-';
+   document.write(ergaenzungen);
+   document.write('</div><div class="box1">'+button_ok+'Ergänzungen aus allen Gewerken</div>');
+   document.write('</form>');
+   document.write('<div style="padding-left:40px"><form name="form_such1" action="javascript:such()"><p><input type="text" name="faktor_such" value="'+suchbegriff+'" class="input_bg_gn" /> <input type="button" value="Suche in allen Gewerken" onclick="such()" /></p></form><form name="form2" action="javascript:;">');
+   document.write('<input style="'+((parent.weitere_taetigk_aufklapp==akt_nr && suchbegriff=='')?'display:none':'')+'" id="button_alle_anzeigen" type="button" onclick="alle_erg_anzeigen();" value="Ergänzungen aus allen Gewerken anzeigen">');
+   document.write('<div id="erg_alle" style="'+((parent.weitere_taetigk_aufklapp==akt_nr || suchbegriff!='')?'':'display:none')+'">');
+
+   var struktur_a=struktur1["alles"];
+   struktur_a=struktur_a.split("\n");
+   suchbegriff=suchbegriff.toLowerCase();
+   var ueb='';
+   var ueb2='';
+   var anz_erg=0;
+
+   for(var i=0; i<struktur_a.length-1; i++) {
+       s=struktur_a[i].split("#");
+       if (s[1]!="") {
+       	   ueb='';
+       	   ueb2='';
+       	   ueb+=('<h4>'+s[1]+'</h4>\r\n');
+       	   }
+       if (s.length==3 && s[2]!="") {
+       	   ueb2=('<h5>'+s[2]+'</h5>\r\n');
+       	   }
+       if (s.length==5 && s[3]!="") {
+               if (suchbegriff!='' && s[3].toLowerCase().indexOf(suchbegriff)==-1) { // Funktion: Suche in Faktor
+                    var dateiname=s[4];
+                    try{
+                        var z=ga_dateien[dateiname];
+                        var x=titel[z]+gefahr[z]+fragen[z]+massnahmen[z].join("");
+                        x=x.toLowerCase();
+                        if (x.indexOf(suchbegriff)==-1) continue;               	    
+                    } catch(e){}
+               	}
+           	   document.write(ueb+ueb2+'<input type="checkbox" name="erga_'+i+'" /> <a href="ga.htm?preview_'+s[4]+'" title="Nur zur Ansicht">'+s[3]+'</a><br />\r\n');
+           	   anz_erg++;
+           	   ueb='';
+           	   ueb2='';
+       	   }
+       }
+   if (suchbegriff!='' && anz_erg==0) document.write('<p>Keine Fundstellen.</p>');
+   document.write('<p>'+button_ok.replace('float:right','')+'</p>');
+   document.write('</div></div></form>');
+
+
+function zurueck_zu_start()
+{
+   location.href=xpath+'ga/ga_'+bereich+'.htm';
+}
+
+function auswahl_bestaetigen()
+{
+   nicht_merk_flag=1;
+   parent.eigene_struktur=hole_neue_auswahl(1);
+   location.href=xpath+'ga/weitere_taetigk.htm?kap='+akt_nr;
+}
+
+function hole_neue_auswahl(flag_alert_ja_nein)
+{
+	var neue_faktoren='';
+	var flag_ausgefuellt=0;
+	var flag_faktor_schon_vorhanden=0;
+    //alert(parent.eigene_struktur);
+    var s=parent.eigene_struktur.split("\n");
+   
+    // erst die neuen Faktoren ermitteln
+    //
+	for(var i=0;i<document.form1.elements.length; i++) {
+		var f=document.form1.elements[i];
+		if (f.type=="checkbox" && f.checked && f.name.substring(0,4)=='erg_') { // Ergänzung aus Strukturdatei (mit Tab-Zeichen gekennzeichnete Zeilen sind 'ergänzende Faktoren')
+            var nr=f.name.substring(4);
+		    var neuerfaktor=struktur[nr]+'\n';
+		    if (neuerfaktor.charAt(0)=='\t') {
+		    	neuerfaktor=neuerfaktor.substring(1);
+		        }
+		    neue_faktoren+=neuerfaktor;
+		    }
+		if (f.type=="checkbox" && !f.checked && f.name.substring(0,7)=='loesch_') {
+            var nr=f.name.substring(7);
+             // Wenn man einen Faktor löscht, soll er in die Liste "Ergänzungen für.." verschoben werden, d.h. ein Tab-Zeichen muss davor.
+             // Aber nur, wenn der Faktor noch nicht in dieser Liste ist.
+             
+             // zunächst prüfen, ob noch Eingaben in dem zu löschenden Formular vorhanden sind
+             var form_id=s[nr].split("#")[0];
+             flag_ausgefuellt+=pruefe_ob_ausgefuellt(form_id);
+             
+             // erst die ID ermitteln, die gelöscht werden soll. z.B. A01_3#.... -> dann ist A01 die ID.
+             var id_die_geloescht_werden_soll=s[nr].split("#")[0].split("_")[0];
+             var gefunden=0;
+            
+             // prüfen, ob dieser ID bereits in der Liste "Ergänzungen für..." ist
+             //alert(id_die_geloescht_werden_soll + "--"+s);
+             for(var j=0; j<s.length; j++) {
+             	    if (s[j].charAt(0)=='\t') {
+             	        var id=s[j].substring(1).split("#")[0];
+    	                var id_ohne_lfdnr=id.split("_")[0];
+    	                if (id_ohne_lfdnr==id_die_geloescht_werden_soll) {gefunden=1; j=s.length;}
+    	                }
+    	            }
+            if (!gefunden) s[nr]="\t"+s[nr]; // das Formular verschieben zu "Ergänzungen für.."
+            else s[nr]="XXX"; // Formular löschen
+		    }
+		}
+
+	for(var i=0;i<document.form2.elements.length; i++) {
+		var f=document.form2.elements[i];
+		if (f.type=="checkbox" && f.checked && f.name.substring(0,5)=='erga_') { // Ergänzung aus allen Gewerken
+            var nr=f.name.substring(5);
+		    neue_faktoren+=struktur_a[nr]+'\n';
+		    }
+		}
+   
+    // bei den IDs der neuen Faktoren ggf. laufende Nummern ergänzen, damit keine doppelten IDs in der Struktur auftreten
+    //
+    // dazu zuerst die ID's der bereits vorhandenen Faktoren in ein Array schreiben.  z.B. A01, A02, B01
+    // Wenn es bereits eigene Faktoren zu dieser ID gibt (A01_1, A01_2..., A02_1...)  dann die max. Nr. dieser Faktoren merken
+    var id_vorhanden_maxnr=new Array();
+    var faktorname_vorhanden=new Array();
+    for(var i=0; i<s.length; i++) {
+    	var id=s[i].split("#")[0];
+    	var id_ohne_lfdnr=id.split("_")[0];
+    	
+    	var nr;
+    	if (id.indexOf("_")==-1) nr=0; // z.B. A01 -> ist kein zusätzlicher Gef.Faktor -> Nr 0
+    	else nr=parseInt(id.split("_")[1]); // Z.B. A01_10 -> d.h. die 10. Wiederholung des Faktors A01 -> Nr 10
+    	
+    	if (typeof id_vorhanden_maxnr[id_ohne_lfdnr]=="undefined") id_vorhanden_maxnr[id_ohne_lfdnr]=nr;
+    	else if (nr>id_vorhanden_maxnr[id_ohne_lfdnr]) id_vorhanden_maxnr[id_ohne_lfdnr]=nr;
+    	
+    	try{
+    		if (id.charAt(0)!="\t") {
+    		 var faktorname=s[i].split("#")[4];
+    	     faktorname_vorhanden[faktorname]=1;
+    	     }
+    	}catch(e){}
+    }
+    
+    // jetzt die neuen Faktoren durchgehen
+    if (neue_faktoren) {
+        var nf=neue_faktoren.split("\n");
+        for(var i=0; i<nf.length-1; i++) {
+        	var id=nf[i].split("#")[0].split("_")[0];
+        	if (typeof id_vorhanden_maxnr[id]!="undefined")  {
+        	    nf[i]=id+"_"+(id_vorhanden_maxnr[id]+1)+nf[i].substring(nf[i].indexOf("#")); // id vorhanden-> eine neue lfd.nr. ergänzen!
+        	    }
+        	try{
+        	   var faktorname=nf[i].split("#")[4];
+        	   if (typeof faktorname_vorhanden[faktorname]!="undefined") flag_faktor_schon_vorhanden++;
+            }catch(e){}
+        }
+        neue_faktoren=nf.join("\n");
+    }
+    
+    //   
+    //
+   
+   //alert(s[einfueg_pos]);
+   s[einfueg_pos]='(X_y_Z)'+s[einfueg_pos];
+   var str=s.join("\n");
+   str=str.replace(/XXX\n/g, '');
+   //alert(neue_faktoren);
+   str=str.replace('(X_y_Z)', neue_faktoren);
+   if (flag_faktor_schon_vorhanden) {
+      if (!confirm('Hinweis: Einer oder mehrere dieser Faktoren sind bereits in der Struktur vorhanden. Soll die Änderung trotzdem gespeichert werden?')) return parent.eigene_struktur;
+      }
+   if (flag_ausgefuellt) {
+      if (!confirm('Hinweis: In einem oder mehreren dieser Faktoren sind Eingaben gemacht worden. Sollen diese Faktoren trotzdem gelöscht werden? Die Eingaben bleiben erhalten.')) return parent.eigene_struktur;
+      }
+   return str;   
+}
+
+function such()
+{
+	location.href=xpath+'ga/weitere_taetigk.htm?kap='+akt_nr+'&such='+document.form_such1.faktor_such.value.replace(/[^äüöÄÜÖßA-Za-z0-9_ ]/g,"");
+}
+
+function nachunten(i)
+{
+   var s=parent.eigene_struktur.split("\n");
+   var nr=vorhandene_faktoren_nrn[i];
+   var nr1=vorhandene_faktoren_nrn[i+1];
+   
+   var merk=s[nr1]; s[nr1]=s[nr]; s[nr]=merk;
+   parent.eigene_struktur=s.join("\n");
+   location.href=xpath+'ga/weitere_taetigk.htm?kap='+akt_nr;
+}
+
+function nachoben(i)
+{
+   var s=parent.eigene_struktur.split("\n");
+   var nr=vorhandene_faktoren_nrn[i];
+   var nr1=vorhandene_faktoren_nrn[i-1];
+
+   var merk=s[nr1]; s[nr1]=s[nr]; s[nr]=merk;
+   parent.eigene_struktur=s.join("\n");
+   location.href=xpath+'ga/weitere_taetigk.htm?kap='+akt_nr;
+}
+
+function name_aendern(i)
+{
+   var s=parent.eigene_struktur.split("\n");
+   var f1=s[i].split("#");
+   f1[3]=window.prompt("Name des Faktors:", f1[3]);
+   if (!f1[3]) return;
+   s[i]=f1.join("#");
+   parent.eigene_struktur=s.join("\n");
+   location.href=xpath+'ga/weitere_taetigk.htm?kap='+akt_nr;
+}
+
+function pruefe_ob_ausgefuellt(form_id)
+{
+	 var ga=parent.ga_daten["f"+form_id];
+	 if (!ga) return 0; // nicht vorhanden, also auch nicht ausgefuellt
+	 
+   var g=ga.split("|");
+   var dateiname=g[0];
+   var checkboxen=new Array();
+   if (g.length>1) checkboxen=g[1].split(","); else return 0;
+   	
+   for(var i=0; i<checkboxen.length; i++) if (checkboxen[i]==1) return 1; // es wurde eine gesetzte Checkbox gefunden
+   for(var i=2; i<g.length; i++) if (g[i] && g[i]!="undefined") return 1; // es wurde ein gesetztes Eingabefeld gefunden
+   return 0;   
+}
+
+function alle_erg_anzeigen()
+{
+document.getElementById('erg_alle').style.display='block';parent.weitere_taetigk_aufklapp=akt_nr;
+document.getElementById('button_alle_anzeigen').style.display='none'
+if (document.form_such1.faktor_such.value) { document.form_such1.faktor_such.value=''; such(); }
+
+}
+</script>
+
+<br>
+<script type="text/javascript" src="../buttons2.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,140 @@
+
+.content {
+	max-width: 550px;
+}
+
+.headrot {
+	color: #d40e13;
+	font-weight: bold;">
+}
+
+.headblau {
+	color: #0d4489;
+	font-weight: bold;">
+}
+
+span.rot {
+	color: #d40e13;
+	font-weight: bold;">
+}
+
+.i-weiss {
+ 	float: left;
+ 	margin-top: -25px ;
+ 	margin-right: 20px;
+ 	margin-left: 20px;
+ 	margin-bottom: 10px;
+}
+
+.infoblau {
+	background-color: #ddeeff;
+	padding: 10px;
+	margin-top:30px;
+}
+
+.infoblauhead {
+	background-color: #0d4489;
+	margin: -10px;
+	margin-bottom: 10px;
+	padding: 4px;
+	color: #ffffff;
+	font-weight: bold;
+}
+
+
+.i-zitat {
+ 	float: left;
+ 	margin-top: -23px ;
+ 	margin-right: 20px;
+ 	margin-left: 20px;
+ 	margin-bottom: 10px;
+}
+
+.zitatblau {
+	background-color: #ffffff;
+	padding: 10px;
+	margin-top:30px;
+	border-top: 1px solid #000000;
+	color: #0d4489;
+	font-style: italic;
+}
+
+.zitatblauhead {
+	background-color: #ffffff;
+	margin-top: -31px;
+	margin-bottom: 10px;
+	margin-left: 110px;
+	padding-left: 15px;
+	color: #0d4489;
+	font-weight: normal;
+	font-style: italic;
+	border: 0px solid #000000;
+	width: 240px;
+}
+
+.zitatblautext {
+	color: #0d4489;
+	font-style: italic;
+	border-bottom: 1px solid #0d4489;
+}
+
+.zitatblack {
+	background-color: #ffffff;
+	padding: 10px;
+	margin-top:30px;
+	border-top: 1px solid #000000;
+	color: #000000;
+	font-style: italic;
+}
+
+.zitatblackhead {
+	background-color: #ffffff;
+	margin-top: -31px;
+	margin-bottom: 10px;
+	margin-left: 110px;
+	padding-left: 15px;
+	color: #000000;
+	font-weight: normal;
+	font-style: italic;
+	border: 0px solid #000000;
+	width: 240px;
+}
+
+.zitatblacktext {
+	color: #565655;
+	font-style: italic;
+	border-bottom: 0px solid #565655;
+}
+
+
+.inforot {
+	background-color: #f7d7c9;
+	padding: 10px;
+}
+
+.infogruen {
+	background-color: #f0f4d9;
+	padding: 10px;
+}
+
+.i-rot, .i-gruen {
+ 	float: right;
+ 	margin-top: -25px ;
+ 	margin-right: 20px;
+ 	margin-left: 20px;
+ 	margin-bottom: 10px;
+}
+
+.indent {
+	text-indent:-20px;
+	margin-left:20px;"
+}
+
+.bildrechts {
+	float: right;
+	font-size: 12px;
+	padding: 0px;
+	margin-top: 0px;
+	margin-left: 10px;
+	margin-bottom: 10px;
+}

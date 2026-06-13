@@ -1,0 +1,234 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+<meta name="Copyright" content="Copyright 2025 BC GmbH, Ingelheim" />
+<title>Auswahl Gewerke</title>
+<link rel="stylesheet" type="text/css" href="../daten.css" />
+<style type="text/css">
+ html { overflow:auto; min-width:1078px }
+
+.kasten, .kasten { font-size:16px; font-family:,verdana,sans-serif }
+.kasten a:link, .kasten a:visited { color:#000000; text-decoration:none; }
+.kasten p { width:100%;height:25px;background-color:#DFE8F1;border-bottom:1px solid #7992B6; margin:0; cursor:hand }
+.kasten p b  { padding-left:23px; line-height:25px; font-weight:normal;font-size:13px  }
+#einstieg { padding-left:23px; padding-top:8px; font-family:verdana,sans-serif;font-weight:bold}
+</style>
+<script type="text/javascript">
+   var gew =0;
+
+function m_over(i)
+{
+	document.getElementById("gewerk"+i).style.backgroundColor="#BBD4EF";  // <-- hier die  Farbe für Mouseover eintragen
+}
+
+function m_out(i)
+{
+    document.getElementById("gewerk"+i).style.backgroundColor=(i==gew)?"#9BB4CF":"#DFE8F1";  // <-- hier die beiden Farben für Aktiv und Normal eintragen
+}
+
+function check800()
+{
+	//if (getClientWidth()<=800) alert("Diese Anwendung benötigt eine Bildschirmauflösung von mindestens 1024x768 Pixeln.");
+}
+
+function getClientWidth()
+{
+  if (self.innerWidth) // all except Explorer
+	return self.innerWidth;
+  else if (document.documentElement && document.documentElement.clientWidth)	// Explorer 6 Strict Mode
+	return document.documentElement.clientWidth;
+  else if (document.body) // other Explorers
+       return document.body.clientWidth;
+  return 0;
+}
+
+
+nr=1;
+
+function anim()
+{
+   nr++;
+   if (nr==34) nr=1;
+
+	var s=document.getElementById("titelbild").src.split("ga/img_titel/")[0];
+	//alert(s);
+  document.getElementById("titelbild").src=s+"ga/img_titel/ani"+nr+".jpg";
+   setTimeout("anim()", 3000);
+}
+
+function start_anim()
+{
+   setTimeout("anim()", 2000);
+}
+
+</script>
+</head>
+
+<body onload="check800();start_anim()" style="overflow:auto">
+
+<div style="position:absolute;top:0px;left:0px;width:100%;height:116px;background-color:#004A95"></div>
+<div style="position:absolute;top:20px;left:25px"><img src="img_titel/bgbau_logo_weiss.gif" alt="BG BAU Berufsgenossenschaft der Bauwirtschaft" title="" /></div>
+<div style="position:absolute;top:20px;left:374px"><img src="img_titel/schrift_ga.gif" alt="Gefährdungsbeurteilung" title="" /></div>
+
+<div id="stand" style="position:absolute;top:72px;left:377px;font-family:arial,verdana,sans-serif;font-size:12px; letter-spacing: 1px;color:white">Handlungshilfen<br />Version 4.2 – 12/2025</div>
+
+<div style="position:absolute;top:73px;left:600px;width:404px; text-align:right">
+<a class="linkws" href="../help/impressum.htm">Impressum</a><br />
+<a class="linkws" href="../help/barrierefreiheit.htm">Barrierefreiheit</a><br />
+</div>
+
+<table border="0" cellpadding="3" cellspacing="0" style="position:absolute;top:125px;left:58px">
+<tr>
+<td colspan="3"><img id="titelbild" src="img_titel/ani1.jpg" width="944" height="158" alt="" /></td>
+</tr>
+<tr>
+<td>	<div class="kasten" style="font-size:14px;padding-top:1px;padding-left:23px;"><!--Bitte wählen Sie Ihr Gewerk:-->
+</div></td>
+<td colspan="2"></td>
+</tr>
+
+<td width="317">
+<div class="kasten" style="width:298px">
+	<a onmouseover="m_over(1)" onmouseout="m_out(1)" href="ga_abbruch.htm"><p id="gewerk1"><b>Abbrucharbeiten</b></p></a>
+	<a onmouseover="m_over(21)" onmouseout="m_out(21)" href="ga_bautenschutz.htm"><p id="gewerk21"><b>Bautenschutz</b></p></a>
+	<a onmouseover="m_over(11)" onmouseout="m_out(11)" href="ga_beton.htm"><p id="gewerk11"><b>Betonbohren/-sägen</b></p></a>
+	<a onmouseover="m_over(34)" onmouseout="m_out(34)" href="ga_steinhersteller.htm"><p id="gewerk34"><b>Betonstein-/Terrazzohersteller</b></p></a>
+	<a onmouseover="m_over(46)" onmouseout="m_out(46)" href="ga_boot.htm"><p id="gewerk46"><b>Bootsbau und -service</b></p></a>
+	<a onmouseover="m_over(2)" onmouseout="m_out(2)" href="ga_dach.htm"><p id="gewerk2"><b>Dacharbeiten</b></p></a>
+	<a onmouseover="m_over(33)" onmouseout="m_out(33)" href="ga_deko.htm"><p id="gewerk33"><b>Dekorationsarbeiten</b></p></a>
+	<a onmouseover="m_over(22)" onmouseout="m_out(22)" href="ga_estrichleger.htm"><p id="gewerk22"><b>Estrichverlegearbeiten</b></p></a>
+	<a onmouseover="m_over(3)" onmouseout="m_out(3)" href="ga_fertigteil.htm"><p id="gewerk3"><b>Fertigteilmontage/-werke</b></p></a>
+	<a onmouseover="m_over(12)" onmouseout="m_out(12)" href="ga_feuerfest.htm"><p id="gewerk12"><b>Feuerfestbau</b></p></a>
+	<a onmouseover="m_over(23)" onmouseout="m_out(23)" href="ga_fliesenleger.htm"><p id="gewerk23"><b>Fliesen-/Plattenlegearbeiten</b></p></a>
+	<a onmouseover="m_over(42)" onmouseout="m_out(42)" href="ga_fm.htm"><p id="gewerk42" style="border-bottom:0px;"><b>Gebäudemanagement</b></p></a>
+
+
+</div>
+</td>
+<td width="317">
+<div class="kasten" style="width:298px">
+	<a onmouseover="m_over(41)" onmouseout="m_out(41)" href="ga_gebrein.htm"><p id="gewerk41"><b>Gebäudereinigung</b></p></a>
+	<a onmouseover="m_over(24)" onmouseout="m_out(24)" href="ga_gebaeudetech.htm"><p id="gewerk24"><b>Gebäudetechnik</b></p></a>
+	<a onmouseover="m_over(4)" onmouseout="m_out(4)" href="ga_geruest.htm"><p id="gewerk4"><b>Gerüstbau</b></p></a>
+	<a onmouseover="m_over(25)" onmouseout="m_out(25)" href="ga_glaser.htm"><p id="gewerk25"><b>Glaserarbeiten</b></p></a>
+	<a onmouseover="m_over(5)" onmouseout="m_out(5)" href="ga_gleisbau.htm"><p id="gewerk5"><b>Gleisbau</b></p></a>
+	<a onmouseover="m_over(6)" onmouseout="m_out(6)" href="ga_hochbau.htm"><p id="gewerk6"><b>Hochbau</b></p></a>
+	<a onmouseover="m_over(44)" onmouseout="m_out(44)" href="ga_klett.htm"><p id="gewerk44"><b>Industriekletterarbeiten</b></p></a>
+	<a onmouseover="m_over(31)" onmouseout="m_out(31)" href="ga_korrosion.htm"><p id="gewerk31"><b>Korrosionsschutz</b></p></a>
+	<a onmouseover="m_over(26)" onmouseout="m_out(26)" href="ga_maler_lack.htm"><p id="gewerk26"><b>Maler- und Lackierarbeiten</b></p></a>
+	<a onmouseover="m_over(32)" onmouseout="m_out(32)" href="ga_messebau.htm"><p id="gewerk32"><b>Messebau</b></p></a>
+	<a onmouseover="m_over(27)" onmouseout="m_out(27)" href="ga_parkett_boden.htm"><p id="gewerk27"><b>Parkett-/Bodenlegearbeiten</b></p></a>
+	<a onmouseover="m_over(14)" onmouseout="m_out(14)" href="ga_pflasterer.htm"><p id="gewerk14" style="border-bottom:0px;"><b>Pflasterarbeiten</b></p></a>
+
+
+</div>
+</td>
+<td width="317">
+<div class="kasten" style="width:298px">
+
+	<a onmouseover="m_over(7)" onmouseout="m_out(7)" href="ga_rohr.htm"><p id="gewerk7"><b>Rohrleitungsbau</b></p></a>
+	<a onmouseover="m_over(13)" onmouseout="m_out(13)" href="ga_schornstein.htm"><p id="gewerk13"><b>Schornsteinbau</b></p></a>
+	<a onmouseover="m_over(43)" onmouseout="m_out(43)" href="ga_schornsteinfeger.htm"><p id="gewerk43"><b>Schornsteinfegearbeiten</b></p></a>
+	<a onmouseover="m_over(8)" onmouseout="m_out(8)" href="ga_steinmetz.htm"><p id="gewerk8"><b>Steinmetzarbeiten</b></p></a>
+	<a onmouseover="m_over(28)" onmouseout="m_out(28)" href="ga_stuck_verputz.htm"><p id="gewerk28"><b>Stuckateur-/Verputzerarbeiten</b></p></a>
+	<a onmouseover="m_over(45)" onmouseout="m_out(45)" href="ga_taucher.htm"><p id="gewerk45"><b>Taucherarbeiten </b></p></a>
+	<a onmouseover="m_over(30)" onmouseout="m_out(30)" href="ga_isolierer.htm"><p id="gewerk30"><b>Technische Isolierarbeiten</b></p></a>
+	<a onmouseover="m_over(9)" onmouseout="m_out(9)" href="ga_tiefbau.htm"><p id="gewerk9"><b>Tief- und Straßenbau</b></p></a>
+	<a onmouseover="m_over(29)" onmouseout="m_out(29)" href="ga_trock_montage.htm"><p id="gewerk29"><b>Trockenbau/Montage</b></p></a>
+	<a onmouseover="m_over(10)" onmouseout="m_out(10)" href="ga_zimmerer.htm"><p id="gewerk10"  style="border-bottom:0px;"><b>Zimmererarbeiten </b></p></a>
+
+
+</div>
+
+<div id="kasten_ga_eigene" class="kasten kasten50_blau" style="position:absolute;top:590px;display:none">
+<div style="padding-top:11px"><a href="ga_eigene.htm" style="font-weight:normal;color:black;text-decoration:none;font-size:14px;padding-left:20px">selbst zusammengestellt</a></div>
+</div>
+
+<div class="kasten kasten50_beige" style="position:absolute;top:448px;">
+	<div id="einstieg" style="padding-top:11px;font-size:14px"><a href="../ga_bau/f_e/e0001.htm">Infos zur Gef&auml;hrdungsbeurteilung</a></div>
+</div>
+
+</td>
+</tr>
+</table>
+
+
+<!--<table border="0" cellpadding="0" cellspacing="0" style="position:absolute;top:630px;">
+<tr><td width="62">&nbsp;
+</td>
+<td>
+<a href="https://www.bgbau.de/themen/sicherheit-und-gesundheit/coronavirus/" target="_blank" class="extern"><strong>Informationen zum Coronavirus</strong></a>
+	<br><br>
+	<a href="../../"><strong>Download: ZIP-Archiv zur Offline-Nutzung</strong></a>
+</td></tr>
+</table>      -->
+
+<script type="text/javascript">
+   var i=document.cookie.indexOf("bereich=");
+   var bereich="";
+   if (i!=-1) bereich=document.cookie.substring(i+8).split("; ")[0];
+   if (bereich=="abbruch") gew=1;
+   if (bereich=="dach") gew=2;
+   if (bereich=="fertigteil") gew=3;
+   if (bereich=="geruest") gew=4;
+   if (bereich=="gleisbau") gew=5;
+   if (bereich=="hochbau") gew=6;
+   if (bereich=="rohr") gew=7;
+   if (bereich=="steinmetz") gew=8;
+   if (bereich=="tiefbau") gew=9;
+   if (bereich=="zimmerer") gew=10;
+   if (bereich=="beton") gew=11;
+   if (bereich=="feuerfest") gew=12;
+   if (bereich=="schornstein") gew=13;
+   if (bereich=="pflasterer") gew=14;
+
+   if (bereich=="bautenschutz") gew=21;
+   if (bereich=="estrichleger") gew=22;
+   if (bereich=="fliesenleger") gew=23;
+   if (bereich=="gebaeudetech") gew=24;
+   if (bereich=="glaser") gew=25;
+   if (bereich=="maler_lack") gew=26;
+   if (bereich=="parkett_boden") gew=27;
+   if (bereich=="stuck_verputz") gew=28;
+   if (bereich=="trock_montage") gew=29;
+   if (bereich=="isolierer") gew=30;
+   if (bereich=="korrosion") gew=31;
+   if (bereich=="messebau") gew=32;
+   if (bereich=="deko") gew=33;
+   if (bereich=="steinhersteller") gew=34;
+
+   if (bereich=="gebrein") gew=41;
+   if (bereich=="fm") gew=42;
+   if (bereich=="schornsteinfeger") gew=43;
+   if (bereich=="klett") gew=44;
+   if (bereich=="taucher") gew=45;
+   if (bereich=="boot") gew=46;
+
+   if (bereich=="eigene") document.getElementById("kasten_ga_eigene").style.display="";
+   if (gew) m_over(gew);
+</script>
+
+<script type="text/javascript">
+function getClientHeight()
+{
+  if (self.innerHeight) // all except Explorer
+	return self.innerHeight;
+  else if (document.documentElement && document.documentElement.clientHeight)	// Explorer 6 Strict Mode
+	return document.documentElement.clientHeight;
+  else if (document.body) // other Explorers
+       return document.body.clientHeight;
+  return 0;
+}
+</script>
+
+<script type="text/javascript">
+	document.cookie="hauptkap=0";
+	document.cookie="u_kap=0";
+	document.cookie="uu_kap=0";
+</script>
+
+</body>
+
+</html>

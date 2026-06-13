@@ -1,0 +1,51 @@
+
+.content {
+	max-width: 550px;
+}
+
+.headrot {
+	color: #d40e13;
+	font-weight: bold;">
+}
+
+.headblau {
+	color: #0d4489;
+	font-weight: bold;">
+}
+
+span.rot {
+	color: #d40e13;
+	font-weight: bold;">
+}
+
+.i-rot, .i-gruen {
+ 	float: right;
+ 	margin-top: -25px ;
+ 	margin-right: 20px;
+ 	margin-left: 20px;
+ 	margin-bottom: 10px;
+}
+
+.inforot {
+	background-color: #f7d7c9;
+	padding: 10px;
+}
+
+.infogruen {
+	background-color: #f0f4d9;
+	padding: 10px;
+}
+
+.indent {
+	text-indent:-20px;
+	margin-left:20px;"
+}
+
+.bildrechts {
+	float: right;
+	font-size: 12px;
+	padding: 0px;
+	margin-top: 0px;
+	margin-left: 10px;
+	margin-bottom: 10px;
+}

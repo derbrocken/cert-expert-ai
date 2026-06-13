@@ -1,0 +1,19 @@
+ord=new Array(
+"titel.htm",
+"inhalt.htm",
+"da-info.htm",
+"1.htm",
+"2.htm",
+"3.htm",
+"4.htm",
+"5.htm",
+"6.htm",
+"7.htm",
+"8.htm",
+"9.htm",
+"10.htm",
+"stichw.htm",
+"danh1.htm",
+"danh2.htm",
+"danh3.htm"
+);

@@ -1,0 +1,80 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="de"> <head>
+<title>Gefährdungsbeurteilung - Daten</title>
+<link rel=stylesheet type="text/css" href="../daten.css">
+</head>
+<body onunload="merke_inp()">
+<script type="text/javascript" src="ord.js"></script><script type="text/javascript" src="../buttons.js"></script>
+
+<form name="form_pre">
+<h3>Gefährdungsbeurteilung - Daten der Bearbeitung</h3>
+<p><b>Gefährdungsbeurteilung nach §§ <a href="../gv/arbschg/5.htm">5</a> und <a href="../gv/arbschg/6.htm">6</a> des Arbeitsschutzgesetzes</b></p>
+<table border=0>
+<script type="text/javascript">
+inp11=parent.inp11;
+document.write('<tr><td width=170>Firma:</td><td><input size=35 name=1 value="'+repl_anf(inp11[1])+'"></td></tr>');
+document.write('<tr><td width=170> Arbeitsbereich / Baustelle / Objekt:</td><td><input size=35 name=2 value="'+repl_anf(inp11[2])+'"></td></tr>')
+document.write('<tr><td width=170>Verantwortlicher /<br>Aufsichtsführender:</td><td><input size=35 name=7 value="'+repl_anf(inp11[7])+'"></td></tr>')
+document.write('<tr><td width=170>Zeitraum der Arbeiten</td><td>vom <input size=10 name=3 value="'+repl_anf(inp11[3])+'"> bis <input size=10 name=4 value="'+repl_anf(inp11[4])+'"></td></tr>')
+document.write('<tr><td width=170>Bearbeiter</td><td><input size=35 name=5 value="'+repl_anf(inp11[5])+'"></td></tr>')
+document.write('<tr><td width=170>Bearbeitungsstand<br>Datum</td><td><input size=10 name=6 value="'+repl_anf(inp11[6])+'">')
+document.write('<input size=10 name="8" value="'+inp11[8]+'" style="display:none"></td></tr>');
+</script>
+</table>
+</form>
+<p><script type="text/javascript" src="logo.js"></script></p>
+<p>
+Ihr Eintrag im Feld "Arbeitsbereich / Baustelle /Objekt" ist Bestandteil des vorgeschlagenen Dateinamens der Gefährdungsbeurteilung.
+Er besteht außerdem aus den Merkmalen "Name des Gewerks" und dem Bearbeitungsdatum. 
+Berücksichtigen Sie bitte, dass Sie die hier angebotenen Inhalte zur Erstellung einer Gefährdungsbeurteilung ergänzen
+und an Ihre betriebliche Situation anpassen müssen.
+</p>
+     <p>&nbsp;</p>      <p>&nbsp;</p>
+
+
+
+ <table cellpadding="4" cellspacing="3">
+   <tr>
+     <td bgcolor="#ECF1F7" align="center"><b><span style="font-size:20px">Mitarbeiter</span></b><br /><b>Unterweisung planen, Belastungen dokumentieren</b></td>
+     <td bgcolor="#ECF1F7" align="center"><b><span style="font-size:20px">Arbeitsmittel</span></b><br /><b>Arbeitsmittel verwalten, Prüfungen festlegen</b></td>
+   </tr>
+   <tr>
+     <td align="center" valign="middle" colspan="1"></td>
+     <td align="center" valign="middle" colspan="1"></td>
+   </tr>
+   <tr>
+     <td align="center" valign="middle" colspan="1"><a href="db.htm"><b>Datenbank Mitarbeiter</b></a</td>
+     <td align="center" valign="middle" colspan="1"><a href="db_arbeitsmittel.htm"><b>Datenbank Arbeitsmittel</b></a></td>
+   </tr>
+ </table>
+
+
+
+
+
+<br />
+
+<p>&nbsp;<p>&nbsp;</p></p>
+
+
+
+
+<p>
+
+
+
+
+<a href="javascript:goback()">Zurück</a>
+</p>
+
+<script type="text/javascript">
+if (document.form_pre.elements[6].value=="") {
+   d=new Date();
+   document.form_pre.elements[6].value=make2(d.getDate()) + "."+ make2(d.getMonth()+1) +"."+ d.getYear();
+   }
+</script>
+
+<script type="text/javascript" src="../buttons2.js"></script>
+</body>
+</html>

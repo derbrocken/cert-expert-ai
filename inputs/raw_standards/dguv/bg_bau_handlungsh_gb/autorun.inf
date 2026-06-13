@@ -1,0 +1,9 @@
+[autorun]
+OPEN=AUTORUN.EXE
+icon=win\gabau.ico
+
+[ext]
+prgname=win\show8.exe
+TITEL=Gefährdungsbeurteilungen BG BAU
+SETUP=1
+ie_min_version=5

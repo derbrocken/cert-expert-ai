@@ -1,0 +1,21 @@
+ord=new Array(
+"titel.htm	#Titel",
+"inhalt.htm	#Inhalt",
+"1.htm	#1 Anwendungsbereich",
+"2.htm	#2 Begriffsbestimmungen",
+"3.htm	#3 Informationsermittlung und Gef‰hrdungsbeurteilung",
+"4.htm	#4 Schutzmaﬂnahmen",
+"5.htm	#5 Spezifische Arbeitsbereiche und T‰tigkeiten ñ besondere und zus‰tzliche Schutzmaﬂnahmen",
+"6.htm	#6 Verhalten bei Unf‰llen",
+"7.htm	#7 Betriebsanweisung und Unterweisung der Besch‰ftigten",
+"8.htm	#8 Aufzeichnungs- und Unterrichtungspflichten",
+"9.htm	#9 Zusammenarbeit Besch‰ftigter verschiedener Arbeitgeber ñ Beauftragung von Fremdfirmen",
+"10.htm	#10 Arbeitsmedizinische Vorsorge",
+"anh1.htm	#Anhang 1",
+"anh2.htm	#Anhang 2",
+"anh3.htm	#Anhang 3",
+"anh4.htm	#Anhang 4",
+"anh5.htm	#Anhang 5",
+"anh6.htm	#Anhang 6",
+"lit.htm	#Literaturhinweise"
+);

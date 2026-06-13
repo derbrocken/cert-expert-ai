@@ -1,0 +1,50 @@
+<!--
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=iso-8859-1">
+<meta name="Copyright" content="Copyright 2006 BC GmbH, Wiesbaden">
+<title>Checkliste</title>
+<link rel="stylesheet" type="text/css" href="../daten.css" />
+<script type="text/javascript" src="checkliste.js"></script>
+<script type="text/javascript">
+//<![CDATA[
+   l1=location.search.substring(1).split("&");
+   if (l1.length<=1) medium="monitor"; else medium=l1[1];
+   if (medium=="monitor") drucklink="checkliste.htm"+location.search+"&print";
+   var cl_titel="";
+//]]>
+</script>
+</head>
+<body>
+
+<body>
+<script type="text/javascript" src="ord.js"></script><script type="text/javascript" src="../buttons.js"></script>
+<script type="text/javascript">tab_kopf_fest_ga("table_faktor");</script>
+<script type="text/javascript" src="cl.js"></script>
+
+<script type="text/javascript">
+//<![CDATA[
+   if (medium!="monitor") document.write('<p><a href="javascript:window.print()">Drucken</a><br /><a href="javascript:copy_clp()">In Zwischenablage kopieren</a></p>\r\n');
+   cl_ausgeben(l1[0], medium);
+    var k="kap2"; if (bereich=="eigene") k="kap1";   
+   if (l1.length==3) document.getElementById(k).scrollTop=l1[2].split("=")[1];
+//]]>
+</script>
+
+<a name="spl"></a>
+<script language="JavaScript" src="../ga_bau/form.js" type="text/javascript"></script>
+<div id="vd">
+<script language="JavaScript">buttons("#PATH#..");</script>
+</div>
+
+
+<script type="text/javascript" src="../buttons2.js"></script>
+</body>
+</html>
+
+
+-->

@@ -1,0 +1,161 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="de"> <head>
+<meta http-equiv="content-type" content="text/html; charset=iso-8859-1">
+<meta name="Copyright" content="Copyright 2006 BC GmbH, Wiesbaden">
+<title>Betriebsspezifische Risikoabschätzung</title><link rel=stylesheet type="text/css" href="../../daten.css">
+<style type="text/css">
+.b { color:#000000; }
+.w { color:#FFFFFF; }
+</style>
+<script language='javascript' src='ord.js'></script><script language='javascript' src='../../buttons.js'></script>
+<script type="text/javascript">
+
+var zeile=location.search.substring(1);
+
+function win(x)
+{
+document.getElementById("a1_2").style.display="none";
+document.getElementById("a3_4").style.display="none";
+document.getElementById("a5_7").style.display="none";
+var r=0;
+if (x>=1 && x<=2) {/*document.getElementById("a1_2").style.display="block";*/r=1;}
+if (x>=3 && x<=4) {/*document.getElementById("a3_4").style.display="block";*/r=2;}
+if (x>=5 && x<=7) {/*document.getElementById("a5_7").style.display="block";*/r=3;}
+parent.risiko_daten[zeile]=r;
+}
+
+</script>
+</head>
+<body>
+
+<h3>Betriebsspezifische Risikoabschätzung</h3>
+<p>
+
+Die Maßnahmen in der vorliegenden <a href="Glossar.htm#Gefährdungsbeurteilung">Gefährdungsbeurteilung</a> gehen
+von einem allgemein akzeptierten <a href="Glossar.htm#Grenzrisiko">Grenzrisiko</a> aus. Dieses allgemein akzeptierte 
+<a href="Glossar.htm#Grenzrisiko">Grenzrisiko</a> ist in den Regeln festgeschrieben. 
+Wenn Sie die vorliegende Gefährdungsbeurteilung  anwenden, können Sie davon ausgehen, dass Ihr 
+<a href="Glossar.htm#Restrisiko">Restrisiko</a> niedriger ist als das höchste akzeptierte Risiko. Damit haben Sie die geeigneten 
+Maßnahmen ausgewählt und sichere sowie gesundheitsgerechte Arbeitsbedingungen ermöglicht.
+Wenn Sie das allgemein akzeptierten <a href="Glossar.htm#Grenzrisiko">Grenzrisiko</a> durch ein betriebsspezifisches Grenzrisiko 
+ersetzen wollen, dann müssen Sie selbst eine Risikoabschätzung vornehmen. Zur Ermittlung Ihres spezifischen Grenzrisikos 
+im Betrieb finden Sie hier ein Hilfsinstrument.<br>
+
+Schätzen Sie zu der betrachteten Tätigkeit anhand der folgenden Tabelle das in Ihrem Betrieb spezifische Risiko ab. Sie können das Ergebnis Ihrer Risikoeinschätzung in die Gefährdungsbeurteilung übernehmen. Klicken Sie dazu auf den Risikofaktor in der Tabelle:
+</p>
+
+<script type="text/javascript">
+if (parent.risiko_daten[zeile]) document.write('<p><a href="javascript:win(0);goback();"><b><font color="#339966"><b>Risikoabschätzung löschen</b></font></b></a></p>');
+</script>
+
+
+<p>
+<table border="1" cellspacing="0" cellpadding="3" bordercolor="#000000">
+<tr>
+<td>
+<img src="Betriebsrisiko.gif" width="176" height="71" alt="" border="0">
+</td>
+<td width="20%">Leichte Verletzungen oder Erkrankungen</td>
+<td width="20%">Mittelschwere Verletzungen oder Erkrankungen</td>
+<td width="20%">Schwere Verletzungen oder Erkrankungen</td>
+<td width="20%">Möglicher Tod, Katastrophe</td>
+</tr>
+
+<tr align="center">
+<td align="left">Sehr gering</td>
+<td bgcolor="#00FF00" style="cursor:pointer"  onclick="win(1);goback();" title="Das Risiko ist gering. Handlungsbedarf zur Risikominderung ist nicht zwingend vorhanden.">A</td>
+<td bgcolor="#00FF00" style="cursor:pointer"  onclick="win(2);goback();" title="Das Risiko ist gering. Handlungsbedarf zur Risikominderung ist nicht zwingend vorhanden.">A</td>
+<td bgcolor="#FFFF00" style="cursor:pointer"  onclick="win(3);goback();" title="Das Risiko ist vorhanden. Sie sollten Maßnahmen auswählen, um das Risiko zu mindern. Nutzen Sie dazu gegebenenfalls auch die leeren Felder am Ende der Gefährdungsbeurteilung beziehungsweise die Blanko-Gefährdungsfaktoren.">B</td>
+<td bgcolor="#FFFF00" style="cursor:pointer"  onclick="win(4);goback();" title="Das Risiko ist vorhanden. Sie sollten Maßnahmen auswählen, um das Risiko zu mindern. Nutzen Sie dazu gegebenenfalls auch die leeren Felder am Ende der Gefährdungsbeurteilung beziehungsweise die Blanko-Gefährdungsfaktoren.">B</td>
+</tr>
+<tr align="center">
+<td align="left">gering</td>
+<td bgcolor="#00FF00" style="cursor:pointer"  onclick="win(2);goback();" title="Das Risiko ist gering. Handlungsbedarf zur Risikominderung ist nicht zwingend vorhanden.">A</td>
+<td bgcolor="#FFFF00" style="cursor:pointer"  onclick="win(3);goback();" title="Das Risiko ist vorhanden. Sie sollten Maßnahmen auswählen, um das Risiko zu mindern. Nutzen Sie dazu gegebenenfalls auch die leeren Felder am Ende der Gefährdungsbeurteilung beziehungsweise die Blanko-Gefährdungsfaktoren.">B</td>
+<td bgcolor="#FFFF00" style="cursor:pointer"  onclick="win(4);goback();" title="Das Risiko ist vorhanden. Sie sollten Maßnahmen auswählen, um das Risiko zu mindern. Nutzen Sie dazu gegebenenfalls auch die leeren Felder am Ende der Gefährdungsbeurteilung beziehungsweise die Blanko-Gefährdungsfaktoren.">B</td>
+<td bgcolor="#FF0000" style="cursor:pointer;color:#ffffff"  onclick="win(5);goback();" title="Das Risiko ist hoch. Maßnahmen zur Risikominimierung sind dringend erforderlich. Nutzen Sie dazu gegebenenfalls auch die leeren Felder am Ende der Gefährdungsbeurteilung beziehungsweise die Blanko-Gefährdungsfaktoren.">C</td>
+</tr>
+<tr align="center">
+<td align="left">mittel</td>
+<td bgcolor="#FFFF00" style="cursor:pointer"  onclick="win(3);goback();" title="Das Risiko ist vorhanden. Sie sollten Maßnahmen auswählen, um das Risiko zu mindern. Nutzen Sie dazu gegebenenfalls auch die leeren Felder am Ende der Gefährdungsbeurteilung beziehungsweise die Blanko-Gefährdungsfaktoren.">B</td>
+<td bgcolor="#FFFF00" style="cursor:pointer"  onclick="win(4);goback();" title="Das Risiko ist vorhanden. Sie sollten Maßnahmen auswählen, um das Risiko zu mindern. Nutzen Sie dazu gegebenenfalls auch die leeren Felder am Ende der Gefährdungsbeurteilung beziehungsweise die Blanko-Gefährdungsfaktoren.">B</td>
+<td bgcolor="#FF0000" style="cursor:pointer;color:#ffffff"  onclick="win(5);goback();" title="Das Risiko ist hoch. Maßnahmen zur Risikominimierung sind dringend erforderlich. Nutzen Sie dazu gegebenenfalls auch die leeren Felder am Ende der Gefährdungsbeurteilung beziehungsweise die Blanko-Gefährdungsfaktoren.">C</td>
+<td bgcolor="#FF0000" style="cursor:pointer;color:#ffffff"  onclick="win(6);goback();" title="Das Risiko ist hoch. Maßnahmen zur Risikominimierung sind dringend erforderlich. Nutzen Sie dazu gegebenenfalls auch die leeren Felder am Ende der Gefährdungsbeurteilung beziehungsweise die Blanko-Gefährdungsfaktoren.">C</td>
+</tr>
+<tr align="center">
+<td align="left">hoch</td>
+<td bgcolor="#FFFF00" style="cursor:pointer"  onclick="win(4);goback();" title="Das Risiko ist vorhanden. Sie sollten Maßnahmen auswählen, um das Risiko zu mindern. Nutzen Sie dazu gegebenenfalls auch die leeren Felder am Ende der Gefährdungsbeurteilung beziehungsweise die Blanko-Gefährdungsfaktoren.">B</td>
+<td bgcolor="#FF0000" style="cursor:pointer;color:#ffffff"  onclick="win(5);goback();" title="Das Risiko ist hoch. Maßnahmen zur Risikominimierung sind dringend erforderlich. Nutzen Sie dazu gegebenenfalls auch die leeren Felder am Ende der Gefährdungsbeurteilung beziehungsweise die Blanko-Gefährdungsfaktoren.">C</td>
+<td bgcolor="#FF0000" style="cursor:pointer;color:#ffffff"  onclick="win(6);goback();" title="Das Risiko ist hoch. Maßnahmen zur Risikominimierung sind dringend erforderlich. Nutzen Sie dazu gegebenenfalls auch die leeren Felder am Ende der Gefährdungsbeurteilung beziehungsweise die Blanko-Gefährdungsfaktoren.">C</td>
+<td bgcolor="#FF0000" style="cursor:pointer;color:#ffffff"  onclick="win(7);goback();" title="Das Risiko ist hoch. Maßnahmen zur Risikominimierung sind dringend erforderlich. Nutzen Sie dazu gegebenenfalls auch die leeren Felder am Ende der Gefährdungsbeurteilung beziehungsweise die Blanko-Gefährdungsfaktoren.">C</td>
+</tr>
+<!--
+<tr align="center">
+<td align="left">Sehr gering</td>
+<td><a href="Nohl.htm#1-2" style="cursor:pointer"  onclick="win(1)">X</a></td>
+<td><a href="Nohl.htm#1-2">&nbsp;</td>
+<td><a href="Nohl.htm#3-4">&nbsp;</td>
+<td><a href="Nohl.htm#3-4">4</a></td>
+</tr>
+<tr align="center">
+<td align="left">gering</td>
+<td><a href="Nohl.htm#1-2">&nbsp;</td>
+<td><a href="Nohl.htm#3-4">&nbsp;</td>
+<td><a href="Nohl.htm#3-4">4</a></td>
+<td><a href="Nohl.htm#5-7">5</a></td>
+</tr>
+<tr align="center">
+<td align="left">mittel</td>
+<td><a href="Nohl.htm#3-4">&nbsp;</td>
+<td><a href="Nohl.htm#3-4">4</a></td>
+<td><a href="Nohl.htm#5-7">5</a></td>
+<td><a href="Nohl.htm#5-7">6</a></td>
+</tr>
+<tr align="center">
+<td align="left">hoch</td>
+<td><a href="Nohl.htm#3-4">4</a></td>
+<td><a href="Nohl.htm#5-7">5</a></td>
+<td><a href="Nohl.htm#5-7">6</a></td>
+<td><a href="Nohl.htm#5-7">7</a></td>
+</tr>
+-->
+
+
+<!--<tr>
+<td colspan="5">nach Nohl</td>
+</tr>
+<tr>
+<td colspan="5">Ergebnis anzeigen</td>
+</tr>-->
+</table>
+
+<p>Lassen Sie sich gegebenenfalls von Ihrer Fachkraft für Arbeitssicherheit oder Ihrem Sicherheitstechnischen Dienst beraten.</p>
+
+</p>
+
+<p>
+<div id="a1_2" style="display:none;background-color:#eeeeee;padding:5px">
+<b>Auswertung:</b><br /><br />
+<script type="text/javascript">document.write(risikoeinschaetzung_txt[1]);</script>
+</div>
+<div id="a3_4" style="display:none;background-color:#eeeeee;padding:5px">
+<b>Auswertung:</b><br /><br />
+<script type="text/javascript">document.write(risikoeinschaetzung_txt[2]);</script>
+</div>
+<div id="a5_7" style="display:none;background-color:#eeeeee;padding:5px">
+<b>Auswertung:</b><br /><br />
+<script type="text/javascript">document.write(risikoeinschaetzung_txt[3]);</script>
+</div>
+
+<script type="text/javascript">
+//var r=parent.risiko_daten[zeile];
+//if (r!="undefined" && r>=1 && r<=3) win(r);
+</script>
+
+<p>
+<b><a href="glossar.htm">Glossar</a></b> <b><font face="symbol">Þ</font></b></p>
+
+<script language='javascript' src='../../buttons2.js'></script>
+</body></html>
+

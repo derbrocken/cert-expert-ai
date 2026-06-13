@@ -1,0 +1,8 @@
+.alpha60 { 
+background: transparent ; /* clear solid background for ie */
+zoom:1; /* required for the filters */
+/* For IE 5.5 - 7*/ 
+filter:progid:DXImageTransform.Microsoft.gradient(startColorstr=#c0BFC3C6, endColorstr=#c0BFC3C6); 
+/* For IE 8*/ 
+-ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr=#c0BFC3C6, endColorstr=#c0BFC3C6)"; 
+}

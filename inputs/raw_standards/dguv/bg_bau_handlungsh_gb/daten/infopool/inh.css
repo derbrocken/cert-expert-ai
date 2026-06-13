@@ -1,0 +1,117 @@
+<!--
+/*****  1  ALLGEMEIN   *****/
+
+	body { background-color: #ffffff;}
+
+	p,td,th,h1,h2,h3,h4,ul,ol,li,div,address,blockquote,nobr { font-family:Arial,Helvetica,sans-serif; }
+	
+	td { vertical-align:top; }
+
+
+/***  1.4	LISTEN:  Abstand zwischen   Listenpunkten  und  umbrochenen Zeilen innerhalb eines Listenpunktes   ***/
+	ul { list-style-image:url(grafik/listeStrich.gif); }					/*  Bindestrich statt FettPunkt      */
+	ul.ohne { list-style-image:url(grafik/listeOhnePunkt.gif); }			/*  Leer statt FettPunkt             */
+	ul.punkt { list-style-image:url(grafik/listePunkt.gif); }				/*  PunktFett                        */
+	ul.punktKlein { list-style-image:url(grafik/listePunktKlein.gif); }		/*  PunktKlein                       */
+	li { margin-top:10pt;  line-height:14pt;}
+
+
+
+
+	
+/***  1.9	ÜBERSCHRIFTEN:   Abstand nachfolgender Text   ***/	
+
+
+/*  Überschriften	00-22-44-66-99.0000  	Farbton_neu=40	Sättigung=140					*/
+/*	farbton_40	sättigung_140	3d3b13, 555119, 6c6820, 837e27, 9a942e						*/
+/*	farbton_145	sättigung_75	1d2a33, 273a47, 2b3f4d, 324a5a, 3c596e						*/
+	h1 { color:#000000; font-size:140%; }											/*		*/
+	h2 { color:#032f08; font-size:120%; }											/* 40	*/
+
+
+/***	TR
+	h3 { color:#044c0c; font-size:108%; margin-bottom:-14pt; margin-top: 24pt;  }	
+	h4 { color:#066812; font-size:95%; margin-bottom:-14pt; margin-top: 24pt;  }	
+	h5 { color:#078516; font-size:80%; ;margin-bottom:-14pt; margin-top: 21pt;   }	
+	h6 { color:#09a11b; font-size:70%; ;margin-bottom:-14pt; margin-top: 18pt;   }	
+***/
+
+
+	
+	#s { background-color:#ffff00; }
+
+
+
+
+/***   Bild und Tabellen Über-/Unterschriften   ***/
+	p.bildKopf  { font-size:85%; color: #505050; margin-bottom:2pt; margin-top:-3pt; width:50%; }
+	p.bildFuss { font-size:85%; color: #505050; margin-bottom:35pt; margin-top:-10pt; width:50%; }
+
+
+
+/***  eingerückte Serif-Schrift in Original-Vorlage  ***/
+	#blaukursiv { color:#000099; }
+	#s { background-color:#ffff00; }
+
+	blockquote.kursiv { color:#000099; }
+
+
+/*  Tabelle  */
+
+	td.vMitte { vertical-align:middle; font-size:93%; }	/*  vertical-middle  	*/
+	td.fussnote { font-size:80%;  }						/*  Fussnote  			*/
+
+/*  Tabelle für Inhaltsverzeichnis  */
+
+	td.inhalt {font-size:150%;  font-weight:bold; height:44pt; }		/*  "Inhalt"		*/
+	td.inhalt-e1 { font-size:80%;  font-weight:600; padding-top:9pt }	/*  Ebene-1  		*/
+	td.inhalt-e2 {font-size:80%; height:2pt; }							/*  Ebene-2			*/
+	td.inhalt-a {font-size:80%; height:6pt; }							/*  Anhang/Anlage	*/
+
+
+	
+/***  Ausdruck ohne Buttons bei Formularen  ***/ 
+	@media print {
+	#vd { display:none; }}
+
+
+
+
+
+/*****  5.0		TR = Technische Regeln	******/
+
+	p.titelVom { font-family:Arial,Helvetica,sans-serif; line-height:20pt; text-align:center;  margin-bottom:30pt; }
+		/*  Titelseite:  Erscheinungs-Datum:   font, .., .., Abstand zum nächsten Element  */
+
+
+	p.titelRedaktion { font-family:Arial,Helvetica,sans-serif; font-size:80%; margin-top: 60pt; margin-left: 77pt; margin-right: 40pt }
+		/*  Titelseite:  Redaktionelle Hinweise:   font, .., .., Abstand zum nächsten Element  */
+
+
+	div.titelInhalt { padding-top: 30pt; padding-right:50pt; }
+		/*  Abstand der Tabelle nach oben/rechts  */
+
+
+
+	div.vorbemerkung { margin-left: 57pt; padding:20pt; margin-top: 40pt; font-size: 80%; }
+
+	div.MarkTextRand { background-image:url(../../grafik/TextMark_Rand.gif); }
+
+
+
+/*	div.tdCenter { text-align:center; }		*/
+
+	div.fussnote { margin-top: 10pt; margin-bottom:30pt; padding-right: 50% }
+
+	hr.fussnote { size:1; position:relative; top: 5pt; color:Black; }
+
+
+/***   projekt-spezifisch:  BG-Info***/
+	 
+	a:link { color:#000096; }
+              a:visited { color:#C15759; }
+  	a:active { color:#C15759; }	
+	a:hover { color:#C15759; }
+
+	
+-->

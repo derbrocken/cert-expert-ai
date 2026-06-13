@@ -1,0 +1,39 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+<meta name="Copyright" content="Copyright 2018 BC GmbH, Wiesbaden" />
+<title>Beschäftigte</title>
+<link rel="stylesheet" type="text/css" href="../daten.css">
+<script type="text/javascript" src="../grid.js"></script>
+<style type="text/css">
+#content { width:1004px }
+#content_padd { width:auto; }
+</style>
+</head>
+
+<body onunload="merkeEing()">
+<script language='javascript' src='../buttons.js'></script>
+
+<script type="text/javascript" language="JavaScript" src="find.js"></script>
+
+<form name="form">
+<h2>Beschäftigte</h2>
+<script type="text/javascript"> 
+   dropdown_auswahl['a5']="Allgemein|Explosionsgefährdungen|Druckgefährdungen|Elektrische Gefährdungen";   
+   grid_anzeigen("a", "Name, Vorname#Personal-Nr.#Ersthelfer#Nächste Schulung#Befähigungen/Sachkunde#SiBe#Nächste Schulung#Qualifikationen#\
+Straße, Hausnummer#RV-Nr#PLZ#Ort#Tätigkeit/Beruf", 
+   "180,90,70,120,170,40,120,155, 180,90,70,120,180", "t,t,c,t,t,c,t,t,t,t,t,t,t");
+</script>	
+</form>
+
+<p><b><a href="javascript:goback()">Zurück</a></b></p>
+
+<p><small>
+SiBe=Sicherheitsbeauftragter<br />
+</small>
+</p>
+<script language='javascript' src='../buttons2.js'></script>
+</body>
+</html>

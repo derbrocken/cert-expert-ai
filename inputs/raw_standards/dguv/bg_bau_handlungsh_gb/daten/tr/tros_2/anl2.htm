@@ -1,0 +1,423 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="de">
+
+<head>
+<meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+<title>TROS Laserstrahlung Teil 2: Messungen und Berechnungen von Expositionen gegen&uuml;ber Laserstrahlung, Anlage 2 Messgr&ouml;&szlig;en und Parameter f&uuml;r die Berechnung oder die Messung von Laserstrahlung</title>
+<meta name="Copyright" content="Copyright BC GmbH Verlags- und Mediengesellschaft, 2016" />
+<link rel="stylesheet" type="text/css" href="../../daten.css" />
+<link rel="stylesheet" type="text/css" href="../../gv.css" />
+</head>
+<body>
+<script type="text/javascript" src="ord.js">
+</script>
+<script type="text/javascript" src="../../buttons.js">
+</script>
+
+<h2>Anlage 2 Messgr&ouml;&szlig;en und Parameter f&uuml;r die Berechnung oder die Messung von Laserstrahlung</h2>
+<h4>A2.1 Kenngr&ouml;&szlig;en eines (Gau&szlig;&lsquo;schen) Laserstrahls</h4>
+<p>Zur Charakterisierung eines radialsymmetrischen Laserstrahls, der in seiner Grundmode ein radiales Intensit&auml;tsprofil besitzt, das durch eine Gau&szlig;&lsquo;sche Verteilung (Abbildung A2.1) beschrieben werden kann, werden folgende Gr&ouml;&szlig;en unter Verwendung von Zylinderkoordinaten ben&ouml;tigt:</p>
+<ul>
+<li>Abstand von der Strahltaille (z),</li>
+<li>radiale Koordinate (r),</li>
+<li>die Position der Strahltaille (z = 0),</li>
+<li>der Durchmesser der Strahltaille (d<sub>0</sub> = 2&sdot;w<sub>0</sub>),</li>
+<li>Strahlradius an der Stelle z (w(z)), bzw. Strahldurchmesser an der Stelle z (d(z) = 2 &sdot; w(z)),</li>
+<li>Rayleigh-L&auml;nge (z<sub>R</sub>),</li>
+<li>die Strahldivergenz oder der Fernfelddivergenzwinkel (&phi;),</li>
+<li>Bestrahlungsst&auml;rke E(r, z) an der Stelle r, z.</li>
+</ul>
+<p><img src="9.jpg" width="550" height="255" alt="Abb. A2.1 Propagation eines Gau&szlig;&lsquo;schen Strahls" /></p>
+<p class="bu">Abb. A2.1 Propagation eines Gau&szlig;&lsquo;schen Strahls</p>
+
+<h5>A2.1.1 Strahldurchmesser und Divergenz</h5>
+<p class="abs">(1) F&uuml;r den Gau&szlig;&lsquo;schen Strahl der Wellenl&auml;nge &lambda; gilt der fundamentale Zusammenhang zwischen Strahldurchmesser in der Strahltaille d<sub>0</sub> und Strahldivergenz im Fernfeld &Phi; gem&auml;&szlig; Gl. A2.1:</p>
+<table>
+<tr>
+<td>d<sub>0</sub>&sdot;&Phi;&nbsp;=&nbsp;<sup>4&sdot;&lambda;</sup>&frasl;<sub>&pi;</sub></td>
+<td width="40%" style="text-align:right">Gl. A2.1</td>
+</tr>
+</table>
+<p class="abs">(2) Das hei&szlig;t, das Strahlparameterprodukt (Produkt aus Strahltaillendurchmesser d<sub>0</sub> und Strahldivergenz im Fernfeld (Fernfelddivergenzwinkel) &phi;) h&auml;ngt nur von der Wellenl&auml;nge ab. Eine kleine Strahltaille ist mit einer gro&szlig;en Strahldivergenz verbunden und umgekehrt. F&uuml;r den Strahldurchmesser d(z) entlang der Ausbreitungsrichtung gilt:</p>
+<table>
+<tr>
+<td><img src="f1.jpg" width="293" height="131" alt="Gl. A2.2" /></td>
+<td width="40%" style="text-align:right">Gl. A2.2</td>
+</tr>
+</table>
+
+<p class="abs">(3) Der &Uuml;bergang zwischen Nah- und Fernfeldbereich des Laserstrahls, d. h. zwischen Orten in der N&auml;he zur Strahltaille und in gro&szlig;em Abstand davon, wird durch die sogenannte Rayleigh-L&auml;nge z<sub><sub>R</sub></sub> beschrieben. Sie ist als derjenige Abstand von der Strahltaille definiert, bei der sich die Strahlquerschnittsfl&auml;che verdoppelt bzw. der Strahldurchmesser um den Faktor &radic;2 vergr&ouml;&szlig;ert hat. Es gilt:</p>
+<table>
+<tr>
+<td rowspan="2">z<sub>R</sub> = </td>
+<td style="border-bottom: solid thin black; text-align:center">d<sub>0</sub></td>
+<td rowspan="2"> = </td>
+<td style="border-bottom: solid thin black; text-align:center">&pi;&sdot;d<sub>0</sub><sup>2</sup></td>
+<td width="40%" style="text-align:right" rowspan="2">Gl. A2.3</td>
+</tr>
+<tr>
+<td>&Phi;</td>
+<td>4&sdot;&lambda;</td>
+</tr>
+</table>
+<p class="abs">(4) F&uuml;r gr&ouml;&szlig;ere Abst&auml;nde (z &raquo; z<sub>R</sub>) gilt d(z) = &Phi; &middot; z.</p>
+
+<h5>A2.1.2 Leistungsdichteverteilung</h5>
+<p class="abs">(1) Die radiale Leistungsdichteverteilung des Laserstrahls E(r,z) f&uuml;r den Abstand z von der Strahltaille wird durch die Funktion</p>
+<table>
+<tr>
+<td>E(r,z)&nbsp;=&nbsp;E(0,z)&sdot;e<sup>-<sup>8&sdot;r<sup>2</sup></sup>&frasl;<sub>d<sup>2</sup>(z)</sub></sup></td>
+<td width="40%" style="text-align:right">Gl. A2.4</td>
+</tr>
+</table>
+<p>beschrieben. Dabei ist E(0,z) die Leistungsdichte (Bestrahlungsst&auml;rke) auf der optischen Achse, r die radiale Koordinate und d(z) der Strahldurchmesser an der Stelle z:</p>
+<table>
+<tr>
+<td><img src="f2.jpg" width="431" height="107" alt="Gl. A2.5" /></td>
+<td width="40%" style="text-align:right">Gl. A2.5</td>
+</tr>
+</table>
+<p class="abs">(2) Der Wert der Leistungsdichte (Bestrahlungsst&auml;rke) am Ort r = d(z)/2 betr&auml;gt:</p>
+<table>
+<tr>
+<td><img src="f3.jpg" width="390" height="80" alt="Gl. A2.6" />
+<td width="40%" style="text-align:right">Gl. A2.6</td>
+</tr>
+</table>
+<p>Die Leistungsdichte (Bestrahlungsst&auml;rke) ist also am Ort des Strahlradius im Vergleich zum Maximalwert auf den 1/e<sup>2</sup>-Teil abgefallen.</p>
+
+<p class="abs">(3) In den sicherheitsrelevanten Normen und Vorschriften wird jedoch eine andere Definition des Strahldurchmessers bzw. des Strahlradius verwendet. Hier bezieht man den Strahldurchmesser d<sub>63</sub> auf den Abfall der Leistungsdichte auf den 1/e-Teil des Maximums, sodass man anstatt Gl. A2.4, die Gleichung</p>
+<table>
+<tr>
+<td><img src="f4.jpg" width="267" height="84" alt="Gl. A2.7" /></td>
+<td width="40%" style="text-align:right">Gl. A2.7</td>
+</tr>
+</table>
+<p>zur Berechnung von E(r,z) heranziehen muss.</p>
+
+<p class="abs">(4) Daraus folgen die Zusammenh&auml;nge zwischen den Strahldurchmessern in den Sicherheitsnormen und anderen Normen der Strahlungsphysik:</p>
+<table>
+<tr>
+<td rowspan="2">d<sub>63</sub>(z)&nbsp;=&nbsp;</td>
+<td style="border-bottom: solid thin black; text-align:center">d(z)</td>
+<td width="40%" style="text-align:right" rowspan="2">Gl. A2.8</td>
+</tr>
+<tr>
+<td>&radic;2</td>
+</tr>
+</table>
+
+<p>Dabei ist d<sub>63</sub> der Strahldurchmesser, der 63 % der gesamten Strahlungsleistung umfasst. Da die Divergenz des Laserstrahls &uuml;ber den Strahldurchmesser definiert wird, gilt der Zusammenhang aus Gl. A2.8 auch hinsichtlich Angaben bzgl. der Strahldivergenz:</p>
+<table>
+<tr>
+<td>&Phi;<sub>63</sub> = <sup>&Phi;</sup>&frasl;<sub>&radic;2</sub></td>
+<td width="40%" style="text-align:right">Gl. A2.9</td>
+</tr>
+</table>
+<p>Die Strahldivergenz &Phi;<sub>63</sub> in sicherheitsrelevanten Normen ist also &uuml;ber diejenige radiale Strahlenbegrenzung im Fernfeld definiert, f&uuml;r die die Leistungsdichte (Bestrahlungsst&auml;rke) auf den 1/e-Teil (ca. 37 %) abgefallen ist, d. h. die Leistungsdichte hat um etwa 63 % abgenommen.</p>
+
+<h5>A2.1.3 Leistung durch eine Blende</h5>
+<p class="abs">(1) Berechnungen bez&uuml;glich Expositionsgrenzwerten erfordern h&auml;ufig die Angabe desjenigen Anteils der Gesamtleistung oder -energie, die in einem spezifizierten Abstand durch eine vorgegebene Blende f&auml;llt. F&uuml;r einen Gau&szlig;&lsquo;schen Strahl kann dieser Anteil, der durch eine kreisf&ouml;rmige Blende des Durchmessers d<sub>B</sub> hindurch tritt, durch den Kopplungsparameter &eta; ausgedr&uuml;ckt werden:</p>
+
+<table>
+<tr>
+<td><img src="f5.jpg" width="177" height="87" alt="Gl. A2.10" /></td>
+<td width="40%" style="text-align:right">Gl. A2.10</td>
+</tr>
+</table>
+<p>Dabei ist d<sub>63</sub> der Strahldurchmesser gemessen an den 63 %-Punkten (d. h. 1/e-Punkten) f&uuml;r einen Gau&szlig;&lsquo;schen Strahl im Abstand der Blende.</p>
+
+<p class="abs">(2) Der Strahlungsanteil, der durch die Blende hindurch tritt, ist dann</p>
+<table>
+<tr>
+<td>P<sub>B</sub> = &rho;&sdot;P</td>
+<td width="40%" style="text-align:right">Gl. A2.11</td>
+</tr>
+</table>
+<p>oder</p>
+<table>
+<tr>
+<td>Q<sub>B</sub> = &rho;&sdot;Q</td>
+<td width="40%" style="text-align:right">Gl. A2.12</td>
+</tr>
+</table>
+<p>Hierbei sind P die Gesamtleistung und Q die Gesamtenergie.</p>
+
+<p class="abs">(3) Es l&auml;sst sich derjenige Leistungsanteil berechnen, der durch eine vorgegebene Blende mit dem Durchmesser d<sub>B</sub> f&auml;llt:</p>
+<table>
+<td><img src="f6.jpg" width="317" height="131" alt="Gl. A2.13" /></td>
+<td width="40%" style="text-align:right">Gl. A2.13</td>
+</table>
+<p>Durch eine Blende mit dem Durchmesser d<sub>B</sub> = d/&radic;2 f&auml;llt demnach ein Leistungsanteil von 63 % der Gesamtleistung des Laserstrahls.</p>
+
+<h4>A2.2 Gr&ouml;&szlig;en zur zeitlichen Charakterisierung von Laserstrahlen</h4>
+<p class="abs">(1) In Abbildung A2.2 wird der zeitliche Verlauf der Laserstrahlung f&uuml;r verschiedene Impulsformen dargestellt. Als Impulsbreite gibt man in der Regel die Halbwertsbreite t<sub>H</sub> an.</p>
+<p><img src="10.jpg" width="550" height="130" alt="Abb. A2.2 Impulsdauer t<sub>H</sub> f&uuml;r den Fall eines gau&szlig;f&ouml;rmigen, eines Rechteck- und eines unregelm&auml;&szlig;igen Impulses" /></p>
+<p class="bu">Abb. A2.2 Impulsdauer t<sub>H</sub> f&uuml;r den Fall eines gau&szlig;f&ouml;rmigen, eines Rechteck- und eines unregelm&auml;&szlig;igen Impulses</p>
+<p class="abs">(2) Abbildung A2.3 zeigt den zeitlichen Verlauf der Leistung bei einer regelm&auml;&szlig;igen Impulsfolge. Die Impulsfolgefrequenz f<sub>P</sub> wird durch die Zahl der Impulse pro Sekunde gegeben.</p>
+<p><img src="11.jpg" width="560" height="279" alt="Abb. A2.3 Impulsfolgefrequenz f&uuml;r einen regelm&auml;&szlig;ig gepulsten Laser mit f<sub>P</sub> = 8 Hz" /></p>
+<p class="bu">Abb. A2.3 Impulsfolgefrequenz f&uuml;r einen regelm&auml;&szlig;ig gepulsten Laser mit f<sub>P</sub> = 8 Hz</p>
+
+<h4>A2.3 Winkelausdehnung &alpha; einer scheinbaren Quelle</h4>
+<p class="abs">(1) Die durch einen Strahler bzw. eine diffuse Reflexion erzeugte Bildgr&ouml;&szlig;e auf der Netzhaut wird durch die Winkelausdehnung &alpha; der scheinbaren Quelle bestimmt (Abbildung A2.4). F&uuml;r kleine Winkel gilt n&auml;herungsweise</p>
+<table>
+<tr>
+<td>&alpha;&nbsp;=&nbsp;<sup>d<sub>Q</sub></sup>&frasl;<sub>r</sub>,</td>
+<td width="40%" style="text-align:right">Gl. A2.14</td>
+</tr>
+</table>
+<p>wobei d<sub>Q</sub> den Durchmesser der scheinbaren Quelle und r den Abstand zur scheinbaren Quelle darstellt.</p>
+
+<p><img src="12.jpg" width="550" height="132" alt="Abb. A2.4 Winkelausdehnung &alpha; der scheinbaren Quelle" /></p>
+<p class="bu">Abb. A2.4 Winkelausdehnung &alpha; der scheinbaren Quelle</p>
+
+<p class="abs">(2) Jeder Blick in einen kollimierten Strahl oder auf eine Laserstrahlungsquelle, die eine Winkelausdehnung von weniger als &alpha;<sub>min</sub> = 1,5 mrad besitzt, wird als &bdquo;direkter Blick in den Strahl&ldquo; oder &bdquo;Blick auf eine Punktquelle&ldquo; bezeichnet. Die beiden Begriffe sind f&uuml;r die Zwecke dieser Betrachtung gleichbedeutend.</p>
+<p class="abs">(3) Der &Uuml;bergang zwischen der &bdquo;Punktquellenbetrachtung&ldquo; und dem &bdquo;Blick auf eine ausgedehnte Quelle&ldquo; wird durch den Minimalwinkel &alpha;<sub>min</sub> = 1,5 mrad festgelegt.</p>
+<p class="abs">(4) Bei rechteckigen oder l&auml;nglichen Quellen mit einer minimalen Ausdehnung d<sub>Q1</sub> und einer maximalen Ausdehnung d<sub>Q2</sub> gilt:</p>
+
+<table>
+<tr>
+<td rowspan="2">X&nbsp;=&nbsp;</td>
+<td style="border-bottom: solid thin black; text-align:center">d<sub>q1</sub>&nbsp;+&nbsp;d<sub>q2</sub></td>
+<td rowspan="2">&nbsp;</td>
+<td width="40%" style="text-align:center">Gl. A2.15</td>
+</tr>
+
+<tr>
+<td style="text-align:center">2</td>
+</tr>
+</table>
+
+<p>bzw.</p>
+
+<table>
+<tr>
+<td rowspan="2">&alpha;&nbsp;=&nbsp;</td>
+<td style="border-bottom: solid thin black; text-align:center">&alpha;<sub>1</sub>&nbsp;+&nbsp;&alpha;<sub>2</sub></td>
+<td rowspan="2">&nbsp;</td>
+<td width="40%" style="text-align:center">Gl.&nbsp;A2.16</td>
+</tr>
+
+<tr>
+<td style="text-align:center">2</td>
+</tr>
+</table>
+
+
+<p>Dabei muss beachtet werden, dass der kleinste auftretende Wert &alpha;<sub>1</sub> auf den Wert &alpha;<sub>min</sub> = 1,5 mrad gesetzt wird, wenn er kleiner als 1,5 mrad ist. Ebenso wird auch der gr&ouml;&szlig;te auftretende Wert &alpha;<sub>2</sub> auf den Wert von &alpha;<sub>max</sub> = 100 mrad begrenzt, wenn er &alpha;<sub>max</sub> &uuml;berschreitet.</p>
+
+<h4>A2.4 Grenz-Empfangswinkel &phi;&rho; bei fotochemischer Gefährdung</h4>
+
+
+<p>Der Grenz-Empfangswinkel &gamma;<sub>P</sub> kann nach Abbildungen A2.5 oder A2.6 festgelegt werden. In Abbildung A2.5 wird der Grenz-Empfangswinkel &gamma;<sub>P</sub> durch eine Blende vor der Strahlungsquelle begrenzt. Wird die Strahlungsquelle mit einer Linse auf die Detektorfl&auml;che abgebildet, kann der Empfangswinkel durch eine Blende vor dem Detektor begrenzt werden (Abbildung A2.6).</p>
+<p><img src="13.jpg" width="550" height="343" alt="Abb. A2.5 Begrenzung des Empfangswinkels &gamma;<sub>P</sub> durch eine Blende vor der Strahlungsquelle" /></p>
+<p class="bu">Abb. A2.5 Begrenzung des Empfangswinkels &gamma;<sub>P</sub> durch eine Blende vor der Strahlungsquelle</p>
+<p><img src="14.jpg" width="550" height="279" alt="Abb. A2.6 Begrenzung des Empfangswinkels &gamma;<sub>P</sub> durch eine Blende vor dem Detektor" /></p>
+<p class="bu">Abb. A2.6 Begrenzung des Empfangswinkels &gamma;<sub>P</sub> durch eine Blende vor dem Detektor</p>
+
+<h4>A2.5 Augensicherheitsabstand NOHD (Nominal Ocular Hazard Distance)</h4>
+<h5>A2.5.1 Direkter Laserstrahl</h5>
+<p class="abs">(1) Der Augensicherheitsabstand NOHD stellt die Entfernung von einer Laserstrahlungsquelle dar, bei der die Bestrahlungsst&auml;rke oder Bestrahlung unter die Expositionsgrenzwerte f&auml;llt.</p>
+<p class="abs">(2) Bei den folgenden Berechnungen muss eine bestimmte Expositionsdauer angenommen werden. Es handelt sich z. B. um den NOHD-Wert bei 10 s oder NOHD-Wert bei 100 s. Bei den Angaben in Datenbl&auml;ttern und den Vergleichen muss diese Zeit ber&uuml;cksichtigt werden.</p>
+<p class="abs">(3) F&uuml;r &uuml;blicherweise kleine Werte der Strahldivergenz &Phi; l&auml;sst sich die Bestrahlungsst&auml;rke E im Fernfeld f&uuml;r den Abstand r (siehe Abbildung A2.7) als</p>
+<table>
+<tr>
+<td rowspan="2">E&nbsp;=&nbsp;</td>
+<td style="border-bottom: solid thin black; text-align:center">4&sdot;P&sdot;e<sup>-&mu;r</sup></td>
+<td width="40%" style="text-align:right" rowspan="2">Gl. A2.17</td>
+</tr>
+<tr>
+<td>&pi;&sdot;(d+r&sdot;&Phi;)<sup>2</sup></td>
+</tr>
+</table>
+<p>angeben. Dabei werden d und &Phi; an den 1/e-Punkten des Strahlungsprofils gemessen, wobei f&uuml;r das Strahlungsprofil eine Gau&szlig;&lsquo;sche Verteilung angenommen wird und es sind:</p>
+<p>r - Abstand vom Laserausgang (au&szlig;erhalb der Rayleigh-L&auml;nge),<br />
+P - Laserleistung,<br />
+&mu; - Absorptionskoeffizient und<br />
+d - Strahldurchmesser am Laserausgang.</p>
+<p><img src="15.jpg" width="543" height="403" alt="Abb. A2.7 Aufweitung eines Laserstrahls" /></p>
+<p class="bu">Abb. A2.7 Aufweitung eines Laserstrahls</p>
+
+<p>(4) Der Exponentialfaktor in Gl. A2.17 stellt die durch die Schw&auml;chung in der Atmosph&auml;re verursachten Verluste dar und kann vernachl&auml;ssigt werden, wenn die Sichtweite deutlich gr&ouml;&szlig;er als der Augensicherheitsabstand ist. Es ergibt sich dann:</p>
+<table>
+<tr>
+<td><img src="f7.jpg" width="215" height="96" alt="Gl. A2.18" /></td>
+<td width="40%" style="text-align:right">Gl. A2.18</td>
+</tr>
+</table>
+<p class="abs">(5) Wenn E durch den Expositionsgrenzwert E<sub>EGW</sub> ersetzt wird, wird r zum NOHD und die Gleichung kann entsprechend aufgel&ouml;st werden:</p>
+<table>
+<tr>
+<td><img src="f8.jpg" width="291" height="124" alt="Gl. A2.19" /></td>
+<td width="40%" style="text-align:right">Gl. A2.19</td>
+</tr>
+</table>
+<p>(6) Da der Strahldurchmesser d am Laserausgang in der Regel sehr klein bezogen auf das Ergebnis des Wurzelausdrucks ist, kann er f&uuml;r eine einfache Absch&auml;tzung zur sicheren Seite hin entfallen.</p>
+<table>
+<tr>
+<td><img src="f9.jpg" width="246" height="126" alt="Gl. A2.20" /></td>
+<td width="40%" style="text-align:right">Gl. A2.20</td>
+</tr>
+</table>
+<p class="abs">(7) Diese Gleichung zeigt, dass bei 100-facher Leistung der NOHD um den Faktor 10 zunimmt, und bei Verringerung der Strahldivergenz um den Faktor 100, erh&ouml;ht sich auch der NOHD um den Faktor 100.</p>
+<p class="abs">(8) Wenn die Schw&auml;chung durch atmosph&auml;rische Absorption ber&uuml;cksichtigt werden soll, kann Gl. A2.17 nicht elementar nach r aufgel&ouml;st werden. Die folgende Gleichung gibt jedoch ein Ergebnis wieder, das auf der sicheren Seite liegt:</p>
+<table>
+<tr>
+<td>NOHD<sub>&mu;</sub>&nbsp;=&nbsp;0,5&sdot;NHOD&sdot;(1+e<sup>-&mu;&sdot;NOHD</sup>)</td>
+<td width="40%" style="text-align:right">Gl. A2.21</td>
+</tr>
+</table>
+
+<p>Dabei ist NOHD<sub>&mu;</sub> der Sicherheitsabstand unter Ber&uuml;cksichtigung von Abschw&auml;chung durch die Atmosph&auml;re und NOHD der Abstand in Meter, der sich durch Anwendung von Gl. A2.19 ergibt. Alternativ kann NOHD<sub>&mu;</sub> auch iterativ aus Gl. A2.17 ermittelt werden.</p>
+<p class="abs">(9) Einen zuverl&auml;ssigen Sch&auml;tzwert f&uuml;r &mu;, den Schw&auml;chungskoeffizienten durch atmosph&auml;rische Absorption, kann man aus folgender Gleichung gewinnen:</p>
+<table>
+<tr>
+<td><img src="f10.jpg" width="327" height="87" alt="Gl. A2.22" /></td>
+<td width="40%" style="text-align:right">Gl. A2.22</td>
+</tr>
+</table>
+<p>Dabei ist<br />
+V – Sichtweite in km,<br />
+&lambda; – Wellenl&auml;nge in &mu;m (0,4 &mu;m &le; &lambda; &le; 2 &mu;m) und<br />
+A = 0,585 &middot; V<sup>0,33</sup>.</p>
+
+<h5>A2.5.2 Erweiterter Augensicherheitsabstand ENOHD bei Verwendung optischer Instrumente</h5>
+<p class="abs">(1) Wenn beim Blick in Laserstrahlung im Wellenl&auml;ngenbereich der Netzhautgef&auml;hrdung optische Instrumente (Fernrohre, Ferngl&auml;ser usw.) verwendet werden (Abbildung A2.8), ist es notwendig, den Augensicherheitsabstand NOHD zu vergr&ouml;&szlig;ern, um der Zunahme der auf das Auge einwirkenden Strahlung Rechnung zu tragen.</p>
+<p><img src="16.jpg" width="550" height="335" alt="Abb. A2.8 Sammelnde Wirkung eines Fernrohrs" /></p>
+<p class="bu">Abb. A2.8 Sammelnde Wirkung eines Fernrohrs</p>
+
+<p class="abs">(2) Unter der Bedingung, dass der Durchmesser des Strahlenb&uuml;ndels gr&ouml;&szlig;er als der Objektivdurchmesser d<sub>Obj</sub> und der Durchmesser der Austrittspupille d<sub>AP</sub> gr&ouml;&szlig;er als der Durchmesser der Messblende d<sub>M</sub> ist (d<sub>AP</sub> &gt; d<sub>M</sub>), gilt n&auml;herungsweise:</p>
+<table>
+<tr>
+<td>ENOHD&nbsp;=&nbsp;NOHD&sdot;M</td>
+<td width="40%" style="text-align:right">Gl. A2.23</td>
+</tr>
+</table>
+<p>Dabei ist ENOHD erweiterter Augensicherheitsabstand und M die Vergr&ouml;&szlig;erung des Instruments, die sich folgenderma&szlig;en berechnet:</p>
+<table>
+<tr>
+<td>M&nbsp;=&nbsp;<sup>d<sub>Obj</sub></sup>&frasl;<sub>d<sub>AP</sub></sub></td>
+<td width="40%" style="text-align:right">Gl. A2.24</td>
+</tr>
+</table>
+<p>(3) F&uuml;r den Fall, dass der Durchmesser der Austrittspupille d<sub>AP</sub> kleiner als der Durchmesser der Messblende d<sub>M</sub> ist (d<sub>AP</sub> &lt; d<sub>M</sub>), gilt</p>
+<table>
+<tr>
+<td>ENOHD&nbsp;=&nbsp;NOHD&sdot;G</td>
+<td width="40%" style="text-align:right">Gl. A2.25</td>
+</tr>
+</table>
+<p>mit</p>
+<table>
+<tr>
+<td>G&nbsp;=&nbsp;<sup>d<sub>Obj</sub></sup>&frasl;<sub>d<sub>M</sub></sub></td>
+<td width="40%" style="text-align:right">Gl. A2.26</td>
+</tr>
+</table>
+<p>Wenn daher G kleiner als M ist, wird im Fall von Gleichung A2.23 der ENOHD kleiner.</p>
+<p>Hinweis:<br />
+Die Bestimmung des NOHD h&auml;ngt von einer Reihe zus&auml;tzlicher Parameter ab:</p>
+<ul>
+<li>Der NOHD wird nach dem beschriebenen Verfahren von einem Bezugspunkt z. B. von der Strahltaille und nicht zwangsl&auml;ufig von der Austritts&ouml;ffnung des Lasers an gerechnet. Der Abstand von der Strahlaustritts&ouml;ffnung bis zur Strahltaille kann, wenn nicht bekannt, nach <a href="anl3.htm">Anlage 3</a> ermittelt werden und ist zum NOHD hinzuzurechnen.</li>
+<li>Von einer Vergr&ouml;&szlig;erungswirkung optischer Ger&auml;te, die f&uuml;r die Beobachtung bei Tag konzipiert sind, kann, abgesehen von solchen mit Spiegelsystem, nicht ausgegangen werden, wenn die Wellenl&auml;nge kleiner als 302,5 nm oder gr&ouml;&szlig;er als 4000 nm ist. Die Transmission der daf&uuml;r geeigneten Gl&auml;ser ist bei diesen Wellenl&auml;ngen so niedrig, dass eine effektive Vergr&ouml;&szlig;erungswirkung nicht entsteht.</li>
+</ul>
+<p><strong>Beispiel 1:</strong></p>
+<p>Ein Laser mit einem Gau&szlig;&lsquo;schen Strahlprofil hat eine Emissionsleistung von P = 4 W, eine Strahldivergenz von &Phi; = 0,7 mrad und einen Durchmesser des austretenden Strahlenb&uuml;ndels von d = 1 mm. Berechne den Sicherheitsabstand NOHD, wenn der entsprechende Expositionsgrenzwert E<sub>EGW</sub> = 10 W &sdot; m<sup>-2</sup> betr&auml;gt und eine vernachl&auml;ssigbare atmosph&auml;rische Schw&auml;chung angenommen wird.</p>
+<p>L&ouml;sung:</p>
+<p>Die Anwendung von Gl. A2.19 ergibt:</p>
+<table>
+<tr>
+<td><img src="f11.jpg" width="532" height="135" alt="Gl. A2.27" /></td>
+<td width="40%" style="text-align:right">Gl. A2.27</td>
+</tr>
+</table>
+
+<p><strong>Beispiel 2:</strong></p>
+<p>Dem Laser aus Beispiel 1 wird eine strahlaufweitende Optik vorgesetzt. Diese verringert die Strahldivergenz auf &phi; = 0,1 mrad und vergr&ouml;&szlig;ert den Durchmesser des Strahlenb&uuml;ndels am Austritt auf d = 7 mm. Berechne den neuen Sicherheitsabstand NOHD.</p>
+<p>L&ouml;sung:</p>
+<p>Der NOHD ist:</p>
+<table>
+<tr>
+<td><img src="f12.jpg" width="527" height="118" alt="Gl. A2.28" /></td>
+<td width="40%" style="text-align:right">Gl. A2.28</td>
+</tr>
+</table>
+<p>Man beachte die Bedeutung der Strahldivergenz f&uuml;r die Gr&ouml;&szlig;e des NOHD. Man beachte ferner, dass in diesem Beispiel der Durchmesser d des austretenden Strahlenb&uuml;ndels vernachl&auml;ssigt werden kann.</p>
+
+<p><strong>Beispiel 3:</strong></p>
+<p>Der Laser aus Beispiel 1 wird mit einem Fernglas 8x30 beobachtet, es wird also mit einem Fernglas in die Austritts&ouml;ffnung des Lasers geblickt. Das Fernglas hat eine achtfache Vergr&ouml;&szlig;erung und einen Objektivdurchmesser von 30 mm. Berechne den erweiterten Augensicherheitsabstand ENOHD.</p>
+<p>L&ouml;sung:</p>
+<p>Bei Anwendung der Gleichung A2.23 und des Vergr&ouml;&szlig;erungsfaktors M ergibt sich:</p>
+<table>
+<tr>
+<td>ENOHD&nbsp;=&nbsp;1,018km &sdot; 8&nbsp;=&nbsp;8,144km</td>
+<td width="40%" style="text-align:right">Gl. A2.29</td>
+</tr>
+</table>
+<p>Bei Anwendung des Vergr&ouml;&szlig;erungsfaktors G ergibt sich f&uuml;r eine Laserwellenl&auml;nge von 1 064 nm mit</p>
+<table>
+<tr>
+<td>ENOHD&nbsp;=&nbsp;1,018km &sdot; <sup>30mm</sup>&frasl;<sub>7mm</sub>&nbsp;=&nbsp;4,363km</td>
+<td width="40%" style="text-align:right">Gl. A2.30</td>
+</tr>
+</table>
+<p>ein deutlich niedrigerer Wert. Dieser Wert darf verwendet werden, da der Durchmesser der Austrittspupille</p>
+<table>
+<tr>
+<td>d<sub>AP&nbsp;=&nbsp;</sub><sup>30 mm</sup>&frasl;<sub>8</sub>&nbsp;=&nbsp;3,75 mm</td>
+<td width="40%" style="text-align:right">Gl. A2.31</td>
+</tr>
+</table>
+<p>kleiner als der der Messblende von d<sub>M</sub> = 7 mm ist.</p>
+<p>Hinweis<br />
+Der eingesetzte NOHD aus Gl. A2.23 darf nur &uuml;bernommen werden, wenn der darin eingesetzte Strahldurchmesser sehr klein (deutlich kleiner als die Messblende) oder 0 ist. Liegt eine Strahltaille au&szlig;erhalb der Strahlaustritts&ouml;ffnung vor, so ist der Abstand bis zur Strahltaille dem ENOHD hinzuzurechnen.</p>
+
+<h4>A2.6 Emission aus Lichtwellenleitern – Durchmesser des divergenten Strahls</h4>
+<p class="abs">(1) Die Abstrahlung von Lichtwellenleitern wird &uuml;blicherweise durch die sogenannte numerische Apertur NA charakterisiert. Diese bezeichnet den Sinus des halben Divergenzwinkels &Phi;<sub>5</sub>/2 der Abstrahlcharakteristik, gemessen bei den Punkten mit 5% der Spitzenbestrahlungsst&auml;rke:</p>
+<table>
+<tr>
+<td>NA&nbsp;=&nbsp;sin&nbsp;<sup>&Phi;<sub>5</sub></sup>&frasl;<sub>2</sub> bzw. <sup>&Phi;<sub>5</sub></sup>&frasl;<sub>2</sub>&nbsp;=&nbsp;arc&nbsp;sin NA</td>
+<td width="40%" style="text-align:right">Gl. A2.32</td>
+</tr>
+</table>
+<p class="abs">(2) F&uuml;r einen Strahl mit Gau&szlig;&rsquo;scher Strahlcharakteristik enth&auml;lt der Strahldurchmesser, der auf den 5 %-Wert der maximalen Bestrahlungsst&auml;rke bezogen ist, 95 % der gesamten Leistung oder Energie. Der Strahldurchmesser d<sub>95</sub> im Abstand a von der Quelle wird berechnet zu</p>
+
+
+
+<table>
+<tr>
+<td><img src="tros2-anl2-1.jpg" width="224" height="91" alt="Gl. A2.33" /></td>
+<td width="40%" style="text-align:right">Gl. A2.33</td>
+</tr>
+</table>
+
+
+<p class="abs">(3) Wenn der Durchmesser der emittierenden Faser d<sub>F</sub> in der Gr&ouml;&szlig;enordnung kleiner als 150 &mu;m ist, kann er in den meisten F&auml;llen vernachl&auml;ssigt werden. Au&szlig;erdem wird f&uuml;r Sicherheitsberechnungen der Durchmesser mit 63 % der Gesamtleistung verwendet. Der Umrechnungsfaktor f&uuml;r den Gau&szlig;&lsquo;schen Strahl ist d<sub>95</sub>/d<sub>63</sub> = 1,7. Daher ergibt sich der Strahldurchmesser n&auml;herungsweise zu:</p>
+<table>
+<tr>
+<td><img src="f13.jpg" width="349" height="63" alt="Gl. A2.34" /></td>
+<td width="40%" style="text-align:right">Gl. A2.34</td>
+</tr>
+</table>
+<p class="abs">(4) Die abstandsabh&auml;ngige Leistungsdichte (Bestrahlungsst&auml;rke) f&uuml;r einen Einmoden-Lichtwellenleiter (SM-LWL, SM von &bdquo;single-mode&ldquo;) betr&auml;gt:</p>
+<table>
+<tr>
+<td><img src="f14.jpg" width="358" height="85" alt="Gl. A2.35" /></td>
+<td width="40%" style="text-align:right">Gl. A2.35</td>
+</tr>
+</table>
+<p class="abs">(5) Ein Einmoden-Lichtwellenleiter ist ein spezieller Fall einer Punktlichtquelle. Die Strahldivergenz eines SM-LWL wird durch den Durchmesser des Modenfeldes &omega;<sub>0</sub> und die Wellenl&auml;nge &lambda; der Quelle bestimmt. Der Strahldurchmesser eines SM-LWL wird im Abstand a angen&auml;hert durch:</p>
+<table>
+<tr>
+<td><img src="f15.jpg" width="193" height="65" alt="Gl. A2.36" /></td>
+<td width="40%" style="text-align:right">Gl. A2.36</td>
+</tr>
+</table>
+
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<script type="text/javascript" src="../../buttons2.js">
+</script>
+</body>
+</html>

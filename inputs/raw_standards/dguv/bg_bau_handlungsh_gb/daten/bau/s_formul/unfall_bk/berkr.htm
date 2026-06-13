@@ -1,0 +1,443 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
+<!--form--><!--save_inp--><!--drucke_input2-->
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=ISO-8859-1">
+    <meta name="Copyright" content="Copyright 2004 BC GmbH, Wiesbaden">
+	<title>BK-Anzeige des Unternehmers</title>
+    <link rel="STYLESHEET" type="text/css" href="../../../daten.css">
+    <link rel="STYLESHEET" type="text/css" href="unf-bk.css">
+    <style type="text/css">
+    #spalte_rechts { display:none }
+    </style>
+
+<!--[if IE 6]><link rel="STYLESHEET" type="text/css" href="unf-bk_ie6.css"><![endif]-->
+
+<script language='javascript' src='../form.js'></script>
+<script type="text/javascript">formular_docname="../form/berkr.doc";</script>
+<script type="text/javascript">formular_pdfname="../form/u6000.pdf";</script>
+
+<script language="JavaScript" type="text/javascript">
+<!--
+function einblenden(div) {
+  with(document.getElementById(div).style){
+    if(display=="none"){
+      display="block";
+    }
+    else{
+      display="none";
+    }
+  }
+}
+
+
+function maxZeichen(idname, maxErlaubt) {
+   var dieseArea = document.getElementById(idname);
+   if (dieseArea.value.length > maxErlaubt) {
+         dieseArea.value = dieseArea.value.substring(0, maxErlaubt);
+      }
+}
+
+function next(x)
+{
+	if (x.value=="") return;
+	e=x.name.split("-");
+	element_name=e[0];
+	nr=e[1]-0;
+	document.form.elements[element_name+"-"+(nr+1)].focus();
+}
+
+var swap_merk=0;
+
+function swap(v, x)
+{
+   if (v==swap_merk) {x.checked=false;swap_merk=0;}
+   else swap_merk=v;
+}
+//-->
+</script>
+</head>
+
+<body>
+<script language='javascript' src='../../../buttons.js'></script>
+<script type="text/javascript" language="javascript" src="../form.js"></script>
+
+<script type="text/javascript">
+if (typeof rpath=="undefined" || navigator.userAgent.indexOf("Windows NT 6.2")!=-1|| navigator.userAgent.indexOf("Windows NT 10")!=-1) {
+	document.write('\
+	<h3>Anzeige des Unternehmers bei Anhaltspunkten f&uuml;r eine Berufskrankheit</h3>\
+	<a href="berkr.doc" onclick="set_target(this)"><img border="0" SRC="../grafik/worddoc.gif" border="0" alt="Word"></a>\
+&nbsp;&nbsp;<a href="berkr.doc" onclick="set_target(this)">Formular im Word-Format</a>\
+	<span style="display:none">');
+}
+</script>
+<!-- find_MJ -->
+<div id="vd"><table cellspacing="0" cellpadding="3" border="0" width="600">
+<tr class="size80"><td width="25%">
+<a HREF="javascript:submitform('save');"><img border="0" SRC="../grafik/speichern.gif" alt="Speichern-Symbol"></a>
+&nbsp;
+<a HREF="javascript:submitform('save');">speichern</a>
+</td><td width="25%">
+<a HREF="javascript:load_form()"><img SRC="../grafik/laden.gif" border="0" alt="Laden-Symbol"></a>
+&nbsp;
+<a HREF="javascript:load_form()">öffnen</a>
+</td><td width="25%">
+<a HREF="javascript:submitform('print')"><img border="0" SRC="../grafik/drucken.gif" border="0" alt="Drucksymbol"></a>
+&nbsp;
+<a HREF="javascript:submitform('print')">drucken</a>
+</td>
+</td><td width="25%">
+<a href="berkr.doc" onclick="set_target(this)"><img border="0" SRC="../grafik/worddoc.gif" border="0" alt="Word"></script></a>
+&nbsp;&nbsp;<a href="berkr.doc" onclick="set_target(this)">Word</a>
+</td></tr>
+</table></div>
+<br>
+<!--  -->
+
+<form class="unfbkform" action="" name="form">
+<table class="unfbk">
+<tr>
+<td class="noborder"><img src="1p.gif" width="130" height="1" alt="" /></td>
+<td class="noborder"><img src="1p.gif" width="30" height="1" alt="" /></td>
+<td class="noborder"><img src="1p.gif" width="60" height="1" alt="" /></td>
+<td class="noborder"><img src="1p.gif" width="70" height="1" alt="" /></td>
+<td class="noborder"><img src="1p.gif" width="70" height="1" alt="" /></td>
+<td class="noborder"><img src="1p.gif" width="40" height="1" alt="" /></td>
+<td class="noborder"><img src="1p.gif" width="300" height="1" alt="" /></td>
+<td class="erl"><img src="1p.gif" width="20" height="1" alt="" /></td>
+</tr>
+
+
+
+
+<tr>
+<td class="obenrechtslinks" colspan="7"><h2 style="margin-bottom: 0px; text-align:center">ANZEIGE DES UNTERNEHMERS BEI ANHALTSPUNKTEN
+F&Uuml;R EINE BERUFSKRANKHEIT</h2>
+</td>
+<td class="erl"><div class="erlq"><a href="javascript:void(0)" onclick="einblenden('erltext_allg')" style="text-decoration: none;">&nbsp;<strong>?</strong>&nbsp;</a></div></td>
+</tr>
+
+
+
+
+<tr>
+<td class="links" colspan="6">
+<p class="ssmall">1 Name und Anschrift des Unternehmens<br>
+<textarea name="absender" id="absender" cols="20" rows="5" onkeydown="maxZeichen('absender', 200);" onkeyup="maxZeichen('absender', 200);" onchange="maxZeichen('absender', 200);">
+</textarea></p>
+</td>
+<td class="rechts"><p class="ssmall">2 Unternehmensnummer des Unfallversicherungstr&auml;gers</p>
+<table style="border-collapse:collapse; padding:0px; border-spacing:0px; width:300px;">
+<tr>
+<td style="border-top:none; text-align:center;"><input name="nr2-1" id="nr2-1" size="1" maxlength="1" type="text" class="einezahl" onkeyup="next(this)"></td>
+<td style="border-top:none; text-align:center;"><input name="nr2-2" id="nr2-2" size="1" maxlength="1" type="text" class="einezahl" onkeyup="next(this)"></td>
+<td style="border-top:none; text-align:center;"><input name="nr2-3" id="nr2-3" size="1" maxlength="1" type="text" class="einezahl" onkeyup="next(this)"></td>
+<td style="border-top:none; text-align:center;"><input name="nr2-4" id="nr2-4" size="1" maxlength="1" type="text" class="einezahl" onkeyup="next(this)"></td>
+<td style="border-top:none; text-align:center;"><input name="nr2-5" id="nr2-5" size="1" maxlength="1" type="text" class="einezahl" onkeyup="next(this)"></td>
+<td style="border-top:none; text-align:center;"><input name="nr2-6" id="nr2-6" size="1" maxlength="1" type="text" class="einezahl" onkeyup="next(this)"></td>
+<td style="border-top:none; text-align:center;"><input name="nr2-7" id="nr2-7" size="1" maxlength="1" type="text" class="einezahl" onkeyup="next(this)"></td>
+<td style="border-top:none; text-align:center;"><input name="nr2-8" id="nr2-8" size="1" maxlength="1" type="text" class="einezahl" onkeyup="next(this)"></td>
+<td style="border-top:none; text-align:center;"><input name="nr2-9" id="nr2-9" size="1" maxlength="1" type="text" class="einezahl" onkeyup="next(this)"></td>
+<td style="border-top:none; text-align:center;"><input name="nr2-10" id="nr2-10" size="1" maxlength="1" type="text" class="einezahl" onkeyup="next(this)"></td>
+<td style="border-top:none; border-right:none; text-align:center;"><input name="nr2-11" id="nr2-11" size="1" maxlength="1" type="text" class="einezahl"></td>
+</tr>
+</table>
+</td>
+<td class="erl"><div class="erlq"><a href="javascript:void(0)" onclick="einblenden('erltext_02')" style="text-decoration: none;">&nbsp;<strong>2</strong>&nbsp;</a></div></td>
+</tr>
+
+
+
+
+<tr>
+<td class="rechtslinks" colspan="7">
+<p class="ssmall">3 Empf&auml;nger</p>
+<div class="adressat">
+<p class="ssmall">
+<textarea name="empfaenger" id="empfaenger" cols="20" rows="7" onkeydown="maxZeichen('empfaenger', 200);" onkeyup="maxZeichen('empfaenger', 200);" onchange="maxZeichen('empfaenger', 200);">
+</textarea></p>
+</div>
+</td>
+<td class="erl">&nbsp;</td>
+</tr>
+
+
+
+
+<tr>
+<td colspan="6"><p class="ssmall">4 Name, Vorname des Versicherten</p>
+<p class="ssmall"><input name="nr4-1" id="nr4-1" size="50" maxlength="50" type="text"></p>
+</td>
+<td>
+<div style="float:right;">
+<table style="border-collapse:collapse; padding:0px; border-spacing:0px; margin:0px;">
+<tr>
+<td colspan="2" class="dotted"><p class="ssmall">Tag</p></td>
+<td colspan="2" class="dotted"><p class="ssmall">Monat</p></td>
+<td colspan="4" class="dotted" style="border-right:none;"><p class="ssmall">Jahr</p></td>
+</tr>
+<tr>
+<td class="dotted"><input name="nr5-1" id="nr5-1" size="1" maxlength="1" type="text" class="einezahl" onkeyup="next(this)"></td>
+<td class="dotted"><input name="nr5-2" id="nr5-2" size="1" maxlength="1" type="text" class="einezahl" onkeyup="next(this)"></td>
+<td class="dotted"><input name="nr5-3" id="nr5-3" size="1" maxlength="1" type="text" class="einezahl" onkeyup="next(this)"></td>
+<td class="dotted"><input name="nr5-4" id="nr5-4" size="1" maxlength="1" type="text" class="einezahl" onkeyup="next(this)"></td>
+<td class="dotted"><input name="nr5-5" id="nr5-5" size="1" maxlength="1" type="text" class="einezahl" onkeyup="next(this)"></td>
+<td class="dotted"><input name="nr5-6" id="nr5-6" size="1" maxlength="1" type="text" class="einezahl" onkeyup="next(this)"></td>
+<td class="dotted"><input name="nr5-7" id="nr5-7" size="1" maxlength="1" type="text" class="einezahl" onkeyup="next(this)"></td>
+<td class="dotted" style="border-right:none;"><input name="nr5-8" id="nr5-8" size="1" maxlength="1" type="text" class="einezahl"></td>
+</tr>
+</table>
+</div>
+<p class="ssmall">5 Geburtsdatum</p>
+</td>
+<td class="erl">&nbsp;</td>
+</tr>
+
+
+
+
+<tr>
+<td colspan="4"><p class="ssmall">6 Stra&szlig;e, Hausnummer</p>
+<p class="ssmall"><input name="nr6-1" id="nr6-1" size="50" maxlength="50" type="text"></p></td>
+<td colspan="2">
+<p class="ssmall">Postleitzahl</p>
+<table style="border-collapse:collapse; padding:0px; border-spacing:0px; margin:0px; width:100%">
+<tr>
+<td class="dotted" style="border-left:none;"><input name="nr6-2" id="nr6-2" size="1" maxlength="1" type="text" class="einezahl" onkeyup="next(this)"></td>
+<td class="dotted"><input name="nr6-3" id="nr6-3" size="1" maxlength="1" type="text" class="einezahl" onkeyup="next(this)"></td>
+<td class="dotted"><input name="nr6-4" id="nr6-4" size="1" maxlength="1" type="text" class="einezahl" onkeyup="next(this)"></td>
+<td class="dotted"><input name="nr6-5" id="nr6-5" size="1" maxlength="1" type="text" class="einezahl" onkeyup="next(this)"></td>
+<td class="dotted" style="border-right:none;"><input name="nr6-6" id="nr6-6" size="1" maxlength="1" type="text" class="einezahl"></td>
+</tr>
+</table>
+</td>
+<td><p class="ssmall">Ort</p>
+<p class="ssmall"><input name="nr6-7" id="nr6-7" size="40" maxlength="40" type="text"></p>
+</td>
+<td class="erl">&nbsp;</td>
+</tr>
+
+
+
+<tr>
+<td colspan="2"><p class="ssmall">7 Geschlecht</p>
+<p class="ssmall"><input name="nr7_1" id="nr7_1" type="radio">&nbsp;m&auml;nnlich&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input name="nr7_1" id="nr7_2" type="radio">&nbsp;weiblich</p>
+</td>
+<td colspan="4">
+<p class="ssmall">8 Staatsangeh&ouml;rigkeit</p>
+<p class="ssmall"><input name="nr8-1" id="nr8-1" size="30" maxlength="30" type="text"></p>
+</td>
+<td><p class="ssmall">9 Leiharbeitnehmer</p>
+<p class="ssmall"><input name="nr9_1" id="nr9_1" type="radio">&nbsp;ja&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input name="nr9_1" id="nr9_2" type="radio">&nbsp;nein</p>
+</td>
+<td class="erl"><div class="erlq"><a href="javascript:void(0)" onclick="einblenden('erltext_09')" style="text-decoration: none;">&nbsp;<strong>9</strong>&nbsp;</a></div></td>
+</tr>
+
+
+
+
+<tr>
+<td colspan="2">
+<p class="ssmall">10 Auszubildender</p>
+<p class="ssmall"><input name="nr10_1" id="nr10_1" type="radio">&nbsp;ja&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input name="nr10_1" id="nr10_2" type="radio">&nbsp;nein</p>
+</td>
+<td colspan="2" style="border-right:none">
+<p class="ssmall">11 Ist der Versicherte</p>
+</td>
+<td colspan="3" style="border-left:none">
+<table style="border-collapse:collapse; padding:0px; border-spacing:0px; margin:0px;">
+<tr>
+<td class="noborder"><p class="ssmall"><input name="nr11_1" id="nr11_1" type="radio" onclick="swap(111,this)">&nbsp;Unternehmer </p></td>
+<td class="noborder"><p class="ssmall"><input name="nr11_1" id="nr11_2" type="radio" onclick="swap(112,this)">&nbsp;Ehegatte des Unternehmers</p></td>
+</tr>
+<tr>
+<td class="noborder"><p class="ssmall"><input name="nr11_1" id="nr11_3" type="radio" onclick="swap(113,this)">&nbsp;mit dem Unternehmer verwandt&nbsp;&nbsp;&nbsp;</p></td>
+<td class="noborder"><p class="ssmall"><input name="nr11_1" id="nr11_4" type="radio" onclick="swap(114,this)">&nbsp;Gesellschafter/Gesch&auml;ftsf&uuml;hrer</p></td>
+</tr>
+</table>
+</td>
+<td class="erl">&nbsp;</td>
+</tr>
+
+
+
+
+<tr>
+<td colspan="3"><p class="ssmall">12 Anspruch auf Entgeltfortzahlung</p>
+<p class="ssmall">besteht f&uuml;r
+<span style="border:1px solid #000000;"><input name="nr12-1" id="nr12-1" size="1" maxlength="1" type="text" class="einezahl" onkeyup="next(this)">|
+<input name="nr12-2" id="nr12-2" size="1" maxlength="1" type="text" class="einezahl"></span>&nbsp;Wochen</p>
+</td>
+<td colspan="4"><p class="ssmall">13 Krankenkasse des Versicherten (Name, PLZ, Ort)</p>
+<p class="ssmall"><input name="nr13-1" id="nr13-1" size="70" maxlength="70" type="text"></p>
+</td>
+<td class="erl"><div class="erlq"><a href="javascript:void(0)" onclick="einblenden('erltext_13')" style="text-decoration: none;">&nbsp;<strong>13</strong>&nbsp;</a></div></td>
+</tr>
+
+
+
+
+<tr>
+<td colspan="7">
+<p class="ssmall">14 Welche Krankheitserscheinungen liegen vor, die Anhaltspunkte f&uuml;r die Anzeige bilden? Welche Beschwerden &auml;u&szlig;ert der Versicherte? Auf welche gef&auml;hrdenden Einwirkungen und Stoffe f&uuml;hrt er die Beschwerden zur&uuml;ck?</p>
+<p class="ssmall"><textarea name="nr14" id="nr14" cols="40" rows="6" onkeydown="maxZeichen('nr14', 500);" onkeyup="maxZeichen('nr14', 500);" onchange="maxZeichen('nr14', 500);">
+</textarea></p>
+</td>
+<td class="erl"><div class="erlq"><a href="javascript:void(0)" onclick="einblenden('erltext_14')" style="text-decoration: none;">&nbsp;<strong>14</strong>&nbsp;</a></div></td>
+</tr>
+
+
+
+<tr>
+<td colspan="7">
+<p class="ssmall">15 Welchen gef&auml;hrdenden T&auml;tigkeiten hat der Versicherte ausge&uuml;bt? Welchen gef&auml;hrdenden Einwirkungen und Stoffen war er bei der Arbeit ausgesetzt?</p>
+<p class="ssmall"><textarea name="nr15" id="nr15" cols="40" rows="6" onkeydown="maxZeichen('nr15', 500);" onkeyup="maxZeichen('nr15', 500);" onchange="maxZeichen('nr15', 500);">
+</textarea></p>
+</td>
+<td class="erl"><div class="erlq"><a href="javascript:void(0)" onclick="einblenden('erltext_15')" style="text-decoration: none;">&nbsp;<strong>15</strong>&nbsp;</a></div></td>
+</tr>
+
+
+
+<tr>
+<td colspan="7">
+<p class="ssmall">16 Wurden arbeitsmedizinische Vorsorgeuntersuchungen durchgef&uuml;hrt? Wenn ja, durch wen und wann?</p>
+<p class="ssmall"><textarea name="nr16" id="nr16" cols="40" rows="6" onkeydown="maxZeichen('nr16', 500);" onkeyup="maxZeichen('nr16', 500);" onchange="maxZeichen('nr16', 500);">
+</textarea></p>
+</td>
+<td class="erl">&nbsp;</td>
+</tr>
+
+
+
+<tr>
+<td colspan="7">
+<p class="ssmall">17 Wurden die unter Nummer 15 genannten Gef&auml;hrdungsfaktoren am Arbeitsplatz des Versicherten &uuml;berpr&uuml;ft (z. B. Gef&auml;hrdungsbeurteilung, Messungen), wenn ja mit welchem Ergebnis?</p>
+<p class="ssmall"><textarea name="nr17" id="nr17" cols="40" rows="6" onkeydown="maxZeichen('nr17', 500);" onkeyup="maxZeichen('nr17', 500);" onchange="maxZeichen('nr17', 500);">
+</textarea></p>
+</td>
+<td class="erl">&nbsp;</td>
+</tr>
+
+
+
+
+
+<tr>
+<td colspan="7">
+<table style="border-collapse:collapse; padding:0px; border-spacing:0px; margin:0px; border:none; width:100%">
+
+<tr>
+<td colspan="7" class="noborder">
+<p>&nbsp;</p>
+</td>
+</tr>
+
+<tr>
+<td class="noborder" style="border-bottom:1px solid #000000;"><p class="ssmall"><input name="nr18-1" id="nr18-1" size="10" maxlength="10" type="text"></p></td>
+<td class="noborder" style="border-bottom:1px solid #000000;"><p class="ssmall"><input name="nr18-2" id="nr18-2" size="30" maxlength="30" type="text"></p></td>
+<td class="noborder" style="border-bottom:1px solid #000000;"><p class="ssmall"><input name="nr18-3" id="nr18-3" size="30" maxlength="30" type="text"></p></td>
+<td class="noborder" style="border-bottom:1px solid #000000;"><p class="ssmall"><input name="nr18-4" id="nr18-4" size="25" maxlength="25" type="text"></p></td>
+</tr>
+<tr>
+<td class="noborder"><p class="ssmall">18 Datum</p></td>
+<td class="noborder"><p class="ssmall">Unternehmer/Bevollm&auml;chtigter</p></td>
+<td class="noborder"><p class="ssmall">Betriebsrat (Personalrat)</p></td>
+<td class="noborder"><p class="ssmall">Telefon-Nr. f&uuml;r R&uuml;ckfragen (Ansprechpartner)&nbsp;&nbsp;</p></td>
+</tr>
+</table>
+</td>
+<td class="erl">&nbsp;</td>
+</tr>
+
+<tr>
+<td colspan="8" class="noborder">
+<!--
+<p class="small" style="text-align:right;"><span class="blaettern"><a href="berkr_e.htm">&nbsp;&nbsp;alle Erl&auml;uterungen&nbsp;&nbsp; &gt;&gt;&nbsp;&nbsp;</a></span></p>
+-->
+
+</td>
+</tr>
+
+</table>
+</form>
+
+
+
+<div class="erltext" id="erltext_allg" style="position:absolute; top:10px; left:50px; display:none;">
+<a name="a_erltext_allg" id="a_erltext_allg"></a>
+<h4>I. Allgemeine Erl&auml;uterungen</h4>
+
+
+<p><strong>1.1</strong> Die fr&uuml;hzeitige Anzeige &uuml;ber Anhaltspunkte f&uuml;r eine Berufskrankheit (BK) liegt vor allem im Interesse der Versicherten. Je fr&uuml;her der Unfallversicherungstr&auml;ger (UVTr&auml;ger) von Anhaltspunkten f&uuml;r das Vorliegen einer BK Kenntnis erh&auml;lt, desto eher kann das Feststellungsverfahren zur Pr&uuml;fung von Leistungsanspr&uuml;chen (Individualpr&auml;vention, Rehabilitation, Leistungen in Geld etc.) beginnen. Ein sorgf&auml;ltiges und vollst&auml;ndiges Ausf&uuml;llen erspart f&uuml;r die Versicherten zeitraubende Verz&ouml;gerungen im Feststellungsverfahren.</p>
+
+<p>Haben die Unternehmer im Einzelfall Anhaltspunkte, dass bei Versicherten ihrer Unternehmen eine BK vorliegen k&ouml;nnte, sind sie nach &sect;&nbsp;193 Abs. 2 SGB VII <strong>gesetzlich</strong> verpflichtet, dies dem UV-Tr&auml;ger anzuzeigen.</p>
+
+<p><strong>1.2 Wer hat die Anzeige zu erstatten?</strong></p>
+<p>Anzeigepflichtig ist der Unternehmer oder sein Bevollm&auml;chtigter. Bevollm&auml;chtigte sind Personen, die ausdr&uuml;cklich vom Unternehmer zur Erstattung der Anzeige beauftragt sind.</p>
+
+<p><strong>1.3 Wann ist die Anzeige zu erstatten?</strong></p>
+<p>Die Anzeige ist zu erstatten, wenn der Unternehmer bzw. der Bevollm&auml;chtigte aufgrund seines pers&ouml;nlichen Kenntnisstandes Anhaltspunkte daf&uuml;r hat, dass eine BK vorliegen k&ouml;nnte. Seit Inkrafttreten des SBG VII am 01.01.1997 ist die Anzeigepflicht des Unternehmers in <a href="../../../gv/sgb7/193.htm">&sect;&nbsp;193 Abs. 2 SGB VII</a> geregelt. Die Anzeige ist hiernach nicht erst <strong>bei Vorliegen</strong> einer BK zu erstatten, sondern bereits bei Vorhandensein von <strong>Anhaltspunkten</strong>. Schon Hinweise auf die M&ouml;glichkeit einer BK (am Arbeitsplatz des Versicherten kommen Stoffe bzw. Einwirkungen vor, die mit der aufgetretenen Krankheit in einem Zusammenhang stehen k&ouml;nnen) reichen aus, um die Anzeigepflicht zu begr&uuml;nden.<br>
+Nur wenn der UV-Tr&auml;ger zu einem fr&uuml;hen Zeitpunkt von dem Krankheitsfall erf&auml;hrt, kann er vorbeugend t&auml;tig werden.</p>
+
+<p>Die Anzeige ist binnen drei Tagen zu erstatten, nachdem der Unternehmer von den Anhaltspunkten f&uuml;r eine BK Kenntnis erlangt hat. F&uuml;r jeden Erkrankungsfall ist eine gesonderte Anzeige auszuf&uuml;llen. Auch wenn die BK pl&ouml;tzlich wie ein Arbeitsunfall auftritt, ist die BK-Anzeige und nicht die Unfall-Anzeige zu verwenden.</p>
+
+<p><strong>1.4 In welcher Anzahl ist die Anzeige zu erstatten?<br>
+Wohin ist sie zu senden?</strong></p>
+
+<p>Die Anzeige ist dem zust&auml;ndigen UV-Tr&auml;ger (z.B. Berufsgenossenschaft, Unfallkasse etc.) zu &uuml;bersenden.</p>
+
+<p>Eine Durchschrift ist f&uuml;r die Unterlagen des Unternehmens bestimmt.<br>
+Eine Durchschrift ist dem Betriebsrat/Personalrat auszuh&auml;ndigen.<br>
+Die Anzeige ist vom Betriebsrat/Personalrat mit zu unterzeichnen.</p>
+
+
+<p><strong>1.5 Wer ist von der Anzeige zu informieren?</strong></p>
+
+<p>Die Sicherheitsfachkraft und der Betriebsarzt sind &uuml;ber jede Anzeige in Kenntnis zu setzen. Auf Verlangen der Versicherten ist der Unternehmer verpflichtet, diesen eine Kopie der Anzeige zu &uuml;berlassen.</p>
+
+
+<p><strong>1.6 Was ist bei Todesf&auml;llen, besonders schweren Berufskrankheiten und Massenerkrankungen zu beachten?</strong></p>
+
+<p>Todesf&auml;lle, besonders schwere Berufskrankheiten (wie z.B. Krebserkrankungen) und Massenerkrankungen sind au&szlig;erdem sofort fernm&uuml;ndlich oder per Telefax/e-mail dem zust&auml;ndigen UV-Tr&auml;ger zu melden.</p>
+</div>
+
+
+
+
+<div class="erltext" id="erltext_02" style="position:absolute; top:80px; left:50px; display:none;">
+<a name="a_erltext_02" id="a_erltext_02"></a>
+<p><span class="erlnum">&nbsp;2.&nbsp;</span> Anzugeben ist die Unternehmensnummer (Mitgliedsnummer) beim UV-Tr&auml;ger (z.B.
+enthalten im Beitragsbescheid oder im Bescheid &uuml;ber die Zust&auml;ndigkeit).</p>
+</div>
+
+<div class="erltext" id="erltext_09" style="position:absolute; top:430px; left:50px; display:none;">
+<a name="a_erltext_09" id="a_erltext_09"></a>
+<p><span class="erlnum">&nbsp;9.&nbsp;</span> Der im Unternehmen t&auml;tige Besch&auml;ftigte einer Zeitarbeitsfirma/eines Personaldienstleisters ist ein Leiharbeitnehmer. (Es liegt ein Arbeitnehmer&uuml;berlassungsvertrag vor.)</p>
+</div>
+
+<div class="erltext" id="erltext_13" style="position:absolute; top:520px; left:50px; display:none;">
+<a name="a_erltext_13" id="a_erltext_13"></a>
+<p><span class="erlnum">&nbsp;13.&nbsp;</span> Bei gesetzlicher Krankenversicherung mit Anspruch auf Krankengeld gen&uuml;gt Name, PLZ und Ort der Kasse; in anderen F&auml;llen bitte zus&auml;tzlich Art der Versicherung angeben (z.B. Privatversicherung, Rentnerkrankenversicherung, Familienhilfe, freiwillige Versicherung bei gesetzlicher Krankenkasse).</p>
+</div>
+
+<div class="erltext" id="erltext_14" style="position:absolute; top:580px; left:50px; display:none;">
+<a name="a_erltext_14" id="a_erltext_14"></a>
+<p><span class="erlnum">&nbsp;14.&nbsp;</span> Es sollen die Krankheitserscheinungen und die Art der aufgetretenen Ver&auml;nderungen/
+Beeintr&auml;chtigungen m&ouml;glichst konkret beschrieben werden.</p>
+</div>
+
+<div class="erltext" id="erltext_15" style="position:absolute; top:720px; left:50px; display:none;">
+<a name="a_erltext_15" id="a_erltext_15"></a>
+<p><span class="erlnum">&nbsp;15.&nbsp;</span> Anzugeben sind diejenigen Stoffe, Einwirkungen oder T&auml;tigkeiten, die mit den unter <strong>(14)</strong> beschriebenen Krankheitserscheinungen in Verbindung stehen k&ouml;nnen (z.B. L&auml;rm, Feuchtarbeit, Asbest, L&ouml;sungsmittel etc.).</p>
+</div>
+
+<script type="text/javascript">
+if (typeof rpath=="undefined") document.write("</span>");
+</script>
+
+<script language='javascript' src='../../../buttons2.js'></script>
+</body>
+</html>
+</body>
+</html>

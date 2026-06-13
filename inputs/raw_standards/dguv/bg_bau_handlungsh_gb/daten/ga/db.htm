@@ -1,0 +1,199 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+<meta name="Copyright" content="Copyright 2006 BC GmbH, Wiesbaden" />
+<title>Beschäftigte</title>
+<link rel="stylesheet" type="text/css" href="../daten.css">
+<script type="text/javascript" src="../grid.js"></script>
+</head>
+
+<body onunload="merkeEing()">
+<script language='javascript' src='../buttons.js'></script>
+
+<script type="text/javascript" language="JavaScript" src="find.js"></script>
+
+<form name="form">
+<h2>Belastungen / Unterweisungen</h2>
+
+<table style="background-color:#ECF1F7;width:100%" cellpadding="5" cellspacing="2">
+
+<script type="text/javascript">
+
+    var anz_ma=0;
+
+	for (j=0;typeof parent.mitarbeiter_db['a'+(j+1)+'_1']!="undefined";j++) {
+	    var name1=parent.mitarbeiter_db['a'+(j+1)+'_1'];
+	    var pers_nr=parent.mitarbeiter_db['a'+(j+1)+'_2'];
+	    var eh=parent.mitarbeiter_db['a'+(j+1)+'_3'];
+	    var sachkunde=parent.mitarbeiter_db['a'+(j+1)+'_5'];
+	    var sibe=parent.mitarbeiter_db['a'+(j+1)+'_6'];
+
+	    dropdown_auswahl["b"+j+"3"]="Lärm|Asbesthaltiger Staub|Atemschutz|Benzol|Staub|Belastungen des Muskel- und Skelettsystems / Vibration|Gefahrstoffe|Strahlung|Klebstoffe|Schweiß- und Lötarbeiten";
+	    //dropdown_auswahl["d"+j+"1"]="G 1.1 Silikogener Staub|G 1.2 Asbesthaltiger Staub|G 1.3 Keramikfaserhaltige Stäube|G 1.4 Staubbelastung|G 20 Lärm|G 24 Hautbelastungen|G 25 Fahr-, Steuer- und Überwachungstätigkeiten|G 26 Atemschutzgeräte|G 27 Isocyanate|G 29 Benzolhomologe (Toluol, Xylole)|G 30 Hitzearbeiten|G 37 Bildschirm-Arbeitsplätze|G 40 Krebserzeugende Gefahrstoffe - allgemein|G 41 Arbeiten mit Absturzgefahr|G 42 Infektionskrankheiten|G 44 Buchen- und Eichenholzstaub|G 46 Belastungen des Muskel-Skelett-Systems";
+        document.write('<tr><td colspan="2"><b>'
+          +name1
+          +(pers_nr?' (Pers.-Nr. '+pers_nr+')':'')
+          +'</b>'
+          +(eh?', Ersthelfer':'')
+          +(sibe?', Sicherheitsbeauftragter':'')
+          +(sachkunde?', Sachkunde: '+sachkunde+' ':'')
+          +'</td></tr>');
+        document.write('<tr bgcolor="ffffff"><td style="border-right:5px solid #ECF1F7">');
+        grid_anzeigen("b"+j, "Einsatzort#Zeitraum#Belastung", "120,130,148", "t,t,t");
+        document.write('</td><td>');
+        grid_anzeigen("c"+j, "Anlass der Unterweisung#am (Datum)", "180,90", "t,t");
+        document.write('</td></tr>');
+        document.write('<tr bgcolor="ffffff"><td colspan="2">');
+        grid_anzeigen("d"+j, "Arbeitsmedizinische Vorsorge#durchgeführt (Datum)#Nachuntersuchungen (Datum)",  "350,140,160", "t,t,t");
+        document.write('</td></tr>');
+        anz_ma++;
+        }
+    document.write('</table>');
+    if (anz_ma==0) document.write('<p>Bitte zunächst die Beschäftigten erfassen:</p>');
+    document.write('<p><a href="mitarbeiter.htm">Beschäftigte erfassen</a></p>');
+</script>
+
+</form>
+
+<!--
+<table border="1" width="1000" style="border-collapse: collapse">
+<tr>
+<td><b>Nr</b>.</td>
+<td colspan="6"><b>Name</b></td>
+<td>Entf</td>
+</tr>
+<tr>
+<td><input size="20" maxlength="25" name="" /></td>
+<td colspan="6"><input size="40" maxlength="45" name="" /></td>
+<td><a href="javascript:loesch('+(z-s.length)+','+s.length+')"><img src="img/delete_x_16.gif" width="16" height="16" alt="Zeile löschen" /></a></td>
+</tr>
+
+
+<tr>
+<td colspan="3" width="360"><b>Unterweisungen</b></td>
+<td rowspan="4">&nbsp;</td>
+<td colspan="5"><b>Belastungen</b></td>
+</tr>
+
+
+<tr>
+<td>Anlass</td>
+<td>Datum</td>
+<td>Entf.</td>
+
+<td>Einsatzort</td>
+<td>Zeitraum</td>
+<td>Belastung</td>
+<td>Entf.</td>
+</tr>
+
+
+<tr>
+<td><input size="20" maxlength="20" name="" /></td>
+<td><input size="10" maxlength="15" name="" /></td>
+<td><a href="javascript:loesch('+(z-s.length)+','+s.length+')"><img src="img/delete_x_16.gif" width="16" height="16" alt="Zeile löschen" /></a></td>
+
+<td><input size="20" maxlength="20" name="" /></td>
+<td><input size="10" maxlength="15" name="" /></td>
+<td><select name="Belastung" size="1">
+<option value="a"></option>
+<option value="2">Lärm</option>
+<option value="4">Asbesthaltiger Staub</option>
+<option value="6">Atemschutz</option>
+<option value="8">Benzol</option>
+<option value="10">Staub</option>
+<option value="12">Belastungen des Muskel- und Skelettsystems / Vibration</option>
+<option value="14">Gefahrstoffe</option>
+<option value="16">Strahlung</option>
+<option value="18">Klebstoffe</option>
+<option value="20">Schweiß- und Lötarbeiten</option>
+</select></td>
+<td><a href="javascript:loesch('+(z-s.length)+','+s.length+')"><img src="img/delete_x_16.gif" width="16" height="16" alt="Zeile löschen" /></a></td>
+</tr>
+
+<tr>
+<td colspan="3">Unterweisung Hinzufügen (Skript)</td>
+
+<td colspan="4">Belastung Hinzufügen (Skript)</td>
+</tr>
+
+
+
+<tr><td colspan="8">&nbsp;</td></tr>
+
+<tr>
+<td><b>Nr</b>.</td>
+<td colspan="6"><b>Name</b></td>
+<td>Entf</td>
+</tr>
+<tr>
+<td><input size="20" maxlength="25" name="" /></td>
+<td colspan="6"><input size="40" maxlength="45" name="" /></td>
+<td><a href="javascript:loesch('+(z-s.length)+','+s.length+')"><img src="img/delete_x_16.gif" width="16" height="16" alt="Zeile löschen" /></a></td>
+</tr>
+
+
+<tr>
+<td colspan="3" width="360"><b>Unterweisungen</b></td>
+<td rowspan="4">&nbsp;</td>
+<td colspan="5"><b>Belastungen</b></td>
+</tr>
+
+
+<tr>
+<td>Anlass</td>
+<td>Datum</td>
+<td>Entf.</td>
+
+<td>Einsatzort</td>
+<td>Zeitraum</td>
+<td>Belastung</td>
+<td>Entf.</td>
+</tr>
+
+
+<tr>
+<td><input size="20" maxlength="20" name="" /></td>
+<td><input size="10" maxlength="15" name="" /></td>
+<td><a href="javascript:loesch('+(z-s.length)+','+s.length+')"><img src="img/delete_x_16.gif" width="16" height="16" alt="Zeile löschen" /></a></td>
+
+<td><input size="20" maxlength="20" name="" /></td>
+<td><input size="10" maxlength="15" name="" /></td>
+<td><select name="Belastung" size="1">
+<option value="a"></option>
+<option value="2">Lärm</option>
+<option value="4">Asbesthaltiger Staub</option>
+<option value="6">Atemschutz</option>
+<option value="8">Benzol</option>
+<option value="10">Staub</option>
+<option value="12">Belastungen des Muskel- und Skelettsystems / Vibration</option>
+<option value="14">Gefahrstoffe</option>
+<option value="16">Strahlung</option>
+<option value="18">Klebstoffe</option>
+<option value="20">Schweiß- und Lötarbeiten</option>
+</select></td>
+<td><a href="javascript:loesch('+(z-s.length)+','+s.length+')"><img src="img/delete_x_16.gif" width="16" height="16" alt="Zeile löschen" /></a></td>
+</tr>
+
+<tr>
+<td colspan="3">Unterweisung Hinzufügen (Skript)</td>
+
+<td colspan="4">Belastung Hinzufügen (Skript)</td>
+</tr>
+
+
+
+</table>
+
+
+
+<p>Mitarbeiter Hinzufügen (Skript)</p>
+
+-->
+
+
+<script language='javascript' src='../buttons2.js'></script>
+</body>
+</html>

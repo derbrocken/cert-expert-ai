@@ -1,0 +1,72 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=iso-8859-1">
+<meta name="Copyright" content="Copyright 2006 BC GmbH, Wiesbaden">
+<title>Suche Tätigkeiten und Bereichen</title>
+<link rel="stylesheet" type="text/css" href="../daten.css" />
+</head>
+<body>
+
+<body>
+<script type="text/javascript" src="ord.js"></script><script type="text/javascript" src="../buttons.js"></script>
+<script type="text/javascript" src="faktoren.js"></script>
+
+<script type="text/javascript">
+//<![CDATA[
+
+   var suchbegriff=''; 
+   if (location.search.indexOf("qu=")!=-1) suchbegriff=location.search.split("=")[1];
+   suchbegriff=suchbegriff.replace(/%20/g, " ");
+   suchbegriff=suchbegriff.replace(/\"/g, "");
+   document.write('<form action="suche_faktor.htm" method="get">Suche im Gewerk '+bereichtxt+':<br /><input type="text" size="15" name="qu" value="'+
+                  suchbegriff+'" /> <input type="submit" value="Suchen" /></form>');
+   suchbegriff=suchbegriff.toLowerCase();
+   
+   if (suchbegriff) {
+     var e3=0;
+     var anz=0;
+     var erg=new Array();
+     
+     for(var i=0; i<struktur.length; i++) {
+         s=struktur[i].split("#");
+         if (s[0].charAt(0)=='\t') continue;
+         if (s[1]!="") {
+         	   e1++;e2=0;e3=0;
+         	   }
+         if (s.length==5 && s[3]!="") {
+         	   dateiname=s[4];
+         	   try{
+         	   z=ga_dateien[dateiname];
+         	   
+         	   x=titel[z]+gefahr[z]+fragen[z]+massnahmen[z].join("");
+         	   x=x.toLowerCase();
+         	   if (x.indexOf(suchbegriff)==-1) continue;
+     
+             if (s[4].substring(0,4)=="f_cl") ;
+             else {
+                     // wenn die anzuzeigende GA-Tabelle noch nicht in parent.ga_daten drin ist, dann jetzt
+                     // einen Leereintrag dafür machen!
+                     if (typeof parent.ga_daten!="undefined" && (typeof parent.ga_daten['f'+s[0]]=="undefined" || parent.ga_daten['f'+s[0]]==null))
+                         parent.ga_daten['f'+s[0]]=s[4];
+         	       anz++;
+         	       erg.push('<li><!-- '+s[3]+' --><a href="javascript:go_ga('+e3+','+i+',\''+s[4]+'\')">'+s[3]+'</a>'+
+         	                      '</li>\r\n');
+         	       l=1;
+         	       }
+         	    }catch(e){}
+         	   }
+         }
+       if (anz==0) document.write("<p>Keine Fundstellen im Gewerk "+bereichtxt+".");
+       else {
+       	erg.sort();
+       	document.write('<ul style="padding-left:15px">'+erg.join('')+'</ul>');
+      }
+     }  
+//]]>
+</script>
+
+<script type="text/javascript" src="../buttons2.js"></script>
+</body>
+</html>

@@ -1,0 +1,22 @@
+ord=new Array(
+"titel.htm	#Titel",
+"inhalt.htm	#Inhalt",
+"1.htm	#§ 1 Anwendungsbereich",
+"2.htm	#§ 2 Begriffsbestimmungen",
+"3.htm	#§ 3 Gefährdungsbeurteilung",
+"4.htm	#§ 4 Messungen",
+"5.htm	#§ 5 Fachkunde",
+"6.htm	#§ 6 Auslösewerte bei Lärm",
+"7.htm	#§ 7 Maßnahmen zur Vermeidung und Verringerung der Lärmexposition",
+"8.htm	#§ 8 Gehörschutz",
+"9.htm	#§ 9 Expositionsgrenzwerte und Auslösewerte für Vibrationen",
+"10.htm	#§ 10 Maßnahmen zur Vermeidung und Verringerung der Exposition durch Vibrationen",
+"11.htm	#§ 11 Unterweisung der Beschäftigten",
+"12.htm	#§ 12 Beratung durch den Ausschuss für Betriebssicherheit",
+"13.htm	#§ 13 (weggefallen)",
+"14.htm	#§ 14 (weggefallen)",
+"15.htm	#§ 15 Ausnahmen",
+"16.htm	#§ 16 Straftaten und Ordnungswidrigkeiten",
+"17.htm	#§ 17 Übergangsvorschriften",
+"anh.htm	#Anhang: Vibrationen"
+);

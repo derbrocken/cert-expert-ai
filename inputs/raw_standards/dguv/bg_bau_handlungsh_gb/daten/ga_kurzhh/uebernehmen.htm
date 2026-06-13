@@ -1,0 +1,266 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=iso-8859-1">
+<meta name="Copyright" content="Copyright 2016 BC GmbH, Wiesbaden">
+<title>In die Handlungshilfen übernehmen</title>
+<link rel="stylesheet" type="text/css" href="../daten.css" />
+<script type="text/javascript" src="ga.js"></script>
+<script type="text/javascript" src="../struktur_anfang2.js"></script>
+<script>
+// struktur kurzhh=
+// Z001###Maßnahmen gegen Gefährdung durch unzureichende Arbeitsschutzorganisation#k_org_aso1#bausteine/a_001/a_001.htm#00,01,02,03,04,05,06,09,11\n\
+// Z002###Maßnahmen gegen Gefährdung durch Absturz#k_absturz1##00,03,04,07,12,15,16\n\
+
+// struktur vollv.=
+//C01###Anlegen und Benutzen von Arbeitsplätzen und Verkehrswegen#f_arbeitsplatz_verkehrsweg_anlegen\n\
+//C02###Spannungsführende Teile/ Leitungen#f_elektr_anl_\n\
+
+// zeile=fZ001
+// parent.ga_daten['fZ0001']='k_org_aso1|1,1,1,1,0,0,1,0,0,1,0,0,1,0,0,0,0,0,0,0,0,,,,,,,0,0,0,,,,0,0,0|........'     (faktorbez. dann alle Checkboxen, dann input's)
+
+var massnahmen_merken;
+
+function zur_vollversion()
+{
+	bereich=bereich.split("_k")[0];
+	
+	var struktur_kurzhh=parent.eigene_struktur;
+	var ga_daten_kurzhh=parent.ga_daten;
+	
+	// 1. Die Struktur der Kurzhh durchgehen und jeweils die Zeilen der ga_daten in 'massnahmen_merken' merken
+	
+	massnahmen_merken=new Array();
+
+    document_write('<h2>Kurzhandlungshilfen</h2>');
+    for(var i=0; i<struktur.length; i++) {
+        var zeile='f'+struktur[i].split("#")[0]; // z.B. 'Z001'
+        kurzhh_nur_zeilen=null;
+        if (struktur[i].split("#").length>=7) {
+            kurzhh_nur_zeilen=","+struktur[i].split("#")[6].split(",")+",";
+        }
+    	faktor_uebernehmen(zeile, kurzhh_nur_zeilen);
+    }
+
+    // 2. Bereich wechseln und leere, neue GA anlegen
+   parent.ga_daten=new Array();
+   parent.db_daten=new Array();
+
+   version_datum_merk='';
+   f_alte_version_geladen=0;
+
+  parent.nicht_merken_flag=1;
+
+  if (bereich=="gebrein" ||bereich=="fm" ||bereich=="schornsteinfeger" ||bereich=="klett"  ||bereich=="taucher" ||bereich=="boot")  struktur1["anfang"]=struktur_anfang2_merk;
+	init_eigene_struktur(bereich);
+	struktur=parent.eigene_struktur;
+	struktur=struktur.split("\n");
+
+	
+	// 3. Die neue Struktur durchgehen und die gemerkten Daten einfügen
+	
+    document_write('<h2>VOLLVERSION</h2>');
+    for(var i=0; i<struktur.length; i++) {
+        var zeile='f'+struktur[i].split("#")[0]; // z.B. 'A01'
+        var faktorname=struktur[i].split("#")[4]; // z.B. 'f_org_aso1'
+    	if (faktorname && zeile.charAt(0)!='\t') massnahmen_einfuegen(zeile, faktorname);
+    }
+	
+	save_to_ls();
+
+    //alert("Fertig!");
+    hauptkap=u_kap=uu_kap=ga_nr=0;
+
+//	location.href="/_del_ga/daten/ga/ga.htm?erglist";
+
+
+
+	location.href=xpath+"ga/ga.htm?erglist";
+
+   document.cookie="hauptkap=0";
+   document.cookie="u_kap=0";
+   document.cookie="uu_kap=0";
+   document.cookie="ga_nr=0";
+   hauptkap=u_kap=uu_kap=ga_nr=0;
+   document.cookie="bereich="+bereich;	
+}
+
+function faktor_uebernehmen(zeile, kurzhh_nur_zeilen)
+{
+	// faktorname: z.B. 'fZ001'
+	// kurzhh_nur_zeilen: z.B. '#00,01,02,03,04,05,06,09,11'
+   ga=parent.ga_daten[zeile];
+
+   if (ga==null) { document_write('<p>Faktor '+ zeile+ ' nicht gefunden.</p>'); return; }
+   var g=ga.split("|");
+   var dateiname=g[0];  // z.B. 'k_org_aso1'
+
+   if (dateiname.substring(0,5)=="f_cl_") return;
+   var checkboxen=new Array();
+   if (g.length>1) checkboxen=g[1].split(",");
+   // inputfelder=ab g[2]
+   if (g.length<2) return;
+   
+   var nr=ga_dateien[dateiname];
+   if (""+nr=="undefined" && dateiname.substring(dateiname.length-6)>0) nr=ga_dateien[dateiname.substring(0,dateiname.length-6)];
+   if (""+nr=="undefined") { alert("Datei "+dateiname+ " nicht in faktoren.js enthalten."); return; }
+   
+   var m=massnahmen[nr];
+   var nr_cb1=0;
+   var nr_cb2=1;
+   var nr_cb3=2;   
+   var cb_z=3;
+   var nr1=0;
+   var nr2=1;
+   var nr3=2;
+   var nr4=3;
+   var nr5=4;
+   var nr6=5;
+   var inp_z=6;
+   var anz_input=(m.length)*6;
+   var displ="";
+   var aenderung='';
+   
+   for(var i=0; i<anz_input; i++) if (""+g[2+nr1+i]=="undefined") g[2+nr1+i]="";
+   
+   for(var i1=0;i1<m.length;i1++) {
+      var i=m[i1].substring(0,2);         // Nummer der Maßnahme z.B. 01
+      if (kurzhh_nur_zeilen && kurzhh_nur_zeilen.indexOf(","+i+',')==-1) continue; // Bei Kurzhh, wenn nur bestimmte Zeilen angezeigt werden sollen (s. struktur_xx_k.js), die Zeilen überspringen, die nicht angezeigt werden sollen.
+   	  var quell_massnahme=dateiname+'|'+i;
+
+   	  i=parseInt(i);
+      var ii=i*inp_z;
+      var ic=i*cb_z;
+      for(var j=i*6; j<i*6+6; j++) if (""+g[2+j]=="undefined") g[2+j]=""; // ggf. initialisieren
+
+      var massn=repl(m[i1].substring(3)); // Text der Maßnahme z.B. 'Sachkundige benennen'
+
+   	  // festgelegt: nr_cb1  / umgesetzt:  nr_cb2  / kontrolle:  nr_cb3  // Handlungsbedarf nr2,nr3 / Kontrolle: nr4,nr5 / bemerk: nr6
+   	  
+   	  document_write('Quell-Maßnahmen-Bezeichnung:'+quell_massnahme+'<Br>');
+   	  document_write('massn='+massn+'<br>');
+   	  document_write('checkboxen='+checkboxen[nr_cb1+ic]+checkboxen[nr_cb2+ic]+checkboxen[nr_cb3+ic]+'<br>');
+   	  document_write('inp='+g[2+nr1+ii] + g[2+nr2+ii] + g[2+nr3+ii] + g[2+nr4+ii] + g[2+nr5+ii] + g[2+nr6+ii]+'<br>');
+   	  
+   	  massnahmen_merken[quell_massnahme]= new Array( checkboxen[nr_cb1+ic],checkboxen[nr_cb2+ic],checkboxen[nr_cb3+ic], g[2+nr1+ii],g[2+nr2+ii],g[2+nr3+ii],g[2+nr4+ii],g[2+nr5+ii],g[2+nr6+ii] );
+      }
+}
+
+function massnahmen_einfuegen(zeile, dateiname)
+{
+   var g=new Array();
+   g[0]=dateiname;  // z.B. 'k_org_aso1'
+   var checkboxen=new Array();
+   
+   var nr=ga_dateien[dateiname];
+   if (""+nr=="undefined" && dateiname.substring(dateiname.length-6)>0) nr=ga_dateien[dateiname.substring(0,dateiname.length-6)];
+   if (""+nr=="undefined") { alert("Datei "+dateiname+ " nicht in faktoren.js enthalten."); return; }
+   
+   var m=massnahmen[nr];
+   var nr_cb1=0;
+   var nr_cb2=1;
+   var nr_cb3=2;   
+   var cb_z=3;
+   var nr1=0;
+   var nr2=1;
+   var nr3=2;
+   var nr4=3;
+   var nr5=4;
+   var nr6=5;
+   var inp_z=6;
+   var anz_input=(m.length)*6;
+   var displ="";
+   var aenderung='';
+   
+   for(var i=0; i<anz_input; i++) if (""+g[2+nr1+i]=="undefined") g[2+nr1+i]="";
+   
+   for(var i1=0;i1<m.length;i1++) {
+      var i=m[i1].substring(0,2);         // Nummer der Maßnahme z.B. 01
+   	  var ziel_massnahme=dateiname+'|'+i;
+   	  
+   	  i=parseInt(i);
+      var ii=i*inp_z;
+      var ic=i*cb_z;
+      
+      // inputs und checkboxen initialisieren
+      for(var j=i*6; j<i*6+6; j++) g[2+j]="";
+      checkboxen[nr_cb1+ic]=checkboxen[nr_cb2+ic]=checkboxen[nr_cb3+ic]=0;
+
+      var massn=repl(m[i1].substring(3)); // Text der Maßnahme z.B. 'Sachkundige benennen'
+
+   	  // festgelegt: nr_cb1  / umgesetzt:  nr_cb2  / kontrolle:  nr_cb3  // Handlungsbedarf nr2,nr3 / Kontrolle: nr4,nr5 / bemerk: nr6
+   	  
+   	  document_write('Ziel-Maßnahmen-Bezeichnung:'+ziel_massnahme+'<br>');
+   	  for(var j=0; j<konv_tab.length; j++) {
+   	  	    if (konv_tab[j].ziel==ziel_massnahme) {
+   	  	    	    document_write('Quelle:'+konv_tab[j].quelle+' <br>');
+   	  	    	   if (typeof massnahmen_merken[konv_tab[j].quelle]=="undefined") { document_write('Quell-Maßnahme nicht gefunden: '+konv_tab[j].quelle); continue; }
+   	  	    	   var ma=massnahmen_merken[konv_tab[j].quelle];
+   	  	    	   document_write('quelldaten:'+ma.join(",")+'<br> ');
+   	  	    	   checkboxen[nr_cb1+ic]=ma[0];
+   	  	    	   checkboxen[nr_cb2+ic]=ma[1];
+   	  	    	   checkboxen[nr_cb3+ic]=ma[2];
+   	  	    	   g[2+nr1+ii]=ma[3];
+   	  	    	   g[2+nr2+ii]=ma[4];
+   	  	    	   g[2+nr3+ii]=ma[5];
+   	  	    	   g[2+nr4+ii]=ma[6];
+   	  	    	   g[2+nr5+ii]=ma[7];
+   	  	    	   g[2+nr6+ii]=ma[8];
+   	  	    }
+   	  
+//   	  document_write('massn='+massn+'<br>');
+//   	  document_write('checkboxen='+checkboxen[nr_cb1+ic]+checkboxen[nr_cb2+ic]+checkboxen[nr_cb3+ic]+'<br>');
+//   	  document_write('inp='+g[2+nr1+ii] + g[2+nr2+ii] + g[2+nr3+ii] + g[2+nr4+ii] + g[2+nr5+ii] + g[2+nr6+ii]+'<br>');
+      }
+    
+   }
+    // Jetzt die Checkboxen/Inputfelderdaten in parent.ga_daten speichern
+    g[1]=checkboxen.join(",");
+    parent.ga_daten[zeile]=g.join("|");
+    document_write('SAVE:'+zeile+'='+g.join("|")+'<br>  ');
+}
+
+function document_write(x)
+{
+	//document.write(x);
+}
+
+</script>
+</head>
+<body>
+
+<body>
+<script type="text/javascript" src="ord.js"></script><script type="text/javascript" src="../buttons.js"></script>
+<script type="text/javascript" src="datenuebernahme_kurzhh_tab.js"></script>
+<script type="text/javascript" src="../ga/faktoren.js"></script>
+<script type="text/javascript" src="faktoren_kurz.js"></script>
+
+<h3>Kurzhandlungshilfen &nbsp;&nbsp;<img src="pfeil_rot.jpg" width="35" height="20" alt="Pfeil" style="margin-bottom:-4px" />&nbsp;&nbsp; Handlungshilfen</h3>
+
+<script>
+if (bereich.indexOf("_k")==-1)  {
+	 alert("Fehler: Ein Rücksprung von den Handlungshilfen in die Kurzhandlungshilfen ist nicht möglich.");
+	 hauptkap=u_kap=uu_kap=ga_nr=0;
+	 location.href=xpath+"ga/ga.htm?erglist";
+}
+document.write('<style type="text/css">#uebernehmen_button { display:none}</style>');
+</script>
+
+<p>Mit der Bearbeitung der <strong>Kurzhandlungshilfen</strong> haben Sie den ersten Schritt zur Gefährdungsbeurteilung getan.</p>
+
+<p>Mit den Handlungshilfen der BG BAU gehen Sie einen Schritt weiter, hin zu einer vollständigen Gefährdungsbeurteilung. Diese hilft Ihnen einen störungsfreien und sicheren Ablauf in Ihrem Betrieb zu gewährleisten.</p>
+
+<p><strong>Übernehmen Sie dazu Ihre bisherigen Ergebnisse aus den Kurzhandlungshilfen in die Handlungshilfen.</strong></p>
+
+<h4><strong>Und so funktioniert es (Video):</strong></h4>
+
+<p><a href="kurzhh_2018.wmv"><img src="uebernahme.jpg" width="400" height="232" /></a></p>
+
+<h3><strong><a href="#" onclick="zur_vollversion()">Daten übernehmen</a></strong>&nbsp;&nbsp;<img src="pfeil_rot.jpg" width="35" height="20" alt="Pfeil" style="margin-bottom:-4px" /></h3>
+<table border=1">
+<tr><td>
+<p>Bitte beachten Sie: Nach der Übernahme können Ihre Daten nicht wieder in die Kurzhandlungshilfen zurück transferiert werden. Wir empfehlen Ihnen, eine Sicherungskopie der Daten aus den Kurzhandlungshilfen anzulegen.</p> </td></tr> </table>
+<script type="text/javascript" src="../buttons2.js"></script>
+</body>
+</html>

@@ -1,0 +1,109 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="de" style="height:100%;overflow:hidden;">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+<meta name="Copyright" content="Copyright 2025 BC GmbH, Ingelheim - 200601" />
+<title>Gefährdungsbeurteilungen</title>
+<script type="text/javascript">
+function menu_cmd(id)
+{
+   if (id==10002) go_frame("x-s8:///#PATH#speichern.bc6");
+}
+
+function go_frame(x) 
+{
+   window.contentframe.location.href=x; 
+}
+
+function ga_neu()
+{
+try{
+   window.contentframe.ga_neu();
+}catch(e){ alert("Bitte wählen Sie zunächst ein Gewerk.");}
+}
+
+document.onkeydown = keydown;
+function keydown (e) 
+{
+  try{
+  	window.contentframe.focus();
+  }catch(e){}
+}
+
+var ga_daten;        // Array; enthalt: dateiname|checkboxen|inpu1|inpu2|inpu3|..
+                     //            z.b. ga_daten['A01']='f_org_zielsetzungen|0101010|xxx|yyy|zzz|...'
+var inp11;           // Array für die GA-Basisdaten
+var db_daten;        // Array für die Datenbanken: Zu unterweisende Mitarbeiter; Arbeitsmedizinische Vorsorgeuntersuchungen; etc
+                     //            z.b. 10|aaaaa|bbb|ccc
+var risiko_daten;    // Array für die Funktion Risikoabschätzung
+var eigene_struktur=null; // für die Funktion: GB selbst zusammenstellen
+
+var vergleich; // Kopien aller Arrays zum Vergleichen beim Programmende (zum Feststellen, ob etwas geändert wurde)
+
+var form_cb_merk;     // zum merken von Formulardaten allgemein
+var form_inp_merk;
+var form_dateiname="";
+
+var f_alte_version_geladen=0;
+var version_datum_merk='';
+
+var mitarbeiter_db;  // Array für die Datenbank Mitarbeiter/Belastungen/Untersuchungen
+var weitere_taetigk_aufklapp=0;
+
+var struktur_alles_merk="";
+
+function neu_ga()
+{
+   ga_daten=new Array();
+   inp11=new Array("","","","","","","","","","","");
+   db_daten=new Array();
+   risiko_daten=new Array();
+   // eigene_struktur=""; // neu: eigene Struktur [entsprcht jetzt: aktuelle, ggf. modifizierte Struktur] nur beim Bereichswechel neu setzen
+   mitarbeiter_db=new Array();
+
+   vergleich=join1(ga_daten)+join1(inp11)+join1(db_daten)+join1(risiko_daten)+eigene_struktur;
+   version_datum_merk='';
+   f_alte_version_geladen=0;
+}
+
+neu_ga();
+nicht_merken_flag=0;
+
+function join1(x)
+{
+	var erg="";
+	for (var i in x) erg+=x[i]+",";
+	return erg;
+}
+
+function pruefen_ob_gespeichert()
+{
+    if (typeof window.contentframe.merke_inp!="undefined")   window.contentframe.merke_inp(); // 15.12.2017
+
+	 /*var x=""+window.contentframe.relpath2;
+	 alert(x);
+	 if (x=="undefined") x="ga";	 */
+	 x="x-s8:///";
+   if (vergleich==join1(ga_daten)+join1(inp11)+join1(db_daten)+join1(risiko_daten)+eigene_struktur) {location.href=x+"quit1.bc6";}
+   else {location.href=x+"quit2.bc6";}
+}
+
+function body_onload() 
+{
+   var ziel="ga/titel.htm";
+   if (location.search=="?load") ziel="ga/laden_speichern.htm";
+
+	if (typeof rpath=="undefined") go_frame(ziel);
+	else document.frames[0].location.href="x-s8:///#PATH#"+ziel;
+}
+
+</script>
+</head>
+
+<body onload="body_onload()" style="height:100%;margin:0;padding:0">
+
+<iframe style="width:100%;height:100%;border:0px" frameborder="0" name="contentframe" id="contentframe"></iframe>
+
+</body>
+</html>

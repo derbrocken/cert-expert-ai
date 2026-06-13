@@ -1,0 +1,23 @@
+ord=new Array(
+"titel.htm	#Titel",
+"inhalt.htm	#Inhalt",
+"1.htm	#1 Anwendungsbereich",
+"2.htm	#2 Begriffsbestimmungen",
+"3.htm	#3 Anzeigepflicht",
+"4.htm	#4 Personelle Ausstattung",
+"5.htm	#5 Schädlingsbekämpfungsmittel",
+"6.htm	#6 Organisatorische Maßnahmen",
+"7.htm	#7 Sicherheitstechnische Ausstattung und Maßnahmen",
+"8.htm	#8 Hygienische Schutzmaßnahmen",
+"9.htm	#9 Persönliche Schutzausrüstung",
+"10.htm	#10 Arbeitsmedizinische Vorsorgeuntersuchungen",
+"11.htm	#11 Aufbewahrung und Lagerung",
+"12.htm	#12 Betriebsanweisungen und Unterweisungen",
+"13.htm	#13 Beschäftigungsbeschränkungen",
+"14.htm	#14 Erste Hilfe",
+"15.htm	#15 Schädlingsbekämpfung in Gemeinschaftseinrichtungen",
+"16.htm	#16 Dokumentation",
+"anh1.htm	#Anhang 1",
+"anh2.htm	#Anhang 2",
+"anh3.htm	#Anhang 3"
+);

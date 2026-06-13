@@ -1,0 +1,88 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+<meta name="Copyright" content="Copyright 2009 BC GmbH, Wiesbaden" />
+<title>Struktur bearbeiten</title>
+<link rel="stylesheet" type="text/css" href="../daten.css" />
+</head>
+
+<body>
+<script type="text/javascript" src="ord.js"></script>
+<script type="text/javascript" src="../buttons.js"></script>
+<script type="text/javascript" src="../struktur_alles.js"></script>
+<script type="text/javascript" src="faktoren.js"></script>
+<script type="text/javascript" src="suche_in_faktoren.js"></script>
+
+<h3>Eine Gefährdungsbeurteilung selbst zusammenstellen</h3>
+
+<p>Stellen Sie Ihre eigene Gefährdungsbeurteilung zusammen:
+	 <br />Löschen Sie Faktoren oder fügen Sie Faktoren aus dieser Liste ein.
+</p>
+<p>Die Auswahl beenden Sie durch Klick auf den Button "Auswahl bestätigen". Die Navigation links zeigt dann alle ausgewählten Tätigkeiten und Bereiche an, die Sie anschließend bearbeiten können.</p>
+
+
+<p>
+
+<script type="text/javascript">
+   suche_in_faktoren();
+
+   document.write('<div style="float:left;width:50%"><h3>Empfohlene Faktoren</h3>');
+   var ueb1='', ueb2='';
+   for(var i=0; i<struktur.length-1; i++) {
+       s=struktur[i].split("#");
+       if (s[1]!="") {
+       	   ueb1=('<h4>'+s[1]+'</h4>\r\n');
+       	   ueb2='';
+       	   }
+       if (s.length==3 && s[2]!="") {
+       	   ueb2=('<h5>'+s[2]+'</h5>\r\n');
+       	   }
+       if (s[0].charAt(0)!='\t') continue;
+       if (s.length==5 && s[3]!="") {
+           	       document.write(ueb1+ueb2+'<a href="javascript:add_faktor()" ondragstart="ondragstart1()" id="fak_e'+i+'">'+s[3]+'</a><br />\r\n');
+           	       ueb1=ueb2='';
+       	   }
+       }
+
+   document.write('</div><div style="float:left;margin-left:20px"><h3>Alle Faktoren</h3>');
+
+   var struktur_a=struktur1["alles"];
+   struktur_a=struktur_a.split("\n");
+
+   for(var i=0; i<struktur_a.length-1; i++) {
+       s=struktur_a[i].split("#");
+       if (s[1]!="") {
+       	   document.write('<h4>'+s[1]+'</h4>\r\n');
+       	   }
+       if (s.length==3 && s[2]!="") {
+       	   document.write('<h5>'+s[2]+'</h5>\r\n');
+       	   }
+       if (s.length==5 && s[3]!="") {
+           	       document.write('<a href="javascript:add_faktor()" ondragstart="ondragstart1()" id="fak_'+i+'">'+s[3]+'</a><br />\r\n');
+       	   }
+       }
+   document.write('</div>');
+
+var zeile_einfueg='';
+function add_faktor()
+{
+    alert("Bitte den Fakter auf eines der grünen Quadrate ziehen, um ihn in die Struktur einzufügen.");
+}
+
+function ondragstart1()
+{
+    var drag_id=event.srcElement.id;
+    zeile_einfueg='';
+    if (drag_id.substring(0,4)=='fak_') zeile_einfueg=struktur_a[drag_id.substring(4)];
+    if (drag_id.substring(0,5)=='fak_e') zeile_einfueg=struktur[drag_id.substring(5)];
+}
+
+</script>
+
+
+<script type="text/javascript" src="../buttons2.js"></script>
+</body>
+
+</html>

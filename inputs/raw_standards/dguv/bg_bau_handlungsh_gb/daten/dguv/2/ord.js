@@ -1,0 +1,20 @@
+ord=new Array(
+"titel.htm	#Titel",
+"inhalt.htm	#Inhalt",
+"1.htm	#§ 1 Geltungsbereich",
+"2.htm	#§ 2 Bestellung",
+"3.htm	#§ 3 Arbeitsmedizinische Fachkunde",
+"4.htm	#§ 4 Sicherheitstechnische Fachkunde",
+"5.htm	#§ 5 Bericht",
+"6.htm	#§ 6 Übergangsbestimmungen",
+"7.htm	#§ 7 In-Kraft-Treten und Außer-Kraft-Treten",
+"anl1.htm	#Anlage 1 (zu § 2 Abs. 2) Betriebsärztliche und sicherheitstechnische Regelbetreuung in Betrieben mit bis zu 10 Beschäftigten",
+"anl2.htm	#Anlage 2 (zu § 2 Abs. 3) Betriebsärztliche und sicherheitstechnische Regelbetreuung in Betrieben mit mehr als 10 Beschäftigten",
+"anl3.htm	#Anlage 3 (zu § 2 Abs. 4) Alternative bedarfsorientierte betriebsärztliche und sicherheitstechnische Betreuung in Betrieben mit bis zu 50 Beschäftigten",
+"anl4.htm	#Anlage 4 (zu § 2 Abs. 4) Alternative bedarfsorientierte betriebsärztliche und sicherheitstechnische Betreuung in Betrieben mit bis zu 10 Beschäftigten durch Kompetenzzentren",
+"anh1.htm	#Anhang 1 (zu § 2) Hinweise zur Bestellung und zumTätigwerden der Betriebsärzte und Fachkräfte für Arbeitssicherheit",
+"anh2.htm	#Anhang 2 (zu § 4 ) Branchenspezifische Themen der Ausbildung von Fachkräften für Arbeitssicherheit",
+"anh3.htm	#Anhang 3 (zu Anlage 2 Abschnitt 2) Aufgabenfelder der Grundbetreuung und Beschreibung möglicher Aufgaben",
+"anh4.htm	#Anhang 4 (zu Anlage 2 Abschnitt 3) Betriebsspezifischer Teil der Betreuung",
+"anh5.htm	#Anhang 5 Gesetz über Betriebsärzte, Sicherheitsingenieure und andere Fachkräfte für Arbeitssicherheit"
+);

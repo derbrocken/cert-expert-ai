@@ -1,0 +1,178 @@
+body,tr,td { font-size:13px; }
+h1 {font-size:190%;}
+h2 {font-size:170%;}
+h3 {font-size:140%;}
+h4 {font-size:100%;}
+h5 {font-size:100%;}
+font {font-size:100%;}
+
+body { background-color: #ffffff; margin:0px;overflow:hidden}
+html { overflow:hidden }
+body,td { font-family: Arial; }
+td { vertical-align:top; }
+img { border-style: none; }
+img.help { border-style: solid; }
+
+ul.casa { list-style-image:url(grafik/quader.gif); margin-left:10pt; margin-top:-15pt; margin-bottom:0pt; }		
+ul.casa2 { list-style-image:url(grafik/quader.gif); margin-left:10pt; margin-top:3pt; margin-bottom:0pt; }
+li.fakt { padding-left : 0px;}
+
+h2 { color:#032f08; }
+h4 { color:#8a0030; }
+
+#s { background-color:#ffff00; }
+
+#oben { position:absolute;top:0px;left:204px;
+   background-image:url(ga/img/oben_backgr.gif);width:820px;border-bottom:3px solid #004285 }
+.oben_kurzhh { background-image:url(ga_kurzhh/img/oben_backgr.gif) !important;}
+
+#pfad { position:absolute;top:121px;left:355px; font-size:11px; overflow:hidden;
+ border-left:1px solid #004B93;padding-left:13px;padding-top:1px; width:655px;}
+#pfad a:link, #pfad a:visited { color:black; text-decoration:none; }
+#pfad1 { position:absolute;top:121px;left:204px; font-size:11px; padding-top:1px }
+#pfad1 a:link, #pfad a:visited { color:black; text-decoration:none; }
+#unten_blaettern { position:absolute;bottom:3px;left:914px;font-size:18px;font-family:arial black;}
+#unten_blaettern a { color:#666666; text-decoration:none; }
+#unten_blaettern a.linkgr { color:#ffffff; text-decoration:none; }
+
+#hauptnav { position:absolute;top:138px;left:0px;width:1024px; }
+#hauptnav td { background-color:#CDDAEA; cursor:pointer; text-align:center; vertical-align:middle; }
+#hauptnav .td_hover { background-color:#789FC6 }
+#navi h3 { font-weight:normal;font-size:105%;margin:0;padding:0;margin-bottom:5px; }
+#navi hr {color: #004B93; background-color: #004B93; height: 1px; }
+
+.aufklappmenu { position:absolute;top:209px;left:0px;background-color:#E5ECF4; z-index:10; display:none;border:1px solid white; cursor:pointer}
+.schatten { filter: progid:DXImageTransform.Microsoft.Shadow(color='#999999', Direction=135, Strength=3);
+-ms-filter: "progid:DXImageTransform.Microsoft.Shadow(Strength=3, Direction=135, Color='#999999')"; }
+.schatten2 { filter: progid:DXImageTransform.Microsoft.Shadow(color='#999999', Direction=225, Strength=3);}
+
+.aufklappmenu a:link, .aufklappmenu a:visited { color:black; text-decoration:none; }
+.aufklappmenu .item { padding:4px; border-bottom:1px solid white }
+.aufklappmenu .item:hover {background-color:#BBD4EF}
+.item_disabled {cursor:default !important}
+.item_disabled:hover {background-color:#F0F4CC !important}
+
+.itemgruen { background-color:#B2C900 }
+.aufklappmenu .itemgruen:hover {background-color:#C2D910}
+#e2       {  }
+#e2_aktiv {   }
+#e3       {  }
+#e3_aktiv {  }
+#e3_aktiv a:link, #e3_aktiv a:visited { color:#064E94; }
+.itembl { background-color:#E5ECF4 }
+
+.menu_r { cursor:pointer;background-color:#CDDAEA;padding:3px;margin-bottom:2px }
+.menu_r:hover { background-color:#789FC6 }
+
+#content { position:absolute; top:215px;left:0px;width:750px;background-color:white }
+#content_padd { width:722px;margin-left:10px; }
+
+.uh_nav td { background-color:#CDDAEA; cursor:pointer; text-align:center; vertical-align:middle; height:26px }
+.uh_nav .td_hover { background-color:#789FC6 }
+.uh_nav a:link, .uh_nav a:visited { color:black; text-decoration:none }
+
+@media print { 
+  #vd,
+  .vd,
+  #oben,
+  #navi,
+  #bglogo,
+  #linksunten,
+  #linksunten_schrift,
+  #unten_blaettern,
+  #menu_ergebnisse,
+  #menu_export { display:none; } 
+  #pfad, #pfad1 { position:static;border:0 }
+  #pfad { padding-bottom:10px }
+  #content  { position:static;width:640px !important;}
+  #content_padd { padding:0px;width:640px !important; }
+  #unten_schrift, #unten, .aufklappmenu, #hauptnav, #pfad1 { display:none !important; } 
+  .risiko_class { display:block !important}
+  }
+@media screen {
+	.vb { display:none }
+}
+/* ---------- GA Tabellen ------------ */
+
+#table_ga { border: 1px solid black }
+.tga  { border: 1px solid black }
+#table_faktor { border-collapse:collapse;  }
+#table_faktor td  { border:1px solid #cccccc; border-collapse:collapse; }
+#table_faktor_body { border-collapse:collapse;  }
+#table_faktor_body td  { border:1px solid #cccccc; border-collapse:collapse;  }
+#table_faktor ul { margin-top:0px; margin-left:20px;  }
+
+@media print {
+   #table_ga { border: 0px; width:640px }
+}
+#form_ga td { vertical-align:top; }
+#form_ga textarea { BORDER:1px solid #c0c0c0; width:95%; font-family:arial;sans-serif;margin-left:22px;overflow:auto }
+#form_ga input.x {border:1px solid #c0c0c0; }
+/*#table_ga ul { margin-left:0px;padding-left:0px }
+#table_ga li { margin-left:0px;padding-left:0px }*/
+
+span.einz { margin-left:5px; margin-right:7px}
+
+/* ---------- Ende GA Tabellen ------------ */
+
+/* PDF im Titel */
+.pdf {
+padding:  0em 1.5em;
+font-weight: bold;
+text-align: center;
+display:none;
+}
+
+/*a.linkrot:link, a.linkrot:visited { color:#A7455C; text-decoration:none; font-size: 16px; }*/
+a.linksw:link, a.linksw:visited { color:black; text-decoration:none; }
+a.linkws:link, a.linkws:visited { color:white; text-decoration:none; }
+
+
+#linie { border-bottom:1px solid #9BABC7; margin-left:45px}
+
+
+a:visited { color:#A7455C; }
+
+#kap2 { scrollbar-base-color:#ECF1F7 }
+
+a:link { color:#59719F }
+
+#text_r { position:absolute;left:320px;width:300px; }
+#bild { position:absolute;width:300px }
+
+/* feststehende köpfe */
+@media print {
+#tab_head { display:none }
+#tab_head2 { display:none }
+}
+/* -- */
+
+
+@media print {
+input { overflow:visible  }
+textarea { overflow:visible  }
+}
+
+.mygrid div { border:1px solid #dddddd;background-color:white }
+.mygrid p { margin:0 }
+.mygrid td { vertical-align:top; }
+.mygrid th { font-weight:normal; text-align:left }
+
+input[type=text] { background-image:url(images/input_bg.gif); background-repeat:no-repeat; border:0 }
+input.input_bg_gn { background-image:url(images/input_bg_gn.gif); }
+
+.kasten50_blau { width:298px;height:38px;background-image:url(ga/img_titel/kasten50_blau.gif); }
+.kasten50_beige { width:298px;height:38px;background-image:url(ga/img_titel/kasten50_beige.gif); }
+
+.border2 { border-collapse:collapse; }
+.border2 td { border-right:2px solid #E5EDF4;border-top:2px solid #E5EDF4 }
+
+/***   Externe Links  ***/
+
+a.extern { padding-right:15pt; background:url(logos/www.gif) no-repeat right;height: 130%;}
+
+ul.uw {color:black; margin-top:-10pt}
+ol.uw {color:black; margin-top:-10pt}
+li.uw {color:red; margin-bottom:4pt;}
+ul {color:black;}
+span.black {color:black;}	

@@ -1,0 +1,20 @@
+ord=new Array(
+"TITEL.HTM",
+"INHALT.HTM",
+"vorb.HTM",
+"1.HTM",
+"2.HTM",
+"3.HTM",
+"4.HTM",
+"5.HTM",
+"6.HTM",
+"7.HTM",
+"8.HTM",
+"anh1.HTM",
+"anh2.HTM",
+"anh3.HTM",
+"anh4.HTM",
+"anh5.HTM",
+"anh6.HTM",
+"anh7.HTM"
+);

@@ -1,0 +1,23 @@
+ord=new Array(
+"titel.htm	#Titel",
+"inhalt.htm	#Inhalt",
+"vorbem.htm	#Vorbemerkung",
+"1.htm	#1 Anwendungsbereich",
+"2.htm	#2 Begriffsbestimmungen",
+"3.htm	#3 Gefährdungsbeurteilung",
+"4.htm	#4 Bewertung und Auswahl; 4.1 Allgemeines",
+"4_3.htm	#4.3 Ausführungsbeispiele",
+"4_4.htm	#4.4 Bewertung und Auswahl; Materialien zur Herstellung von Schutzhandschuhen",
+"4_5.htm	#4.5 Bewertung und Auswahl; Kennzeichnung",
+"5.htm	#5 Benutzung",
+"6.htm	#6 Betriebsanweisung, Unterweisung",
+"7.htm	#7 Ordnungsgemäßer Zustand",
+"anh1.htm	#Anhang 1: Risiken für die Hände durch äußere Einwirkungen",
+"anh2.htm	#Anhang 2: Risiken für den Träger durch den Schutzhandschuh",
+"anh3.htm	#Anhang 3: Risiko durch ungenügende Schutzwirkung",
+"anh4.htm	#Anhang 4: Checkliste für die Auswahl von Schutzhandschuhen",
+"anh5.htm	#Anhang 5: Piktogramme",
+"anh6.htm	#Anhang 6: Sicherheitstechnische Anforderungen an Schutzhandschuhe",
+"anh7.htm	#Anhang 7: Vorschriften und Regeln",
+"zhaend.htm	#Änderungen"
+);

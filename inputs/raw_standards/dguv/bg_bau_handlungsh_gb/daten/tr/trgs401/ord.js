@@ -1,0 +1,21 @@
+ord=new Array(
+"titel.htm	#Titel",
+"inhalt.htm	#Inhalt",
+"1.htm	#1 Anwendungsbereich",
+"2.htm	#2 Begriffsbestimmungen",
+"3.htm	#3 Informationsermittlung",
+"4.htm	#4 Gefährdungsbeurteilung",
+"5.htm	#5 Schutzmaßnahmen",
+"6.htm	#6 Information der Beschäftigten",
+"7.htm	#7 Arbeitsmedizinische Vorsorge",
+"anh1.htm	#Anhang 1: Beispiele für Feuchtarbeit bei Tätigkeiten mit wechselnden Arbeitsbedingungen",
+"anh2.htm	#Anhang 2: Branchen- oder tätigkeitsspezifische Handlungsempfehlungen und Hilfestellungen",
+"anh3.htm	#Anhang 3: Allergene Stoffe und Stoffgruppen sowie betroffene Berufe und Tätigkeiten",
+"anh4.htm	#Anhang 4: Vorgehensweise zur Festlegung von Schutzmaßnahmen bei Hautkontakt",
+"anh5.htm	#Anhang 5: Beispiele für technische und organisatorische Schutzmaßnahmen zur Verhinderung oder Minimierung des Hautkontaktes",
+"anh6.htm	#Anhang 6: Ablaufdiagramm zur Auswahl von Chemikalienschutzhandschuhen",
+"anh7.htm	#Anhang 7: Photoallergische und phototoxische Stoffe",
+"anh8.htm	#Anhang 8: Kennzeichnung von Chemikalienschutzkleidung, Chemikalienschutzhandschuhen sowie von Schutzkleidung und Schutzhandschuhen zum Pflanzenschutzmitteleinsatz",
+"anh9.htm	#Anhang 9: Gefahrenhinweise und EUH-Sätze, die im Text zitiert werden",
+"lit.htm	#Literaturhinweise"
+);

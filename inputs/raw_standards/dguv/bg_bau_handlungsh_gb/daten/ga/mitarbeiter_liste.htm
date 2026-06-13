@@ -1,0 +1,60 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+<meta name="Copyright" content="Copyright 2006 BC GmbH, Wiesbaden" />
+<title>Mitarbeiter</title>
+<link rel="stylesheet" type="text/css" href="../daten.css">
+<script type="text/javascript" src="../grid.js"></script>
+<style type="text/css">
+.myth { color:#808080 }
+</style>
+</head>
+
+<body onunload="merkeEing()">
+<script language='javascript' src='../buttons.js'></script>
+
+<script type="text/javascript" language="JavaScript" src="find.js"></script>
+
+
+<!-- <h2>Mitarbeiter</h2> -->
+
+<table border="1" style="width:100%" cellpadding="3" cellspacing="0">
+
+<script type="text/javascript">
+
+    var anz_ma=0;
+
+	for (j=0;typeof parent.mitarbeiter_db['a'+(j+1)+'_1']!="undefined";j++) {
+	    var name1=parent.mitarbeiter_db['a'+(j+1)+'_1'];
+	    var strasse=parent.mitarbeiter_db['a'+(j+1)+'_9'];
+	    var plzort=parent.mitarbeiter_db['a'+(j+1)+'_11']+' '+parent.mitarbeiter_db['a'+(j+1)+'_12'];
+	    var rvnr=parent.mitarbeiter_db['a'+(j+1)+'_10'];
+	    var beruf=parent.mitarbeiter_db['a'+(j+1)+'_13'];
+	    var unters='';
+
+        for(var y=1; y<=10; y++) {
+           if (typeof parent.mitarbeiter_db['d'+(j)+y+'_1']!="undefined") unters+=parent.mitarbeiter_db['d'+(j)+y+'_1']+'<br />';
+           }
+	    
+	    document.write('\
+<tr><td rowspan="2"><span class="myth">'+(++anz_ma)+'</span></td>\
+<td><span class="myth">Vorname, Name</span><br />'+name1+'</td>\
+<td><span class="myth">Straße, Hausnummer</span><br />'+strasse+'</td>\
+<td><span class="myth">PLZ, Ort</span><br />'+plzort+'</td></tr>\
+<tr>\
+<td><span class="myth">RV-Nummer/Geburtsdatum</span><br />'+rvnr+'</td>\
+<td><span class="myth">Tätigkeiten/Beruf</span><br />'+beruf+'</td>\
+<td><span class="myth">Erforderliche Untersuchungen</span><br />'+unters+'</td>\
+</tr>');
+        }
+    document.write('</table>');
+</script>
+
+
+
+
+<script language='javascript' src='../buttons2.js'></script>
+</body>
+</html>

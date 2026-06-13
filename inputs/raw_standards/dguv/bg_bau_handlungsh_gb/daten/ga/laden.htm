@@ -1,0 +1,35 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>GB laden</title>
+<link rel="stylesheet" type="text/css" href="../daten.css" />
+</head>
+
+<body>
+<script type="text/javascript" src="ord.js">
+</script>
+<script type="text/javascript" src="../buttons.js">
+</script>
+
+<script type="text/javascript">
+function check()
+{
+   if (document.getElementById("f3").dnameladefkt.value=="") { alert("Es wurde kein Dateiname ausgewählt."); return false; }
+   else return true;
+}	
+</script>
+
+<h2>Datei öffnen</h2>
+<p>Bitte klicken Sie auf "Durchsuchen...", um die zuvor gespeicherte Datei mit der Endung .ga1 zu öffnen.</p>
+<p><b>Die Datei finden Sie normalerweise im Ordner "Downloads".</b></p>
+
+<form id="f3" method="post" action="laden.php" enctype="multipart/form-data">
+<input type="file" name="dnameladefkt_gb2" onchange="document.getElementById('f3').submit()" />
+<br />
+</form>
+	
+<script type="text/javascript" src="../buttons2.js">
+</script>
+</body>
+</html>

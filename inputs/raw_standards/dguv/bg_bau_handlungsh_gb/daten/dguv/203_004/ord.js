@@ -1,0 +1,20 @@
+ord=new Array(
+"titel.htm	#Titel",
+"inhalt.htm	#Inhalt",
+"vor.htm	#Vorbemerkung",
+"1.htm	#1 Anwendungsbereich",
+"2.htm	#2 Begriffsbestimmungen",
+"3.htm	#3 Gefährdungsermittlung und -beurteilung",
+"4.htm	#4 Auswahl, Bereitstellung, Benutzung",
+"5.htm	#5 Maßnahmen zum Schutz gegen elektrischen Schlag",
+"6.htm	#6 Auswahl von Betriebsmitteln",
+"7.htm	#7 Instandsetzung, Wartung, wiederkehrende Prüfungen",
+"8.htm	#8 Unterweisung",
+"anh1.htm	#Anhang 1",
+"anh2.htm	#Anhang 2",
+"anh3.htm	#Anhang 3",
+"anh4.htm	#Anhang 4",
+"anh5.htm	#Anhang 5",
+"anh6.htm	#Anhang 6",
+"anh7.htm	#Anhang 7"
+);

@@ -1,0 +1,20 @@
+ord=new Array(
+"titel.htm	#Titel",
+"inhalt.htm	#Inhalt",
+"1.htm	#1 Anwendungsbereich",
+"2.htm	#2 Begriffsbestimmungen",
+"3.htm	#3 Gefährdungsbeurteilung",
+"4.htm	#4 Allgemeine Maßnahmen",
+"5.htm	#5 Zusätzliche Schutzmaßnahmen bei der Lagerung in Lagern",
+"6.htm	#6 Besondere Brandschutzmaßnahmen",
+"7.htm	#7 Zusätzliche Maßnahmen für spezielle Gefahrstoffe",
+"8.htm	#8 Lagerung akut toxischer Gefahrstoffe",
+"9.htm	#9 Lagerung oxidierender Flüssigkeiten und Feststoffe",
+"10.htm	#10 Lagerung von Gasen unter Druck",
+"11.htm	#11 Lagerung von Druckgaskartuschen und Aerosolpackungen",
+"12.htm	#12 Lagerung entzündbarer Flüssigkeiten",
+"13.htm	#13 Zusammenlagerung, Getrenntlagerung und Separatlagerung",
+"anh1.htm	#Anhang 1: Lagerung in Sicherheitsschränken",
+"anh2.htm	#Anhang 2: Zuordnung der Lagerklassen",
+"lit.htm	#Literatur"
+);

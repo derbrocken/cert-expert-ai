@@ -1,0 +1,6 @@
+{}
+|allownewsize:1|
+|if:va41=88 then \ga\titel.htm|
+|varn:41,88|
+|mask:\index.htm|
+|ende|

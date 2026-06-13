@@ -1,0 +1,642 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
+<!--form--><!--save_inp--><!--drucke_input2-->
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=ISO-8859-1">
+    <meta name="Copyright" content="Copyright 2004 BC GmbH, Wiesbaden">
+	<title>Unfallanzeige</title>
+    <link rel="STYLESHEET" type="text/css" href="../../../daten.css">
+    <link rel="STYLESHEET" type="text/css" href="unf-bk.css">
+    <style type="text/css">
+    #spalte_rechts { display:none }
+    </style>
+
+<script language='javascript' src='../form.js'></script>
+<script type="text/javascript">formular_docname="../form/unf.doc";</script>
+<script type="text/javascript">formular_pdfname="../form/unfallanzeige.pdf";</script>
+
+<!--[if IE 6]>
+<link rel="STYLESHEET" type="text/css" href="unf-bk_ie6.css">
+<![endif]-->
+
+<script language="JavaScript" type="text/javascript">
+<!--
+function einblenden(div) {
+  with(document.getElementById(div).style){
+    if(display=="none"){
+      display="block";
+    }
+    else{
+      display="none";
+    }
+  }
+}
+
+
+function maxZeichen(idname, maxErlaubt) {
+   var dieseArea = document.getElementById(idname);
+   if (dieseArea.value.length > maxErlaubt) {
+         dieseArea.value = dieseArea.value.substring(0, maxErlaubt);
+      }
+}
+
+function next(x)
+{
+	if (x.value=="") return;
+	e=x.name.split("-");
+	element_name=e[0];
+	nr=e[1]-0;
+	document.form.elements[element_name+"-"+(nr+1)].focus();
+}
+
+var swap_merk=0;
+
+function swap(v, x)
+{
+   if (v==swap_merk) {x.checked=false;swap_merk=0;}
+   else swap_merk=v;
+}
+//-->
+</script>
+</head>
+
+<body>
+<script language='javascript' src='../../../buttons.js'></script>
+<script type="text/javascript" language="javascript" src="../form.js"></script>
+
+<script type="text/javascript">
+if (typeof rpath=="undefined" || navigator.userAgent.indexOf("Windows NT 6.2")!=-1|| navigator.userAgent.indexOf("Windows NT 10")!=-1) {
+	document.write('\
+	<h3>Unfallanzeige</h3>\
+	<a href="unf.doc" onclick="set_target(this)"><img border="0" SRC="../grafik/worddoc.gif" border="0" alt="Word"></a>\
+&nbsp;&nbsp;<a href="unf.doc" onclick="set_target(this)">Formular im Word-Format</a>\
+	<span style="display:none">');
+}
+</script>
+
+<!-- find_MJ -->
+<div id="vd"><table cellspacing="0" cellpadding="3" border="0" width="600">
+<tr class="size80"><td width="25%">
+<a HREF="javascript:submitform('save');"><img border="0" SRC="../grafik/speichern.gif" alt="Speichern-Symbol"></a>
+&nbsp;
+<a HREF="javascript:submitform('save');">speichern</a>
+</td><td width="25%">
+<a HREF="javascript:load_form()"><img SRC="../grafik/laden.gif" border="0" alt="Laden-Symbol"></a>
+&nbsp;
+<a HREF="javascript:load_form()">öffnen</a>
+</td><td width="25%">
+<a HREF="javascript:submitform('print')"><img border="0" SRC="../grafik/drucken.gif" border="0" alt="Drucksymbol"></a>
+&nbsp;
+<a HREF="javascript:submitform('print')">drucken</a>
+</td>
+</td><td width="25%">
+<a href="unf.doc" onclick="set_target(this)"><img border="0" SRC="../grafik/worddoc.gif" border="0" alt="Word"></script></a>
+&nbsp;&nbsp;<a href="unf.doc" onclick="set_target(this)">Word</a>
+</td></tr>
+</table></div>
+<br>
+<!--  -->
+
+
+<form class="unfbkform" action="" name="form">
+<table class="unfbk" border="1">
+<tr>
+<td class="noborder"><img src="1p.gif" width="130" height="1" alt="" /></td>
+<td class="noborder"><img src="1p.gif" width="30" height="1" alt="" /></td>
+<td class="noborder"><img src="1p.gif" width="60" height="1" alt="" /></td>
+<td class="noborder"><img src="1p.gif" width="70" height="1" alt="" /></td>
+<td class="noborder"><img src="1p.gif" width="70" height="1" alt="" /></td>
+<td class="noborder"><img src="1p.gif" width="40" height="1" alt="" /></td>
+<td class="noborder"><img src="1p.gif" width="300" height="1" alt="" /></td>
+<td class="erl"><img src="1p.gif" width="20" height="1" alt="" /></td>
+</tr>
+
+
+
+
+<tr>
+<td class="obenlinks" colspan="6">&nbsp;</td>
+<td class="obenrechts"><h2 style="margin-bottom: 0px;">UNFALLANZEIGE</h2>
+</td>
+<td class="erl"><div class="erlq"><a href="javascript:void(0)" onclick="einblenden('erltext_allg')" style="text-decoration: none;">&nbsp;<strong>?</strong>&nbsp;</a></div></td>
+</tr>
+
+
+
+
+<tr>
+<td class="links" colspan="6">
+<p class="ssmall">1 Name und Anschrift des Unternehmens<br>
+<textarea name="absender" id="absender" cols="20" rows="5" onkeyup="maxZeichen('absender', 200);" onkeyup="maxZeichen('absender', 200);" onchange="maxZeichen('absender', 200);">
+</textarea></p>
+</td>
+<td class="rechts"><p class="ssmall">2 Unternehmensnummer des Unfallversicherungstr&auml;gers</p>
+<table style="border-collapse:collapse; padding:0px; border-spacing:0px; width:300px;">
+<tr>
+<td style="border-top:none; text-align:center;"><input name="nr2-1" id="nr2-1" size="1" maxlength="1" type="text" class="einezahl" onkeyup="next(this)"></td>
+<td style="border-top:none; text-align:center;"><input name="nr2-2" id="nr2-2" size="1" maxlength="1" type="text" class="einezahl" onkeyup="next(this)"></td>
+<td style="border-top:none; text-align:center;"><input name="nr2-3" id="nr2-3" size="1" maxlength="1" type="text" class="einezahl" onkeyup="next(this)"></td>
+<td style="border-top:none; text-align:center;"><input name="nr2-4" id="nr2-4" size="1" maxlength="1" type="text" class="einezahl" onkeyup="next(this)"></td>
+<td style="border-top:none; text-align:center;"><input name="nr2-5" id="nr2-5" size="1" maxlength="1" type="text" class="einezahl" onkeyup="next(this)"></td>
+<td style="border-top:none; text-align:center;"><input name="nr2-6" id="nr2-6" size="1" maxlength="1" type="text" class="einezahl" onkeyup="next(this)"></td>
+<td style="border-top:none; text-align:center;"><input name="nr2-7" id="nr2-7" size="1" maxlength="1" type="text" class="einezahl" onkeyup="next(this)"></td>
+<td style="border-top:none; text-align:center;"><input name="nr2-8" id="nr2-8" size="1" maxlength="1" type="text" class="einezahl" onkeyup="next(this)"></td>
+<td style="border-top:none; text-align:center;"><input name="nr2-9" id="nr2-9" size="1" maxlength="1" type="text" class="einezahl" onkeyup="next(this)"></td>
+<td style="border-top:none; text-align:center;"><input name="nr2-10" id="nr2-10" size="1" maxlength="1" type="text" class="einezahl" onkeyup="next(this)"></td>
+<td style="border-top:none; border-right:none; text-align:center;"><input name="nr2-11" id="nr2-11" size="1" maxlength="1" type="text" class="einezahl"></td>
+</tr>
+</table>
+</td>
+<td class="erl"><div class="erlq"><a href="javascript:void(0)" onclick="einblenden('erltext_02')" style="text-decoration: none;">&nbsp;<strong>2</strong>&nbsp;</a></div></td>
+</tr>
+
+
+
+
+<tr>
+<td class="rechtslinks" colspan="7">
+<p class="ssmall">3 Empf&auml;nger</p>
+<div class="adressat">
+<p class="ssmall">
+<textarea name="empfaenger" id="empfaenger" cols="20" rows="7" onkeyup="maxZeichen('empfaenger', 200);" onkeyup="maxZeichen('empfaenger', 200);" onchange="maxZeichen('empfaenger', 200);">
+</textarea></p>
+</div>
+</td>
+<td class="erl">&nbsp;</td>
+</tr>
+
+
+
+
+<tr>
+<td colspan="6"><p class="ssmall">4 Name, Vorname des Versicherten</p>
+<p class="ssmall"><input name="nr4-1" id="nr4-1" size="50" maxlength="50" type="text"></p>
+</td>
+<td>
+<div style="float:right;">
+<table style="border-collapse:collapse; padding:0px; border-spacing:0px; margin:0px;">
+<tr>
+<td colspan="2" class="dotted"><p class="ssmall">Tag</p></td>
+<td colspan="2" class="dotted"><p class="ssmall">Monat</p></td>
+<td colspan="4" class="dotted" style="border-right:none;"><p class="ssmall">Jahr</p></td>
+</tr>
+<tr>
+<td class="dotted"><input name="nr5-1" id="nr5-1" size="1" maxlength="1" type="text" class="einezahl" onkeyup="next(this)"></td>
+<td class="dotted"><input name="nr5-2" id="nr5-2" size="1" maxlength="1" type="text" class="einezahl" onkeyup="next(this)"></td>
+<td class="dotted"><input name="nr5-3" id="nr5-3" size="1" maxlength="1" type="text" class="einezahl" onkeyup="next(this)"></td>
+<td class="dotted"><input name="nr5-4" id="nr5-4" size="1" maxlength="1" type="text" class="einezahl" onkeyup="next(this)"></td>
+<td class="dotted"><input name="nr5-5" id="nr5-5" size="1" maxlength="1" type="text" class="einezahl" onkeyup="next(this)"></td>
+<td class="dotted"><input name="nr5-6" id="nr5-6" size="1" maxlength="1" type="text" class="einezahl" onkeyup="next(this)"></td>
+<td class="dotted"><input name="nr5-7" id="nr5-7" size="1" maxlength="1" type="text" class="einezahl" onkeyup="next(this)"></td>
+<td class="dotted" style="border-right:none;"><input name="nr5-8" id="nr5-8" size="1" maxlength="1" type="text" class="einezahl"></td>
+</tr>
+</table>
+</div>
+<p class="ssmall">5 Geburtsdatum</p>
+</td>
+<td class="erl">&nbsp;</td>
+</tr>
+
+
+
+
+<tr>
+<td colspan="4"><p class="ssmall">6 Stra&szlig;e, Hausnummer</p>
+<p class="ssmall"><input name="nr6-1" id="nr6-1" size="50" maxlength="50" type="text"></p></td>
+<td colspan="2">
+<p class="ssmall">Postleitzahl</p>
+<table style="border-collapse:collapse; padding:0px; border-spacing:0px; margin:0px; width:100%">
+<tr>
+<td class="dotted" style="border-left:none;"><input name="nr6-2" id="nr6-2" size="1" maxlength="1" type="text" class="einezahl" onkeyup="next(this)"></td>
+<td class="dotted"><input name="nr6-3" id="nr6-3" size="1" maxlength="1" type="text" class="einezahl" onkeyup="next(this)"></td>
+<td class="dotted"><input name="nr6-4" id="nr6-4" size="1" maxlength="1" type="text" class="einezahl" onkeyup="next(this)"></td>
+<td class="dotted"><input name="nr6-5" id="nr6-5" size="1" maxlength="1" type="text" class="einezahl" onkeyup="next(this)"></td>
+<td class="dotted" style="border-right:none;"><input name="nr6-6" id="nr6-6" size="1" maxlength="1" type="text" class="einezahl"></td>
+</tr>
+</table>
+</td>
+<td><p class="ssmall">Ort</p>
+<p class="ssmall"><input name="nr6-7" id="nr6-7" size="40" maxlength="40" type="text"></p>
+</td>
+<td class="erl">&nbsp;</td>
+</tr>
+
+
+
+
+<tr>
+<td colspan="2"><p class="ssmall">7 Geschlecht</p>
+<p class="ssmall"><input name="nr7_1" id="nr7_1" type="radio">&nbsp;m&auml;nnlich&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input name="nr7_1" id="nr7_2" type="radio">&nbsp;weiblich</p>
+</td>
+<td colspan="4">
+<p class="ssmall">8 Staatsangeh&ouml;rigkeit</p>
+<p class="ssmall"><input name="nr8-1" id="nr8-1" size="30" maxlength="30" type="text"></p>
+</td>
+<td><p class="ssmall">9 Leiharbeitnehmer</p>
+<p class="ssmall"><input name="nr9_1" id="nr9_1" type="radio">&nbsp;ja&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input name="nr9_1" id="nr9_2" type="radio">&nbsp;nein</p>
+</td>
+<td class="erl"><div class="erlq"><a href="javascript:void(0)" onclick="einblenden('erltext_09')" style="text-decoration: none;">&nbsp;<strong>9</strong>&nbsp;</a></div></td>
+</tr>
+
+
+
+
+<tr>
+<td colspan="2">
+<p class="ssmall">10 Auszubildender</p>
+<p class="ssmall"><input name="nr10_1" id="nr10_1" type="radio">&nbsp;ja&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input name="nr10_1" id="nr10_2" type="radio">&nbsp;nein</p>
+</td>
+<td colspan="2" style="border-right:none">
+<p class="ssmall">11 Ist der Versicherte</p>
+</td>
+<td colspan="3" style="border-left:none">
+<table style="border-collapse:collapse; padding:0px; border-spacing:0px; margin:0px;">
+<tr>
+<td class="noborder"><p class="ssmall"><input name="nr11_1" id="nr11_1" type="radio" onclick="swap(111,this)">&nbsp;Unternehmer </p></td>
+<td class="noborder"><p class="ssmall"><input name="nr11_1" id="nr11_2" type="radio" onclick="swap(112,this)">&nbsp;Ehegatte des Unternehmers</p></td>
+</tr>
+<tr>
+<td class="noborder"><p class="ssmall"><input name="nr11_1" id="nr11_3" type="radio" onclick="swap(113,this)">&nbsp;mit dem Unternehmer verwandt&nbsp;&nbsp;&nbsp;</p></td>
+<td class="noborder"><p class="ssmall"><input name="nr11_1" id="nr11_4" type="radio" onclick="swap(114,this)">&nbsp;Gesellschafter/Gesch&auml;ftsf&uuml;hrer</p></td>
+</tr>
+</table>
+</td>
+<td class="erl">&nbsp;</td>
+</tr>
+
+
+
+
+<tr>
+<td colspan="3"><p class="ssmall">12 Anspruch auf Entgeltfortzahlung</p>
+<p class="ssmall">besteht f&uuml;r
+<span style="border:1px solid #000000;"><input name="nr12-1" id="nr12-1" size="1" maxlength="1" type="text" class="einezahl" onkeyup="next(this)">|
+<input name="nr12-2" id="nr12-2" size="1" maxlength="1" type="text" class="einezahl"></span>&nbsp;Wochen</p>
+</td>
+<td colspan="4"><p class="ssmall">13 Krankenkasse des Versicherten (Name, PLZ, Ort)</p>
+<p class="ssmall"><input name="nr13-1" id="nr13-1" size="70" maxlength="70" type="text"></p>
+</td>
+<td class="erl"><div class="erlq"><a href="javascript:void(0)" onclick="einblenden('erltext_13')" style="text-decoration: none;">&nbsp;<strong>13</strong>&nbsp;</a></div></td>
+</tr>
+
+
+
+
+<tr>
+<td>
+<p class="ssmall">14 T&ouml;dlicher Unfall?</p>
+<p class="ssmall"><input name="nr14_1" id="nr14_1" type="radio">&nbsp;ja&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input name="nr14_1" id="nr14_2" type="radio">&nbsp;nein</p>
+</td>
+
+<td colspan="5">
+<p class="ssmall">15 Unfallzeitpunkt</p>
+<table style="border-collapse:collapse; padding:0px; border-spacing:0px; margin:0px; width:100%;">
+<tr>
+<td colspan="2" class="dotted" style="border-left:none;"><p class="ssmall">Tag</p></td>
+<td colspan="2" class="dotted"><p class="ssmall">Monat</p></td>
+<td colspan="4" class="dotted"><p class="ssmall">Jahr</p></td>
+<td colspan="2" class="dotted"><p class="ssmall">Stunde</p></td>
+<td colspan="2" class="dotted" style="border-right:none;"><p class="ssmall">Minute</p></td>
+</tr>
+<tr>
+<td class="dotted" style="border-left:none;"><input name="nr15-1" id="nr15-1" size="1" maxlength="1" type="text" class="einezahl" onkeyup="next(this)"></td>
+<td class="dotted"><input name="nr15-2" id="nr15-2" size="1" maxlength="1" type="text" class="einezahl" onkeyup="next(this)"></td>
+<td class="dotted"><input name="nr15-3" id="nr15-3" size="1" maxlength="1" type="text" class="einezahl" onkeyup="next(this)"></td>
+<td class="dotted"><input name="nr15-4" id="nr15-4" size="1" maxlength="1" type="text" class="einezahl" onkeyup="next(this)"></td>
+<td class="dotted"><input name="nr15-5" id="nr15-5" size="1" maxlength="1" type="text" class="einezahl" onkeyup="next(this)"></td>
+<td class="dotted"><input name="nr15-6" id="nr15-6" size="1" maxlength="1" type="text" class="einezahl" onkeyup="next(this)"></td>
+<td class="dotted"><input name="nr15-7" id="nr15-7" size="1" maxlength="1" type="text" class="einezahl" onkeyup="next(this)"></td>
+<td class="dotted"><input name="nr15-8" id="nr15-8" size="1" maxlength="1" type="text" class="einezahl" onkeyup="next(this)"></td>
+<td class="dotted"><input name="nr15-9" id="nr15-9" size="1" maxlength="1" type="text" class="einezahl" onkeyup="next(this)"></td>
+<td class="dotted"><input name="nr15-10" id="nr15-10" size="1" maxlength="1" type="text" class="einezahl" onkeyup="next(this)"></td>
+<td class="dotted"><input name="nr15-11" id="nr15-11" size="1" maxlength="1" type="text" class="einezahl" onkeyup="next(this)"></td>
+<td class="dotted" style="border-right:none;"><input name="nr15-12" id="nr15-12" size="1" maxlength="1" type="text" class="einezahl"></td>
+</tr>
+</table>
+</td>
+
+<td><p class="ssmall">16 Unfallort (genaue Orts- und Stra&szlig;enangabe mit PLZ)</p>
+<p class="ssmall"><input name="nr16-7" id="nr16-7" size="40" maxlength="40" type="text"></p>
+</td>
+<td class="erl">&nbsp;</td>
+</tr>
+
+
+
+
+<tr>
+<td colspan="7">
+<p class="ssmall">17 Ausf&uuml;hrliche Schilderung des Unfallhergangs<br>
+(Verlauf, Bezeichnung des Betriebsteils, ggf. Beteiligung von Maschinen, Anlagen, Gefahrstoffen)</p>
+<p class="ssmall"><textarea name="schilderung" id="schilderung" cols="40" rows="7" onkeyup="maxZeichen('schilderung', 500);" onkeyup="maxZeichen('schilderung', 500);" onchange="maxZeichen('schilderung', 500);">
+</textarea></p>
+<p class="ssmall">Die Angaben beruhen auf der Schilderung &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<input name="nr17_1" id="nr17_1" type="radio"> des Versicherten &nbsp;&nbsp;&nbsp;&nbsp;
+<input name="nr17_1" id="nr17_2" type="radio"> anderer Personen</p>
+</td>
+<td class="erl"><div class="erlq"><a href="javascript:void(0)" onclick="einblenden('erltext_17')" style="text-decoration: none;">&nbsp;<strong>17</strong>&nbsp;</a></div></td>
+</tr>
+
+
+
+
+<tr>
+<td colspan="5"><p class="ssmall">18 Verletzte K&ouml;rperteile</p>
+<p class="ssmall"><input name="nr18-1" id="nr18-1" size="55" maxlength="55" type="text"></p>
+</td>
+<td colspan="2"><p class="ssmall">19 Art der Verletzung</p>
+<p class="ssmall"><input name="nr19-1" id="nr19-1" size="55" maxlength="55" type="text"></p>
+</td>
+<td class="erl">
+<div class="erlq"><a href="javascript:void(0)" onclick="einblenden('erltext_18')" style="text-decoration: none;">&nbsp;<strong>18</strong>&nbsp;</a></div>
+<div class="erlq"><a href="javascript:void(0)" onclick="einblenden('erltext_19')" style="text-decoration: none;">&nbsp;<strong>19</strong>&nbsp;</a></div>
+</td>
+</tr>
+
+
+
+
+<tr>
+<td colspan="7">
+<div style="float:right;"><p class="ssmall">War diese Person Augenzeuge?&nbsp;&nbsp;&nbsp;&nbsp;<br>
+<input name="nr20_2" id="nr20_2" type="radio">&nbsp;ja&nbsp;&nbsp;&nbsp;<input name="nr20_2" id="nr20_3" type="radio">&nbsp;nein</p></div>
+<p class="ssmall">20 Wer hat von dem Unfall zuerst Kenntnis genommen? (Name, Anschrift des Zeugen)</p>
+<p class="ssmall"><input name="nr20-1" id="nr20-1" size="90" maxlength="90" type="text"></p>
+</td>
+<td class="erl">&nbsp;</td>
+</tr>
+
+
+
+
+
+<tr>
+<td colspan="6"><p class="ssmall">21 Name und Anschrift des erstbehandelnden Arztes/Krankenhauses<br>
+<input name="nr21-1" id="nr21-1" size="55" maxlength="55" type="text"><br>
+<input name="nr21-2" id="nr21-2" size="55" maxlength="55" type="text"></p>
+</td>
+
+<td><p class="ssmall">22 Beginn und Ende der Arbeitszeit des Versicherten</p>
+<div style="float:right; margin:0px;">
+<table style="border-collapse:collapse; padding:0px; border-spacing:0px; margin:0px;">
+<tr>
+<td class="dotted" style="border-left:none;"><p class="ssmall">&nbsp;</p></td>
+<td colspan="2" class="dotted"><p class="ssmall">Stunde</p></td>
+<td colspan="2" class="dotted" style="border-right:none;"><p class="ssmall">Minute</p></td>
+<td class="dotted"><p class="ssmall">&nbsp;</p></td>
+<td colspan="2" class="dotted"><p class="ssmall">Stunde</p></td>
+<td colspan="2" class="dotted" style="border-right:none;"><p class="ssmall">Minute</p></td>
+</tr>
+<tr>
+<td class="dotted" style="border-left:none;"><p class="ssmall">Beginn&nbsp;&nbsp;</p></td>
+<td class="dotted"><input name="nr22-1" id="nr22-1" size="1" maxlength="1" type="text" class="einezahl" onkeyup="next(this)"></td>
+<td class="dotted"><input name="nr22-2" id="nr22-2" size="1" maxlength="1" type="text" class="einezahl" onkeyup="next(this)"></td>
+<td class="dotted"><input name="nr22-3" id="nr22-3" size="1" maxlength="1" type="text" class="einezahl" onkeyup="next(this)"></td>
+<td class="dotted"><input name="nr22-4" id="nr22-4" size="1" maxlength="1" type="text" class="einezahl"></td>
+<td class="dotted"><p class="ssmall">&nbsp;&nbsp;&nbsp;&nbsp;Ende&nbsp;&nbsp;</p></td>
+<td class="dotted"><input name="nr22-5" id="nr22-5" size="1" maxlength="1" type="text" class="einezahl" onkeyup="next(this)"></td>
+<td class="dotted"><input name="nr22-6" id="nr22-6" size="1" maxlength="1" type="text" class="einezahl" onkeyup="next(this)"></td>
+<td class="dotted"><input name="nr22-7" id="nr22-7" size="1" maxlength="1" type="text" class="einezahl" onkeyup="next(this)"></td>
+<td class="dotted" style="border-right:none;"><input name="nr22-8" id="nr22-8" size="1" maxlength="1" type="text" class="einezahl"></td>
+</tr>
+</table>
+</div>
+</td>
+<td class="erl">&nbsp;</td>
+</tr>
+
+
+
+
+<tr>
+<td colspan="5"><p class="ssmall">23 Zum Unfallzeitpunkt besch&auml;ftigt/t&auml;tig als<br>
+<input name="nr23-1" id="nr23-1" size="55" maxlength="55" type="text"></p>
+</td>
+
+<td colspan="2">
+<div style="float:right; margin:0px;">
+<table style="border-collapse:collapse; padding:0px; border-spacing:0px; margin:0px;">
+<tr>
+<td colspan="2" class="dotted"><p class="ssmall">Monat</p></td>
+<td colspan="4" class="dotted" style="border-right:none;"><p class="ssmall">Jahr</p></td>
+</tr>
+<tr>
+<td class="dotted"><input name="nr24-1" id="nr24-1" size="1" maxlength="1" type="text" class="einezahl" onkeyup="next(this)"></td>
+<td class="dotted"><input name="nr24-2" id="nr24-2" size="1" maxlength="1" type="text" class="einezahl" onkeyup="next(this)"></td>
+<td class="dotted"><input name="nr24-3" id="nr24-3" size="1" maxlength="1" type="text" class="einezahl" onkeyup="next(this)"></td>
+<td class="dotted"><input name="nr24-4" id="nr24-4" size="1" maxlength="1" type="text" class="einezahl" onkeyup="next(this)"></td>
+<td class="dotted"><input name="nr24-5" id="nr24-5" size="1" maxlength="1" type="text" class="einezahl" onkeyup="next(this)"></td>
+<td class="dotted" style="border-right:none;"><input name="nr24-6" id="nr24-6" size="1" maxlength="1" type="text" class="einezahl"></td>
+</tr>
+</table>
+</div>
+<p class="ssmall">24 Seit wann bei dieser T&auml;tigkeit?</p>
+</td>
+<td class="erl"><div class="erlq"><a href="javascript:void(0)" onclick="einblenden('erltext_23')" style="text-decoration: none;">&nbsp;<strong>23</strong>&nbsp;</a></div></td>
+</tr>
+
+
+
+
+<tr>
+<td colspan="7">
+<p class="ssmall">25 In welchem Teil des Unternehmens ist der Versicherte st&auml;ndig t&auml;tig?</p>
+<p class="ssmall"><input name="nr25-1" id="nr25-1" size="100" maxlength="100" type="text"></p>
+</td>
+<td class="erl"><div class="erlq"><a href="javascript:void(0)" onclick="einblenden('erltext_25')" style="text-decoration: none;">&nbsp;<strong>25</strong>&nbsp;</a></div></td>
+</tr>
+
+
+
+
+<tr>
+<td colspan="6">
+<p class="ssmall">26 Hat der Versicherte die Arbeit eingestellt? &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<input name="nr26_1" id="nr26_1" type="radio"> nein &nbsp;&nbsp;&nbsp;&nbsp;
+<input name="nr26_1" id="nr26_2" type="radio"> sofort</p>
+</td>
+<td>
+<div style="float:right; margin:0px;">
+<table style="border-collapse:collapse; padding:0px; border-spacing:0px; margin:0px;">
+<tr>
+<td class="noborder"><p class="ssmall">sp&auml;ter, am&nbsp;&nbsp;&nbsp;</p></td>
+<td colspan="2" class="dotted"><p class="ssmall">Tag</p></td>
+<td colspan="2" class="dotted"><p class="ssmall">Monat</p></td>
+<td colspan="2" class="dotted" style="border-right:none;"><p class="ssmall">Stunde</p></td>
+</tr>
+<tr>
+<td class="noborder"><p class="ssmall">&nbsp;</p></td>
+<td class="dotted"><input name="nr26-3" id="nr26-3" size="1" maxlength="1" type="text" class="einezahl" onkeyup="next(this)"></td>
+<td class="dotted"><input name="nr26-4" id="nr26-4" size="1" maxlength="1" type="text" class="einezahl" onkeyup="next(this)"></td>
+<td class="dotted"><input name="nr26-5" id="nr26-5" size="1" maxlength="1" type="text" class="einezahl" onkeyup="next(this)"></td>
+<td class="dotted"><input name="nr26-6" id="nr26-6" size="1" maxlength="1" type="text" class="einezahl" onkeyup="next(this)"></td>
+<td class="dotted"><input name="nr26-7" id="nr26-7" size="1" maxlength="1" type="text" class="einezahl" onkeyup="next(this)"></td>
+<td class="dotted" style="border-right:none;"><input name="nr26-8" id="nr26-8" size="1" maxlength="1" type="text" class="einezahl"></td>
+</tr>
+</table>
+</div>
+</td>
+<td class="erl">&nbsp;</td>
+</tr>
+
+
+
+
+<tr>
+<td colspan="6">
+<p class="ssmall">27 Hat der Versicherte die Arbeit wieder aufgenommen?  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<input name="nr27_1" id="nr27_1" type="radio"> nein</p>
+</td>
+<td>
+<div style="float:right; margin:0px;">
+<table style="border-collapse:collapse; padding:0px; border-spacing:0px; margin:0px;">
+<tr>
+<td colspan="2" class="dotted"><p class="ssmall">Tag</p></td>
+<td colspan="2" class="dotted"><p class="ssmall">Monat</p></td>
+<td colspan="4" class="dotted" style="border-right:none;"><p class="ssmall">Jahr</p></td>
+</tr>
+<tr>
+<td class="dotted"><input name="nr27-3" id="nr27-3" size="1" maxlength="1" type="text" class="einezahl" onkeyup="next(this)"></td>
+<td class="dotted"><input name="nr27-4" id="nr27-4" size="1" maxlength="1" type="text" class="einezahl" onkeyup="next(this)"></td>
+<td class="dotted"><input name="nr27-5" id="nr27-5" size="1" maxlength="1" type="text" class="einezahl" onkeyup="next(this)"></td>
+<td class="dotted"><input name="nr27-6" id="nr27-6" size="1" maxlength="1" type="text" class="einezahl" onkeyup="next(this)"></td>
+<td class="dotted"><input name="nr27-7" id="nr27-7" size="1" maxlength="1" type="text" class="einezahl" onkeyup="next(this)"></td>
+<td class="dotted"><input name="nr27-8" id="nr27-8" size="1" maxlength="1" type="text" class="einezahl" onkeyup="next(this)"></td>
+<td class="dotted"><input name="nr27-9" id="nr27-9" size="1" maxlength="1" type="text" class="einezahl" onkeyup="next(this)"></td>
+<td class="dotted" style="border-right:none;"><input name="nr27-10" id="nr27-10" size="1" maxlength="1" type="text" class="einezahl"></td>
+</tr>
+</table>
+</div>
+<p class="ssmall"><input name="nr27_1" id="nr27_2" type="radio">&nbsp;ja, am&nbsp;</p>
+</td>
+<td class="erl">&nbsp;</td>
+</tr>
+
+
+
+
+<tr>
+<td colspan="7">
+<table style="border-collapse:collapse; padding:0px; border-spacing:0px; margin:0px; border:none; width:100%">
+
+<tr>
+<td colspan="7" class="noborder">
+<p>&nbsp;</p>
+</td>
+</tr>
+
+<tr>
+<td class="noborder" style="border-bottom:1px solid #000000;"><p class="ssmall"><input name="nr28-1" id="nr28-1" size="10" maxlength="10" type="text"></p></td>
+<td class="noborder" style="border-bottom:1px solid #000000;"><p class="ssmall"><input name="nr28-2" id="nr28-2" size="30" maxlength="30" type="text"></p></td>
+<td class="noborder" style="border-bottom:1px solid #000000;"><p class="ssmall"><input name="nr28-3" id="nr28-3" size="30" maxlength="30" type="text"></p></td>
+<td class="noborder" style="border-bottom:1px solid #000000;"><p class="ssmall"><input name="nr28-4" id="nr28-4" size="25" maxlength="25" type="text"></p></td>
+</tr>
+<tr>
+<td class="noborder"><p class="ssmall">28 Datum</p></td>
+<td class="noborder"><p class="ssmall">Unternehmer/Bevollm&auml;chtigter</p></td>
+<td class="noborder"><p class="ssmall">Betriebsrat (Personalrat)</p></td>
+<td class="noborder"><p class="ssmall">Telefon-Nr. f&uuml;r R&uuml;ckfragen (Ansprechpartner)&nbsp;&nbsp;</p></td>
+</tr>
+</table>
+</td>
+<td class="erl">&nbsp;</td>
+</tr>
+
+<tr>
+<td colspan="8" class="noborder">
+<!--<p class="small" style="text-align:right;"><span class="blaettern"><a href="unf_e.htm">&nbsp;&nbsp;alle Erl&auml;uterungen&nbsp;&nbsp; &gt;&gt;&nbsp;&nbsp;</a></span></p>
+-->
+
+</td>
+</tr>
+
+</table>
+</form>
+
+
+
+<div class="erltext" id="erltext_allg" style="position:absolute; top:10px; left:50px; display:none;">
+<a name="a_erltext_allg" id="a_erltext_allg"></a>
+<p><b>I. Allgemeine Erl&auml;uterungen</b></p>
+<table style="border:none; border-spacing:0px; padding:0px;">
+<tr>
+<td width="32%"><p><b>Wer</b> hat die Unfallanzeige zu erstatten?</p></td>
+<td width="68%"><p>Anzeigepflichtig ist der <b>Unternehmer</b> oder sein Bevollm&auml;chtigter. Bevollm&auml;chtigte sind Personen, die vom Unternehmer zur Erstattung der Anzeige beauftragt sind.</p></td>
+</tr>
+<tr>
+<td width="32%"><p><b>Wann</b> ist eine Unfallanzeige zu erstatten?</p></td>
+<td width="68%" valign="top"><p>Die Anzeige ist zu erstatten, wenn ein Arbeitsunfall oder ein Wegeunfall (z.B. Unfall auf dem Weg zwischen Wohnung und Arbeitsst&auml;tte) eine <b>Arbeitsunf&auml;higkeit von mehr als 3 Kalendertagen</b> oder den <b>Tod</b> eines Versicherten zur Folge hat.</p></td>
+</tr>
+<tr><td width="32%"><p>In welcher <b>Anzahl</b> ist die Unfallanzeige zu erstatten?<p><b>Wohin</b> ist sie zu senden?</p></td>
+<td width="68%"><p><b>2 Exemplare</b> sind an den zust&auml;ndigen Unfallversicherungstr&auml;ger (z.B. Berufsgenossenschaft, Unfallkasse) zu senden.<br>Unterliegt das Unternehmen der allgemeinen Arbeitsschutzaufsicht (bei landwirtschaftlichen Betrieben, nur soweit sie Arbeitnehmer besch&auml;ftigen), ist ein Exemplar an die f&uuml;r den Arbeitsschutz zust&auml;ndige Landesbeh&ouml;rde (z.B. Gewerbeaufsichtsamt, Staatl. Amt f&uuml;r Arbeitsschutz) zu senden.<br>Unterliegt das Unternehmen der bergbeh&ouml;rdlichen Aufsicht, erh&auml;lt die zust&auml;ndige untere Bergbeh&ouml;rde ein Exemplar.<br>Ein Exemplar dient der Dokumentation im Unternehmen.<br>Ein Exemplar erh&auml;lt der Betriebsrat (Personalrat), falls vorhanden.</p></td>
+</tr>
+<tr>
+<td width="32%"><p>Wer ist zu <b>informieren</b>?</p></td>
+<td width="68%"><p>Versicherte, f&uuml;r die eine Anzeige erstattet wird, sind auf ihr Recht hinzuweisen, dass sie eine Kopie der Anzeige verlangen k&ouml;nnen.<br>Fachkraft f&uuml;r Arbeitssicherheit und Betriebsarzt sind durch den Unternehmer oder seinen Bevollm&auml;chtigten &uuml;ber die Unfallanzeige zu informieren.</p></td>
+</tr>
+<tr>
+<td width="32%"><p>Innerhalb welcher <b>Frist </b>ist die Unfallanzeige zu erstatten?</p></td>
+<td width="68%"><p>Der Unternehmer oder sein Bevollm&auml;chtigter hat die Anzeige <b>binnen 3 Tagen</b> zu erstatten, nachdem er von dem Unfall Kenntnis erhalten hat.</p></td>
+</tr>
+<tr>
+<td width="32%"><p>Was ist bei <b>schweren</b> Unf&auml;llen, Massenunf&auml;llen und Todesf&auml;llen zu beachten?</p></td>
+<td width="68%"><p>T&ouml;dliche Unf&auml;lle, Massenunf&auml;lle und schwere Unf&auml;lle sind sofort dem zust&auml;ndigen Unfallversicherungstr&auml;ger und bei Unternehmen, die der allgemeinen Arbeitsschutzaufsicht oder der bergbeh&ouml;rdlichen Aufsicht unterliegen, auch der f&uuml;r den Arbeitsschutz zust&auml;ndigen Landesbeh&ouml;rde bzw. der unteren Bergbeh&ouml;rde zu melden (Telefon, Fax, E-mail).</p></td>
+</tr>
+</table>
+</div>
+
+
+
+<div class="erltext" id="erltext_02" style="position:absolute; top:50px; left:50px; display:none;">
+<a name="a_erltext_02" id="a_erltext_02"></a>
+<p><span class="erlnum">&nbsp;2.&nbsp;</span> Anzugeben ist die Unternehmensnummer (Mitgliedsnummer) beim Unfallversicherungstr&auml;ger (z.B. enthalten im Beitragsbescheid oder im Bescheid &uuml;ber die Zust&auml;ndigkeit).</p>
+</div>
+
+<div class="erltext" id="erltext_09" style="position:absolute; top:410px; left:50px; display:none;">
+<a name="a_erltext_09" id="a_erltext_09"></a>
+<p><span class="erlnum">&nbsp;9.&nbsp;</span> Der im Unternehmen t&auml;tige Besch&auml;ftigte einer Zeitarbeitsfirma/eines Personaldienstleisters ist ein Leiharbeitnehmer. (Es liegt ein Arbeitnehmer&uuml;berlassungsvertrag vor.)</p>
+</div>
+
+<div class="erltext" id="erltext_13" style="position:absolute; top:500px; left:50px; display:none;">
+<a name="a_erltext_13" id="a_erltext_13"></a>
+<p><span class="erlnum">&nbsp;13.&nbsp;</span> Bei gesetzlicher Krankenversicherung mit Anspruch auf Krankengeld gen&uuml;gt Name, PLZ und Ort der Kasse; in anderen F&auml;llen bitte zus&auml;tzlich Art der Versicherung angeben (z.B. Privatversicherung, Rentnerkrankenversicherung, Familienhilfe, freiwillige Versicherung bei gesetzlicher Krankenkasse).</p>
+</div>
+
+<div class="erltext" id="erltext_17" style="position:absolute; top:600px; left:50px; display:none;">
+<a name="a_erltext_17" id="a_erltext_17"></a>
+<p><span class="erlnum">&nbsp;17.&nbsp;</span> Die Schilderung des Unfallhergangs soll detaillierte Angaben zum Unfallgeschehen und zu seinen n&auml;heren Umst&auml;nden enthalten (wo, wie, warum, unter welchen Umst&auml;nden, Angabe der beteiligten Ger&auml;te oder Maschinen). Insbesondere auf die folgenden Punkte sollte die Schilderung des Unfallhergangs eingehen.</p>
+<p>Anzugeben ist der Betriebsteil, in dem sich der Unfall ereignete: z.B. B&uuml;ro, Schlosserei, Verkauf in der Herrenkonfektion, Betriebshof, Gew&auml;chshaus, Stall.</p>
+<p>Anzugeben ist die T&auml;tigkeit, die die verletzte Person aus&uuml;bte. Z.&nbsp;B. ...&nbsp;bediente einen Kunden, ...&nbsp;trug Unterlagen zum Meisterb&uuml;ro, ...&nbsp;schlug einen Bolzen heraus, ...&nbsp;entlud Lieferwagen,... reparierte Maschine (Art, Hersteller, Typ, Baujahr).</p>
+<p>Anzugeben sind die Umst&auml;nde, die den Verlauf des Unfalls kennzeichnen (unfallausl&ouml;sende Umst&auml;nde, welche Arbeitsmittel wurden benutzt bzw. an welchen Maschinen und Anlagen wurde gearbeitet). Z.&nbsp;B.: ...&nbsp;beugte sich zu weit zur Seite aus, dadurch rutschte die Leiter weg und die Person st&uuml;rzte 3&nbsp;m in die Tiefe, ...&nbsp;verkantete das Holz und wurde von der Holzkreiss&auml;ge (Hersteller, Typ, Baujahr) erfasst, ...&nbsp;rutschte durch auf dem Boden liegenden Abfall/Schmutz/&Ouml;l/Dung aus.</p>
+<p>Waren Arbeitsbedingungen wie Hitze, K&auml;lte, L&auml;rm, Staub, Strahlung gegeben?</p>
+<p>Wurde mit Gefahrstoffen umgegangen?</p>
+<p>Die Unfallschilderung kann auf der R&uuml;ckseite oder auf einem Beiblatt fortgesetzt werden.</p>
+</div>
+
+<div class="erltext" id="erltext_18" style="position:absolute; top:740px; left:50px; display:none;">
+<a name="a_erltext_18" id="a_erltext_18"></a>
+<p><span class="erlnum">&nbsp;18.&nbsp;</span> Beispiele: Rechter Unterarm, Linker Zeigefinger, Linker Fu&szlig; und rechte Kopfseite.</p>
+</div>
+
+<div class="erltext" id="erltext_19" style="position:absolute; top:770px; left:50px; display:none;">
+<a name="a_erltext_19" id="a_erltext_19"></a>
+<p><span class="erlnum">&nbsp;19.&nbsp;</span> Beispiele: Prellung, Knochenbruch, Verstauchung, Verbrennung, Platzwunde, Schnittverletzung.</p>
+</div>
+
+<div class="erltext" id="erltext_23" style="position:absolute; top:900px; left:50px; display:none;">
+<a name="a_erltext_23" id="a_erltext_23"></a>
+<p><span class="erlnum">&nbsp;23.&nbsp;</span> Hier einsetzen z.B. Verk&auml;uferin, Buchhalter, Maurer, Elektroinstallateur, Krankenschwester, Landwirt, G&auml;rtner und nicht "Arbeiter", "Angestellter" oder "Unternehmer".</p>
+</div>
+
+<div class="erltext" id="erltext_25" style="position:absolute; top:940px; left:50px; display:none;">
+<a name="a_erltext_25" id="a_erltext_25"></a>
+<p><span class="erlnum">&nbsp;25.&nbsp;</span> Beispiele: B&uuml;ro, Lager, Schlosserei, Labor, Lebensmittelabteilung, Fabrikhof, Bauhof.</p>
+</div>
+
+<script type="text/javascript">
+if (typeof rpath=="undefined") document.write("</span>");
+</script>
+
+<script language='javascript' src='../../../buttons2.js'></script>
+</body>
+</html>

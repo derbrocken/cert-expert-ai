@@ -1,0 +1,20 @@
+ord=new Array(
+"titel.htm	#Titel",
+"inhalt.htm	#Inhaltsverzeichnis",
+"vor.htm	#Vorbemerkung",
+"1.htm	#1 Anwendungsbereich",
+"2.htm	#2 Begriffsbestimmungen",
+"3.htm	#3 Vorgaben zu Prüfungen",
+"4.htm	#4 Gefährdungsbeurteilung zur Prüftätigkeit",
+"5.htm	#5 Vorbereitung der Prüfungen",
+"6.htm	#6 Durchführung von Prüfungen",
+"7.htm	#7 Prüffristen",
+"8.htm	#8 Dokumentation und Kennzeichnung",
+"9.htm	#9 Auswertung",
+"anh1.htm	#Anhang A: Prüfung vor der ersten Inbetriebnahme",
+"anh2.htm	#Anhang B: Gesetze, Vorschriften, Regeln, Informationen, Normen",
+"anh3.htm	#Anhang C: Beispiele für weitergehende Prüfungen",
+"anh4.htm	#Anhang D: Hinweise zur Auftragsvergabe",
+"anh5.htm	#Anhang E: Zur Prüfung befähigte Person",
+"anh6.htm	#Anhang F: Hinweise für eine Gefährdungsbeurteilung"
+);

@@ -1,0 +1,336 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>GB laden - speichern</title>
+<link rel="stylesheet" type="text/css" href="../daten.css" />
+<script type="text/javascript" src="konv_bereiche.js"></script>
+</head>
+
+<body onload="init()">
+<script type="text/javascript" src="ord.js"></script><script type="text/javascript" src="../buttons.js"></script>
+<script type="text/javascript" src="form.js"></script>
+<script type="text/javascript" src="../struktur_alles.js"></script>
+
+<script type="text/javascript">
+//<![CDATA[
+
+function myjoin(x)
+{
+   e="";
+   for (var i in x) {
+   	   var w=(""+x[i]).replace(/~2/g, "~ 2");
+   	   w=w.replace(/~1/g, "~ 1");
+   	   e+=i+"~1"+w+"~2";
+   	}
+   return e;
+}
+
+var geladene_datei='[geladene_datei]';
+
+function init()
+{
+   if (geladene_datei!='[geladene_'+'datei]') {oeffnen_von_php();	 return;}
+
+   if (location.search=="?speichern") speichern(1);  // speichern unter...
+   else if (location.search=="?speichern1") speichern(0); // speichern
+   else if (location.search!="?nop") laden();
+}
+
+var version_datum=202407; // für Versionsvergleich von geladenen GA's.  Format: JJJJMM
+
+function speichern(flag_sp_unter) 
+{
+/*
+   var vgl=parent.join1(parent.ga_daten)+parent.join1(parent.inp11)+parent.join1(parent.db_daten)+parent.join1(parent.risiko_daten)+parent.eigene_struktur;
+   if (parent.vergleich!=vgl) { // bei Änderungen: Neues Änderungsdatum setzen
+   	    d=new Date(); parent.inp11[6]=make2(d.getDate()) + "."+ make2(d.getMonth()+1) +"."+ d.getFullYear(); 
+   	    }  
+*/
+   document.form.status.value="xx13";   // Version=2013
+   document.form.bereich.value=bereich;
+
+   // NEU: beim Speichern das ursprüngliche Versionsdatum erhalten! Nur in 'hinweise_ausblenden()' das Versionsdatum auf die aktuelle Version setzen.
+   if (parent.version_datum_merk=="(kein_datum)") document.form.version.value="gahochtief_1.0";
+   else if (parent.version_datum_merk) document.form.version.value="gahochtief_1.1."+parent.version_datum_merk;
+   else document.form.version.value="gahochtief_1.1."+version_datum;
+   //
+   
+   document.form.ga_daten.value=myjoin(parent.ga_daten);
+//   alert(parent.ga_daten);
+   document.form.db_daten.value=myjoin(parent.db_daten);
+   document.form.risiko_daten.value=myjoin(parent.risiko_daten);
+   document.form.inp11.value=myjoin(parent.inp11);
+   document.form.eigene_struktur.value=parent.eigene_struktur;
+   document.form.mitarbeiter_db.value=myjoin(parent.mitarbeiter_db);
+
+   var b=bereich.substring(0,1).toUpperCase()+bereich.substring(1);
+   if (b=="Alles") b="Eigene";
+   if (b=="Fm") b="GebMan";
+   b=filter2(b+" "+parent.inp11[2]+" "+parent.inp11[6]);
+   while (b.charAt(b.length-1)==' ') b=b.substring(0,b.length-1);
+
+   //parent.vergleich=vgl;
+   if (typeof var_94!="undefined") {
+       if (flag_kurzhh) b="Kurzhh_"+b.replace("_k", "");
+       if (flag_sp_unter) location.href="formdata://save_@filename="+b;
+       else location.href='x-s8:///#PATH#$btb_speichern';
+       s=navigator.userAgent; if (s.indexOf("MSIE 5.")==-1) location.href="x-s8:///"+rpath+"/goback";
+       }
+   else {
+       var eingaben="x-filename:\\ga\\laden_speichern.htm\r\n";
+       for(var i=0;i<document.form.elements.length;i++)
+           eingaben+='"'+document.form.elements[i].value+'";'
+//alert(document.frm2[1].type);
+
+       document.frm2.eingaben.value=""+eingaben;
+       document.frm2.name1.value=b+".ga1";
+       document.frm2.submit();
+       //setTimeout('goback()', 500);
+   	   }
+}
+
+function filter2(x)
+{
+   x=""+x;
+   var whitelist="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_-()!äüößÄÜÖ ";
+   var erg="";
+   for(var i=0;i<x.length;i++) {
+       var c=x.charAt(i);
+       if (whitelist.indexOf(c)!=-1 || x.charCodeAt(i)>128) erg+=c;
+       }
+   return erg;
+}
+
+function laden()
+{
+   if (typeof var_94=="undefined") {
+   	   location.href='laden.htm';
+   	   return;
+   	   }
+   form.status.value="-laden-";
+   location.href='x-s8:///#PATH#$load';
+
+   if (navigator.appVersion.indexOf("MSIE 5")!=-1 )  return;
+   else laden_ok();
+}
+
+function oeffnen_von_php()
+{
+       var eingaben=geladene_datei.split('\";\"');
+       eingaben[0]=eingaben[0].split('"')[1];       
+       for(var i=0;i<document.form.elements.length;i++)
+           document.form.elements[i].value=eingaben[i];
+
+	   laden_ok();
+}
+
+function laden_ok()
+{
+   if (!document.form.status) return; // es wurde ein Formular/checkliste geladen
+   if (document.form.status.value!="-laden-") {
+      if (document.form.version.value.substring(0,14)!="gahochtief_1.0" &&
+          document.form.version.value.substring(0,14)!="gahochtief_1.1") {alert("Die geladene Datei kann nicht importiert werden - Dateiversion ist "+document.form.version.value+". Hinweis: Checklisten bitte über den Button 'Eingaben laden' am Seitenende laden."); if (bereich!='') location.href=xpath+'ga/ga_'+bereich+'.htm'; goback(); return;}
+      parent.f_alte_version_geladen=0;
+      parent.warnflag_alteversion=0;
+
+      //
+      // Versionsnummer der geladenen Datei fürs spätere Speichern merken
+      parent.version_datum_merk='';
+
+      // z.B. 'gahochtief_1.0' --> dann version_datum_merk auf '(kein_datum)' setzen
+      // z.B. 'gahochtief_1.x.201007' --> dann version_datum_merk auf 201007 setzen
+      if (document.form.version.value=='gahochtief_1.0') parent.version_datum_merk="(kein_datum)";
+      else if (document.form.version.value.substring(0,13)=='gahochtief_1.')          
+      	 parent.version_datum_merk=document.form.version.value.substring(15);
+
+      // Wenn die Versionsnummer ohne Datum ist, oder das Datum älter als die aktuelle Version: Dann ein Flag setzen 
+      if (document.form.version.value.length==14 || parseInt(document.form.version.value.substring(15)) < version_datum) {
+          parent.f_alte_version_geladen=1;
+          }
+      //
+      //
+
+   	  bereich=document.form.bereich.value;
+   	  document.cookie="bereich="+document.form.bereich.value; 
+   	  
+   	  if (document.form.bereich.value=="eigene") {document.cookie="hauptkap=1";document.cookie="u_kap=1";hauptkap=u_kap=1;}
+   
+      parent.ga_daten=new Array();
+      var x=document.form.ga_daten.value.split("~2");
+      for(var i=0;i<x.length;i++){
+      	  var xx=x[i].split("~1");
+      	  parent.ga_daten[xx[0]]=xx[1];
+      }
+      
+      parent.db_daten=new Array();
+      var x=document.form.db_daten.value.split("~2");
+      for(var i=0;i<x.length;i++){
+      	  var xx=x[i].split("~1");
+      	  parent.db_daten[xx[0]]=xx[1];
+      }
+      	  
+      parent.risiko_daten=new Array();
+      var x=document.form.risiko_daten.value.split("~2");
+      for(var i=0;i<x.length;i++){
+      	  var xx=x[i].split("~1");
+      	  parent.risiko_daten[xx[0]]=xx[1];
+      }
+      	  
+      for(i=0;i<11;i++) parent.inp11[i]="";
+      var x=document.form.inp11.value.split("~2");
+      for(var i=0;i<x.length;i++){
+      	  var xx=x[i].split("~1");
+      	  if (xx[0]!="") parent.inp11[xx[0]-0]=xx[1];
+      }
+      parent.eigene_struktur=document.form.eigene_struktur.value;
+      parent.eigene_struktur=parent.eigene_struktur.replace(/\r\n/g, "\n");
+      if (document.form.bereich.value=="eigene" && parent.eigene_struktur.indexOf("---")==-1) 
+           parent.eigene_struktur=konvertiere_struktur(parent.eigene_struktur);
+      
+      parent.struktur_alles_merk=struktur1['alles']; // für später merken
+      if (parent.f_alte_version_geladen==1) ggf_neue_faktoren_ergaenzen(); // wenn in der geladen Datei Faktoren sind, die durch andere ersetzt wurden, dann die neuen in der Struktur ergänzen
+
+      parent.mitarbeiter_db=new Array();
+      var x=document.form.mitarbeiter_db.value.split("~2");
+      for(var i=0;i<x.length;i++){
+      	  var xx=x[i].split("~1");
+      	  parent.mitarbeiter_db[xx[0]]=xx[1];
+      }
+      parent.nicht_merken_flag=1;
+      
+      if (parent.f_alte_version_geladen==1 && parent.eigene_struktur=='')
+      	parent.eigene_struktur=null; // Wenn eine alte GA ohne Strukturinfo geladen wurden -> beim nächsten Seitenaufruf die Struktur neu initialisieren
+   }
+   //s=navigator.userAgent; if (s.indexOf("MSIE 5.")==-1) location.href="x-s8:///"+rpath+"/goback";
+   
+   if (document.form.bereich.value=="alles") location.href=xpath+"ga/ga_alles.htm";
+   else if (document.form.bereich.value.indexOf("_k")!=-1) location.href=xpath+"ga_kurzhh/ga.htm?erglist";
+   else  location.href=xpath+"ga/ga.htm?erglist";
+}
+
+if (location.search=="?speichern") document.write('<p>Gefährdungsbeurteilung speichern</p>');
+   else {
+   	 document.write('<p>Gefährdungsbeurteilung öffnen</p>');
+   	 if (navigator.appVersion.indexOf("MSIE 5")!=-1) { document.write('<a href="javascript:laden_ok()">Weiter</a>'); }
+   	}
+
+// Zum Import von "eigenen" GAs aus Hochbau 2008.
+// Diese GA's hatten keine Struktur, sondern nur Faktoren, unsortiert.
+// Diese Faktoren müssen jetzt zu den Hauptkapiteln (Organisation im Betrieb,...) zugeordnet werden
+//
+function konvertiere_struktur(struktur)
+{
+   var s=parent.eigene_struktur.split("\n");
+   var bereich_nr=1;
+   var to=new Array('','','','','','','');
+   for(var i=0; i<s.length; i++) {
+       var x=s[i].split("#");
+       if (x.length==5 && bereiche[x[4]])  bereich_nr=bereiche[x[4]];
+       else if (x.length==5 && x[4].length>6 && bereiche[x[4].substring(0,x[4].length-6)])  bereich_nr=bereiche[x[4].substring(0,x[4].length-6)];
+       to[bereich_nr]+=s[i]+"\n";
+       }
+
+   return '\
+---##Organisation im Betrieb\n'+to[1]+'\
+---##Organisation Baustelle/Objekt\n'+to[2]+'\
+---##Verkehrswege, Arbeitsplätze und Transport\n'+to[3]+'\
+---##Allgemeine Tätigkeiten\n'+to[4]+'\
+---##Tätigkeiten mit Gefahrstoffen\n'+to[5]+'\
+---##Ergänzende Tätigkeiten\n'+to[6]+'\
+---##Stationäre Arbeitsplätze\n'+to[7];
+}
+
+function ggf_neue_faktoren_ergaenzen()
+{
+   var s=parent.eigene_struktur.split("\n");
+   var s2=new Array();
+   var bereich_nr=1;
+   var to=new Array('','','','','','','');
+   for(var i=0; i<s.length; i++) {
+       var x=s[i].split("#");
+       var neu='';
+       // sind Faktoren enthalten, die komplett ersetzt werden sollen?
+       if (x[4]=='f_tauben_schimmel_') neu='f_schimmel_tauben';
+       if (x[4]=='f_koerplueberl_dienst_') neu='f_koerplueberl_Service_DL_';
+       if (x[4]=='f_org_r_arbeitsorganisation') neu='f_org_arbeitsorganisation';
+       if (x[4]=='f_org_r_personaleinsatz') neu='f_org_personaleinsatz';
+       if (x[4]=='f_org_r_kommunikation') neu='f_org_kommunikation';
+       if (x[4]=='f_org_r_technikeinsatz') neu='f_org_technikeinsatz';
+       if (x[4]=='f_org_rs_kooperation') neu='f_org_kooperation';
+       if (x[4]=='f_org_rs_orga_plannung') neu='f_org_orga_plannung';
+       if (x[4]=='f_org_rs_baudurchfuehrung') neu='f_org_baudurchfuehrung';
+       if (x[4]=='f_org_rs_mot_personaleinsatz') neu='f_org_mot_personaleinsatz';
+       if (x[4]=='f_org_rs_verb_innovation') neu='f_org_verb_innovation';
+       if (x[4]=='f_steildach_') neu='f_arbeit_dach';
+       if (x[4]=='f_verbaudielen_tief_') neu='f_spezialtiefbau_zusatz';
+       if (x[4]=='f_zusammenf_tief_') neu='f_montage_konstrukt';
+       if (x[4]=='f_infektionsgefahr_') neu='f_infektgefahr';     
+       if (neu && x[3].indexOf("(alt)")==-1) { // JA-> dann den alten Faktor umnennen und den neuen darunter ergänzen
+           x[3]+=' (alt)';
+           s[i]=x.join("#");
+           s2.push(s[i]);
+           
+           var faktorid=x[0].split("_")[0];
+           var faktornr=0;
+           if (x[0].indexOf("_")!=-1) {
+           	   faktornr=parseInt(x[0].split("_")[1]);
+           }
+           for(var neue_nr=faktornr+1; neue_nr<100; neue_nr++) {
+               if (s2.join("\n").indexOf(faktorid+"_"+neue_nr+"#")==-1) break;
+           }
+           
+           x[0]=faktorid+"_"+neue_nr;
+           var titel=faktortitel_suchen2(neu);
+           x[3]=titel;
+           x[4]=neu;
+           s[i]=x.join("#");
+           s2.push(s[i]);
+       }
+       else s2.push(s[i]);	
+   }
+   parent.eigene_struktur=s2.join("\n");
+//   alert(parent.eigene_struktur);
+}
+
+//
+// Faktortitel in struktur suchen
+//
+function faktortitel_suchen2(zeile)
+{
+   var struktur_orig=parent.struktur_alles_merk;
+   struktur_orig=struktur_orig.split("\n");
+    for(var i=0; i<struktur_orig.length; i++) {
+    	var s=struktur_orig[i].split("#");
+    	if (s[4]==zeile) return s[3];
+    }
+
+    return '-';// Faktortitel nicht gefunden
+}       	
+
+//]]>
+</script>
+
+<div style="visibility:hidden">
+<form name="form">
+Bereich: <textarea type="text" name="bereich"></textarea><br />
+Version: <textarea type="text" name="version" cols="40"></textarea><br />
+Status: <textarea type="text" name="status"></textarea><br />
+GA-daten: <textarea type="text" name="ga_daten"></textarea><br />
+DB-daten: <textarea type="text" name="db_daten"></textarea><br />
+Risiko-daten: <textarea type="text" name="risiko_daten"></textarea><br />
+inp11: <textarea type="text" name="inp11"></textarea><br />
+eigene_struktur: <textarea type="text" name="eigene_struktur"></textarea>
+mitarbeiter_db: <textarea type="text" name="mitarbeiter_db"></textarea>
+</form>
+</div>
+
+<!--
+<form name="frm2" method="post" action="../../php/speichern.php">
+<input type="hidden" name="eingaben" /><input type="hidden" name="name1" />
+</form>
+-->
+
+<script type="text/javascript" src="../buttons2.js"></script>
+</body>
+</html>

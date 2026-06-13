@@ -1,0 +1,13 @@
+ord=new Array(
+"Eckpunkt_Inh.htm",
+"Eckpunkt_Ein.htm",
+"Eckpunkt_1.htm",
+"Eckpunkt_2.htm",
+"Eckpunkt_3.htm",
+"Eckpunkt_4.htm",
+"Eckpunkt_5.htm",
+"Eckpunkt_6.htm",
+"Eckpunkt_7.htm",
+"Eckpunkt_8.htm",
+"Eckpunkt_Anh.htm"
+);

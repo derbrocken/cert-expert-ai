@@ -1,0 +1,21 @@
+ord=new Array(
+"titel.htm	#Titel",
+"inhalt.htm	#Inhalt",
+"1.htm	#1 Anwendungsbereich",
+"2.htm	#2 Begriffsbestimmungen",
+"3.htm	#3 Elektrostatische Aufladungen von Gegenständen und Einrichtungen",
+"4.htm	#4 Elektrostatische Aufladungen beim Umgang mit Flüssigkeiten",
+"5.htm	#5 Elektrostatische Aufladungen beim Umgang mit Gasen",
+"6.htm	#6 Elektrostatische Aufladungen beim Umgang mit Schüttgütern",
+"7.htm	#7 Elektrostatische Aufladung von Personen und persönlichen Schutzausrüstungen",
+"8.htm	#8 Erdung und Potenzialausgleich",
+"anha.htm	#Anhang A: Auf- und Entladungsvorgänge in der Elektrostatik",
+"anhb.htm	#Anhang B: Rohre und Schläuche für den pneumatischen Transport von Schüttgütern",
+"anhc.htm	#Anhang C: Bauarten von flexiblen Schüttgutbehältern (FIBC)",
+"anhd.htm	#Anhang D: Elektrischer Schlag",
+"anhe.htm	#Anhang E: Erdung und Potenzialausgleich",
+"anhf.htm	#Anhang F: Leitfähigkeiten und Relaxationszeiten ausgewählter Flüssigkeiten",
+"anhg.htm	#Anhang G: Mindestzündenergie und Mindestzündladung brennbarer Gase und Dämpfe",
+"anhh.htm	#Anhang H: Typische Widerstände von Fußböden und Fußbodenbelägen",
+"anhi.htm	#Anhang I: Veranschaulichung von Begriffen zur Beschreibung elektrostatischer Eigenschaften"
+);

@@ -1,0 +1,21 @@
+ord=new Array(
+"titel.htm	#Titelseite",
+"inhalt.htm	#Inhalt",
+"1.htm	#1 Zielstellung",
+"2.htm	#2 Anwendungsbereich",
+"3.htm	#3 Begriffsbestimmungen",
+"4.htm	#4 Allgemeines",
+"5.htm	#5 Maﬂnahmen",
+"anh_a1_2.htm	#Anhang A1.2",
+"anh_a1_3.htm	#Anhang A1.3",
+"anh_a1_5.htm	#Anhang A1.5",
+"anh_a1_6.htm	#Anhang A1.6",
+"anh_a1_7.htm	#Anhang A1.7",
+"anh_a1_8.htm	#Anhang A1.8",
+"anh_a2_2.htm	#Anhang A2.2",
+"anh_a2_3.htm	#Anhang A2.3",
+"anh_a4_2.htm	#Anhang A4.2",
+"anh_a4_3.htm	#Anhang A4.3",
+"anh_a3_4_4.htm	#Anhang A4.4",
+"anh_a4.htm	#Anhang A4"
+);

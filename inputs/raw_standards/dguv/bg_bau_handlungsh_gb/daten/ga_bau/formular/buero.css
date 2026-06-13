@@ -1,0 +1,158 @@
+/*		0	File		*/
+ body { background-color:#ffffff; scrollbar-base-color:#DEDFDE }
+ body,p,td,th,h1,h2,h3,h4,ul,ol,li,div,address,blockquote,nobr, input, textarea { font-family:Arial,Helvetica,sans-serif; }
+
+
+
+/*	1	Tabelle		*/
+ table.size80	{  font-size:80% }
+
+/* tr.rubrik		{  background-color:#40A9C2; color:white }		*/
+   tr.top			{  font-size:80%;  background-color:#536f9b; color:white;  }						/*	rubrik	*/
+   tr.headline		{  font-size:110%; background-color:#b6c9de; height:56px; vertical-align:middle }	/*	Überschrift	*/
+   tr.info			{  font-size:80%;  background-color:#ecf1f7; height:14px }							/*	Erklärungstexte	*/
+   tr.col_head		{  font-size:80%;  background-color:#b6c9de; font-weight:bold }						/*	Spalten-Kopf	*/
+   tr.size80		{  font-size:80%; }
+   tr.grey80		{  font-size:80%; background-color:#DEDEDE; }
+   tr.grey			{  background-color:#DEDEDE; }
+/* tr.s_80			{  font-size:80%; }								*/		/*	kd	*/
+ 	td				{ vertical-align:top; }
+	td.white		{ background-color:#FFFFFF; }
+	td.grey			{ background-color:#DEDEDE; }
+/*	td.s_80			{ font-size:80%; }						        td.grey80		{  font-size:80%; background-color:#DEDEDE; }
+			*/	/*	kd	*/
+	td.size80		{ font-size:80%; }										
+
+
+
+/*
+td.s_80 {  font-size:80%; } 
+td.size80 { font-size:80% }
+td.grau_80 { font-size:80%; background-color:#DEDEDE }
+*/
+
+
+
+
+/***	r = rot  			s = blau				***/
+/*	2	Liste_UL	*/
+ ul 			{ list-style-image:url(grafik/Strich.gif); }					/*  Bindestrich statt FettPunkt      */
+ ul.ohne 		{ list-style-image:url(grafik/listeohnepunkt.gif); 		margin-left: 16pt; margin-top: -10pt; margin-bottom: 1pt;}				/*  Leer statt FettPunkt             */
+ ul.punkt 		{ list-style-image:url(grafik/Punkt.gif); }					/*  PunktFett                        */
+ ul.punktKlein 	{ list-style-image:url(grafik/Punkt_Klein.gif); }			/*  PunktKlein                       */
+
+ ul.sq_red 		{ list-style-image:url(grafik/_liste/square_red.gif); }				/*  square_red      */
+ ul.sq_red_6 	{ list-style-image:url(grafik/_liste/sq_li_red_6.gif); }			/*  square_red      */
+ ul.sq_blue 	{ list-style-image:url(grafik/_liste/square_blue.gif); }			/*  square_blue      */
+
+  ul.s 		{ list-style-image:url(grafik/s.gif); 		margin-left: 16pt; margin-top: 1pt; margin-bottom: 1pt;}			/*	kd	*/
+  ul.s_kap	{ list-style-image:url(grafik/s.gif); 		margin-left: 35pt; margin-top:-3pt; margin-bottom: 1pt;}			/*	kd	*/
+  ul.s_tab 	{ list-style-image:url(grafik/s_tab.gif); 	margin-left: 11pt; margin-top: 1pt; margin-bottom: 1pt;}			/*	kd	*/
+  ul.r 		{ list-style-image:url(grafik/r.gif); 		margin-left: 16pt; margin-top: 1pt; margin-bottom: 1pt;}			/*	kd	*/
+  ul.r_tab 	{ list-style-image:url(grafik/r_tab.gif); 	margin-left: 11pt; margin-top: 1pt; margin-bottom: 1pt;}			/*	kd	*/
+			/*		s  und  s_tab   sind im bild gleich 			*/
+
+
+/*	2	Liste_LI		*/
+   li.s 	{ margin-top: 1pt; margin-bottom: 1pt; }							/*	kd	*/
+   li.s80 	{ margin-top: 1pt; margin-bottom: 1pt; font-size:80% }	
+   li.r 	{ margin-top: 1pt; margin-bottom: 1pt; }							/*	kd	*/
+   li.rm	{ margin-top: 10pt; margin-bottom: 10pt; }							/*			Menüauswahl		*/
+/* li.s_tab 	{ margin-top: 1pt; margin-bottom: 1pt; font-size: 80%; }*/		/*	kd	*/
+/* li.r_tab { margin-top: 1pt; margin-bottom: 1pt; font-size: 80%; }	*/		/*	kd	*/
+/* li.s2	{ margin-top: 1pt; margin-bottom: 1pt; }					*/		/*	kd	*/
+
+
+/*	3	headline		*/
+ h2.h2_s 	{ font-size: 175%; }			/*	kd	*/
+ h3.h3_s 	{ font-size: 120%; }			/*	kd	*/
+ h4.bullet	{ background-image:url(grafik/r.gif);background-repeat:no-repeat;padding-left:20px; margin-top: 20pt; margin-bottom: 8pt; }/*	kd	*/
+
+ h4.liste	{ background-image:url(grafik/r.gif);background-repeat:no-repeat;padding-left:20px; margin-top: 14pt; margin-bottom: 8pt; }/*	kd	*/
+
+
+/*	4	paragraph		*/
+	p.bullet 	{ background-image:url(grafik/r.gif);		background-repeat:no-repeat;padding-left:20px }			/*	kd	*/
+	p.bullet_s 	{ background-image:url(grafik/_s.gif);		background-repeat:no-repeat;padding-left:20px }	
+	p.tab_red 	{ background-image:url(grafik/r_tab.gif);	background-repeat:no-repeat;padding-left:20px }
+	p.tab_green	{ background-image:url(grafik/s_tab.gif);	background-repeat:no-repeat;padding-left:20px }
+
+/*	p.tab_rot 	{ background-image:url(grafik/r_tab.gif);background-repeat:no-repeat;padding-left:20px }	*/		/*	kd	*/
+/*	p.tab_grün	{ background-image:url(grafik/s_tab.gif);background-repeat:no-repeat;padding-left:20px }	*/		/*	kd	*/
+
+	p.size80	{ font-size:80% }
+
+
+
+
+
+
+
+
+/*		5	Eingabe		*/
+ input.tab 			{ BORDER:0px; background-color:#ffffff; }
+ input.norm			{ BORDER:0px; background-color:#dedede; font-size:100% 	}
+
+ textarea.tab 		{ BORDER:0px; background-color:#ffffff; }
+ textarea.norm		{ BORDER:0px; background-color:#dedede; font-size:100% 	}
+
+
+
+/*	7	Link		*/
+
+/*	a: 			{ color: #008EB8; }   alte Farbe    */
+	a:			{ color:#000000; }
+	a:link 		{ color:#000000; }												/*	kd	*/
+	a:visited 	{ color:#000000; }
+	a:hover 	{ color:#009AB2; }
+	a[name]:hover { color:#000000; }
+	a:active 	{ color:#009AB2; }
+
+	a.s			{ color: #6562AC; font-size: 120%; font-weight:bold; }			/*	kd		lila	*/
+	a.s2		{ color: #6562AC; font-size: 100%; }							/*	kd	*/
+
+
+
+
+
+ 
+
+ img { border-style: none; }
+ blockquote.kursiv { color:#000099; }
+
+
+
+
+/***  blau   ***/
+ #blaukursiv { color:#000099; }
+ #s { background-color:#ffff00; }
+ 
+/***  Ausdruck ohne Buttons bei Formularen  ***/ 
+ @media print {	#vd { display:none; } }
+
+
+
+
+
+
+
+
+/*************************************************/
+/***********    Legende    ***********************/
+/*												
+.tab			= Tabelle						
+.s				=	blue	square				
+.r				=	red		square				
+**************************************************/
+
+
+
+
+/*************************************************/
+/**************    OFF    ************************/
+/*************************************************/
+  a.s:link { }
+  a.s:visited {  }
+  a.s:hover {  }
+  a.s:active {  }
+

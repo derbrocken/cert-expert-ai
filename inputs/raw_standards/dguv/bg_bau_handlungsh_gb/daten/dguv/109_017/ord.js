@@ -1,0 +1,20 @@
+ord=new Array(
+"titel.htm	#Titel",
+"inhalt.htm	#Inhalt",
+"Vorwort.htm	#Vorwort",
+"1.htm	#1 Anwendungsbereich",
+"2.htm	#2 Begriffsbestimmungen",
+"3.htm	#3 Verantwortung und organisatorische Voraussetzungen f&uumlr den Betrieb von Lastaufnahme- und Anschlagmitteln",
+"4.htm	#4 Tragf&aumlhigkeit, Belastung",
+"5.htm	#5 Grunds&aumltzliche Arbeitsschritte f&uumlr das sichere Anschlagen, Aufnehmen und Absetzen von Lasten",
+"6.htm	#6 Sicherung gegen Herabfallen der Last",
+"7.htm	#7 Weitere Ma&szlignahmen zum sicheren Umgang mit Lastaufnahme- und Anschlagmitteln",
+"8.htm	#8 Pr&uumlfungen",
+"9.htm	#9 Wartung und Instandsetzung",
+"10.htm	#10 Anhang A",
+"11.htm	#11 Anhang B",
+"12.htm	#12 Anhang C",
+"13.htm	#13 Anhang D",
+"14.htm	#14 Anhang E",
+"15.htm	#15 Anhang F"
+);

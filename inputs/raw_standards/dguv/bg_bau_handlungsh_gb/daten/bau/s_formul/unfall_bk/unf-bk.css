@@ -1,0 +1,204 @@
+body {
+	font-family: arial;
+}
+
+img {
+    margin: 0px;
+    border: 0px;
+}
+
+
+a:link, a:visited, a:active, a:hover {color: #000000; text-decoration:none;}
+
+
+
+h2{
+	font-family: arial;
+    font-size: 18pt;
+    margin-top: 5px;
+    margin-bottom: 0px;
+}
+
+p {
+    font-family: arial; 
+    font-size: 12pt; 
+    color: #000000; 
+    margin-top: 5px;
+    margin-bottom: 10px;
+}
+
+p.small {
+    font-family: arial; 
+    font-size: 10pt; 
+    color: #000000; 
+    margin-top: 5px;
+    margin-bottom: 5px;
+    margin-left: 3px;
+}
+
+p.ssmall {
+    font-family: arial; 
+    font-size: 8pt; 
+    color: #000000; 
+    margin-top: 2px;
+    margin-bottom: 2px;
+    margin-left: 3px;
+    margin-right: 0px;
+}
+
+td {vertical-align: top;}
+
+table.unfbk {
+    width: 700px; 
+    border: 0px solid #000000;
+    border-collapse: collapse;
+    margin: 0px;
+    border-spacing: 0px;
+}
+
+table.unfbk td {
+    border: 1px solid #000000;
+    font-family: arial; 
+    font-size: 8pt; 
+    vertical-align: top;
+    padding: 0px;
+}
+
+table.unfbk td.obenrechts {border: 1px solid #000000; border-width: 1px 1px 0px 0px;}
+table.unfbk td.rechts {border: 1px solid #000000; border-width: 0px 1px 0px 0px;}
+table.unfbk td.rechtslinks {border: 1px solid #000000; border-width: 0px 1px 0px 1px;}
+table.unfbk td.links {border: 1px solid #000000; border-width: 0px 0px 0px 1px;}
+table.unfbk td.obenlinks {border: 1px solid #000000; border-width: 1px 0px 0px 1px;}
+table.unfbk td.obenrechtslinks {border: 1px solid #000000; border-width: 1px 1px 0px 1px;}
+table.unfbk td.noborder {border:none;}
+table.unfbk td.dotted {border: 1px dotted #000000; border-width: 0px 1px 0px 1px; text-align: center;}
+
+
+table.unfbk td.zentr {
+    border: 1px solid #000000;
+    text-align:center;
+    vertical-align:middle;
+}
+
+table.unfbk td.erl {
+    width:0px;
+    border: none;
+    text-align:center;
+}
+
+form.unfbkform input {
+    font-family: arial; 
+    font-size: 8pt; 
+    background-color: #ffffee;
+    border:0px solid #000000;
+    margin: 0px;
+}
+
+form.unfbkform input.einezahl {
+    font-family: arial; 
+    font-size: 8pt; 
+    text-align:center;
+    background-color: #ffffee;
+    border: 0px solid #000000;
+    margin: 0px;
+    width: 20px;
+}
+
+form.unfbkform textarea {
+    font-family: arial; 
+    font-size: 9pt; 
+    background-color: #ffffee;
+    overflow: hidden;
+    width:95%;
+    border:0px solid #000000;
+    margin: 3px;
+}
+
+
+.erlnum {
+    font-family: arial; 
+    font-size: 8pt; 
+    color: #000000; 
+    text-align:center;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    margin-left: 3px;
+    margin-right: 3px;
+    border: 1px solid #000000;
+}
+
+.erlq {
+    position: relative;
+    top: 0px;
+    left: 5px;
+    width:20px;
+    height:15px;
+    font-family: arial; 
+    font-size: 8pt; 
+    color: #000000; 
+    background-color: #ffffaa;
+    text-align:center;
+    margin-top: 1px;
+    margin-bottom: 0px;
+    margin-left: 3px;
+    margin-right: 3px;
+    border: 1px solid #000000;
+}
+
+.erltext {
+    z-index:10;
+    width: 600px;
+    margin-top: 40px;
+    margin-bottom: 30px;
+    margin-left: 3px;
+    background-color: #ffffaa;
+    border: 1px solid #000000;
+    padding:5px;
+}
+
+.erltext p {
+    font-family: arial; 
+    font-size: 10pt; 
+    color: #000000; 
+    margin-top: 0px;
+    margin-bottom: 0px;
+}
+
+.close {
+    position: relative;
+    top: 0px;
+    border: 1px solid #000000;
+}
+
+.blaettern {
+    font-family: arial; 
+    font-size: 10pt; 
+    color: #000000; 
+    background-color: #ffffaa;
+    text-align:left;
+    margin: 5px 3px 5px 3px;
+    border: 1px solid #000000;
+}
+
+.adressat {
+    width:320px; 
+    height:155px; 
+    border:0px solid #000000; 
+    background-image:url(empf.gif); 
+    background-repeat:no-repeat;
+    padding:5px;
+    margin-left:10px;
+}
+
+@media print {
+.erlq {display:none;}
+.erltext {display:none;}
+form.unfbkform input {background-color: #ffffff;}
+form.unfbkform input.einezahl {background-color: #ffffff;}
+form.unfbkform textarea {background-color: #ffffff; overflow: hidden;}
+.blaettern {display:none;}
+#vd { display:none }
+#contentContainer {padding:0}
+#content {padding:0}
+#pfad {display:none}
+}

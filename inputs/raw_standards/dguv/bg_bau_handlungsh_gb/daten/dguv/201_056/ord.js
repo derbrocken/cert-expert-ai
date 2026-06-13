@@ -1,0 +1,21 @@
+ord=new Array(
+"titel.htm	#Titel",
+"inhalt.htm	#Inhaltsverzeichnis",
+"1.htm	#1 Vorbemerkung",
+"2.htm	#2 Anwendungsbereich",
+"3.htm	#3 Begriffsbestimmungen",
+"4.htm	#4 Allgemeines",
+"5.htm	#5 Rechtliche Grundlagen und Verantwortungen",
+"6.htm	#6 Planung",
+"7.htm	#7 Errichtung und Montage",
+"8.htm	#8 Benutzung",
+"9.htm	#9 Instandhaltung",
+"anh1.htm	#Anhang 1",
+"anh2.htm	#Anhang 2",
+"anh3.htm	#Anhang 3",
+"anh4.htm	#Anhang 4",
+"anh5.htm	#Anhang 5",
+"anh6.htm	#Anhang 6",
+"anh7.htm	#Anhang 7",
+"lit.htm	#Literaturverzeichnis"
+);

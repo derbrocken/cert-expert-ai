@@ -1,0 +1,21 @@
+ord=new Array(
+"titel.htm	#Titel",
+"inhalt.htm	#Inhaltsübersicht",
+"1.htm	#§ 1 Ziel, Anwendungsbereich",
+"2.htm	#§ 2 Begriffsbestimmungen",
+"3.htm	#§ 3 Gefährdungsbeurteilung",
+"3a.htm	#§ 3a Einrichten und Betreiben von Arbeitsstätten",
+"4.htm	#§ 4 Besondere Anforderungen an das Betreiben von Arbeitsstätten",
+"5.htm	#§ 5 Nichtraucherschutz",
+"6.htm	#§ 6 Unterweisung der Beschäftigten",
+"7.htm	#§ 7 Ausschuss für Arbeitsstätten",
+"8.htm	#§ 8 Übergangsvorschriften",
+"9.htm	#§ 9 Straftaten und Ordnungswidrigkeiten", 
+"anh.htm	#Anhang: Anforderungen an Arbeitsstätten nach § 3 Abs. 1",
+"anh_1.htm	#Anhang: 1 Allgemeine Anforderungen",
+"anh_2.htm	#Anhang: 2 Maßnahmen zum Schutz vor besonderen Gefahren",
+"anh_3.htm	#Anhang: 3 Arbeitsbedingungen",
+"anh_4.htm	#Anhang: 4 Sanitärräume, Pausen-&nbsp;und Bereitschaftsräume, Erste-Hilfe-Räume, Unterkünfte",
+"anh_5.htm	#Anhang: 5 Ergänzende Anforderungen an besondere Arbeitsstätten",
+"anh_6.htm	#Anhang: 6 Maßnahmen zur Gestaltung von Bildschirmarbeitsplätzen"
+);
