@@ -83,6 +83,8 @@ Doc-Auswahl (`selectedRoleDocIds`, `selectedAppointmentDocIds`, `setKategorie`-W
 
 ## 3. UI/UX-Konzept (das „neu Gedachte")
 
+> **Visual-Direction (verbindlich, `DESIGN_VISUAL_DIRECTION.md`):** „Premium Audit File OS" — Dossier-/Akten-Logik, Cards/Sektionen/Status-Chips, viel Whitespace, BG weiß/hellgrau, Text anthrazit/navy. **Brand-Accent = Vermillion** nur für aktive Nav/primäre Aktionen/Selected/Fokus — **nicht** als Fehlerfarbe. **Status-Farben getrennt vom Brand:** Grau=nicht bewertet · Amber=offen/prüfen · Rot=fehlt/kritisch · Grün=vollständig. Das Herkunfts-Badge (◆ importiert) ist eine **neutrale** Herkunft-Markierung (nicht Brand-Vermillion, nicht Status-Rot) — im Visual-Pass eine neutrale Nuance (blau/grau) festlegen. ⚠️ Brand-Vermillion (`#e30613`) und Status-Rot (fehlt/kritisch) müssen unterscheidbar sein.
+
 ### 3.1 Etabliertes Muster als Anker
 Das schon gebaute Muster im `EmployeeFileDossierView` ist **„Ansehen ↔ Bearbeiten" per Stift-Toggle** (`evidenceEditMode`, Pencil-Icon, „Bearbeiten"/„Fertig"). Das ist ein bewährtes Pattern (versehentliches Überschreiben vermeiden). Das neue Konzept **behält die Stift-Affordanz**, verfeinert sie aber von „alles-oder-nichts" zu **sektionsweisem Edit**, und macht **Quelle (Tally/manuell/fehlend)** + **Pflicht-Lücken** sichtbar — das fehlt heute komplett.
 

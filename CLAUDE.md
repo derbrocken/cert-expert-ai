@@ -73,6 +73,7 @@ Nicht bis 100 % Context warten. **Dauerhaftes Gedächtnis = Repo-Dateien, nicht 
 - `knowledge/NORM_KLAUSEL_REGISTER_v1.md` — Traceability (CL-IDs ↔ Fundstelle).
 - `hq/10_Bridge/GESCHAEFTSMODELL_VINCENT_WOLF_PROJEKTAKTE.md` — Geschäftsmodell + Projektakte-Architektur.
 - `hq/10_Bridge/TALLY_FIELD_MAPPING.md` · `CODE_REVIEW.md` · `HETZNER_DEPLOY.md`.
+- `hq/10_Bridge/DESIGN_VISUAL_DIRECTION.md` — **verbindliche UI-Visual-Direction** (Premium Audit File OS; Brand-Accent = Vermillion, kein Grün/Petrol; Status-Farben getrennt vom Brand). Jeder UI-Slice prüft sich dagegen.
 - Globale `CLAUDE.md` (Nutzer-Ebene): Cert-Expert-Stil — auditfähig, pragmatisch, normnah, Platzhalter `{CompanyName}` etc.
 - `hq/06_Software/PRODUKT_IDEEN.md` — Marks Ideensammlung (Tool 1, Tool 2, V1/V2/V3). Nur lesen wenn explizit gefragt — kein Pflichtlesen, kein Bauauftrag.
 
