@@ -1,3 +1,16 @@
+---
+type: kundenstatus
+title: Status — Schutzritter
+status: aktiv
+updated: 2026-06-03
+tags: [kunde, audit]
+slug: Schutzritter
+phase: aktiv
+projekttyp: ueberwachungsaudit
+ampel: rot
+audit_datum: 2026-06-26
+zert_stelle: ""
+---
 # Status — Schutzritter
 
 **Slug:** `Schutzritter`  

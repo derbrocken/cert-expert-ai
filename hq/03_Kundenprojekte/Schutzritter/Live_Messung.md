@@ -1,0 +1,31 @@
+# Live-Messung — Schutzritter Security Services GmbH
+
+**P-ID:** `P-LIVE-SR-01` · **Slug:** `Schutzritter`
+**Modus:** Parallele Live-Messung (O2C) — blockiert Design nicht.
+**Stand JSON:** 2026-06-09T22:05:34
+
+> Pflege bevorzugt im Dashboard (Projekt aufklappen → Live-Messung) oder direkt in `live_messung.json`.
+
+## Meilensteine
+
+- **Start:** —
+- **Meilenstein 1:** — — Meilenstein 1 — erstes vollständiges Formular-/Unterlagenpaket
+- **Tage bis M1:** None
+
+## O2C-Tracker
+
+| Feld | Datum | Notiz |
+|------|-------|-------|
+| Willkommens-Mail | — | — |
+| Unternehmensunterlagen-Link | — | — |
+| Formular begonnen | — | — |
+| Blockiert seit | — | — |
+| Fehlender Nachweis | — | — |
+| Rückfragen (Anzahl) | — | 0 |
+
+**Kurzstatus:** Willkommens-Mail offen
+
+## Verknüpfung
+
+- Status: [`Status.md`](Status.md)
+- Index: [`../../07_DFSS/LIVE_MESSUNG_INDEX.md`](../../07_DFSS/LIVE_MESSUNG_INDEX.md)

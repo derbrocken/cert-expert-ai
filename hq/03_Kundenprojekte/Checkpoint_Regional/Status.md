@@ -1,3 +1,16 @@
+---
+type: kundenstatus
+title: Status — Checkpoint Regional
+status: aktiv
+updated: 2026-06-03
+tags: [kunde, audit]
+slug: Checkpoint_Regional
+phase: aktiv
+projekttyp: erstzertifizierung
+ampel: gelb
+audit_datum: ""
+zert_stelle: DEKRA
+---
 # Status — Checkpoint Regional
 
 **Slug:** `Checkpoint_Regional`  

@@ -1,4 +1,4 @@
-# Cert-Expert — Website Design Brief (for FOAOS / Tarak)
+mir ist aufgefallen dass die auswahl der unternehmen mit deren# Cert-Expert — Website Design Brief (for FOAOS / Tarak)
 
 **Date:** 2026-06-07 · **From:** Marwan Mahra · **Scope:** First public website (cert-expert.de) — brand-led redesign.
 

@@ -95,3 +95,78 @@ Themen-Liste aus dem Video + sofortige Übersetzung auf Cert-Expert:
 - **Hygiene:** `08_Vorlagen` leer → materialisieren; `10_Bridge` überladen → erledigte Aufträge archivieren.
 
 **Mögliche Aktion:** Mark entscheidet je Punkt (siehe Abschnitt 6 im Konzept). Bis dahin geparkt, nichts umgesetzt.
+
+---
+
+### 2026-06-10 — GBU-/Unterweisungs-Modul für die Sicherheitsbranche (OS-Modul, CL-verankert)
+**Quelle:** Mark (Gespräch, im Anschluss an BG-BAU-Handlungshilfe https://www.bgbau-medien.de/handlungshilfen_gb/daten/ga/kmu.htm)  ·  **Tag:** Produkt / Strategie  ·  **Status:** OFFEN — Idee, **nicht eingeplant** (C-10-Gate)
+
+- **Schärfung** der Vision vom 2026-06-09 („Arbeitsschutz-/GBU-Modul als Multi-Branchen-Produkt", siehe Eintrag oben): hier **erster Vertical = Sicherheitsbranche** (nicht Bau). Modul direkt ins **Cert-Expert OS** integrieren — geführte GBU-/Unterweisungs-Eingabe im **Projektkontext**, wiederverwendbar.
+- **BG-BAU `kmu.htm` = reines UX-/Struktur-Vorbild** (geführter Aufbau), eigene bessere UI/UX. Inhalte security-spezifisch aus **VBG / DGUV** — BG-BAU-Texte **nicht** übernehmen (**Copyright**).
+- **Norm-Anker (2026-06-10 verifiziert, siehe Klausel-Register):** knüpft an **CL-75** (Arbeitsschutz-Grundunterweisung: §12 Abs.1 ArbSchG · §4 DGUV V1, mind. jährlich + Doku · Wach-/Sicherung zusätzlich §4 Abs.2 DGUV V23; Auslegung DGUV Information 211-005; Büro: ArbStättV Anhang Nr.6 + DGUV Information 215-410) **und CL-22** (objektbezogene/einsatzbezogene Unterweisung). **Wichtig:** CL-75 = Grundunterweisung, CL-22 = objektbezogen — im Modul sauber **trennen**, nicht verschmelzen.
+- Verknüpft mit dem geplanten **GBU-Bot-Reframe** (`knowledge/6_products` „GB") und den 13 SDL-Bereichen (`knowledge/3_sdls`).
+
+**Relevanz für Cert-Expert:** Macht aus dem geplanten GBU-Bot ein vollwertiges, projektbezogenes **Arbeitsschutz-/Unterweisungs-Modul** für Security-Kunden — direkter Mehrwert im OS, anschlussfähig an die bereits belegten CL-75/CL-22-Grundlagen.
+
+**Mögliche Aktion:** Bei nächster Planer-/Vision-Runde (G-02) als Modul-Scope gegen CL-75/CL-22 schneiden. Architektur (eigenes Modul vs. Feature im OS) = **C-10-Gate mit Mark**. Keine Bau-Aktion jetzt.
+
+---
+
+### 2026-06-10 — Sicherheitsbeauftragte: Schwellenwert 50 statt 20 (seit 29.05.2026)
+**Quelle:** VBG.de Startseite (https://www.vbg.de/cms/)  ·  **Tag:** Audit / Norm / Recht  ·  **Status:** AKTUELL — normenrelevante Änderung
+
+- Seit **29. Mai 2026** gilt neuer Schwellenwert: Bestellpflicht für Sicherheitsbeauftragte greift erst ab **50 Beschäftigten** (bisher: ab 20).
+- Gilt allgemein (§22 SGB VII + DGUV V1 §20 i.V.m. DGUV Regel 100-001) — betrifft alle VBG-Mitglieder, also auch Sicherheitsdienstleister.
+- **Auswirkung auf Cert-Expert:** Kunden mit 20–49 MA hatten bisher Bestellpflicht → haben sie jetzt ggf. nicht mehr. Bei Auditvorbereitungen und Beratung darauf hinweisen; die 20er-Grenze ist veraltet.
+- Ausnahmen (besonders gefährdete Bereiche) weiterhin möglich — fachlich prüfen.
+
+**Relevanz für Cert-Expert:** Direkt relevant für Compliance-Checks im Certification OS — wenn wir Soll-/Ist-Abgleich für Sicherheitsbeauftragte automatisieren, neue Grenze = 50 MA.
+
+**Mögliche Aktion:** CL-Register prüfen, ob CL für Sicherheitsbeauftragte existiert (vermutl. im Basis-Bereich). Slice-2-Baupauftrag: Schwellenwert 50 statt 20 als Norm-Eingabe. → Fachlich prüfen; keine CL-ID ohne Registereintrag.
+
+---
+
+### 2026-06-10 — VBG Sicherungsdienstleistungen: GBU-Downloads + GEDOKU
+**Quelle:** VBG.de — https://www.vbg.de/cms/sicherungsdienstleistungen + GBU-Seite  ·  **Tag:** Produkt / GBU / Audit  ·  **Status:** OFFEN — Downloads ausstehend
+
+Direkt downloadbare PDFs (kostenlos, kein Login):
+- **VBG-Fachwissen „Gefährdungsbeurteilung – So geht's"** — 7-Schritte-Leitfaden, PDF 7,6 MB. → Zielort: `knowledge/2_regulations/01_sicherheitsdienstleistungen/vbg/` und OneDrive DGUV-Ordner.
+- **Gefährdungsbeurteilung psychischer Belastung** — PDF 1 MB. Wichtig wegen Gewaltexposition im Sicherheitsdienst.
+- **Prämienkatalog für Sicherheitsunternehmen** — PDF 849,9 KB. Listet VBG-Zuschüsse (PSA, Bodycams, Deeskalations-Seminare).
+
+**GEDOKU** (VBG-Software, kostenlos bis 50 MA):
+- Enthält **Branchenkatalog Sicherungsdienstleistungen** mit typischen Gefährdungen + Maßnahmenvorschlägen.
+- KI-Funktion zur GBU-Erstellung integriert.
+- **Für GBU-Bot-Modul:** GEDOKU = Referenz-Logik (Basis-/Themen-/Branchenkataloge = gleiche Struktur wie unser geplantes Modul). GEDOKU-Katalog-Struktur ansehen bevor Modul-Scope definiert wird.
+- URL: https://www.vbg.de/cms/arbeitsschutz/arbeitsschutz-organisieren/gefaehrdungsbeurteilung
+
+Weitere VBG-Assets:
+- **Securityreport 2023** — Unfallgeschehen Sicherungsdienstleistungen, alle 5 Jahre. Strategisch + für Kundengespräche.
+- **Filmreihe „Sicher im Einsatz"** — Unterweisungshilfe speziell für Wach-/Sicherungsdienste.
+- **Bodycam-Leitfaden** — Einsatz im öffentlichen Raum (VBG).
+
+**Gewaltprävention-Seite:** 1/3 aller Unfälle in der Branche = gewaltsame Konfrontationen. VBG nennt explizit als Hochrisiko-Bereiche: Einrichtungen für Geflüchtete, Veranstaltungen, Öffentliche Plätze, Kaufhäuser, ÖPNV — **deckt direkt DIN 77200-2 Anwendungsfälle ab**.
+
+**Mögliche Aktion:** Mark lädt die 3 PDFs herunter und legt sie in OneDrive `Normen & Standards/01_Sicherheitsdienstleistungen/VBG/`. Dann als `knowledge/`-Stub befüllen.
+
+---
+
+### 2026-06-10 — DGUV Publikationen: Kerntreffer für Sicherheitsbranche
+**Quelle:** publikationen.dguv.de  ·  **Tag:** Norm / Audit / Regelwerk  ·  **Status:** OFFEN — Downloads ausstehend
+
+**Direkt beziehbar (kostenlos via UV-Träger VBG oder DGUV):**
+- **DGUV Vorschrift 23** — Wach- und Sicherungsdienste (UVV, VBG) — verbindliche Unfallverhütungsvorschrift. Bezug: kostenlos beim UV-Träger VBG.
+- **DGUV Vorschrift 24** — Wach- und Sicherungsdienste (Ost-Fassung) — wie V23.
+- **DGUV Vorschrift 1** — Grundsätze der Prävention — Basis für alle Branchen.
+
+**Direkt als PDF downloadbar (publikationen.dguv.de):**
+- **DGUV Information 215-310** (2025) — „Sicherheit bei Veranstaltungen und Produktionen" → HIGH VALUE für Veranstaltungssicherheit / DIN 77200-2.
+- **DGUV Information 215-461** (2026) — „Gebäudemanagement – Sicherheit und Gesundheit beim Betrieb von Verwaltungsgebäuden" → relevant für Objektschutz.
+- **DGUV Information 206-059** (2025) — „Sicherheits- und gesundheitsgerechte Führung – Reflexion für das eigene Unternehmen" → für Führungskräfte-Modul.
+- **DGUV_Regelwerk.xls** — Komplettübersicht aller DGUV-Publikationen als Excel. Download: https://publikationen.dguv.de/files/downloads/DGUV_Regelwerk.xls
+
+**Mögliche Aktion:**
+1. Mark: DGUV_Regelwerk.xls herunterladen → Grundlage für spätere automatisierte Suche.
+2. Mark: DGUV V23 direkt bei VBG anfragen (kostenlos).
+3. Bot kann 215-310 + 215-461 direkt von publikationen.dguv.de fetchen (Produktseite erst prüfen, ob PDF-Link direkt ist).
+4. Stubs in `knowledge/2_regulations/01_sicherheitsdienstleistungen/dguv_v23/` befüllen.

@@ -74,6 +74,7 @@ Nicht bis 100 % Context warten. **Dauerhaftes Gedächtnis = Repo-Dateien, nicht 
 - `hq/10_Bridge/GESCHAEFTSMODELL_VINCENT_WOLF_PROJEKTAKTE.md` — Geschäftsmodell + Projektakte-Architektur.
 - `hq/10_Bridge/TALLY_FIELD_MAPPING.md` · `CODE_REVIEW.md` · `HETZNER_DEPLOY.md`.
 - Globale `CLAUDE.md` (Nutzer-Ebene): Cert-Expert-Stil — auditfähig, pragmatisch, normnah, Platzhalter `{CompanyName}` etc.
+- `hq/06_Software/PRODUKT_IDEEN.md` — Marks Ideensammlung (Tool 1, Tool 2, V1/V2/V3). Nur lesen wenn explizit gefragt — kein Pflichtlesen, kein Bauauftrag.
 
 ## Repo / Betrieb
 - **Ein Repo**, Root = `cert-expert-ai/`. App = `cert-expert-certification-os/apps/certification-os/`.

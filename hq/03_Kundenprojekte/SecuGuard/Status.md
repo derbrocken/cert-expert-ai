@@ -1,3 +1,16 @@
+---
+type: kundenstatus
+title: Status — SecuGuard
+status: aktiv
+updated: 2026-06-03
+tags: [kunde, audit]
+slug: SecuGuard
+phase: aktiv
+projekttyp: nc-schliessung
+ampel: rot
+audit_datum: 2026-06-30
+zert_stelle: ""
+---
 # Status — SecuGuard
 
 **Slug:** `SecuGuard`  

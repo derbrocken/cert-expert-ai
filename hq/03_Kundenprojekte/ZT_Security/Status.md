@@ -1,3 +1,16 @@
+---
+type: kundenstatus
+title: Status — ZT Security
+status: aktiv
+updated: 2026-06-03
+tags: [kunde, audit]
+slug: ZT_Security
+phase: aktiv
+projekttyp: ueberwachungsaudit
+ampel: gelb
+audit_datum: 2026-07-08
+zert_stelle: ""
+---
 # Status — ZT Security
 
 **Slug:** `ZT_Security`  

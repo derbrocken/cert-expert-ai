@@ -1,0 +1,37 @@
+{
+  "schema": "live-messung-o2c-v1",
+  "project_id": "P-LIVE-CR-01",
+  "slug": "Checkpoint_Regional",
+  "legal_name": "Checkpoint Regional GmbH",
+  "active": true,
+  "parallel_only": true,
+  "blocks_design": false,
+  "milestone_1_label": "Meilenstein 1 — erstes vollständiges Formular-/Unterlagenpaket",
+  "started_at": "",
+  "milestone_1_at": "",
+  "fields": {
+    "willkommens_mail": {
+      "date": "",
+      "note": ""
+    },
+    "unternehmensunterlagen_link": {
+      "date": "",
+      "note": ""
+    },
+    "formular_begonnen": {
+      "date": "",
+      "note": ""
+    },
+    "blockiert_seit": {
+      "date": "",
+      "grund": ""
+    },
+    "fehlender_nachweis": {
+      "text": "",
+      "updated": ""
+    },
+    "rueckfragen_anzahl": 0,
+    "rueckfragen_notiz": ""
+  },
+  "updated_at": "2026-06-09T22:05:34"
+}

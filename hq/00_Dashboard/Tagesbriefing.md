@@ -1,6 +1,6 @@
 # Tagesbriefing — Cert-Expert HQ
 
-**Generiert:** 2026-06-07 07:40 (lokal)  
+**Generiert:** 2026-06-09 23:34 (lokal)  
 **Obsidian:** Leseansicht (siehe `WIE_NUTZEN.md` § Leseansicht) — nicht Bearbeiten-Modus.
 
 > **Dein Einstieg:** Nur diese Datei morgens öffnen.
@@ -25,6 +25,7 @@
 - **Schutzritter** — Eingang erste Unternehmensformulare prüfen (Kunde-Upload morgen) _(Frist: 2026-06-05)_
 - **Schutzritter** — Mitarbeiterformulare an Schutzritter senden (nach Eingang Unternehmensunterlagen) _(Frist: 2026-06-07)_
 - **SecuGuard** — Hauptabweichungen M1–M5 schließen (Ü1-Dokument — siehe Audit_2026.md) _(Frist: 2026-06-28)_
+- **SecuGuard** — Ü1-Abweichungsdokumentation für DEKRA — mindestens Maßnahmen je NC eintragen (auch ohne Umsetzung), danach Freigabe durch Marwan _(Frist: 2026-06-10)_
 - **TeamFlex** — Zusatzbeauftragung DIN 77200 mit Kunde abstimmen und dokumentieren _(Frist: 2026-06-11)_
 - **TeamFlex** — Wachbuchauszug vom Kunden einfordern (im Gespräch angesprochen — noch nicht geliefert) _(Frist: 2026-06-11)_
 - **TeamFlex** — Neuen Monatsplan vom Kunden einholen und dokumentieren _(Frist: 2026-06-11)_
@@ -68,6 +69,7 @@
 
 - [Status](../03_Kundenprojekte/SecuGuard/Status.md) · [To-dos](../03_Kundenprojekte/SecuGuard/ToDos.md)
   - [urgent] Hauptabweichungen M1–M5 schließen (Ü1-Dokument — siehe Audit_2026.md)
+  - [urgent] Ü1-Abweichungsdokumentation für DEKRA — mindestens Maßnahmen je NC eintragen (auch ohne Um
   - [high] Nebenabweichungen m1–m2 schließen (Prokuristin 7.2; ISO 14001 10.3 Umwelt)
   - [high] Ü1-Formulare je NC vervollständigen (Korrektur, Ursache, Maßnahme, Anlagen) — Koordination
 
@@ -79,11 +81,11 @@
 |-------|-------|---------|---------------|------|
 | 🟡 | **TeamFlex** | 12.06.2026 | 8 | [Status](../03_Kundenprojekte/TeamFlex/Status.md) |
 | 🟡 | **Wolf Street** | 16.06.2026 | 6 | [Status](../03_Kundenprojekte/Wolf_Street/Status.md) |
-| 🟡 | **SecuGuard** | — | 3 | [Status](../03_Kundenprojekte/SecuGuard/Status.md) |
+| 🟡 | **SecuGuard** | — | 4 | [Status](../03_Kundenprojekte/SecuGuard/Status.md) |
 | 🔴 | **Schutzritter** | — | 8 | [Status](../03_Kundenprojekte/Schutzritter/Status.md) |
 | 🔴 | **Checkpoint Regional** | 24.06.2026 | 4 | [Status](../03_Kundenprojekte/Checkpoint_Regional/Status.md) |
 | 🟡 | **ZT Security** | 08.07.2026 | 1 | [Status](../03_Kundenprojekte/ZT_Security/Status.md) |
-| 🟡 | **ELC Security and Service** | — | 2 | [Status](../03_Kundenprojekte/LC_Security/Status.md) |
+| 🟡 | **ELC Security and Service** | — | 4 | [Status](../03_Kundenprojekte/LC_Security/Status.md) |
 
 ---
 

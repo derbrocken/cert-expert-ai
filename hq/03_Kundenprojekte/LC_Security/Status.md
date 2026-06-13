@@ -1,3 +1,16 @@
+---
+type: kundenstatus
+title: Status — ELC Security and Service
+status: aktiv
+updated: 2026-06-03
+tags: [kunde, audit]
+slug: LC_Security
+phase: abwicklung
+projekttyp: ueberwachung-abschluss
+ampel: gelb
+audit_datum: ""
+zert_stelle: ""
+---
 # Status — ELC Security and Service
 
 **Slug:** `LC_Security` *(Ordner-Name im Repo — Kunde: **ELC**, nicht „LC“)*  

@@ -1,3 +1,16 @@
+---
+type: kundenstatus
+title: Status — Wolf Street
+status: aktiv
+updated: 2026-06-03
+tags: [kunde, audit]
+slug: Wolf_Street
+phase: aktiv
+projekttyp: ueberwachungsaudit-iso9001-iso14001-din77200
+ampel: rot
+audit_datum: 2026-06-16
+zert_stelle: DEKRA
+---
 # Status — Wolf Street
 
 **Slug:** `Wolf_Street`  

@@ -26,7 +26,7 @@ import pins_store  # noqa: E402
 import importlib.util
 
 _bd_spec = importlib.util.spec_from_file_location(
-    "build_dashboard", SCRIPTS / "build_dashboard.py"
+    "build_dashboard", SCRIPTS / "build_dashboard_html.py"
 )
 bd = importlib.util.module_from_spec(_bd_spec)
 sys.modules["build_dashboard"] = bd
@@ -36,7 +36,7 @@ _bd_spec.loader.exec_module(bd)
 
 def rebuild() -> None:
     subprocess.run(
-        [sys.executable, str(SCRIPTS / "build_dashboard.py")],
+        [sys.executable, str(SCRIPTS / "build_dashboard_html.py")],
         cwd=str(REPO),
         check=True,
     )

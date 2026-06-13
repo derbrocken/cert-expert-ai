@@ -1,7 +1,8 @@
 # Norm-Klausel-Register v1 (Traceability)
 
 **Zweck:** Jede Normanforderung im Tool führt ihre **Fundstelle** mit (Provenance). Die Slice-2-Engine referenziert pro Regel eine **Klausel-ID (CL-xx)** → kein „weil ich's sage", sondern „weil §X". Dient auch der **Re-Prüfung bei Norm-Updates** (welche Klausel ist betroffen?).
-**Stand:** 2026-06-07 · aus DIN-Originalen extrahiert (Claude), fachlich bestätigt Mark · **DFSS:** controlled design artefact (CROSS-CONTROL-07).
+**Stand:** 2026-06-10 · aus DIN-Originalen extrahiert (Claude), fachlich bestätigt Mark · **DFSS:** controlled design artefact (CROSS-CONTROL-07).
+**Letzte Änderung:** 2026-06-10 — CL-75 (Arbeitsschutz-Grundunterweisung) auf `belegt` gesetzt; exakte DGUV-Fundstellen ergänzt (§12 Abs.1 ArbSchG · §4 DGUV V1 · §4 Abs.2 DGUV V23 · DGUV Info 211-005 · ArbStättV Anh. Nr.6 + DGUV Info 215-410).
 **Quellen-Ausgaben:** DIN 77200-1:2022-10 · DIN 77200-2:2020-07 · DIN 77200-3:2020-07 · §34a GewO · BewachV [LEGAL-INPUT Mark].
 **Status:** `belegt` = Wortlaut geprüft · `offen-DEKRA` = Zertifizierer-Auslegung · `legal-input` = Mark liefert Paragraph.
 

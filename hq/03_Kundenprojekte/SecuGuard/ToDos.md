@@ -50,6 +50,20 @@
 - **Erstellt:** 2026-06-03T12:00:00+02:00
 - **Rohinput:** Master Dump — maternity, worker participation, FASI, physician, supervisor
 
+## TODO-20260609-sg04
+
+- **Aufgabe:** Ü1-Abweichungsdokumentation für DEKRA — mindestens Maßnahmen je NC eintragen (auch ohne Umsetzung), danach Freigabe durch Marwan
+- **Projekt:** SecuGuard
+- **Kategorie:** Audit / Zertifizierung
+- **Verantwortlich:** Marwan Mahra (Freigabe) · Koordination M. Marquardt
+- **Frist:** 2026-06-10
+- **Status:** open
+- **Priorität:** urgent
+- **Quelle:** E-Mail Kira Kultus (WG: AW: DEKRA Ü1 Bericht) — Nachfrage Hr. Gorny (DEKRA)
+- **Nächster Schritt:** Maßnahmen je NC (M1–M5) ins Ü1-Formular eintragen → Freigabe Marwan → zurück an DEKRA/Gorny
+- **Erstellt:** 2026-06-09T03:55:00+02:00
+- **Rohinput:** "Hr. Gorny fragt nach der Abweichungsdokumentation; bitte wenigstens die Maßnahmen eintragen — die ich freigeben muss — wenn es noch keine Umsetzung gibt." — Kira Kultus
+
 ---
 
 ## In Bearbeitung

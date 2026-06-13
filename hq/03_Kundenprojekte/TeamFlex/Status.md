@@ -1,16 +1,30 @@
+---
+type: kundenstatus
+title: Status — TeamFlex
+status: aktiv
+updated: 2026-06-12
+tags: [kunde, audit]
+slug: TeamFlex
+phase: nachbereitung
+projekttyp: ueberwachungsaudit-din77200
+ampel: gruen
+audit_datum: 2026-06-12
+zert_stelle: DEKRA
+---
 # Status — TeamFlex
 
 **Slug:** `TeamFlex`  
-**Stand:** 2026-06-03 (Termine/Auditoren korrigiert)  
+**Stand:** 2026-06-12 — **Audit durchgeführt** ✔ (DEKRA, Dr. Teubart). Findings/Hinweise → `Lessons_Learned.md`. Folge-Aufgaben: Multisite-Zugriff klären, Schlüsselrevision 12-Mon-Rhythmus, Mehrebani-Unterschrift nachholen.  
 **Phase:** Aktiv — Überwachungsaudit-Vorbereitung  
 **Projekttyp:** Überwachungsaudit DIN 77200
 
 ## Kurzstatus
 
-- **Ampel:** 🔴 (Audit **12.06.2026**)
+- **Ampel:** 🟢 — Audit 12.06. durchgeführt, Nachbereitung läuft
 - **Zertifizierungsstelle:** DEKRA
 - **Letzte Aktualisierung HQ:** 2026-06-03 — Operations Board Import + Befüllung Welle 1
-- **Blocker:** Wachbuchauszug fehlt (noch anfordern); neuer Monatsplan + Monatsbericht vom Kunden ausstehend; **beide Projektordner** intern noch nicht fertig; Zusatzbeauftragung DIN 77200 ggf. noch schriftlich fixieren
+- **Erledigt 11.06.:** Wachbuch-Berichte Mai (13 Stk.) ✔ · Monatsplan Juni ✔ · Allg. DA Eschenallee ✔ · Genehmigung NU Mion Protect ✔ · unterschriebener Unterweisungsnachweis ✔ — alles in OneDrive-Akte eingepflegt
+- **Offen fürs Audit 12.06.:** Unterschrift **Mehrebani Novruz Mehran** im Unterweisungsnachweis fehlt (krankheitsbedingt abwesend, lt. Mail Issa 11.06.) → Begründung + Nachhol-Termin bereithalten; Personalakten Hochreiter/Mehrebani auf Vollständigkeit prüfen (Checkliste 02.06.); Zusatzbeauftragung DIN 77200 ggf. schriftlich fixieren
 
 ## Audit-Termin
 

@@ -1,6 +1,6 @@
 # Vault-Struktur für KI & Agenten — Konzept (Entwurf, zur Entscheidung)
 
-**Status:** ENTWURF · **nichts umgebaut** · zur Entscheidung durch Mark
+**Status:** TEILWEISE FREIGEGEBEN (Mark, 2026-06-11): Frontmatter-Schema verbindlich (→ `hq/CONVENTIONS.md`), Pilot an 7 Status.md umgesetzt, Inbox-Regel aktiv. GEPARKT: Bridge-Entrümpelung + Monatsdateien-Konvention (bis Executor-Session stabil), Bases-Entscheidung offen.
 **Stand:** 2026-06-09 · **Owner:** Generalist (Claude)
 **Abgrenzung:** Dieses Dokument ist ein **Vorschlag**, kein verbindlicher Stand. Verbindlich bleibt `ARCHITEKTUR.md`. Erst wenn Mark einzelne Punkte freigibt, werden sie umgesetzt.
 
