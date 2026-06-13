@@ -342,7 +342,7 @@ function BestellungenPanel({
             <button
               key={def.typ}
               type="button"
-              disabled={!onSavePerson}
+              disabled={!onSavePerson || !evidenceEditMode}
               onClick={() => toggle(def.typ)}
               className={
                 isOn
@@ -505,8 +505,8 @@ export const EmployeeFileDossierView: React.FC<EmployeeFileDossierViewProps> = (
             </h2>
             <p className="mt-1 text-sm text-[#6b7280]">
               {evidenceEditMode
-                ? "Nachweise bearbeiten — PDF pro Position hochladen"
-                : "Bedingung → Anforderung → Nachweis"}
+                ? "Bearbeiten — Stammdaten, Rollen, Bestellungen & Nachweise ändern"
+                : "Ansehen — zum Ändern „Bearbeiten“ klicken (kein versehentliches Überschreiben)"}
             </p>
           </div>
           {onToggleEvidenceEdit ? (
@@ -520,12 +520,12 @@ export const EmployeeFileDossierView: React.FC<EmployeeFileDossierViewProps> = (
               }`}
               title={
                 evidenceEditMode
-                  ? "Nachweis-Bearbeitung beenden"
-                  : "Nachweise bearbeiten / hochladen"
+                  ? "Bearbeitung beenden (zurück zu Ansehen)"
+                  : "Akte bearbeiten — Stammdaten/Rollen/Bestellungen/Nachweise ändern"
               }
             >
               <Pencil className="h-3.5 w-3.5" />
-              {evidenceEditMode ? "Fertig" : "Nachweise bearbeiten"}
+              {evidenceEditMode ? "Fertig" : "Bearbeiten"}
             </button>
           ) : null}
         </div>
@@ -584,10 +584,17 @@ export const EmployeeFileDossierView: React.FC<EmployeeFileDossierViewProps> = (
               <SubSectionHeader
                 icon={<User className="h-3.5 w-3.5 text-[#e30613]" />}
                 title="Person & Rolle"
-                subtitle="Pflichtangaben je Person — direkt bearbeiten: Grundrolle, Bestellungen, Namen, IDs"
+                subtitle={
+                  evidenceEditMode
+                    ? "Bearbeiten: Grundrolle, Bestellungen, Namen, IDs"
+                    : "Pflichtangaben je Person — zum Ändern oben „Bearbeiten“"
+                }
                 level="bedingung"
               />
-              {onSavePerson ? (
+              {/* S1a — Person & Rolle nur im Bearbeiten-Modus editierbar (sonst
+                  read-only Anzeige) → Name/IDs können nicht versehentlich
+                  überschrieben/geleert werden. */}
+              {onSavePerson && evidenceEditMode ? (
                 <EmployeeFilePersonRolleEditTable
                   employee={employee}
                   roles={roles}

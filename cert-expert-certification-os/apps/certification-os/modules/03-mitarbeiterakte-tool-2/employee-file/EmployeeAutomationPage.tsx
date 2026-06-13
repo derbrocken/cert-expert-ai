@@ -166,12 +166,9 @@ function EmployeeAutomationPageContent() {
   );
   const [isCreatingNew, setIsCreatingNew] = useState(false);
   const [dossierTab, setDossierTab] = useState<DossierTab>("akte");
-  // Bearbeiten ↔ Übersicht (read-only Vorzeige-Ansicht). Default = Bearbeiten
-  // (kein Verhaltensbruch). SSR-stabil: konstanter Initialwert, kein
-  // localStorage im ersten Render (Hydration-Lehre `01f720b`).
-  const [akteViewMode, setAkteViewMode] = useState<"bearbeiten" | "uebersicht">(
-    "bearbeiten",
-  );
+  // S1a — EINE Akte-Ansicht: Standard = Ansehen (read-only); der Stift in der
+  // Akte schaltet akte-weit auf Bearbeiten. Kein separater Bearbeiten/Übersicht-
+  // Umschalter mehr.
   const [evidenceEditMode, setEvidenceEditMode] = useState(false);
   const [evidenceFiles, setEvidenceFiles] = useState<EmployeeEvidenceMap>({});
   const [batchSelectedIds, setBatchSelectedIds] = useState<Set<string>>(
@@ -477,9 +474,8 @@ function EmployeeAutomationPageContent() {
       setBatchSelectedIds((prev) => new Set(prev).add(employee.id));
       openEmployee(employee);
       // P3 / #6 (Mark D2, Neu-Anlegen): die Person ist jetzt persistiert
-      // (ID/companySlug) → direkt in den „Nachweise hochladen"-Schritt der Akte
-      // (Edit-Modus an), damit der Upload ohne Umweg möglich ist.
-      setAkteViewMode("bearbeiten");
+      // (ID/companySlug) → direkt in den Bearbeiten-Modus der Akte, damit
+      // Stammdaten/Nachweise ohne Umweg ergänzt werden können.
       setEvidenceEditMode(true);
       setToast({
         message: "Person angelegt — jetzt Nachweise hochladen (oder „Generator“).",
@@ -935,67 +931,28 @@ function EmployeeAutomationPageContent() {
       </nav>
 
       <div className="mx-auto max-w-3xl space-y-4 p-4 sm:p-6">
+        {/* S1a — EINE Akte-Ansicht: kein „Bearbeiten/Übersicht"-Umschalter mehr.
+            Standard = Ansehen (read-only); der Stift in der Akte schaltet
+            akte-weit auf Bearbeiten. Read-only Vorschau/Export bleibt über die
+            Export-Ansicht erreichbar. */}
         {dossierTab === "akte" ? (
-          <>
-            <div
-              className="inline-flex items-center gap-1 rounded-lg border border-[#e5e7eb] bg-white p-1"
-              role="group"
-              aria-label="Ansicht umschalten"
-            >
-              {(
-                [
-                  ["bearbeiten", "Bearbeiten"],
-                  ["uebersicht", "Übersicht"],
-                ] as const
-              ).map(([mode, label]) => (
-                <button
-                  key={mode}
-                  type="button"
-                  onClick={() => {
-                    setAkteViewMode(mode);
-                    if (mode === "uebersicht") setEvidenceEditMode(false);
-                  }}
-                  aria-pressed={akteViewMode === mode}
-                  className={cn(
-                    "rounded-md px-3 py-1.5 text-xs font-semibold transition-colors",
-                    akteViewMode === mode
-                      ? "bg-[rgba(227,6,19,0.08)] text-[#b80510]"
-                      : "text-[#6b7280] hover:text-[#111827]",
-                  )}
-                >
-                  {label}
-                </button>
-              ))}
-            </div>
-
-            {akteViewMode === "uebersicht" ? (
-              <EmployeeFileOverview
-                employee={focusEmployee}
-                roles={roles}
-                appointments={appointments}
-                companyName={globalProps.companyName}
-                evidenceFiles={focusEmployeeId ? evidenceFiles : {}}
-              />
-            ) : (
-              <EmployeeFileDossierView
-                employee={focusEmployee}
-                roles={roles}
-                appointments={appointments}
-                companyName={globalProps.companyName}
-                evidenceEditMode={evidenceEditMode}
-                onToggleEvidenceEdit={() => setEvidenceEditMode((v) => !v)}
-                evidenceFiles={focusEmployeeId ? evidenceFiles : {}}
-                onEvidenceUpload={handleEvidenceUpload}
-                onEvidenceRemove={handleEvidenceRemove}
-                onToggleEvidenceChecked={handleToggleEvidenceChecked}
-                onSavePerson={handleSavePerson}
-                onOpenGenerator={() => {
-                  setEvidenceEditMode(false);
-                  setDossierTab("generator");
-                }}
-              />
-            )}
-          </>
+          <EmployeeFileDossierView
+            employee={focusEmployee}
+            roles={roles}
+            appointments={appointments}
+            companyName={globalProps.companyName}
+            evidenceEditMode={evidenceEditMode}
+            onToggleEvidenceEdit={() => setEvidenceEditMode((v) => !v)}
+            evidenceFiles={focusEmployeeId ? evidenceFiles : {}}
+            onEvidenceUpload={handleEvidenceUpload}
+            onEvidenceRemove={handleEvidenceRemove}
+            onToggleEvidenceChecked={handleToggleEvidenceChecked}
+            onSavePerson={handleSavePerson}
+            onOpenGenerator={() => {
+              setEvidenceEditMode(false);
+              setDossierTab("generator");
+            }}
+          />
         ) : null}
 
         {dossierTab === "generator" ? (
