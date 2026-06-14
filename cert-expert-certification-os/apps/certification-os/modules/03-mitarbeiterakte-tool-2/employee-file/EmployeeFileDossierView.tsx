@@ -4,7 +4,6 @@ import React from "react";
 import {
   User,
   FileCheck,
-  MapPin,
   AlertCircle,
   Pencil,
   GraduationCap,
@@ -42,6 +41,7 @@ import { EmployeeFilePersonRolleEditTable } from "./EmployeeFilePersonRolleEditT
 import { EmployeeFileTrainingTargets } from "./EmployeeFileTrainingTargets";
 import { EmployeeFileTrainingPlan } from "./EmployeeFileTrainingPlan";
 import { buildPlanDeadlineRows, isEvidenceChecked } from "./training-plan";
+import { computeComplianceStatus } from "./compliance-status";
 import type { EmployeeEvidenceMap } from "./employee-evidence-storage";
 
 export interface EmployeeFileDossierViewProps {
@@ -462,6 +462,19 @@ export const EmployeeFileDossierView: React.FC<EmployeeFileDossierViewProps> = (
   onSavePerson,
   onOpenGenerator,
 }) => {
+  // M2 — horizontale Kapitel-Reiter (Dossier-Cockpit). Übersicht = Cockpit;
+  // beim Bearbeiten auf das Eingabe-Kapitel springen, damit die Felder sichtbar
+  // sind. Reine Anzeige/IA, kein Engine-/Daten-Eingriff.
+  type AkteTab = "uebersicht" | "stammrolle" | "nachweise" | "schulungen";
+  const [activeTab, setActiveTab] = React.useState<AkteTab>("uebersicht");
+  React.useEffect(() => {
+    if (evidenceEditMode) {
+      setActiveTab((t) =>
+        t === "uebersicht" || t === "schulungen" ? "stammrolle" : t,
+      );
+    }
+  }, [evidenceEditMode]);
+
   const role = roles.find((r) => r.id === employee.roleId);
   const apiRoleName = role?.name ?? employee.roleId;
   // P3 / #7 — Prüf-Status je Nachweis (Mark D1). Lese-Helfer; EC-10: nur
@@ -492,6 +505,21 @@ export const EmployeeFileDossierView: React.FC<EmployeeFileDossierViewProps> = (
   );
   const mergedFristen = [...summary.fristen, ...planDeadlineRows];
 
+  // Phase 2 — Gesamt-Status-Pille im Akte-Kopf (rechnerisch, EC-10: kein
+  // Freigabe-/Auditstatus). Status-Farben getrennt vom Brand (Visual-Direction).
+  const compliance = computeComplianceStatus(summary.pflichtSet, mergedFristen);
+  const openCount = compliance.counts.kritisch + compliance.counts.offen;
+  const statusPill =
+    compliance.overall === "offen"
+      ? { dot: "bg-red-500", cls: "border-red-200 bg-red-50 text-red-700", text: `${openCount} offen` }
+      : compliance.overall === "in-arbeit"
+        ? { dot: "bg-amber-500", cls: "border-amber-200 bg-amber-50 text-amber-700", text: `${openCount} offen` }
+        : compliance.overall === "rechnerisch-vollstaendig"
+          ? { dot: "bg-green-500", cls: "border-green-200 bg-green-50 text-green-700", text: "rechnerisch vollständig" }
+          : { dot: "bg-gray-300", cls: "border-gray-200 bg-gray-50 text-gray-500", text: "kein Pflicht-Set" };
+  const orgTitle = employee.roleType?.trim() || summary.roleName;
+  const scopeLabels = summary.geltungsbereich.map((r) => r.label).join(", ");
+
   return (
     <div className="overflow-hidden rounded-xl border border-[#e5e7eb] bg-white shadow-sm">
       <div className="border-b border-[#e5e7eb] bg-linear-to-r from-[rgba(227,6,19,0.06)] to-white px-5 py-4">
@@ -504,64 +532,197 @@ export const EmployeeFileDossierView: React.FC<EmployeeFileDossierViewProps> = (
               {employee.fullName || "Unbenannt"}
             </h2>
             <p className="mt-1 text-sm text-[#6b7280]">
-              {evidenceEditMode
-                ? "Bearbeiten — Stammdaten, Rollen, Bestellungen & Nachweise ändern"
-                : "Ansehen — zum Ändern „Bearbeiten“ klicken (kein versehentliches Überschreiben)"}
+              {orgTitle}
+              {companyName ? ` · ${companyName}` : ""}
+              {scopeLabels ? ` · Geltungsbereich: ${scopeLabels}` : ""}
             </p>
           </div>
-          {onToggleEvidenceEdit ? (
-            <button
-              type="button"
-              onClick={onToggleEvidenceEdit}
-              className={`inline-flex shrink-0 items-center gap-1.5 rounded-lg border px-3 py-2 text-xs font-semibold transition-colors ${
-                evidenceEditMode
-                  ? "border-[#e30613] bg-[rgba(227,6,19,0.08)] text-[#b80510]"
-                  : "border-[#e5e7eb] text-[#6b7280] hover:border-[rgba(227,6,19,0.35)] hover:text-[#e30613]"
-              }`}
-              title={
-                evidenceEditMode
-                  ? "Bearbeitung beenden (zurück zu Ansehen)"
-                  : "Akte bearbeiten — Stammdaten/Rollen/Bestellungen/Nachweise ändern"
-              }
+          <div className="flex shrink-0 flex-col items-end gap-2">
+            {/* Phase 2 — Gesamt-Status-Pille (Status-Farbe, kein Brand; EC-10). */}
+            <span
+              className={`inline-flex items-center gap-1.5 rounded-lg border px-2.5 py-1 text-xs font-semibold ${statusPill.cls}`}
+              title="Rechnerischer Stand — eingehende Nachweise gelten als ungeprüft (keine Freigabe-/Auditaussage)."
             >
-              <Pencil className="h-3.5 w-3.5" />
-              {evidenceEditMode ? "Fertig" : "Bearbeiten"}
-            </button>
-          ) : null}
+              <span className={`h-2 w-2 rounded-full ${statusPill.dot}`} aria-hidden />
+              {statusPill.text}
+            </span>
+            {onToggleEvidenceEdit ? (
+              <button
+                type="button"
+                onClick={onToggleEvidenceEdit}
+                className={`inline-flex items-center gap-1.5 rounded-lg border px-3 py-2 text-xs font-semibold transition-colors ${
+                  evidenceEditMode
+                    ? "border-[#e30613] bg-[rgba(227,6,19,0.08)] text-[#b80510]"
+                    : "border-[#e5e7eb] text-[#6b7280] hover:border-[rgba(227,6,19,0.35)] hover:text-[#e30613]"
+                }`}
+                title={
+                  evidenceEditMode
+                    ? "Bearbeitung beenden (zurück zu Ansehen)"
+                    : "Akte bearbeiten — Stammdaten/Rollen/Bestellungen/Nachweise ändern"
+                }
+              >
+                <Pencil className="h-3.5 w-3.5" />
+                {evidenceEditMode ? "Fertig" : "Bearbeiten"}
+              </button>
+            ) : null}
+          </div>
         </div>
-        {!evidenceEditMode ? (
-          <dl className="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-xs text-[#6b7280]">
-            <div>
-              <span className="font-medium text-[#374151]">
-                {summary.missingPflichtangaben}
-              </span>{" "}
-              fehlende Pflichtangaben
-            </div>
-            <div>
-              <span className="font-medium text-[#374151]">
-                {summary.missingNachweise}
-              </span>{" "}
-              offene Nachweise
-            </div>
-            <div>
-              <span className="font-medium text-[#374151]">
-                {summary.fachlichPruefen}
-              </span>{" "}
-              fachlich prüfen
-            </div>
-          </dl>
-        ) : null}
       </div>
 
-      {!evidenceEditMode ? (
-        <EmployeeFilePflichtStatusPanel
-          pflichtSet={summary.pflichtSet}
-          fristen={mergedFristen}
-        />
+      {/* M2 — horizontale Kapitel-Reiter (Dossier-Cockpit). Aktiver Reiter
+          Vermillion (Visual-Direction); Status-Punkt (amber) je Kapitel mit
+          offenen Punkten. Reine IA/Anzeige, EC-10. */}
+      <nav
+        className="flex flex-wrap gap-1 border-b border-[#e5e7eb] bg-white px-3 py-2"
+        aria-label="Akte-Kapitel"
+      >
+        {(
+          [
+            ["uebersicht", "Übersicht", false],
+            [
+              "stammrolle",
+              "Stammdaten & Rolle",
+              summary.missingPflichtangaben > 0,
+            ],
+            ["nachweise", "Nachweise", summary.missingNachweise > 0],
+            ...(summary.schulungsSoll.length > 0
+              ? [["schulungen", "Schulungen", false] as const]
+              : []),
+          ] as ReadonlyArray<readonly [AkteTab, string, boolean]>
+        ).map(([id, label, dot]) => {
+          const active = activeTab === id;
+          return (
+            <button
+              key={id}
+              type="button"
+              onClick={() => setActiveTab(id)}
+              aria-pressed={active}
+              className={
+                active
+                  ? "inline-flex items-center gap-1.5 rounded-lg border border-[#e30613] bg-[rgba(227,6,19,0.08)] px-3 py-1.5 text-xs font-semibold text-[#b80510]"
+                  : "inline-flex items-center gap-1.5 rounded-lg border border-transparent px-3 py-1.5 text-xs font-medium text-[#6b7280] hover:text-[#111827]"
+              }
+            >
+              {label}
+              {dot ? (
+                <span
+                  className="h-1.5 w-1.5 rounded-full bg-amber-500"
+                  aria-hidden
+                />
+              ) : null}
+            </button>
+          );
+        })}
+      </nav>
+
+      {/* ÜBERSICHT — Cockpit: Pflicht-Status, Pflicht-Set, offene Punkte, Generator */}
+      {activeTab === "uebersicht" ? (
+        <div className="grid gap-0 divide-y divide-[#e5e7eb]">
+          <EmployeeFilePflichtStatusPanel
+            pflichtSet={summary.pflichtSet}
+            fristen={mergedFristen}
+          />
+          <section className="p-5">
+            <SectionHeader
+              icon={<ListChecks className="h-4 w-4 text-[#e30613]" />}
+              title="Pflicht-Set (abgeleitet)"
+              subtitle="Automatisch aus Rolle × Beauftragung × SDL × Beschäftigungsart × Dienstfahrzeug — jede Pflicht mit Norm-Fundstelle (CL-xx)"
+              level="anforderung"
+            />
+            {summary.pflichtSet.length > 0 ? (
+              <RequirementTable rows={summary.pflichtSet} />
+            ) : (
+              <p className="rounded-lg border border-dashed border-[#e5e7eb] px-3 py-4 text-sm text-[#6b7280]">
+                Kein Pflicht-Set ableitbar — Rolle und ggf. SDL/Geltungsbereich
+                erfassen.
+              </p>
+            )}
+
+            {summary.fristen.length > 0 ? (
+              <div className="mt-6">
+                <SubSectionHeader
+                  icon={
+                    <CalendarClock className="h-3.5 w-3.5 text-[#e30613]" />
+                  }
+                  title="Fristen / Termine"
+                  subtitle="Frist-Vorstufe (volle Ampel folgt) — Sachkunde 6 Monate, Erste Hilfe 2 J., Brandschutz 3 J."
+                  level="anforderung"
+                />
+                <RequirementTable rows={summary.fristen} />
+              </div>
+            ) : null}
+
+            {summary.engineHinweise.length > 0 ? (
+              <ul className="mt-4 space-y-1.5">
+                {summary.engineHinweise.map((h, i) => (
+                  <li
+                    key={i}
+                    className="flex items-start gap-2 rounded-md border border-[#e5e7eb] bg-[#fafbfc] px-2.5 py-2 text-[11px] text-[#6b7280]"
+                  >
+                    <Info className="mt-0.5 h-3 w-3 shrink-0 text-[#9ca3af]" />
+                    <span>{h}</span>
+                  </li>
+                ))}
+              </ul>
+            ) : null}
+          </section>
+
+          <section className="bg-[#fafbfc] p-5">
+            <SectionHeader
+              icon={<AlertCircle className="h-4 w-4 text-amber-600" />}
+              title="Offene Punkte / Prüfbedarf"
+              subtitle="Konsolidiert — fehlende Angaben, Nachweise, Unterweisungen, scope-abhängige Prüfung"
+            />
+            {summary.openIssues.length === 0 ? (
+              <p className="text-sm text-[#6b7280]">
+                Keine offenen Punkte aus den erfassten Stammdaten abgeleitet.
+              </p>
+            ) : (
+              <ul className="max-h-56 space-y-1.5 overflow-auto">
+                {summary.openIssues.map((issue) => (
+                  <li
+                    key={issue.id}
+                    className="flex items-start justify-between gap-2 rounded-md border border-[#e5e7eb] bg-white px-2.5 py-2"
+                  >
+                    <span className="text-xs text-[#111827]">
+                      {issue.label}
+                    </span>
+                    <EmployeeFileStatusBadge status={issue.status} />
+                  </li>
+                ))}
+              </ul>
+            )}
+          </section>
+
+          <section className="border-t border-[#e5e7eb] bg-white px-5 py-3">
+            <p className="flex items-start gap-2 text-xs text-[#6b7280]">
+              <BookOpen className="mt-0.5 h-3.5 w-3.5 shrink-0" />
+              <span>
+                Generator (Schritt 2):{" "}
+                <span className="font-medium text-[#374151]">
+                  {docCount} Dokument(e)
+                </span>{" "}
+                vorgemerkt — keine Freigabe oder Zertifizierungsaussage.
+                {onOpenGenerator ? (
+                  <>
+                    {" "}
+                    <button
+                      type="button"
+                      onClick={onOpenGenerator}
+                      className="font-semibold text-[#e30613] hover:underline"
+                    >
+                      Generator öffnen →
+                    </button>
+                  </>
+                ) : null}
+              </span>
+            </p>
+          </section>
+        </div>
       ) : null}
 
-      <div className="grid gap-0 divide-y divide-[#e5e7eb]">
-        {/* 1. Akte-Kern: Bedingung → Anforderung → Nachweis */}
+      {/* STAMMDATEN & ROLLE — Eingabe-Kapitel (Person & Rolle, Bestellungen, SDL) */}
+      {activeTab === "stammrolle" ? (
         <section
           className={
             evidenceEditMode
@@ -571,11 +732,11 @@ export const EmployeeFileDossierView: React.FC<EmployeeFileDossierViewProps> = (
         >
           <SectionHeader
             icon={<User className="h-4 w-4 text-[#e30613]" />}
-            title="Rolle, Bedingungen, Anforderungen & Nachweise"
+            title="Stammdaten & Rolle"
             subtitle={
               evidenceEditMode
-                ? "Nachweise hochladen · Stammdaten und Kontext im gleichen Block"
-                : "Bedingung → Anforderung → Nachweis — alles an einem Ort"
+                ? "Bearbeiten — Person, Rolle/Norm-Klasse, Bestellungen, Geltungsbereich"
+                : "Person, Rolle/Norm-Klasse, Bestellungen, Geltungsbereich"
             }
           />
 
@@ -659,8 +820,32 @@ export const EmployeeFileDossierView: React.FC<EmployeeFileDossierViewProps> = (
                 onOpenGenerator={onOpenGenerator}
               />
             </div>
+            {/* Geltungsbereich/Einsatzkontext → rechte Sidebar (kompakte Chips). */}
+          </div>
+        </section>
+      ) : null}
 
-            <div className="border-t border-[#e5e7eb] pt-6">
+      {/* NACHWEISE — Pflichtnachweise + Schulung & Unterweisung (Prüf-Schritt ④) */}
+      {activeTab === "nachweise" ? (
+        <section
+          className={
+            evidenceEditMode
+              ? "bg-[rgba(227,6,19,0.03)] p-5 ring-2 ring-inset ring-[rgba(227,6,19,0.15)]"
+              : "p-5"
+          }
+        >
+          <SectionHeader
+            icon={<FileCheck className="h-4 w-4 text-[#e30613]" />}
+            title="Nachweise"
+            subtitle={
+              evidenceEditMode
+                ? "Nachweise hochladen — Pflichtnachweise & Unterweisungen"
+                : "Pflichtnachweise & Unterweisungen — je Nachweis prüfbar (geprüft-Klick)"
+            }
+          />
+
+          <div className="space-y-6">
+            <div>
               <SubSectionHeader
                 icon={<FileCheck className="h-3.5 w-3.5 text-[#e30613]" />}
                 title="Pflichtnachweise"
@@ -728,146 +913,36 @@ export const EmployeeFileDossierView: React.FC<EmployeeFileDossierViewProps> = (
                 })}
               </ul>
             </div>
-
-            <div className="border-t border-[#e5e7eb] pt-6">
-              <SubSectionHeader
-                icon={<MapPin className="h-3.5 w-3.5 text-[#e30613]" />}
-                title="Geltungsbereich / Einsatzkontext"
-                subtitle="Anwendung und Einsatzkontext — löst weitere Anforderungen aus"
-                level="bedingung"
-              />
-              <RequirementTable rows={summary.geltungsbereich} />
-            </div>
           </div>
         </section>
+      ) : null}
 
-        {/* 1b. Pflicht-Set (Engine-abgeleitet, clauseId-belegt) */}
+      {/* SCHULUNGEN — Soll/Ist + Termin-Planung (Jahresweiterbildung, Module, SDL) */}
+      {activeTab === "schulungen" && summary.schulungsSoll.length > 0 ? (
         <section className="p-5">
           <SectionHeader
-            icon={<ListChecks className="h-4 w-4 text-[#e30613]" />}
-            title="Pflicht-Set (abgeleitet)"
-            subtitle="Automatisch aus Rolle × Beauftragung × SDL × Beschäftigungsart × Dienstfahrzeug — jede Pflicht mit Norm-Fundstelle (CL-xx)"
+            icon={<GraduationCap className="h-4 w-4 text-[#e30613]" />}
+            title="Schulungen"
+            subtitle="Jahresweiterbildung, modulare DIN-1-Schulungen und einmalige SDL-Schulungen — Soll/Ist + Termin-Planung. Getrennt von Standarddokumenten/Unterweisungen (Nachweise)."
             level="anforderung"
           />
-          {summary.pflichtSet.length > 0 ? (
-            <RequirementTable rows={summary.pflichtSet} />
-          ) : (
-            <p className="rounded-lg border border-dashed border-[#e5e7eb] px-3 py-4 text-sm text-[#6b7280]">
-              Kein Pflicht-Set ableitbar — Rolle und ggf. SDL/Geltungsbereich
-              erfassen.
-            </p>
-          )}
-
-          {summary.fristen.length > 0 ? (
-            <div className="mt-6">
-              <SubSectionHeader
-                icon={<CalendarClock className="h-3.5 w-3.5 text-[#e30613]" />}
-                title="Fristen / Termine"
-                subtitle="Frist-Vorstufe (volle Ampel folgt) — Sachkunde 6 Monate, Erste Hilfe 2 J., Brandschutz 3 J."
-                level="anforderung"
-              />
-              <RequirementTable rows={summary.fristen} />
-            </div>
-          ) : null}
-
-          {summary.engineHinweise.length > 0 ? (
-            <ul className="mt-4 space-y-1.5">
-              {summary.engineHinweise.map((h, i) => (
-                <li
-                  key={i}
-                  className="flex items-start gap-2 rounded-md border border-[#e5e7eb] bg-[#fafbfc] px-2.5 py-2 text-[11px] text-[#6b7280]"
-                >
-                  <Info className="mt-0.5 h-3 w-3 shrink-0 text-[#9ca3af]" />
-                  <span>{h}</span>
-                </li>
-              ))}
-            </ul>
-          ) : null}
-        </section>
-
-        {/* 1c. Schulungen — eigener, sichtbar getrennter Abschnitt (#2).
-            (a) Standarddokumente/Unterweisungen liegen im Akte-Kern oben
-            („Schulung & Unterweisung" + „Pflichtnachweise"); (b) Schulungen
-            (Jahresweiterbildung, modulare DIN-1-Schulungen, einmalige SDL-
-            Schulungen) = Soll/Ist + Termin-Planung hier. EC-10: rechnerisch,
-            kein Freigabe-/Auditstatus. */}
-        {summary.schulungsSoll.length > 0 ? (
-          <section className="p-5">
-            <SectionHeader
-              icon={<GraduationCap className="h-4 w-4 text-[#e30613]" />}
-              title="Schulungen"
-              subtitle="Jahresweiterbildung, modulare DIN-1-Schulungen und einmalige SDL-Schulungen — Soll/Ist + Termin-Planung. Getrennt von Standarddokumenten/Unterweisungen (Akte-Kern oben)."
-              level="anforderung"
+          <div className="space-y-6">
+            <EmployeeFileTrainingTargets
+              targets={summary.schulungsSoll}
+              employee={employee}
+              onSave={onSavePerson}
             />
-            <div className="space-y-6">
-              <EmployeeFileTrainingTargets
-                targets={summary.schulungsSoll}
-                employee={employee}
-                onSave={onSavePerson}
-              />
-              <EmployeeFileTrainingPlan
-                targets={summary.schulungsSoll}
-                employee={employee}
-                evidenceFiles={evidenceFiles}
-                onSave={onSavePerson}
-                onEvidenceUpload={onEvidenceUpload}
-                onEvidenceRemove={onEvidenceRemove}
-              />
-            </div>
-          </section>
-        ) : null}
-
-        {/* 2. Offene Punkte */}
-        <section className="bg-[#fafbfc] p-5">
-          <SectionHeader
-            icon={<AlertCircle className="h-4 w-4 text-amber-600" />}
-            title="Offene Punkte / Prüfbedarf"
-            subtitle="Konsolidiert — fehlende Angaben, Nachweise, Unterweisungen, scope-abhängige Prüfung"
-          />
-          {summary.openIssues.length === 0 ? (
-            <p className="text-sm text-[#6b7280]">
-              Keine offenen Punkte aus den erfassten Stammdaten abgeleitet.
-            </p>
-          ) : (
-            <ul className="max-h-56 space-y-1.5 overflow-auto">
-              {summary.openIssues.map((issue) => (
-                <li
-                  key={issue.id}
-                  className="flex items-start justify-between gap-2 rounded-md border border-[#e5e7eb] bg-white px-2.5 py-2"
-                >
-                  <span className="text-xs text-[#111827]">{issue.label}</span>
-                  <EmployeeFileStatusBadge status={issue.status} />
-                </li>
-              ))}
-            </ul>
-          )}
+            <EmployeeFileTrainingPlan
+              targets={summary.schulungsSoll}
+              employee={employee}
+              evidenceFiles={evidenceFiles}
+              onSave={onSavePerson}
+              onEvidenceUpload={onEvidenceUpload}
+              onEvidenceRemove={onEvidenceRemove}
+            />
+          </div>
         </section>
-
-        <section className="border-t border-[#e5e7eb] bg-white px-5 py-3">
-          <p className="flex items-start gap-2 text-xs text-[#6b7280]">
-            <BookOpen className="mt-0.5 h-3.5 w-3.5 shrink-0" />
-            <span>
-              Generator (Schritt 2):{" "}
-              <span className="font-medium text-[#374151]">
-                {docCount} Dokument(e)
-              </span>{" "}
-              vorgemerkt — keine Freigabe oder Zertifizierungsaussage.
-              {onOpenGenerator ? (
-                <>
-                  {" "}
-                  <button
-                    type="button"
-                    onClick={onOpenGenerator}
-                    className="font-semibold text-[#e30613] hover:underline"
-                  >
-                    Generator öffnen →
-                  </button>
-                </>
-              ) : null}
-            </span>
-          </p>
-        </section>
-      </div>
+      ) : null}
     </div>
   );
 };
