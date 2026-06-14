@@ -14,12 +14,24 @@ import {
   CheckSquare,
   Square,
 } from "lucide-react";
-import { formatIsoToInput } from "@/lib/utils/date";
-import type { Employee, Role } from "@/lib/types/employee";
+import type { Employee, Role, Appointment } from "@/lib/types/employee";
+import { getEmployeeFileSummary } from "./employee-file-requirements";
+import { computeComplianceStatus } from "./compliance-status";
+import { roleLabelDe } from "./employee-display-labels";
+
+/** Phase 1 — Ampel + Status-Text je Person für die Pool-Liste (Cockpit). */
+interface AmpelInfo {
+  dotClass: string;
+  textClass: string;
+  text: string;
+}
 
 export interface EmployeeFileIndexProps {
   employees: Employee[];
   roles: Role[];
+  /** Phase 1 — für die Pro-Person-Ampel (Engine-Summary). */
+  appointments?: Appointment[];
+  companyName?: string;
   selectedEmployeeId: string | null;
   isCreatingNew: boolean;
   batchSelectedIds: Set<string>;
@@ -41,6 +53,8 @@ export interface EmployeeFileIndexProps {
 export const EmployeeFileIndex: React.FC<EmployeeFileIndexProps> = ({
   employees,
   roles,
+  appointments = [],
+  companyName = "",
   selectedEmployeeId,
   isCreatingNew,
   batchSelectedIds,
@@ -57,6 +71,52 @@ export const EmployeeFileIndex: React.FC<EmployeeFileIndexProps> = ({
 }) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
+
+  // Phase 1 — Pro-Person-Ampel (rechnerisch, EC-10: kein Freigabe-/Auditstatus).
+  // Map employeeId → {Dot-Farbe, Text-Farbe, kurzer Status-Text}. Memoisiert über
+  // die Liste; nutzt die bestehende Engine-Summary + Compliance-Aggregation.
+  const ampelById = useMemo(() => {
+    const map = new Map<string, AmpelInfo>();
+    for (const emp of employees) {
+      const apiRoleName = roles.find((r) => r.id === emp.roleId)?.name ?? emp.roleId;
+      const summary = getEmployeeFileSummary(
+        emp,
+        appointments,
+        companyName,
+        roleLabelDe(emp.roleId, apiRoleName),
+      );
+      const status = computeComplianceStatus(summary.pflichtSet, summary.fristen);
+      const info: AmpelInfo =
+        status.overall === "offen"
+          ? {
+              dotClass: "bg-red-500",
+              textClass: "text-red-700",
+              text: `${status.counts.kritisch} wichtig fehlt`,
+            }
+          : status.overall === "in-arbeit"
+            ? {
+                dotClass: "bg-amber-500",
+                textClass: "text-amber-700",
+                text:
+                  summary.missingNachweise > 0
+                    ? `${summary.missingNachweise} Nachweis(e) offen`
+                    : `${status.counts.offen} offen`,
+              }
+            : status.overall === "rechnerisch-vollstaendig"
+              ? {
+                  dotClass: "bg-green-500",
+                  textClass: "text-green-700",
+                  text: "fertig (ungeprüft)",
+                }
+              : {
+                  dotClass: "bg-gray-300",
+                  textClass: "text-[#9ca3af]",
+                  text: "kein Pflicht-Set",
+                };
+      map.set(emp.id, info);
+    }
+    return map;
+  }, [employees, roles, appointments, companyName]);
 
   const filtered = useMemo(() => {
     if (!searchQuery.trim()) return employees;
@@ -190,6 +250,7 @@ export const EmployeeFileIndex: React.FC<EmployeeFileIndexProps> = ({
               const isActive =
                 !isCreatingNew && selectedEmployeeId === employee.id;
               const inBatch = batchSelectedIds.has(employee.id);
+              const ampel = ampelById.get(employee.id);
               return (
                 <li key={employee.id}>
                   <div
@@ -235,14 +296,28 @@ export const EmployeeFileIndex: React.FC<EmployeeFileIndexProps> = ({
                         <Folder className="h-4 w-4" />
                       </span>
                       <span className="min-w-0 flex-1">
-                        <span className="block truncate text-sm font-medium text-[#111827]">
-                          {employee.fullName}
+                        <span className="flex items-center gap-1.5 text-sm font-medium text-[#111827]">
+                          {ampel ? (
+                            <span
+                              className={cn(
+                                "inline-block h-2 w-2 shrink-0 rounded-full",
+                                ampel.dotClass,
+                              )}
+                              aria-hidden
+                            />
+                          ) : null}
+                          <span className="truncate">{employee.fullName}</span>
                         </span>
-                        <span className="block truncate text-xs text-[#6b7280]">
-                          {getRoleName(employee.roleId)}
-                          {employee.birthday
-                            ? ` · ${formatIsoToInput(employee.birthday) || employee.birthday}`
-                            : ""}
+                        <span className="block truncate text-xs">
+                          {ampel ? (
+                            <span className={cn("font-medium", ampel.textClass)}>
+                              {ampel.text}
+                            </span>
+                          ) : null}
+                          <span className="text-[#6b7280]">
+                            {ampel ? " · " : ""}
+                            {getRoleName(employee.roleId)}
+                          </span>
                         </span>
                       </span>
                     </button>

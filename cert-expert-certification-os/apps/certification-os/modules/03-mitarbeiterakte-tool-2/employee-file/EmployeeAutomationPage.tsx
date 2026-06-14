@@ -1490,6 +1490,8 @@ function EmployeeAutomationPageContent() {
           <EmployeeFileIndex
             employees={employees}
             roles={roles}
+            appointments={appointments}
+            companyName={globalProps.companyName}
             selectedEmployeeId={selectedEmployeeId}
             isCreatingNew={isCreatingNew}
             batchSelectedIds={batchSelectedIds}
