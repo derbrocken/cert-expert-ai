@@ -40,6 +40,15 @@ import { EmployeeFileStatusBadge } from "./EmployeeFileStatusBadge";
 const COMPACT_SELECT =
   "[&_button]:rounded-lg [&_button]:py-2 [&_button]:text-sm [&_button]:shadow-none";
 
+/** Kapitel der Eingabe-Maske (M1) — für die kapitelweise Reiter-Aufteilung (Mockup). */
+export type PersonRolleChapterId =
+  | "stammdaten"
+  | "beschaeftigung"
+  | "rolle-norm"
+  | "sdl"
+  | "bestellungen"
+  | "quali";
+
 export interface EmployeeFilePersonRolleEditTableProps {
   employee: Employee;
   roles: Role[];
@@ -47,6 +56,8 @@ export interface EmployeeFilePersonRolleEditTableProps {
   companyName: string;
   rows: RequirementRow[];
   onSave: (employee: Employee) => void;
+  /** Nur diese Kapitel rendern (default: alle). Für die 6-Reiter-Akte. */
+  chapters?: PersonRolleChapterId[];
 }
 
 function statusForRow(rows: RequirementRow[], id: string) {
@@ -55,7 +66,7 @@ function statusForRow(rows: RequirementRow[], id: string) {
 
 export const EmployeeFilePersonRolleEditTable: React.FC<
   EmployeeFilePersonRolleEditTableProps
-> = ({ employee, roles, appointments, companyName, rows, onSave }) => {
+> = ({ employee, roles, appointments, companyName, rows, onSave, chapters }) => {
   const { vorname, nachname } = splitFullName(employee.fullName);
   const currentRoleClasses = resolveRoleClasses(employee);
 
@@ -158,20 +169,28 @@ export const EmployeeFilePersonRolleEditTable: React.FC<
   // Norm → Geltungsbereich → Bestellungen → Qualifikationen/Fristen). Reine
   // Reorganisation: alle rowShell-Zeilen + Logik (patch/onSave/Doc-Sync)
   // unverändert, nur visuell in Kapitel-Cards mit Überschrift gegliedert.
-  const chapter = (title: string, children: React.ReactNode) => (
-    <section className="space-y-2">
-      <h4 className="text-[10px] font-semibold uppercase tracking-wide text-[#6b7280]">
-        {title}
-      </h4>
-      <ul className="divide-y divide-[#e5e7eb] rounded-lg border border-[#e5e7eb]">
-        {children}
-      </ul>
-    </section>
-  );
+  const chapter = (
+    id: PersonRolleChapterId,
+    title: string,
+    children: React.ReactNode,
+  ) => {
+    if (chapters && !chapters.includes(id)) return null;
+    return (
+      <section className="space-y-2">
+        <h4 className="text-[10px] font-semibold uppercase tracking-wide text-[#6b7280]">
+          {title}
+        </h4>
+        <ul className="divide-y divide-[#e5e7eb] rounded-lg border border-[#e5e7eb]">
+          {children}
+        </ul>
+      </section>
+    );
+  };
 
   return (
     <div className="space-y-5">
       {chapter(
+        "stammdaten",
         "Stammdaten",
         <>
           {rowShell(
@@ -258,6 +277,7 @@ export const EmployeeFilePersonRolleEditTable: React.FC<
       )}
 
       {chapter(
+        "beschaeftigung",
         "Beschäftigung",
         <>
           {rowShell(
@@ -326,6 +346,7 @@ export const EmployeeFilePersonRolleEditTable: React.FC<
       )}
 
       {chapter(
+        "rolle-norm",
         "Rolle & Norm-Klasse",
         <>
           {rowShell(
@@ -382,6 +403,7 @@ export const EmployeeFilePersonRolleEditTable: React.FC<
       )}
 
       {chapter(
+        "sdl",
         "Geltungsbereich (SDL)",
         <>
           {rowShell(
@@ -430,6 +452,7 @@ export const EmployeeFilePersonRolleEditTable: React.FC<
       )}
 
       {chapter(
+        "bestellungen",
         "Bestellungen",
         <>
           {rowShell(
@@ -449,6 +472,7 @@ export const EmployeeFilePersonRolleEditTable: React.FC<
       )}
 
       {chapter(
+        "quali",
         "Qualifikationen & Fristen",
         <>
           {rowShell(

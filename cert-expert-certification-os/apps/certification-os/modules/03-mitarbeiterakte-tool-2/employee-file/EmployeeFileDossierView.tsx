@@ -462,15 +462,21 @@ export const EmployeeFileDossierView: React.FC<EmployeeFileDossierViewProps> = (
   onSavePerson,
   onOpenGenerator,
 }) => {
-  // M2 — horizontale Kapitel-Reiter (Dossier-Cockpit). Übersicht = Cockpit;
-  // beim Bearbeiten auf das Eingabe-Kapitel springen, damit die Felder sichtbar
-  // sind. Reine Anzeige/IA, kein Engine-/Daten-Eingriff.
-  type AkteTab = "uebersicht" | "stammrolle" | "nachweise" | "schulungen";
-  const [activeTab, setActiveTab] = React.useState<AkteTab>("uebersicht");
+  // Mockup-Akte — 6 horizontale Sektions-Reiter (Dossier-Cockpit). „Offene
+  // Punkte" = Default/Cockpit; beim Bearbeiten auf „Stammdaten" springen, damit
+  // Eingabefelder sichtbar sind. Reine Anzeige/IA, kein Engine-/Daten-Eingriff.
+  type AkteTab =
+    | "offene-punkte"
+    | "stammdaten"
+    | "rollen-sdl"
+    | "nachweise"
+    | "unterweisungen"
+    | "generator";
+  const [activeTab, setActiveTab] = React.useState<AkteTab>("offene-punkte");
   React.useEffect(() => {
     if (evidenceEditMode) {
       setActiveTab((t) =>
-        t === "uebersicht" || t === "schulungen" ? "stammrolle" : t,
+        t === "offene-punkte" ? "stammdaten" : t,
       );
     }
   }, [evidenceEditMode]);
@@ -519,6 +525,24 @@ export const EmployeeFileDossierView: React.FC<EmployeeFileDossierViewProps> = (
           : { dot: "bg-gray-300", cls: "border-gray-200 bg-gray-50 text-gray-500", text: "kein Pflicht-Set" };
   const orgTitle = employee.roleType?.trim() || summary.roleName;
   const scopeLabels = summary.geltungsbereich.map((r) => r.label).join(", ");
+
+  // Phase 3 — „Was fehlt → nächster Schritt": Handlungs-Hinweis je offenem Punkt.
+  // DM-A (Default): extern = behördlich/Anbieter-Nachweis (§34a, Erste Hilfe,
+  // Brandschutz, Bundesauszug, Dienstausweis, Weiterbildung, Studium/Polizei) →
+  // anfordern/nachreichen; sonst intern erzeugbar (Standarddoks/Bestellungen).
+  // Reine Anzeige-Heuristik, KEINE Norm-Wirkung.
+  const resolveActionHint = (
+    label: string,
+  ): { kind: "intern" | "extern"; text: string } => {
+    const l = label.toLowerCase();
+    const extern =
+      /sachkunde|unterrichtung|34a|erste hilfe|ersthelfer|brandschutz|bundesauszug|bewacherregister|dienstausweis|weiterbildung|schulung|polizei|studium|meister|gssk|fachkraft/.test(
+        l,
+      );
+    return extern
+      ? { kind: "extern", text: "extern · anfordern/nachreichen" }
+      : { kind: "intern", text: "intern · erzeugen" };
+  };
 
   return (
     <div className="overflow-hidden rounded-xl border border-[#e5e7eb] bg-white shadow-sm">
@@ -578,16 +602,12 @@ export const EmployeeFileDossierView: React.FC<EmployeeFileDossierViewProps> = (
       >
         {(
           [
-            ["uebersicht", "Übersicht", false],
-            [
-              "stammrolle",
-              "Stammdaten & Rolle",
-              summary.missingPflichtangaben > 0,
-            ],
+            ["offene-punkte", "Offene Punkte", summary.openIssues.length > 0],
+            ["stammdaten", "Stammdaten", summary.missingPflichtangaben > 0],
+            ["rollen-sdl", "Rollen & SDL", false],
             ["nachweise", "Nachweise", summary.missingNachweise > 0],
-            ...(summary.schulungsSoll.length > 0
-              ? [["schulungen", "Schulungen", false] as const]
-              : []),
+            ["unterweisungen", "Unterweisungen", false],
+            ["generator", "Generator", false],
           ] as ReadonlyArray<readonly [AkteTab, string, boolean]>
         ).map(([id, label, dot]) => {
           const active = activeTab === id;
@@ -615,8 +635,8 @@ export const EmployeeFileDossierView: React.FC<EmployeeFileDossierViewProps> = (
         })}
       </nav>
 
-      {/* ÜBERSICHT — Cockpit: Pflicht-Status, Pflicht-Set, offene Punkte, Generator */}
-      {activeTab === "uebersicht" ? (
+      {/* OFFENE PUNKTE — Cockpit: Status, „was fehlt → nächster Schritt", Pflicht-Set */}
+      {activeTab === "offene-punkte" ? (
         <div className="grid gap-0 divide-y divide-[#e5e7eb]">
           <EmployeeFilePflichtStatusPanel
             pflichtSet={summary.pflichtSet}
@@ -670,28 +690,50 @@ export const EmployeeFileDossierView: React.FC<EmployeeFileDossierViewProps> = (
           <section className="bg-[#fafbfc] p-5">
             <SectionHeader
               icon={<AlertCircle className="h-4 w-4 text-amber-600" />}
-              title="Offene Punkte / Prüfbedarf"
-              subtitle="Konsolidiert — fehlende Angaben, Nachweise, Unterweisungen, scope-abhängige Prüfung"
+              title="Was fehlt — nächster Schritt"
+              subtitle="Konsolidiert je offenem Punkt: intern erzeugen vs. extern anfordern/nachreichen (Heuristik, EC-10 — kein Freigabestatus)"
             />
             {summary.openIssues.length === 0 ? (
-              <p className="text-sm text-[#6b7280]">
-                Keine offenen Punkte aus den erfassten Stammdaten abgeleitet.
+              <p className="flex items-center gap-2 text-sm text-green-700">
+                <span className="h-2 w-2 rounded-full bg-green-500" aria-hidden />
+                Keine offenen Punkte aus den erfassten Angaben abgeleitet.
               </p>
             ) : (
-              <ul className="max-h-56 space-y-1.5 overflow-auto">
-                {summary.openIssues.map((issue) => (
-                  <li
-                    key={issue.id}
-                    className="flex items-start justify-between gap-2 rounded-md border border-[#e5e7eb] bg-white px-2.5 py-2"
-                  >
-                    <span className="text-xs text-[#111827]">
-                      {issue.label}
-                    </span>
-                    <EmployeeFileStatusBadge status={issue.status} />
-                  </li>
-                ))}
+              <ul className="space-y-1.5">
+                {summary.openIssues.map((issue) => {
+                  const action = resolveActionHint(issue.label);
+                  return (
+                    <li
+                      key={issue.id}
+                      className="flex items-center justify-between gap-3 rounded-md border border-[#e5e7eb] bg-white px-2.5 py-2"
+                    >
+                      <span className="flex min-w-0 items-center gap-2">
+                        <span className="text-xs text-[#111827]">
+                          {issue.label}
+                        </span>
+                        <EmployeeFileStatusBadge status={issue.status} />
+                      </span>
+                      <span
+                        className={
+                          action.kind === "intern"
+                            ? "shrink-0 rounded border border-[rgba(227,6,19,0.3)] bg-[rgba(227,6,19,0.06)] px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-[#b80510]"
+                            : "shrink-0 rounded border border-[#e5e7eb] bg-[#f9fafb] px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-[#6b7280]"
+                        }
+                      >
+                        {action.text}
+                      </span>
+                    </li>
+                  );
+                })}
               </ul>
             )}
+            {compliance.counts.erfuellt > 0 ? (
+              <p className="mt-3 flex items-center gap-2 text-xs text-green-700">
+                <span className="h-2 w-2 rounded-full bg-green-500" aria-hidden />
+                {compliance.counts.erfuellt} Pflichtposten erfüllt (rechnerisch,
+                ungeprüft)
+              </p>
+            ) : null}
           </section>
 
           <section className="border-t border-[#e5e7eb] bg-white px-5 py-3">
@@ -721,8 +763,8 @@ export const EmployeeFileDossierView: React.FC<EmployeeFileDossierViewProps> = (
         </div>
       ) : null}
 
-      {/* STAMMDATEN & ROLLE — Eingabe-Kapitel (Person & Rolle, Bestellungen, SDL) */}
-      {activeTab === "stammrolle" ? (
+      {/* STAMMDATEN — Person & Beschäftigung (Eingabe-Kapitel) */}
+      {activeTab === "stammdaten" ? (
         <section
           className={
             evidenceEditMode
@@ -732,30 +774,58 @@ export const EmployeeFileDossierView: React.FC<EmployeeFileDossierViewProps> = (
         >
           <SectionHeader
             icon={<User className="h-4 w-4 text-[#e30613]" />}
-            title="Stammdaten & Rolle"
+            title="Stammdaten"
             subtitle={
               evidenceEditMode
-                ? "Bearbeiten — Person, Rolle/Norm-Klasse, Bestellungen, Geltungsbereich"
-                : "Person, Rolle/Norm-Klasse, Bestellungen, Geltungsbereich"
+                ? "Bearbeiten — Person & Beschäftigung"
+                : "Person & Beschäftigung — oben „Bearbeiten“ zum Ändern"
             }
           />
-
-          <div className="space-y-6">
-            <div>
-              <SubSectionHeader
-                icon={<User className="h-3.5 w-3.5 text-[#e30613]" />}
-                title="Person & Rolle"
-                subtitle={
-                  evidenceEditMode
-                    ? "Bearbeiten: Grundrolle, Bestellungen, Namen, IDs"
-                    : "Pflichtangaben je Person — zum Ändern oben „Bearbeiten“"
-                }
-                level="bedingung"
+          {onSavePerson ? (
+            <div
+              className={evidenceEditMode ? "" : "pointer-events-none select-none"}
+              aria-disabled={!evidenceEditMode}
+            >
+              <EmployeeFilePersonRolleEditTable
+                employee={employee}
+                roles={roles}
+                appointments={appointments}
+                companyName={companyName}
+                rows={summary.personUndRollePflichtangaben}
+                onSave={onSavePerson}
+                chapters={["stammdaten", "beschaeftigung"]}
               />
-              {/* S1a — Person & Rolle nur im Bearbeiten-Modus editierbar (sonst
-                  read-only Anzeige) → Name/IDs können nicht versehentlich
-                  überschrieben/geleert werden. */}
-              {onSavePerson && evidenceEditMode ? (
+            </div>
+          ) : (
+            <RequirementTable rows={summary.personUndRollePflichtangaben} />
+          )}
+        </section>
+      ) : null}
+
+      {/* ROLLEN & SDL — Norm-Klasse, Geltungsbereich, Qualifikation, Bestellungen */}
+      {activeTab === "rollen-sdl" ? (
+        <section
+          className={
+            evidenceEditMode
+              ? "bg-[rgba(227,6,19,0.03)] p-5 ring-2 ring-inset ring-[rgba(227,6,19,0.15)]"
+              : "p-5"
+          }
+        >
+          <SectionHeader
+            icon={<ListChecks className="h-4 w-4 text-[#e30613]" />}
+            title="Rollen & SDL"
+            subtitle={
+              evidenceEditMode
+                ? "Bearbeiten — Norm-Klasse, Geltungsbereich, Qualifikation, Bestellungen"
+                : "Norm-Klasse, Geltungsbereich (SDL), Qualifikation, Bestellungen"
+            }
+          />
+          <div className="space-y-6">
+            {onSavePerson ? (
+              <div
+                className={evidenceEditMode ? "" : "pointer-events-none select-none"}
+                aria-disabled={!evidenceEditMode}
+              >
                 <EmployeeFilePersonRolleEditTable
                   employee={employee}
                   roles={roles}
@@ -763,11 +833,13 @@ export const EmployeeFileDossierView: React.FC<EmployeeFileDossierViewProps> = (
                   companyName={companyName}
                   rows={summary.personUndRollePflichtangaben}
                   onSave={onSavePerson}
+                  chapters={["rolle-norm", "sdl", "quali"]}
                 />
-              ) : (
-                <RequirementTable rows={summary.personUndRollePflichtangaben} />
-              )}
-              <p className="mb-2 mt-4 text-[10px] font-semibold uppercase tracking-wide text-[#9ca3af]">
+              </div>
+            ) : null}
+
+            <div className="border-t border-[#e5e7eb] pt-6">
+              <p className="mb-2 text-[10px] font-semibold uppercase tracking-wide text-[#9ca3af]">
                 Grundrollen-Taxonomie
               </p>
               <div className="mb-3 flex flex-wrap gap-1.5">
@@ -820,7 +892,6 @@ export const EmployeeFileDossierView: React.FC<EmployeeFileDossierViewProps> = (
                 onOpenGenerator={onOpenGenerator}
               />
             </div>
-            {/* Geltungsbereich/Einsatzkontext → rechte Sidebar (kompakte Chips). */}
           </div>
         </section>
       ) : null}
@@ -839,45 +910,48 @@ export const EmployeeFileDossierView: React.FC<EmployeeFileDossierViewProps> = (
             title="Nachweise"
             subtitle={
               evidenceEditMode
-                ? "Nachweise hochladen — Pflichtnachweise & Unterweisungen"
-                : "Pflichtnachweise & Unterweisungen — je Nachweis prüfbar (geprüft-Klick)"
+                ? "Pflichtnachweise hochladen — Platzhalter wenn leer"
+                : "Dokumente / Nachweisgruppen — je Nachweis prüfbar (geprüft-Klick)"
             }
           />
+          <ul className="space-y-2">
+            {summary.pflichtnachweise.map((row) => (
+              <EmployeeFileEvidenceRow
+                key={row.id}
+                row={row}
+                storedFile={evidenceFiles[row.id]}
+                editMode={evidenceEditMode}
+                signatureRequired={PFLICHTNACHWEIS_SIGNATURE[row.id]}
+                onUpload={(file) => onEvidenceUpload?.(row.id, file)}
+                onRemove={() => onEvidenceRemove?.(row.id)}
+                checked={isChecked(row.id)}
+                onToggleChecked={
+                  onToggleEvidenceChecked
+                    ? () => onToggleEvidenceChecked(row.id)
+                    : undefined
+                }
+              />
+            ))}
+          </ul>
+        </section>
+      ) : null}
 
+      {/* UNTERWEISUNGEN — Schulung/Unterweisung + Schulungen (Soll/Ist + Plan) */}
+      {activeTab === "unterweisungen" ? (
+        <section
+          className={
+            evidenceEditMode
+              ? "bg-[rgba(227,6,19,0.03)] p-5 ring-2 ring-inset ring-[rgba(227,6,19,0.15)]"
+              : "p-5"
+          }
+        >
+          <SectionHeader
+            icon={<GraduationCap className="h-4 w-4 text-[#e30613]" />}
+            title="Unterweisungen & Schulungen"
+            subtitle="Unterweisungen/Schulungsnachweise + Soll/Ist-Schulungen — fließt in den Audit-Export. EC-10: rechnerisch, kein Freigabestatus."
+          />
           <div className="space-y-6">
             <div>
-              <SubSectionHeader
-                icon={<FileCheck className="h-3.5 w-3.5 text-[#e30613]" />}
-                title="Pflichtnachweise"
-                subtitle={
-                  evidenceEditMode
-                    ? "An jeder Position PDF hochladen — Platzhalter wenn leer"
-                    : "Dokumente / Nachweisgruppen — z. B. Arbeitsvertrag, Beschäftigungsnachweis"
-                }
-                level="nachweis"
-              />
-              <ul className="space-y-2">
-                {summary.pflichtnachweise.map((row) => (
-                  <EmployeeFileEvidenceRow
-                    key={row.id}
-                    row={row}
-                    storedFile={evidenceFiles[row.id]}
-                    editMode={evidenceEditMode}
-                    signatureRequired={PFLICHTNACHWEIS_SIGNATURE[row.id]}
-                    onUpload={(file) => onEvidenceUpload?.(row.id, file)}
-                    onRemove={() => onEvidenceRemove?.(row.id)}
-                    checked={isChecked(row.id)}
-                    onToggleChecked={
-                      onToggleEvidenceChecked
-                        ? () => onToggleEvidenceChecked(row.id)
-                        : undefined
-                    }
-                  />
-                ))}
-              </ul>
-            </div>
-
-            <div className="border-t border-[#e5e7eb] pt-6">
               <SubSectionHeader
                 icon={<GraduationCap className="h-3.5 w-3.5 text-[#e30613]" />}
                 title="Schulung & Unterweisung"
@@ -897,9 +971,7 @@ export const EmployeeFileDossierView: React.FC<EmployeeFileDossierViewProps> = (
                       row={row}
                       storedFile={evidenceFiles[evidenceId]}
                       editMode={evidenceEditMode}
-                      signatureRequired={
-                        SCHULUNG_UNTERWEISUNG_SIGNATURE[row.id]
-                      }
+                      signatureRequired={SCHULUNG_UNTERWEISUNG_SIGNATURE[row.id]}
                       onUpload={(file) => onEvidenceUpload?.(evidenceId, file)}
                       onRemove={() => onEvidenceRemove?.(evidenceId)}
                       checked={isChecked(evidenceId)}
@@ -913,36 +985,90 @@ export const EmployeeFileDossierView: React.FC<EmployeeFileDossierViewProps> = (
                 })}
               </ul>
             </div>
+
+            {summary.schulungsSoll.length > 0 ? (
+              <div className="border-t border-[#e5e7eb] pt-6">
+                <SubSectionHeader
+                  icon={<GraduationCap className="h-3.5 w-3.5 text-[#e30613]" />}
+                  title="Schulungen (Soll/Ist · fürs Audit)"
+                  subtitle="Jahresweiterbildung, modulare DIN-1-Schulungen und einmalige SDL-Schulungen — Soll/Ist + Termin-Planung."
+                  level="anforderung"
+                />
+                <div className="space-y-6">
+                  <EmployeeFileTrainingTargets
+                    targets={summary.schulungsSoll}
+                    employee={employee}
+                    onSave={onSavePerson}
+                  />
+                  <EmployeeFileTrainingPlan
+                    targets={summary.schulungsSoll}
+                    employee={employee}
+                    evidenceFiles={evidenceFiles}
+                    onSave={onSavePerson}
+                    onEvidenceUpload={onEvidenceUpload}
+                    onEvidenceRemove={onEvidenceRemove}
+                  />
+                </div>
+              </div>
+            ) : null}
           </div>
         </section>
       ) : null}
 
-      {/* SCHULUNGEN — Soll/Ist + Termin-Planung (Jahresweiterbildung, Module, SDL) */}
-      {activeTab === "schulungen" && summary.schulungsSoll.length > 0 ? (
+      {/* GENERATOR — Doc-Auswahl/ZIP bleibt der bestehende Generator-Tab (EC-09). */}
+      {activeTab === "generator" ? (
         <section className="p-5">
           <SectionHeader
-            icon={<GraduationCap className="h-4 w-4 text-[#e30613]" />}
-            title="Schulungen"
-            subtitle="Jahresweiterbildung, modulare DIN-1-Schulungen und einmalige SDL-Schulungen — Soll/Ist + Termin-Planung. Getrennt von Standarddokumenten/Unterweisungen (Nachweise)."
-            level="anforderung"
+            icon={<BookOpen className="h-4 w-4 text-[#e30613]" />}
+            title="Generator"
+            subtitle="Dokumentenauswahl & ZIP-Erzeugung (getrennter Schritt, EC-09). „erzeugt = Entwurf, kein Freigabe-Nachweis“."
           />
-          <div className="space-y-6">
-            <EmployeeFileTrainingTargets
-              targets={summary.schulungsSoll}
-              employee={employee}
-              onSave={onSavePerson}
-            />
-            <EmployeeFileTrainingPlan
-              targets={summary.schulungsSoll}
-              employee={employee}
-              evidenceFiles={evidenceFiles}
-              onSave={onSavePerson}
-              onEvidenceUpload={onEvidenceUpload}
-              onEvidenceRemove={onEvidenceRemove}
-            />
-          </div>
+          <p className="text-sm text-[#6b7280]">
+            <span className="font-medium text-[#374151]">
+              {docCount} Dokument(e)
+            </span>{" "}
+            vorgemerkt.
+          </p>
+          {onOpenGenerator ? (
+            <button
+              type="button"
+              onClick={onOpenGenerator}
+              className="mt-3 inline-flex items-center gap-1.5 rounded-lg border border-[#e30613] bg-[#e30613] px-3 py-2 text-xs font-semibold text-white hover:brightness-105"
+            >
+              <FilePlus2 className="h-3.5 w-3.5" />
+              Dokumente erzeugen
+            </button>
+          ) : null}
         </section>
       ) : null}
+
+      {/* Aktionen-Footer (Mockup): Nachweis hochladen + Dokumente erzeugen */}
+      <section className="flex flex-wrap items-center gap-2 border-t border-[#e5e7eb] bg-[#fafbfc] px-5 py-3">
+        <button
+          type="button"
+          onClick={() => {
+            setActiveTab("nachweise");
+            if (!evidenceEditMode) onToggleEvidenceEdit?.();
+          }}
+          className="inline-flex items-center gap-1.5 rounded-lg border border-[#e5e7eb] bg-white px-3 py-2 text-xs font-semibold text-[#374151] hover:border-[rgba(227,6,19,0.35)] hover:text-[#e30613]"
+        >
+          <Upload className="h-3.5 w-3.5" />
+          Nachweis hochladen
+        </button>
+        {onOpenGenerator ? (
+          <button
+            type="button"
+            onClick={onOpenGenerator}
+            className="inline-flex items-center gap-1.5 rounded-lg border border-[#e30613] bg-[#e30613] px-3 py-2 text-xs font-semibold text-white hover:brightness-105"
+          >
+            <FilePlus2 className="h-3.5 w-3.5" />
+            Dokumente erzeugen
+          </button>
+        ) : null}
+        <span className="ml-auto text-[10px] text-[#9ca3af]">
+          erzeugt = Entwurf, kein Freigabe-Nachweis
+        </span>
+      </section>
     </div>
   );
 };
