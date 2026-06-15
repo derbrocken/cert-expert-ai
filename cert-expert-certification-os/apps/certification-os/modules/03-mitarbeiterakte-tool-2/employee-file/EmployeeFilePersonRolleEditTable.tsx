@@ -66,6 +66,35 @@ function statusForRow(rows: RequirementRow[], id: string) {
   return rows.find((r) => r.id === id)?.status ?? "offen";
 }
 
+/**
+ * M3 — Pflichtfelder der Akte (Zod-Pflicht, AKTE_MASKE_KONZEPT §3.6). Eine
+ * leere Pflichtangabe ist eine ○-Pflicht-Lücke (rot, `fehlt`); ein leeres
+ * optionales Feld ist eine ◇-Lücke (grau, `offen`). Reine Anzeige-Ableitung.
+ */
+const PFLICHT_ROW_IDS = new Set([
+  "vorname",
+  "nachname",
+  "geburtsdatum",
+  "vertragsbeginn",
+  "dokumenten-vorlage",
+]);
+
+/**
+ * M3 — einheitliche Glyph-/Status-Ableitung je Zeile (●/○/◇/▲, §3.5/§3.6).
+ * Vereinheitlicht die zuvor uneinheitlichen `statusOverride`s: Wert gesetzt →
+ * `vorhanden` (●); Pflichtfeld leer → `fehlt` (○); optionales Feld leer →
+ * `offen` (◇). `fachlich prüfen` (▲) wird gezielt von den vorhandenen
+ * Hinweis-Triggern (gender=weiblich, drivesServiceVehicle, NON-DIN-SDL) gesetzt.
+ * EC-10: keine Erledigt-/Freigabe-Aussage — „vorhanden" = nur „Wert erfasst".
+ */
+function deriveRowStatus(
+  id: string,
+  hasValue: boolean,
+): RequirementRow["status"] {
+  if (hasValue) return "vorhanden";
+  return PFLICHT_ROW_IDS.has(id) ? "fehlt" : "offen";
+}
+
 export const EmployeeFilePersonRolleEditTable: React.FC<
   EmployeeFilePersonRolleEditTableProps
 > = ({ employee, roles, appointments, companyName, rows, onSave, chapters }) => {
@@ -145,27 +174,77 @@ export const EmployeeFilePersonRolleEditTable: React.FC<
     });
   };
 
+  // M3 — einheitliche Wert-Präsenz je Zeile (Quelle für ●/○/◇). Pflicht-leer
+  // → ○ (fehlt), optional-leer → ◇ (offen), gesetzt → ● (vorhanden). Reine
+  // Anzeige-Ableitung aus dem Modell (kein Engine-/Datenmodell-Eingriff).
+  const ROW_VALUE_PRESENT: Record<string, boolean> = {
+    vorname: Boolean(vorname.trim()),
+    nachname: Boolean(nachname.trim()),
+    geburtsdatum: Boolean(employee.birthday?.trim()),
+    geschlecht: Boolean(employee.gender),
+    "bewacher-id": Boolean(employee.guardIDNumber?.trim()),
+    "dienst-id": Boolean(employee.employeeIDNumber?.trim()),
+    vertragsbeginn: Boolean(employee.startDate?.trim()),
+    beschaeftigungsart: Boolean(employee.employmentType?.trim()),
+    "norm-klasse": currentRoleClasses.length > 0,
+    "org-titel": Boolean(employee.roleType?.trim()),
+    "dokumenten-vorlage": Boolean(employee.roleId?.trim()),
+    "set-kategorie": Boolean(employee.setKategorie),
+    "sdl-scopes": (employee.sdlScopes ?? []).length > 0,
+    dienstfahrzeug: employee.drivesServiceVehicle !== undefined,
+    bestellungen: (employee.appointmentIds ?? []).length > 0,
+    qualifikation: currentQualificationIds.length > 0,
+    "erste-hilfe-frist": Boolean(employee.ersteHilfeGueltigBis?.trim()),
+    "brandschutz-frist": Boolean(employee.brandschutzGueltigBis?.trim()),
+    "ist-ue-verweis": employee.weiterbildungIstUE !== undefined,
+  };
+
+  // M3 — ▲-„fachlich prüfen"-Zeilen aus den BESTEHENDEN Hinweis-Triggern
+  // (keine neuen Trigger erfunden): gender=weiblich (CL-77), Dienstfahrzeug=ja
+  // (CL-73), NON-DIN-SDL (CL-72). EC-10: ▲ ist KEINE Erledigt-/Freigabe-Aussage.
+  const sdlScopes = employee.sdlScopes ?? [];
+  const ROW_PRUEFEN: Record<string, boolean> = {
+    geschlecht: employee.gender === "weiblich",
+    dienstfahrzeug: employee.drivesServiceVehicle === true,
+    "sdl-scopes": sdlScopes.includes("non-din"),
+  };
+
   const rowShell = (
     id: string,
     label: string,
     control: React.ReactNode,
     hint?: string,
     statusOverride?: RequirementRow["status"],
-  ) => (
-    <li
-      key={id}
-      className="flex flex-col gap-2 px-3 py-2.5 sm:flex-row sm:items-start sm:justify-between sm:gap-3"
-    >
-      <div className="min-w-0 sm:w-40 shrink-0">
-        <p className="text-sm text-[#111827]">{label}</p>
-        {hint ? (
-          <p className="mt-0.5 text-[10px] text-[#6b7280]">{hint}</p>
-        ) : null}
-      </div>
-      <div className="min-w-0 flex-1">{control}</div>
-      <EmployeeFileStatusBadge status={statusOverride ?? statusForRow(rows, id)} />
-    </li>
-  );
+  ) => {
+    // §3.5/§3.6 — Glyph-Status konsistent ableiten: expliziter Override gewinnt
+    // (z. B. engine-getriebene Frist-Zeilen); sonst ▲ bei Prüf-Trigger; sonst
+    // ●/○/◇ aus der Wert-Präsenz; Fallback = vorhandene RequirementRow.
+    let status: RequirementRow["status"];
+    if (statusOverride) {
+      status = statusOverride;
+    } else if (ROW_PRUEFEN[id]) {
+      status = "fachlich prüfen";
+    } else if (id in ROW_VALUE_PRESENT) {
+      status = deriveRowStatus(id, ROW_VALUE_PRESENT[id]);
+    } else {
+      status = statusForRow(rows, id);
+    }
+    return (
+      <li
+        key={id}
+        className="flex flex-col gap-2 px-3 py-2.5 sm:flex-row sm:items-start sm:justify-between sm:gap-3"
+      >
+        <div className="min-w-0 sm:w-40 shrink-0">
+          <p className="text-sm text-[#111827]">{label}</p>
+          {hint ? (
+            <p className="mt-0.5 text-[10px] text-[#6b7280]">{hint}</p>
+          ) : null}
+        </div>
+        <div className="min-w-0 flex-1">{control}</div>
+        <EmployeeFileStatusBadge status={status} />
+      </li>
+    );
+  };
 
   // M1 — Felder in die 6 Kapitel gruppiert (Stammdaten → Beschäftigung → Rolle &
   // Norm → Geltungsbereich → Bestellungen → Qualifikationen/Fristen). Reine
@@ -251,7 +330,6 @@ export const EmployeeFilePersonRolleEditTable: React.FC<
               ) : null}
             </>,
             "Optionale PII — leer = keine Angabe",
-            employee.gender ? "vorhanden" : "offen",
           )}
           {rowShell(
             "bewacher-id",
@@ -388,7 +466,6 @@ export const EmployeeFilePersonRolleEditTable: React.FC<
               compact
             />,
             "DIN 77200: EK + FK frei kombinierbar; Verwaltung/Praktikant/Sub mit EK/FK kombinierbar (Doppelrolle) — maßgeblich fürs Pflicht-Set.",
-            currentRoleClasses.length > 0 ? "vorhanden" : "offen",
           )}
           {rowShell(
             "org-titel",
@@ -442,7 +519,6 @@ export const EmployeeFilePersonRolleEditTable: React.FC<
               className="bg-[#fafbfc] py-2 text-sm"
             />,
             "Wird im Generator-Tab gesetzt — hier nur Anzeige",
-            employee.setKategorie ? "vorhanden" : "offen",
           )}
         </>,
       )}
@@ -582,7 +658,6 @@ export const EmployeeFilePersonRolleEditTable: React.FC<
               className="bg-[#fafbfc] py-2 text-sm"
             />,
             "Soll/Ist wird bei den Schulungszielen gepflegt (engine-gekoppelt) — hier nur Anzeige",
-            employee.weiterbildungIstUE !== undefined ? "vorhanden" : "offen",
           )}
         </>,
       )}

@@ -17,21 +17,56 @@ const STATUS_STYLES: Record<WorkingItemStatus, string> = {
   offen: "bg-amber-50 text-amber-800 border-amber-200",
 };
 
+/**
+ * M3 — Herkunfts-/Status-Glyph-System (AKTE_MASKE_KONZEPT §3.5/§3.6). Reine
+ * Anzeige-Schicht: ein vorangestelltes Glyph leitet sich konsistent aus dem
+ * vorhandenen `WorkingItemStatus` ab (kein neues Datenmodell, keine
+ * Engine-Wirkung). EC-10: „offen"/„fachlich prüfen" sind KEINE Erledigt-/
+ * Freigabe-Aussage. Das Tally-Herkunfts-Glyph (◆) ist NICHT enthalten — die
+ * Feld-Herkunft ist nicht persistiert (siehe HANDOFF-Frage an den Planer).
+ *
+ * Legende:
+ *  ● vorhanden (Wert gesetzt / vorbereitet)
+ *  ○ Pflicht-Lücke (rot, fehlt)
+ *  ◇ optional & leer (grau, „offen")
+ *  ▲ fachlich prüfen (amber/violett)
+ */
+const STATUS_GLYPH: Record<WorkingItemStatus, string> = {
+  vorhanden: "●",
+  vorbereitet: "●",
+  beantragt: "●",
+  fehlt: "○",
+  offen: "◇",
+  "nicht erforderlich": "◇",
+  unvollständig: "▲",
+  "fachlich prüfen": "▲",
+  abgelaufen: "▲",
+  "nicht lesbar": "▲",
+};
+
 export function EmployeeFileStatusBadge({
   status,
   className,
+  showGlyph = true,
 }: {
   status: WorkingItemStatus;
   className?: string;
+  /** Glyph-Präfix (●/○/◇/▲) voranstellen — default an (M3). */
+  showGlyph?: boolean;
 }) {
   return (
     <span
       className={cn(
-        "inline-flex shrink-0 rounded-md border px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide",
+        "inline-flex shrink-0 items-center gap-1 rounded-md border px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide",
         STATUS_STYLES[status],
         className,
       )}
     >
+      {showGlyph ? (
+        <span aria-hidden className="text-[11px] leading-none">
+          {STATUS_GLYPH[status]}
+        </span>
+      ) : null}
       {status}
     </span>
   );
