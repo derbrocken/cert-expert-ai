@@ -5,6 +5,7 @@ import {
   User,
   FileCheck,
   AlertCircle,
+  Check,
   Pencil,
   GraduationCap,
   BookOpen,
@@ -78,6 +79,7 @@ function SectionHeader({
   level,
   onEdit,
   editLabel,
+  editActive,
 }: {
   icon: React.ReactNode;
   title: string;
@@ -85,6 +87,13 @@ function SectionHeader({
   level?: "bedingung" | "anforderung" | "nachweis";
   onEdit?: () => void;
   editLabel?: string;
+  /**
+   * UX-Fix (M4-Geist): ist der Bearbeiten-Einstieg aktuell „an" (z. B. der
+   * Nachweis-Upload-Modus läuft), wird der Button als Vermillion-Primäraktion
+   * gezeigt (wie „Speichern“ im Kapitel-Stift). EC-10: schaltet nur den
+   * Upload-/Bearbeiten-Modus, keine Prüf-/Freigabeaussage.
+   */
+  editActive?: boolean;
 }) {
   const levelLabel =
     level === "bedingung"
@@ -115,9 +124,13 @@ function SectionHeader({
         <button
           type="button"
           onClick={onEdit}
-          className="inline-flex shrink-0 items-center gap-1 rounded-md border border-[#e5e7eb] px-2 py-1 text-xs text-[#6b7280] hover:border-[rgba(227,6,19,0.35)] hover:text-[#e30613]"
+          className={
+            editActive
+              ? "inline-flex shrink-0 items-center gap-1 rounded-md border border-[#e30613] bg-[#e30613] px-2.5 py-1.5 text-xs font-semibold text-white hover:bg-[#b80510]"
+              : "inline-flex shrink-0 items-center gap-1 rounded-md border border-[#e30613] bg-[rgba(227,6,19,0.06)] px-2.5 py-1.5 text-xs font-semibold text-[#b80510] hover:bg-[rgba(227,6,19,0.1)]"
+          }
         >
-          <Pencil className="h-3 w-3" />
+          {editActive ? <Check className="h-3.5 w-3.5" /> : <Upload className="h-3.5 w-3.5" />}
           {editLabel ?? "Bearbeiten"}
         </button>
       ) : null}
@@ -182,6 +195,7 @@ function SubSectionHeader({
   level,
   onEdit,
   editLabel,
+  editActive,
 }: {
   icon: React.ReactNode;
   title: string;
@@ -189,6 +203,7 @@ function SubSectionHeader({
   level?: "bedingung" | "anforderung" | "nachweis";
   onEdit?: () => void;
   editLabel?: string;
+  editActive?: boolean;
 }) {
   const levelLabel =
     level === "bedingung"
@@ -219,9 +234,13 @@ function SubSectionHeader({
         <button
           type="button"
           onClick={onEdit}
-          className="inline-flex shrink-0 items-center gap-1 rounded-md border border-[#e5e7eb] px-2 py-1 text-xs text-[#6b7280] hover:border-[rgba(227,6,19,0.35)] hover:text-[#e30613]"
+          className={
+            editActive
+              ? "inline-flex shrink-0 items-center gap-1 rounded-md border border-[#e30613] bg-[#e30613] px-2.5 py-1.5 text-xs font-semibold text-white hover:bg-[#b80510]"
+              : "inline-flex shrink-0 items-center gap-1 rounded-md border border-[#e30613] bg-[rgba(227,6,19,0.06)] px-2.5 py-1.5 text-xs font-semibold text-[#b80510] hover:bg-[rgba(227,6,19,0.1)]"
+          }
         >
-          <Pencil className="h-3 w-3" />
+          {editActive ? <Check className="h-3.5 w-3.5" /> : <Upload className="h-3.5 w-3.5" />}
           {editLabel ?? "Bearbeiten"}
         </button>
       ) : null}
@@ -290,6 +309,7 @@ function BestellungenPanel({
   onSavePerson,
   evidenceFiles,
   evidenceEditMode,
+  onToggleEvidenceEdit,
   onEvidenceUpload,
   onEvidenceRemove,
   onOpenGenerator,
@@ -298,6 +318,7 @@ function BestellungenPanel({
   onSavePerson?: (employee: Employee) => void;
   evidenceFiles: EmployeeEvidenceMap;
   evidenceEditMode: boolean;
+  onToggleEvidenceEdit?: () => void;
   onEvidenceUpload?: (evidenceId: string, file: File) => void;
   onEvidenceRemove?: (evidenceId: string) => void;
   onOpenGenerator?: () => void;
@@ -334,6 +355,11 @@ function BestellungenPanel({
         title="Bestellungen (bestellt als …)"
         subtitle="Formale Ernennung (unterschriftspflichtig) — Ersthelfer / Brandschutzhelfer / SiBe. Bestellung ≠ Schulung."
         level="anforderung"
+        onEdit={onToggleEvidenceEdit}
+        editActive={evidenceEditMode}
+        editLabel={
+          evidenceEditMode ? "Fertig" : "Bestellungen hochladen / bearbeiten"
+        }
       />
       <div className="mb-3 flex flex-wrap gap-1.5">
         {BESTELLUNG_DEFS.map((def) => {
@@ -861,6 +887,7 @@ export const EmployeeFileDossierView: React.FC<EmployeeFileDossierViewProps> = (
                 onSavePerson={onSavePerson}
                 evidenceFiles={evidenceFiles}
                 evidenceEditMode={evidenceEditMode}
+                onToggleEvidenceEdit={onToggleEvidenceEdit}
                 onEvidenceUpload={onEvidenceUpload}
                 onEvidenceRemove={onEvidenceRemove}
                 onOpenGenerator={onOpenGenerator}
@@ -887,7 +914,18 @@ export const EmployeeFileDossierView: React.FC<EmployeeFileDossierViewProps> = (
                 ? "Pflichtnachweise hochladen — Platzhalter wenn leer"
                 : "Dokumente / Nachweisgruppen — je Nachweis prüfbar (geprüft-Klick)"
             }
+            onEdit={onToggleEvidenceEdit}
+            editActive={evidenceEditMode}
+            editLabel={
+              evidenceEditMode ? "Fertig" : "Nachweise hochladen / bearbeiten"
+            }
           />
+          {!evidenceEditMode ? (
+            <p className="mb-3 -mt-1 text-[11px] text-[#9ca3af]">
+              Zum Hochladen oben auf „Nachweise hochladen / bearbeiten“. EC-10:
+              eingehende Nachweise gelten als ungeprüft.
+            </p>
+          ) : null}
           <ul className="space-y-2">
             {summary.pflichtnachweise.map((row) => (
               <EmployeeFileEvidenceRow
@@ -923,6 +961,11 @@ export const EmployeeFileDossierView: React.FC<EmployeeFileDossierViewProps> = (
             icon={<GraduationCap className="h-4 w-4 text-[#e30613]" />}
             title="Unterweisungen & Schulungen"
             subtitle="Unterweisungen/Schulungsnachweise + Soll/Ist-Schulungen — fließt in den Audit-Export. EC-10: rechnerisch, kein Freigabestatus."
+            onEdit={onToggleEvidenceEdit}
+            editActive={evidenceEditMode}
+            editLabel={
+              evidenceEditMode ? "Fertig" : "Nachweise hochladen / bearbeiten"
+            }
           />
           <div className="space-y-6">
             <div>
