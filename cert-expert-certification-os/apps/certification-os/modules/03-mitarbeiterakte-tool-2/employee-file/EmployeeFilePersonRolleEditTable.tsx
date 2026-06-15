@@ -15,11 +15,13 @@ import {
 import {
   BESCHAEFTIGUNGSART_OPTIONS,
   DIENSTFAHRZEUG_OPTIONS,
+  GESCHLECHT_OPTIONS,
   ORG_TITLE_OPTIONS,
   ROLE_CLASS_LABEL_MULTI,
   ROLLE_TYPE_OPTIONS,
   SDL_SCOPE_CATALOG,
 } from "./employee-stammdaten-options";
+import { setKategorieLabel } from "./vorlagen-set-catalog";
 import { resolveRoleClasses, type RoleClass } from "./requirement-engine";
 import { RoleClassSelector } from "./RoleClassSelector";
 import {
@@ -224,6 +226,34 @@ export const EmployeeFilePersonRolleEditTable: React.FC<
             />,
           )}
           {rowShell(
+            "geschlecht",
+            "Geschlecht",
+            <>
+              <div className={COMPACT_SELECT}>
+                <Select
+                  options={[...GESCHLECHT_OPTIONS]}
+                  value={employee.gender || ""}
+                  onChange={(v) =>
+                    patch({
+                      gender: v
+                        ? (v as NonNullable<Employee["gender"]>)
+                        : undefined,
+                    })
+                  }
+                  placeholder="keine Angabe"
+                />
+              </div>
+              {employee.gender === "weiblich" ? (
+                <p className="mt-1.5 rounded-md border border-amber-200 bg-amber-50 px-2 py-1 text-[10px] text-amber-900">
+                  Mutterschutz-relevant — fachlich prüfen (CL-77, MuSchG; kein
+                  Auto-Status)
+                </p>
+              ) : null}
+            </>,
+            "Optionale PII — leer = keine Angabe",
+            employee.gender ? "vorhanden" : "offen",
+          )}
+          {rowShell(
             "bewacher-id",
             "Bewacher-ID",
             <Input
@@ -399,6 +429,21 @@ export const EmployeeFilePersonRolleEditTable: React.FC<
             </div>,
             "Steuert die Generator-Dokumentenpalette",
           )}
+          {rowShell(
+            "set-kategorie",
+            "Set-Kategorie (Vorlagen)",
+            <Input
+              value={
+                employee.setKategorie
+                  ? setKategorieLabel(employee.setKategorie)
+                  : "— nicht gesetzt"
+              }
+              disabled
+              className="bg-[#fafbfc] py-2 text-sm"
+            />,
+            "Wird im Generator-Tab gesetzt — hier nur Anzeige",
+            employee.setKategorie ? "vorhanden" : "offen",
+          )}
         </>,
       )}
 
@@ -523,6 +568,21 @@ export const EmployeeFilePersonRolleEditTable: React.FC<
               className="text-sm"
             />,
             "3-Jahres-Frist (CL-23)",
+          )}
+          {rowShell(
+            "ist-ue-verweis",
+            "Ist-UE (Weiterbildung)",
+            <Input
+              value={
+                employee.weiterbildungIstUE === undefined
+                  ? "— bei den Schulungszielen pflegen"
+                  : `${employee.weiterbildungIstUE} h erfasst`
+              }
+              disabled
+              className="bg-[#fafbfc] py-2 text-sm"
+            />,
+            "Soll/Ist wird bei den Schulungszielen gepflegt (engine-gekoppelt) — hier nur Anzeige",
+            employee.weiterbildungIstUE !== undefined ? "vorhanden" : "offen",
           )}
         </>,
       )}
