@@ -6,6 +6,7 @@ import { EmployeeForm } from "@/components/employee";
 import { EmployeeFileWorkspaceLayout } from "./EmployeeFileWorkspaceLayout";
 import { EmployeeFileIndex } from "./EmployeeFileIndex";
 import { EmployeeFileDossierView } from "./EmployeeFileDossierView";
+import { EmployeeFileGuidedCreate } from "./EmployeeFileGuidedCreate";
 import { EmployeeFileOverview } from "./EmployeeFileOverview";
 import { EmployeeFileOnboardingPanel } from "./EmployeeFileOnboardingPanel";
 import { EmployeeFileOverviewIntro } from "./EmployeeFileOverviewIntro";
@@ -954,6 +955,21 @@ function EmployeeAutomationPageContent() {
         {templatesLoadError}
       </p>
     </div>
+  ) : focusEmployee && isCreatingNew ? (
+    // M4 / §3.3 — „Neue Person" = vertikaler geführter Fluss (auf S1b-Basis:
+    // gleicher Draft, gleicher gepufferter Speicher-Pfad, gleiche Persistenz-
+    // Knöpfe). Kein Auto-Speichern; „Person speichern" → handleCommitDraft.
+    <div className="mx-auto max-w-3xl space-y-4 p-4 sm:p-6">
+      <EmployeeFileGuidedCreate
+        employee={focusEmployee}
+        roles={roles}
+        appointments={appointments}
+        companyName={globalProps.companyName}
+        onSavePerson={handleSavePerson}
+        onCommit={handleCommitDraft}
+        onDiscard={handleBackToOverview}
+      />
+    </div>
   ) : focusEmployee ? (
     <>
       <nav
@@ -988,45 +1004,6 @@ function EmployeeAutomationPageContent() {
       </nav>
 
       <div className="mx-auto max-w-3xl space-y-4 p-4 sm:p-6">
-        {/* S1b — Anlegen inline: Hinweis, solange der Entwurf noch nicht
-            (mit Namen) gespeichert ist. */}
-        {isCreatingNew ? (
-          <div className="rounded-lg border border-[rgba(227,6,19,0.25)] bg-[rgba(227,6,19,0.04)] px-4 py-3">
-            <div className="flex flex-wrap items-start justify-between gap-3">
-              <div className="min-w-0">
-                <p className="text-[0.65rem] font-semibold uppercase tracking-[0.14em] text-[#e30613]">
-                  Neue Person anlegen
-                </p>
-                <p className="mt-1 text-sm text-[#6b7280]">
-                  Name & Grundrolle ausfüllen, dann „Person speichern". Bis dahin
-                  wird nichts gespeichert.
-                </p>
-              </div>
-              <div className="flex shrink-0 items-center gap-2">
-                <button
-                  type="button"
-                  onClick={handleBackToOverview}
-                  className="rounded-lg border border-[#e5e7eb] px-3 py-2 text-xs font-semibold text-[#6b7280] hover:border-[rgba(227,6,19,0.35)] hover:text-[#e30613]"
-                >
-                  Verwerfen
-                </button>
-                <button
-                  type="button"
-                  onClick={handleCommitDraft}
-                  disabled={!focusEmployee.fullName.trim()}
-                  className="inline-flex items-center gap-1.5 rounded-lg border border-[#e30613] bg-[#e30613] px-3 py-2 text-xs font-semibold text-white hover:bg-[#b80510] disabled:cursor-not-allowed disabled:opacity-50"
-                  title={
-                    focusEmployee.fullName.trim()
-                      ? "Person speichern"
-                      : "Bitte zuerst einen Namen eintragen"
-                  }
-                >
-                  Person speichern
-                </button>
-              </div>
-            </div>
-          </div>
-        ) : null}
         {/* S1a — EINE Akte-Ansicht: kein „Bearbeiten/Übersicht"-Umschalter mehr.
             Standard = Ansehen (read-only); der Stift in der Akte schaltet
             akte-weit auf Bearbeiten. Read-only Vorschau/Export bleibt über die

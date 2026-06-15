@@ -37,7 +37,7 @@ import {
 import { EmployeeFileStatusBadge } from "./EmployeeFileStatusBadge";
 import { EmployeeFilePflichtStatusPanel } from "./EmployeeFilePflichtStatusPanel";
 import { EmployeeFileEvidenceRow } from "./EmployeeFileEvidenceRow";
-import { EmployeeFilePersonRolleEditTable } from "./EmployeeFilePersonRolleEditTable";
+import { EmployeeFileChapterEdit } from "./EmployeeFileChapterEdit";
 import { EmployeeFileTrainingTargets } from "./EmployeeFileTrainingTargets";
 import { EmployeeFileTrainingPlan } from "./EmployeeFileTrainingPlan";
 import { buildPlanDeadlineRows, isEvidenceChecked } from "./training-plan";
@@ -473,13 +473,11 @@ export const EmployeeFileDossierView: React.FC<EmployeeFileDossierViewProps> = (
     | "unterweisungen"
     | "generator";
   const [activeTab, setActiveTab] = React.useState<AkteTab>("offene-punkte");
-  React.useEffect(() => {
-    if (evidenceEditMode) {
-      setActiveTab((t) =>
-        t === "offene-punkte" ? "stammdaten" : t,
-      );
-    }
-  }, [evidenceEditMode]);
+  // M4 / §3.4 — Stammdaten/Rollen werden je Kapitel über einen eigenen Stift
+  // bearbeitet (EmployeeFileChapterEdit), nicht mehr über den globalen Toggle.
+  // Der globale `evidenceEditMode` steuert nur noch die Upload-/Nachweis-Schicht
+  // (Bestellungen-Dokumente, Nachweise, Unterweisungen) — kein automatischer
+  // Kapitel-Sprung mehr nötig.
 
   const role = roles.find((r) => r.id === employee.roleId);
   const apiRoleName = role?.name ?? employee.roleId;
@@ -581,12 +579,12 @@ export const EmployeeFileDossierView: React.FC<EmployeeFileDossierViewProps> = (
                 }`}
                 title={
                   evidenceEditMode
-                    ? "Bearbeitung beenden (zurück zu Ansehen)"
-                    : "Akte bearbeiten — Stammdaten/Rollen/Bestellungen/Nachweise ändern"
+                    ? "Nachweis-Bearbeitung beenden (zurück zu Ansehen)"
+                    : "Nachweise & Dokumente bearbeiten — Bestellungen/Nachweise/Unterweisungen hochladen (Stammdaten/Rollen je Kapitel über den Stift)"
                 }
               >
                 <Pencil className="h-3.5 w-3.5" />
-                {evidenceEditMode ? "Fertig" : "Bearbeiten"}
+                {evidenceEditMode ? "Nachweise fertig" : "Nachweise bearbeiten"}
               </button>
             ) : null}
           </div>
@@ -765,37 +763,24 @@ export const EmployeeFileDossierView: React.FC<EmployeeFileDossierViewProps> = (
 
       {/* STAMMDATEN — Person & Beschäftigung (Eingabe-Kapitel) */}
       {activeTab === "stammdaten" ? (
-        <section
-          className={
-            evidenceEditMode
-              ? "bg-[rgba(227,6,19,0.03)] p-5 ring-2 ring-inset ring-[rgba(227,6,19,0.15)]"
-              : "p-5"
-          }
-        >
+        <section className="p-5">
           <SectionHeader
             icon={<User className="h-4 w-4 text-[#e30613]" />}
             title="Stammdaten"
-            subtitle={
-              evidenceEditMode
-                ? "Bearbeiten — Person & Beschäftigung"
-                : "Person & Beschäftigung — oben „Bearbeiten“ zum Ändern"
-            }
+            subtitle="Person & Beschäftigung — „Bearbeiten“ je Kapitel zum Ändern"
           />
+          {/* M4 / §3.4 — Stift je Kapitel: read-only bis „Bearbeiten“, dann
+              lokaler Draft + „Speichern“/„Abbrechen“ (kein Auto-Save). */}
           {onSavePerson ? (
-            <div
-              className={evidenceEditMode ? "" : "pointer-events-none select-none"}
-              aria-disabled={!evidenceEditMode}
-            >
-              <EmployeeFilePersonRolleEditTable
-                employee={employee}
-                roles={roles}
-                appointments={appointments}
-                companyName={companyName}
-                rows={summary.personUndRollePflichtangaben}
-                onSave={onSavePerson}
-                chapters={["stammdaten", "beschaeftigung"]}
-              />
-            </div>
+            <EmployeeFileChapterEdit
+              employee={employee}
+              roles={roles}
+              appointments={appointments}
+              companyName={companyName}
+              rows={summary.personUndRollePflichtangaben}
+              onSave={onSavePerson}
+              chapters={["stammdaten", "beschaeftigung"]}
+            />
           ) : (
             <RequirementTable rows={summary.personUndRollePflichtangaben} />
           )}
@@ -804,38 +789,27 @@ export const EmployeeFileDossierView: React.FC<EmployeeFileDossierViewProps> = (
 
       {/* ROLLEN & SDL — Norm-Klasse, Geltungsbereich, Qualifikation, Bestellungen */}
       {activeTab === "rollen-sdl" ? (
-        <section
-          className={
-            evidenceEditMode
-              ? "bg-[rgba(227,6,19,0.03)] p-5 ring-2 ring-inset ring-[rgba(227,6,19,0.15)]"
-              : "p-5"
-          }
-        >
+        <section className="p-5">
           <SectionHeader
             icon={<ListChecks className="h-4 w-4 text-[#e30613]" />}
             title="Rollen & SDL"
-            subtitle={
-              evidenceEditMode
-                ? "Bearbeiten — Norm-Klasse, Geltungsbereich, Qualifikation, Bestellungen"
-                : "Norm-Klasse, Geltungsbereich (SDL), Qualifikation, Bestellungen"
-            }
+            subtitle="Norm-Klasse, Geltungsbereich (SDL), Qualifikation, Bestellungen — „Bearbeiten“ je Kapitel zum Ändern"
           />
           <div className="space-y-6">
+            {/* M4 / §3.4 — Stift je Kapitel (Rolle & Norm, SDL, Qualifikation):
+                read-only bis „Bearbeiten“, dann lokaler Draft + Speichern/
+                Abbrechen (kein Auto-Save). Bestellungen-Panel unten behält
+                den Upload-bezogenen Edit-Modus (Nachweis-Schicht). */}
             {onSavePerson ? (
-              <div
-                className={evidenceEditMode ? "" : "pointer-events-none select-none"}
-                aria-disabled={!evidenceEditMode}
-              >
-                <EmployeeFilePersonRolleEditTable
-                  employee={employee}
-                  roles={roles}
-                  appointments={appointments}
-                  companyName={companyName}
-                  rows={summary.personUndRollePflichtangaben}
-                  onSave={onSavePerson}
-                  chapters={["rolle-norm", "sdl", "quali"]}
-                />
-              </div>
+              <EmployeeFileChapterEdit
+                employee={employee}
+                roles={roles}
+                appointments={appointments}
+                companyName={companyName}
+                rows={summary.personUndRollePflichtangaben}
+                onSave={onSavePerson}
+                chapters={["rolle-norm", "sdl", "quali"]}
+              />
             ) : null}
 
             <div className="border-t border-[#e5e7eb] pt-6">
