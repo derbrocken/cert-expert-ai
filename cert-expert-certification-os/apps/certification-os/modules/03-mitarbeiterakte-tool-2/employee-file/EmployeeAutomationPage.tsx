@@ -440,7 +440,11 @@ function EmployeeAutomationPageContent() {
           setSelectedEmployeeId(id);
           setEditingEmployee(employee);
           setIsCreatingNew(false);
-          setDossierTab("akte");
+          // G4 — Deep-Link aus dem Top-Level-Generator: `tab=generator` öffnet
+          // direkt den Generator-Tab der Akte (sonst Standard „akte").
+          setDossierTab(
+            searchParams.get("tab") === "generator" ? "generator" : "akte",
+          );
         }
       }
     }
@@ -470,7 +474,11 @@ function EmployeeAutomationPageContent() {
           setSelectedEmployeeId(id);
           setEditingEmployee(employee);
           setIsCreatingNew(false);
-          setDossierTab("akte");
+          // G4 — Deep-Link aus dem Top-Level-Generator: `tab=generator` öffnet
+          // direkt den Generator-Tab der Akte (sonst Standard „akte").
+          setDossierTab(
+            searchParams.get("tab") === "generator" ? "generator" : "akte",
+          );
         }
       }
     }
