@@ -435,9 +435,13 @@ export async function generateEmployeeDocs(
             );
             continue;
           }
-          // Datum = Durchführung von (plannedDate) bzw. globaler Default.
-          const schulungDate = sch.plannedDate
-            ? formatDocumentOutputDate(sch.plannedDate) || globalDate
+          // Dokumentdatum = LETZTER Tag des Durchführungszeitraums
+          // (`plannedBis`), falls gesetzt; sonst Durchführung von
+          // (`plannedDate`); sonst globaler Default (Mark 2026-06-15).
+          // EC-10: reines Durchführungs-/Dokumentdatum, keine Freigabe.
+          const effSchulungDate = sch.plannedBis || sch.plannedDate;
+          const schulungDate = effSchulungDate
+            ? formatDocumentOutputDate(effSchulungDate) || globalDate
             : globalDate;
           try {
             const templateBuffer = await fetchTemplateBufferByKey(objectKey);

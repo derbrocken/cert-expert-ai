@@ -143,9 +143,13 @@ export function derivePlanItemStatus(
   if (hasProof) {
     return isChecked ? "nachweis-vorhanden" : "vorhanden-ungeprueft";
   }
-  if (!item.plannedDate) return "ohne-datum";
+  // Mark 2026-06-15 — mehrtägige Schulung ist erst am LETZTEN Tag durchgeführt;
+  // maßgeblich für „überfällig" ist daher `plannedBis` (falls gesetzt), sonst
+  // `plannedDate`. EC-10: reiner Planungsstand, keine Freigabe/Norm-Wirkung.
+  const effectiveDate = item.plannedBis || item.plannedDate;
+  if (!effectiveDate) return "ohne-datum";
   const today = referenceDate ?? todayIso();
-  if (item.plannedDate < today) return "ueberfaellig";
+  if (effectiveDate < today) return "ueberfaellig";
   return "geplant";
 }
 
@@ -547,6 +551,13 @@ export interface AssignedSchulungDoc {
   logicalPath: string;
   /** Durchführung von (`plannedDate`, ISO) bzw. `undefined`. */
   plannedDate?: string;
+  /**
+   * Durchführung BIS (`plannedBis`, ISO) bzw. `undefined` — Ende des
+   * mehrtägigen Durchführungszeitraums. Das maßgebliche Dokumentdatum ist der
+   * LETZTE Tag (`plannedBis`), falls gesetzt; sonst `plannedDate` (Mark
+   * 2026-06-15). Nur Durchreichen, keine Norm-/Status-Wirkung (EC-10).
+   */
+  plannedBis?: string;
 }
 
 /**
@@ -574,6 +585,7 @@ export function resolveAssignedSchulungDocs(
       fileName: module.templateFileName,
       logicalPath,
       plannedDate: item.plannedDate,
+      plannedBis: item.plannedBis,
     });
   }
   return out;

@@ -31,6 +31,7 @@ import {
   extractUeFromText,
   schulungTemplateLogicalPath,
 } from "./training-catalog";
+import { formatIsoToInput } from "./utils/date";
 
 /**
  * Termin-Planung Schulungen (Queue C) — gap-getriebener Planungsbereich.
@@ -471,6 +472,18 @@ export const EmployeeFileTrainingPlan: React.FC<
                   {editable && hasProof && !item.plannedDate ? (
                     <span className="text-[10px] text-amber-700">
                       Nachweis vorhanden — Durchführungsdatum eintragen
+                    </span>
+                  ) : null}
+
+                  {/* Mark 2026-06-15 — Schulungsdauer als Zeitraum „von–bis"
+                      sichtbar machen + dezenter Hinweis, dass das Dokument-/
+                      Durchführungsdatum der LETZTE Tag ist. EC-10: reiner
+                      Hinweis, KEIN Status/keine Freigabe. */}
+                  {item.plannedDate ? (
+                    <span className="text-[10px] text-[#6b7280]">
+                      {item.plannedBis && item.plannedBis !== item.plannedDate
+                        ? `Schulungsdauer: ${formatIsoToInput(item.plannedDate)}–${formatIsoToInput(item.plannedBis)} · Dokumentdatum = letzter Tag (${formatIsoToInput(item.plannedBis)})`
+                        : `Schulungsdauer: ${formatIsoToInput(item.plannedDate)} · Dokumentdatum = ${formatIsoToInput(item.plannedDate)}`}
                     </span>
                   ) : null}
 

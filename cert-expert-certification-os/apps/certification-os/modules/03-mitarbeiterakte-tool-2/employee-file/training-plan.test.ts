@@ -573,3 +573,45 @@ test("Lane S: mehrere zugewiesene Module → mehrere Docs, ohne Datum bleibt pla
   assert.equal(docs[0]!.fileName.startsWith("09_"), true);
   assert.equal(docs[1]!.plannedDate, undefined);
 });
+
+// --- Mark 2026-06-15: mehrtägige Schulung „von–bis", Dokumentdatum = letzter Tag
+
+test("Lane S: plannedBis (letzter Tag) wird in den Doc-Kandidaten durchgereicht", () => {
+  const plan = [
+    planItem({
+      id: "tp-bis",
+      source: "katalog",
+      refId: "din1-modul-3",
+      plannedDate: "2026-07-10",
+      plannedBis: "2026-07-15",
+    }),
+  ];
+  const docs = resolveAssignedSchulungDocs(plan);
+  assert.equal(docs.length, 1);
+  assert.equal(docs[0]!.plannedDate, "2026-07-10");
+  assert.equal(docs[0]!.plannedBis, "2026-07-15");
+});
+
+test("Lane S: ohne plannedBis bleibt plannedBis undefined (kein erfundenes Datum)", () => {
+  const plan = [
+    planItem({
+      id: "tp-nobis",
+      source: "katalog",
+      refId: "din1-modul-3",
+      plannedDate: "2026-07-10",
+    }),
+  ];
+  const docs = resolveAssignedSchulungDocs(plan);
+  assert.equal(docs[0]!.plannedBis, undefined);
+});
+
+test("derivePlanItemStatus: plannedBis in der Zukunft → geplant (auch wenn plannedDate in der Vergangenheit)", () => {
+  // Schulung läuft 10.–20., heute = 15. → noch nicht durchgeführt (letzter Tag in Zukunft)
+  const item = planItem({ plannedDate: "2026-06-10", plannedBis: "2026-06-20" });
+  assert.equal(derivePlanItemStatus(item, false, "2026-06-15"), "geplant");
+});
+
+test("derivePlanItemStatus: plannedBis in der Vergangenheit → ueberfaellig", () => {
+  const item = planItem({ plannedDate: "2026-06-01", plannedBis: "2026-06-05" });
+  assert.equal(derivePlanItemStatus(item, false, "2026-06-15"), "ueberfaellig");
+});
