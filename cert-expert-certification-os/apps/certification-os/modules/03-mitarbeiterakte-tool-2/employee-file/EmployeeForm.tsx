@@ -397,23 +397,25 @@ export const EmployeeForm: React.FC<EmployeeFormProps> = ({
     });
   };
 
-  // Rollen-Dokument im vollen Katalog togglen. Generator-Kontrakt: Rollen-Doks
-  // werden NUR für die eine aktive Export-Rolle (`employee.roleId`) erzeugt
-  // (`generate-employee-docs.ts` löst über `roles.find(r => r.id === roleId)`).
-  // Ein Cross-Rollen-Mix der Rollen-Doks bräuchte einen Engine-Umbau → NICHT
-  // hier. Deshalb: wird ein Doc einer **anderen** Rolle aktiviert, wird diese
-  // Rolle zur aktiven Export-Rolle (die vorherige Rollen-Doc-Auswahl wird
-  // ersetzt). Innerhalb der aktiven Rolle ist die Einzelauswahl frei.
+  // Rollen-Dokument im vollen Katalog togglen. Cross-Rollen-Mix: Dokumente aus
+  // MEHREREN Rollen können gleichzeitig im selben Export gewählt sein (der
+  // Generator erzeugt je referenzierter Rolle deren gewählte Doks). Deshalb
+  // MISCHT ein Doc-Toggle einer anderen Rolle die Auswahl (fügt zu
+  // `selectedRoleDocIds` hinzu) statt die aktive Rolle zu WECHSELN. Die primäre
+  // Rolle (`roleId`) bleibt als erste gewählte Rolle gesetzt (Pflicht-/
+  // Vorlagen-Identität) und wird nur dann auf die getoggelte Rolle gesetzt,
+  // wenn noch gar keine primäre Rolle existiert.
   const toggleRoleDocInCatalog = (roleId: string, docId: string) => {
     if (lockedDocIds.has(docId)) return;
-    if (roleId === selectedRoleId) {
-      toggleRoleDoc(docId);
-      return;
+    // Mischen: nur dieses eine Doc umschalten — Auswahl anderer Rollen bleibt.
+    toggleRoleDoc(docId);
+    // Primäre Rolle setzen, falls noch keine gewählt ist. Beim Aktivieren eines
+    // Docs aus einer Rolle ohne bereits gesetzte primäre Rolle wird diese Rolle
+    // primär; ein bestehender `roleId` wird NICHT überschrieben.
+    if (!selectedRoleId && !selectedRoleDocIds.has(docId)) {
+      setValue("roleId", roleId, { shouldValidate: true });
+      initialRoleIdRef.current = roleId; // Rollen-Effekt nicht „alles wählen"
     }
-    // Andere Rolle → diese Rolle aktivieren, nur dieses Doc vorwählen.
-    setValue("roleId", roleId, { shouldValidate: true });
-    initialRoleIdRef.current = roleId; // Rollen-Effekt nicht erneut „alles wählen"
-    setSelectedRoleDocIds(new Set([docId]));
   };
 
   // Bestellungs-/Overlay-Dokument im vollen Katalog togglen. Anders als die
@@ -755,14 +757,18 @@ export const EmployeeForm: React.FC<EmployeeFormProps> = ({
                     <div className="space-y-2">
                       {filteredRoles.map((role) => {
                         const folderKey = `role:${role.id}`;
-                        const isActiveRole = role.id === selectedRoleId;
+                        const isPrimaryRole = role.id === selectedRoleId;
+                        const chosen = role.documents.filter((d) =>
+                          selectedRoleDocIds.has(d.id),
+                        ).length;
+                        // Cross-Rollen-Mix: jede Rolle mit ≥1 gewähltem Doc hat
+                        // Dokumente im Export (Häkchen/Badge rollenübergreifend).
+                        const hasDocsInExport = chosen > 0;
                         const expanded =
                           expandedFolders.has(folderKey) ||
-                          isActiveRole ||
+                          isPrimaryRole ||
+                          hasDocsInExport ||
                           catalogSearch.trim().length > 0;
-                        const chosen = role.documents.filter((d) =>
-                          isActiveRole ? selectedRoleDocIds.has(d.id) : false,
-                        ).length;
                         return (
                           <div
                             key={role.id}
@@ -780,7 +786,7 @@ export const EmployeeForm: React.FC<EmployeeFormProps> = ({
                               )}
                               <FolderOpen
                                 className={`h-5 w-5 shrink-0 ${
-                                  isActiveRole
+                                  hasDocsInExport
                                     ? "text-orange-500"
                                     : "text-gray-400"
                                 }`}
@@ -788,18 +794,21 @@ export const EmployeeForm: React.FC<EmployeeFormProps> = ({
                               <span className="flex-1 text-sm font-semibold text-gray-800">
                                 {role.name}
                               </span>
-                              {isActiveRole && (
+                              {isPrimaryRole && (
                                 <span className="shrink-0 rounded-full bg-orange-100 px-2 py-0.5 text-[10px] font-semibold text-orange-700">
-                                  aktive Export-Rolle · {chosen}/
-                                  {role.documents.length}
+                                  primäre Rolle
+                                </span>
+                              )}
+                              {hasDocsInExport && (
+                                <span className="shrink-0 rounded-full bg-orange-50 px-2 py-0.5 text-[10px] font-semibold text-orange-600 ring-1 ring-orange-200">
+                                  {chosen}/{role.documents.length} im Export
                                 </span>
                               )}
                             </button>
                             {expanded && (
                               <div className="space-y-1 border-t border-gray-100 p-2">
                                 {role.documents.map((doc) => {
-                                  const isChecked =
-                                    isActiveRole && selectedRoleDocIds.has(doc.id);
+                                  const isChecked = selectedRoleDocIds.has(doc.id);
                                   const locked = lockedDocIds.has(doc.id);
                                   return (
                                     <button
@@ -858,9 +867,10 @@ export const EmployeeForm: React.FC<EmployeeFormProps> = ({
                     </div>
                   )}
                   <p className="mt-2 text-[11px] text-gray-400">
-                    Hinweis: Rollen-Vorlagen werden für genau eine aktive
-                    Export-Rolle erzeugt. Wählst du eine Vorlage aus einer
-                    anderen Rolle, wird diese zur aktiven Export-Rolle.
+                    Hinweis: Dokumente aus mehreren Rollen lassen sich mischen —
+                    jede Rolle mit gewählten Dokumenten („… im Export“) landet
+                    mit ihrem eigenen Unterordner im ZIP. Die zuerst gewählte
+                    Rolle bleibt die primäre Rolle.
                   </p>
                 </div>
 

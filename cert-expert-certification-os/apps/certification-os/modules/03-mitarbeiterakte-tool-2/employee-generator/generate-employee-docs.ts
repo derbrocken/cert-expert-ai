@@ -27,6 +27,10 @@ import {
   type SetDocumentSpec,
 } from "@/modules/03-mitarbeiterakte-tool-2/employee-file/vorlagen-set-catalog";
 import { resolveAssignedSchulungDocs } from "@/modules/03-mitarbeiterakte-tool-2/employee-file/training-plan";
+import {
+  resolveExportRoleIds,
+  resolveRoleFolderName,
+} from "@/modules/03-mitarbeiterakte-tool-2/employee-file/cross-role-export";
 
 /**
  * Lane K (Batch-2 B) — baut den Set→Dokument-Plan-Manifest-Text für einen MA.
@@ -247,14 +251,48 @@ export async function generateEmployeeDocs(
             : "",
       };
 
-      // Process selected role documents
-      const roleFolder = employeeFolder.folder(role.name);
-      if (roleFolder) {
-        const selectedRoleDocs = role.documents.filter((doc) =>
-          employee.selectedRoleDocIds.includes(doc.id),
+      // Cross-Rollen-Mix — Rollen-Dokumente werden NICHT mehr nur für die eine
+      // primäre Export-Rolle (`employee.roleId`) erzeugt, sondern für **alle**
+      // Rollen, deren Dokumente in `employee.selectedRoleDocIds` referenziert
+      // sind. So lassen sich Doks aus mehreren Rollen (z. B. SiMa + FK bei einer
+      // Doppelrolle-Person) in EINEM Export mischen.
+      //
+      // ADDITIV/EC-09: Sind nur Doks der primären Rolle gewählt, ist das
+      // Ergebnis exakt wie bisher (gleicher `role.name`-Unterordner, gleiche
+      // Dateinamen, gleiche Datums-/Vorlagen-Logik). `employee.roleId` bleibt
+      // die primäre/Pflicht-Rolle (`RoleType`-Platzhalter unten) — unverändert.
+      //
+      // Kollisionsfrei: jede Rolle bekommt ihren eigenen Unterordner über
+      // `role.name`. Tragen zwei Rollen denselben Namen, wird der Ordnername
+      // einmalig um die `role.id` ergänzt (Sicherheitsnetz, kein Normalfall).
+      const selectedDocIds = new Set(employee.selectedRoleDocIds);
+      // Reihenfolge: primäre Rolle zuerst (stabile, unveränderte Struktur),
+      // danach weitere Rollen in Katalog-Reihenfolge — jeweils nur, wenn sie
+      // mindestens ein gewähltes Dokument beitragen (reine Auflösung, getestet).
+      const exportRoleIds = resolveExportRoleIds(
+        roles,
+        role.id,
+        employee.selectedRoleDocIds,
+      );
+      const usedRoleFolderNames = new Set<string>();
+      for (const exportRoleId of exportRoleIds) {
+        const exportRole = roles.find((r) => r.id === exportRoleId);
+        if (!exportRole) continue;
+
+        // Kollisionsfreier Ordnername (Normalfall = `role.name`).
+        const roleFolderName = resolveRoleFolderName(
+          exportRole,
+          usedRoleFolderNames,
+        );
+
+        const roleFolder = employeeFolder.folder(roleFolderName);
+        if (!roleFolder) continue;
+
+        const selectedRoleDocs = exportRole.documents.filter((doc) =>
+          selectedDocIds.has(doc.id),
         );
         for (const doc of selectedRoleDocs) {
-          const logicalPath = `roles/${role.id}/${doc.fileName}`;
+          const logicalPath = `roles/${exportRole.id}/${doc.fileName}`;
           const objectKey = templateKeyMap.get(logicalPath);
           if (!objectKey) {
             return {
@@ -281,6 +319,9 @@ export async function generateEmployeeDocs(
                 : globalDate;
             const processedDoc = await handler.process(templateBuffer, {
               ...templateData,
+              // RoleName bezieht sich auf die jeweils erzeugte Rolle (das Dokument
+              // gehört zu `exportRole`), nicht zwingend zur primären Rolle.
+              RoleName: exportRole.name,
               currentDate: docDate,
             });
             roleFolder.file(doc.fileName, processedDoc);
@@ -291,7 +332,7 @@ export async function generateEmployeeDocs(
             );
             return {
               success: false,
-              error: `Failed to process template "${doc.fileName}" for role "${role.name}"`,
+              error: `Failed to process template "${doc.fileName}" for role "${exportRole.name}"`,
             };
           }
         }
