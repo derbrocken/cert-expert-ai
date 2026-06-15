@@ -328,6 +328,10 @@ export function employeeFileToEmployee(record: EmployeeFile): Employee {
     drivesServiceVehicle: record.drivesServiceVehicle ?? undefined,
     ersteHilfeGueltigBis: record.ersteHilfeGueltigBis ?? undefined,
     brandschutzGueltigBis: record.brandschutzGueltigBis ?? undefined,
+    // M6 (DM6/DM6b) — Austrittsdatum + Erst-Standardunterweisungs-Datum.
+    // Nullable/additiv; fehlend → undefined (kein Auto-Status, EC-10).
+    exitDate: record.exitDate ?? undefined,
+    erstunterweisungDatum: record.erstunterweisungDatum ?? undefined,
     weiterbildungIstUE: record.weiterbildungIstUE ?? undefined,
     einmaligIstUE: asNumberRecord(record.einmaligIstUE),
     trainingPlan: asTrainingPlan(record.trainingPlan),
@@ -347,7 +351,21 @@ export function employeeFileToEmployee(record: EmployeeFile): Employee {
     // P3 / #7 — Prüf-Status je Nachweis (Mark D1). Tolerant: fehlend/Müll →
     // undefined (ungeprüft). EC-10: nur menschlich gesetzte „geprüft"-Vermerke.
     evidenceChecks: asEvidenceChecks(record.evidenceChecks),
+    // M6 (◆-Herkunft) — Liste der aus Tally befüllten Feld-Keys. Tolerant:
+    // fehlend → undefined (keine bekannte Herkunft). EC-10: nur Anzeige.
+    tallyImportedKeys: asTallyImportedKeys(record.tallyImportedKeys),
   };
+}
+
+/**
+ * M6 (◆-Herkunft) — Read-Normalisierung der `tallyImportedKeys Json?`-Spalte.
+ * Tolerant: nur ein nicht-leeres String-Array gilt als bekannte Herkunft; sonst
+ * `undefined`. Reine Anzeige (EC-10), keine Norm-/Auto-Status-Wirkung.
+ */
+function asTallyImportedKeys(value: unknown): string[] | undefined {
+  if (!Array.isArray(value)) return undefined;
+  const keys = value.filter((v): v is string => typeof v === "string");
+  return keys.length > 0 ? keys : undefined;
 }
 
 /**
@@ -391,6 +409,9 @@ function employeeToUpsertData(
     drivesServiceVehicle: employee.drivesServiceVehicle ?? null,
     ersteHilfeGueltigBis: employee.ersteHilfeGueltigBis ?? null,
     brandschutzGueltigBis: employee.brandschutzGueltigBis ?? null,
+    // M6 (DM6/DM6b) — Austrittsdatum + Erst-Standardunterweisungs-Datum.
+    exitDate: employee.exitDate ?? null,
+    erstunterweisungDatum: employee.erstunterweisungDatum ?? null,
     weiterbildungIstUE: employee.weiterbildungIstUE ?? null,
     einmaligIstUE: employee.einmaligIstUE ?? {},
     trainingPlan: (employee.trainingPlan ?? []) as unknown as Prisma.InputJsonValue,
@@ -407,6 +428,10 @@ function employeeToUpsertData(
     // P3 / #7 — Prüf-Status je Nachweis (nullable/additiv, P2023-sicher).
     evidenceChecks: employee.evidenceChecks
       ? (employee.evidenceChecks as unknown as Prisma.InputJsonValue)
+      : Prisma.JsonNull,
+    // M6 (◆-Herkunft) — aus Tally befüllte Feld-Keys (nullable/additiv, EC-10).
+    tallyImportedKeys: employee.tallyImportedKeys
+      ? (employee.tallyImportedKeys as unknown as Prisma.InputJsonValue)
       : Prisma.JsonNull,
   };
 }
@@ -434,6 +459,15 @@ function laneJUpdateFields(employee: Employee) {
     // (upsert/replace/migrate). Nullable/additiv (P2023-sicher); EC-10.
     evidenceChecks: employee.evidenceChecks
       ? (employee.evidenceChecks as unknown as Prisma.InputJsonValue)
+      : Prisma.JsonNull,
+    // M6 (DM6/DM6b) — Austrittsdatum + Erst-Standardunterweisungs-Datum, DRY
+    // über alle Update-Mapping-Stellen. Nullable/additiv (P2023-sicher).
+    exitDate: employee.exitDate ?? null,
+    erstunterweisungDatum: employee.erstunterweisungDatum ?? null,
+    // M6 (◆-Herkunft) — Liste der aus Tally befüllten Feld-Keys (String-Array),
+    // DRY über alle Update-Pfade. Nullable/additiv; reine Anzeige (EC-10).
+    tallyImportedKeys: employee.tallyImportedKeys
+      ? (employee.tallyImportedKeys as unknown as Prisma.InputJsonValue)
       : Prisma.JsonNull,
   };
 }

@@ -185,6 +185,13 @@ export const EmployeeFilePersonRolleEditTable: React.FC<
     "bewacher-id": Boolean(employee.guardIDNumber?.trim()),
     "dienst-id": Boolean(employee.employeeIDNumber?.trim()),
     vertragsbeginn: Boolean(employee.startDate?.trim()),
+    // M6 (DM6) — Austrittsdatum: optional, leer = ◇ (offen), kein Pflicht-Gate.
+    austritt: Boolean(employee.exitDate?.trim()),
+    // M6 (DM6b) — Erst-Standardunterweisung: optional; Default-Vorschlag =
+    // startDate (deckt den Leerfall ab) → gilt als vorhanden, sobald eines gesetzt.
+    erstunterweisung: Boolean(
+      employee.erstunterweisungDatum?.trim() || employee.startDate?.trim(),
+    ),
     beschaeftigungsart: Boolean(employee.employmentType?.trim()),
     "norm-klasse": currentRoleClasses.length > 0,
     "org-titel": Boolean(employee.roleType?.trim()),
@@ -208,6 +215,31 @@ export const EmployeeFilePersonRolleEditTable: React.FC<
     dienstfahrzeug: employee.drivesServiceVehicle === true,
     "sdl-scopes": sdlScopes.includes("non-din"),
   };
+
+  // M6 (◆-Herkunfts-Badge) — Zuordnung Zeilen-ID → Tally-Feld-Key, NUR für die
+  // Keys, die der Intake real schreibt (`tally-intake-service.ts`). Eine Zeile
+  // bekommt das blaue ◆ („aus Formular vGNvY0, ungeprüft"), wenn ihr Key in
+  // `employee.tallyImportedKeys` gelistet ist. EC-10: ◆ = ungeprüfte Herkunft,
+  // NIE „grün/erledigt". DM7: sobald der Wert (gegenüber dem Import) leer/anders
+  // ist — minimal: nur solange der Key gelistet UND ein Wert vorhanden ist.
+  const tallyImportedKeys = new Set(employee.tallyImportedKeys ?? []);
+  const ROW_TALLY_KEY: Record<string, string> = {
+    // Name ist im Tally EIN Feld (fullName) → beide Namens-Zeilen markieren.
+    vorname: "fullName",
+    nachname: "fullName",
+    geburtsdatum: "birthday",
+    "org-titel": "roleType",
+    beschaeftigungsart: "employmentType",
+    qualifikation: "qualification",
+    "bewacher-id": "guardIDNumber",
+    "dienst-id": "employeeIDNumber",
+  };
+  // ◆ nur zeigen, solange der Key importiert wurde UND die Zeile noch einen Wert
+  // trägt (ein geleertes Feld = der Mensch hat eingegriffen → Herkunft entfällt).
+  const showTallyOrigin = (id: string): boolean =>
+    id in ROW_TALLY_KEY &&
+    tallyImportedKeys.has(ROW_TALLY_KEY[id]) &&
+    Boolean(ROW_VALUE_PRESENT[id]);
 
   const rowShell = (
     id: string,
@@ -241,7 +273,21 @@ export const EmployeeFilePersonRolleEditTable: React.FC<
           ) : null}
         </div>
         <div className="min-w-0 flex-1">{control}</div>
-        <EmployeeFileStatusBadge status={status} />
+        <div className="flex shrink-0 items-center gap-1.5">
+          {showTallyOrigin(id) ? (
+            <span
+              title="aus Formular vGNvY0, ungeprüft"
+              aria-label="aus Tally importiert, ungeprüft"
+              className="inline-flex shrink-0 items-center gap-1 rounded-md border border-blue-200 bg-blue-50 px-1.5 py-0.5 text-[10px] font-medium text-blue-800"
+            >
+              <span aria-hidden className="text-[11px] leading-none">
+                ◆
+              </span>
+              Tally
+            </span>
+          ) : null}
+          <EmployeeFileStatusBadge status={status} />
+        </div>
       </li>
     );
   };
@@ -401,13 +447,30 @@ export const EmployeeFilePersonRolleEditTable: React.FC<
           {rowShell(
             "austritt",
             "Austrittsdatum",
-            <Input
-              value=""
-              disabled
+            <DatePicker
+              value={employee.exitDate || ""}
+              onChange={(exitDate) =>
+                patch({ exitDate: exitDate || undefined })
+              }
               placeholder="Nur bei Beendigung"
-              className="bg-[#fafbfc] py-2 text-sm"
+              className="text-sm"
             />,
             "Nur bei Beendigung erfassen",
+          )}
+          {rowShell(
+            "erstunterweisung",
+            "Erst-Standardunterweisung",
+            <DatePicker
+              value={
+                employee.erstunterweisungDatum || employee.startDate || ""
+              }
+              onChange={(erstunterweisungDatum) =>
+                patch({ erstunterweisungDatum: erstunterweisungDatum || undefined })
+              }
+              placeholder="Datum Erst-Standardunterweisung"
+              className="text-sm"
+            />,
+            "Default = Vertragsbeginn (CL-75, fachlich prüfen — kein Auto-Status)",
           )}
           {rowShell(
             "beschaeftigungsart",

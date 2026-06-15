@@ -529,6 +529,20 @@ export async function processTallyWebhookPayload(
 
     const employeeFileId = `tally-${responseId}-emp-${slot.index}`;
 
+    // M6 (◆-Herkunfts-Badge) — Liste der Feld-Keys, die dieser Tally-Import
+    // (`vGNvY0`) TATSÄCHLICH befüllt (nur nicht-leere Werte). Wird je Akte als
+    // `tallyImportedKeys` persistiert, damit die Maske das blaue ◆-Badge je
+    // Zeile rendern kann. EC-10: „importiert" = ungeprüft, nie „grün/erledigt".
+    // Aus dem REALEN Mapping abgeleitet (keine erfundenen Keys): `fullName` ist
+    // immer gesetzt (Pflicht, oben geprüft), die übrigen nur wenn nicht leer.
+    const tallyImportedKeys: string[] = ["fullName"];
+    if (birthday) tallyImportedKeys.push("birthday");
+    if (roleType) tallyImportedKeys.push("roleType");
+    if (employmentType) tallyImportedKeys.push("employmentType");
+    if (qualification) tallyImportedKeys.push("qualification");
+    if (guardIDNumber) tallyImportedKeys.push("guardIDNumber");
+    if (employeeIDNumber) tallyImportedKeys.push("employeeIDNumber");
+
     await prisma.employeeFile.upsert({
       where: { id: employeeFileId },
       create: {
@@ -546,6 +560,7 @@ export async function processTallyWebhookPayload(
         appointmentIds: [],
         selectedRoleDocIds: [],
         selectedAppointmentDocIds: [],
+        tallyImportedKeys,
       },
       update: {
         companySlug,
@@ -556,6 +571,7 @@ export async function processTallyWebhookPayload(
         qualification: qualification || null,
         guardIDNumber: guardIDNumber || null,
         employeeIDNumber: employeeIDNumber || null,
+        tallyImportedKeys,
       },
     });
 

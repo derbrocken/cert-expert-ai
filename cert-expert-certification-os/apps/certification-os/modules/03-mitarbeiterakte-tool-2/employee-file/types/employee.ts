@@ -125,6 +125,21 @@ export interface Employee {
   ersteHilfeGueltigBis?: string;
   /** Ablaufdatum Brandschutzhelfer (ISO) — 3-Jahres-Frist (CL-23) */
   brandschutzGueltigBis?: string;
+  /**
+   * M6 (DM6) — Austrittsdatum (Lebenszyklus „inaktiv"). Optional/nullable.
+   * Reines Stammdatum, keine Engine-/Auto-Status-Wirkung (EC-10).
+   * **Persistenz (M6):** echte additive **nullable** DB-Spalte `exitDate String?`.
+   */
+  exitDate?: string;
+  /**
+   * M6 (DM6b) — Datum Erst-Standardunterweisung (CL-75). Optional/nullable.
+   * **Persistenz (M6):** echte additive **nullable** DB-Spalte
+   * `erstunterweisungDatum String?`. Leer → Default-Vorschlag = `startDate`
+   * über die VORHANDENE Engine-Logik `defaultErstunterweisungDatum` (keine
+   * zweite Default-Quelle). Speist den bestehenden Engine-Input
+   * `RequirementContext.erstunterweisungDatum`.
+   */
+  erstunterweisungDatum?: string;
   /** Manuell erfasste Ist-UE Jahres-Weiterbildung (laufendes Jahr, §4.19.2) */
   weiterbildungIstUE?: number;
   /** Manuell erfasste Ist-UE je einmaligem/laufendem SDL-Posten (Posten-ID → UE) */
@@ -169,6 +184,16 @@ export interface Employee {
    * Auto-Status). Nullable/optional.
    */
   evidenceChecks?: EvidenceChecks;
+  /**
+   * M6 (◆-Herkunfts-Badge, aus M3 verschoben) — Liste der Feld-Keys, die beim
+   * Tally-Import (`vGNvY0`) tatsächlich befüllt wurden (z. B. `["fullName",
+   * "birthday","roleType"]`). Reine Herkunfts-Markierung für das blaue ◆-Badge
+   * je Akten-Zeile. **EC-10 (hart): „importiert" = ungeprüft, nie „grün/
+   * erledigt".** Sobald ein Mensch den Wert manuell ändert, verliert das Feld
+   * seine Tally-Herkunft (◆ verschwindet/kippt auf ●). **Persistenz (M6):** echte
+   * additive **nullable** DB-Spalte `tallyImportedKeys Json?` (String-Array).
+   */
+  tallyImportedKeys?: string[];
 }
 
 /**

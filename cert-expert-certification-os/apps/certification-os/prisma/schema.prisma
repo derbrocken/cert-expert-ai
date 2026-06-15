@@ -62,6 +62,17 @@ model EmployeeFile {
   drivesServiceVehicle       Boolean?
   ersteHilfeGueltigBis       String?
   brandschutzGueltigBis      String?
+  // M6 (DM6) — Austrittsdatum (Lebenszyklus „inaktiv"). Datums-String wie
+  // startDate/ersteHilfeGueltigBis. Nullable/additiv (kein @default →
+  // P2023-sicher, kein Breaking für Bestandsakten). Keine Engine-/Auto-Status-
+  // Wirkung (EC-10) — reines Stammdatum.
+  exitDate                   String?
+  // M6 (DM6b) — Datum Erst-Standardunterweisung (CL-75). Datums-String.
+  // Nullable/additiv (kein @default → P2023-sicher). Default-Vorschlag = startDate
+  // wird in der Maske/Engine über die VORHANDENE Logik defaultErstunterweisungDatum
+  // gebildet (keine zweite Default-Quelle). Speist den bestehenden Engine-Input
+  // RequirementContext.erstunterweisungDatum.
+  erstunterweisungDatum      String?
   weiterbildungIstUE         Int?
   einmaligIstUE              Json?
   trainingPlan               Json?
@@ -93,6 +104,13 @@ model EmployeeFile {
   // als erfüllt/grün — KEIN Auto-Status. Fehlt das Feld auf Bestandsakten,
   // liest die Read-Normalisierung tolerant „ungeprüft".
   evidenceChecks             Json?
+  // M6 (◆-Herkunfts-Badge, aus M3 verschoben) — Liste der Feld-Keys, die beim
+  // Tally-Import (`vGNvY0`) tatsächlich befüllt wurden (Json-Array von Strings,
+  // z. B. ["fullName","birthday","roleType",…]). Nullable/additiv (kein @default
+  // → P2023-sicher). Reine Herkunfts-Markierung für das blaue ◆-Badge; EC-10:
+  // „importiert" = UNGEPRÜFT, nie „grün/erledigt". Fehlt das Feld auf Bestands-
+  // akten → tolerant als „keine bekannte Tally-Herkunft" gelesen.
+  tallyImportedKeys          Json?
   evidenceItems              EvidenceItem[]
   migratedFromLocalStorageAt DateTime?
   createdAt                  DateTime @default(now())

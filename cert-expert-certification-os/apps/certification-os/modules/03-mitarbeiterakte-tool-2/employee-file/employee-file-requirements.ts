@@ -5,6 +5,7 @@ import {
   ROLE_LABELS_DE,
 } from "./employee-display-labels";
 import {
+  defaultErstunterweisungDatum,
   deriveRequirements,
   isBewachungsSet,
   resolveRoleClasses,
@@ -234,6 +235,14 @@ export function buildRequirementContext(
     qualification: employee.qualification,
     qualifications: employee.qualifications,
     startDate: employee.startDate,
+    // M6 (DM6b, CL-75) — persistiertes Erst-Standardunterweisungs-Datum an den
+    // BESTEHENDEN Engine-Input anbinden. Leer → Default-Vorschlag = startDate
+    // über die VORHANDENE Logik `defaultErstunterweisungDatum` (keine zweite
+    // Default-Quelle, keine UE/CL-Änderung). Engine wertet das Datum bereits aus
+    // (Wiederholungs-Unterweisung CL-75).
+    erstunterweisungDatum:
+      employee.erstunterweisungDatum ||
+      defaultErstunterweisungDatum(employee.startDate),
     sdlScopes: employee.sdlScopes ?? [],
     drivesServiceVehicle: employee.drivesServiceVehicle,
     ersteHilfeGueltigBis: employee.ersteHilfeGueltigBis,
