@@ -5,7 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { Users, FileText, Upload, FileStack } from "lucide-react";
+import { Users, FileText, Upload, FileStack, LogOut } from "lucide-react";
 
 interface NavbarProps {
   className?: string;
@@ -20,6 +20,11 @@ const NAV_ITEMS = [
 
 export const Navbar: React.FC<NavbarProps> = ({ className }) => {
   const pathname = usePathname();
+
+  async function handleLogout() {
+    await fetch("/api/auth/logout", { method: "POST" }).catch(() => {});
+    window.location.assign("/login");
+  }
 
   return (
     <nav
@@ -67,6 +72,16 @@ export const Navbar: React.FC<NavbarProps> = ({ className }) => {
                 </Link>
               );
             })}
+
+            <button
+              type="button"
+              onClick={handleLogout}
+              title="Abmelden"
+              className="inline-flex items-center gap-2 rounded-lg border border-[#e5e7eb] bg-[#f1f3f6] px-3 py-1.5 text-xs font-medium text-[#111827] transition-colors hover:border-[rgba(227,6,19,0.35)] hover:bg-white sm:px-4 sm:py-2 sm:text-sm"
+            >
+              <LogOut className="h-3.5 w-3.5 text-[#6b7280] sm:h-4 sm:w-4" />
+              <span className="hidden sm:inline">Abmelden</span>
+            </button>
           </div>
         </div>
       </div>
