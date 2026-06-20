@@ -3,7 +3,11 @@
 > Ziel: **stabile HTTPS-URL** für Tally-Webhooks statt wechselndem cloudflared-Tunnel.  
 > App: `cert-expert-certification-os/apps/certification-os/` · Port **3001** (intern)
 
-## ⏳ NÄCHSTER DEPLOY — VORBEREITET, NOCH NICHT AUSGEFÜHRT (2026-06-20, Login + kumulativer Nachzug)
+## ✅ DEPLOY AUSGEFÜHRT (2026-06-20, Login + kumulativer Nachzug) — `20e6bf9` → `27aa523`
+
+> **Live + verifiziert** auf https://cos.cert-expert.de (deployter Commit **`27aa523`**, App-Code-Stand inkl. Login `810951e`). Ablauf wie unten dokumentiert gefahren: DB-Backup **`/var/backups/certification-os/dev-20260620-211608.db`** → Login-Env (`APP_PASSWORD`+`AUTH_SECRET`) in `.env.production.local` → `git pull` (→`27aa523`) → `npm ci` → `db:push` („in sync", additiv M6, kein Datenverlust) → `npm run build` (grün) → `systemctl restart` (active). **Live-Verifikation grün:** `/login` 200 · `/` ohne Cookie 307→`/login?next=%2F` · `/api/webhooks/tally` **405** (POST-only, bleibt offen, NICHT vom Gate gesperrt) · falsches PW 401 · richtiges PW 200 + `cos_session`-Cookie · geschützte Seite+API mit Cookie 200. **Offen (Mark):** Browser-Klick-Abnahme (Login-Maske + ein ZIP-Export eingeloggt = EC-09); ggf. neue Akte-/Generator-Features visuell sichten (M3–M7, Generator G1/G1b/G4 sind mit live gegangen).
+
+<details><summary>Ursprünglich vorbereiteter Deploy-Block (Referenz)</summary>
 
 > **Ziel-Commit `810951e`** (Login/Site-Gate). **⚠️ Das ist KEIN reiner Login-Deploy:** der Live-Stand ist noch `20e6bf9` (2026-06-13), seitdem liegt viel ungedeployter Code auf `main`. `git pull` zieht den GANZEN Bereich `20e6bf9..810951e` mit — verifiziert: Masken **M3–M7** (`f5bee81`/`bf94f40`/`6d22eba`/`29b17b7`/`b17e9aa` + Mockup-Slices), Generator **G1/G1b/G4** (`1d94bcf`/`f8d6f7d`/`b891948`), Nachweis-Upload-Fix (`ff96b12`), Schulungs-Fix von–bis (`7598067`), Qualifikations-Katalog (`8bc16dc`), Visual-Direction-Docs, **Login** (`810951e`).
 >
@@ -40,7 +44,9 @@
 > ```
 > Danach Browser: Login-Maske → einloggen → **ein ZIP-Export klicken (EC-09)** + db-push-Schema-Akte-Felder sichten. **Nach Erfolg:** unten den LIVE-STAND-Eintrag von „⏳ vorbereitet" auf „✅ deployt `810951e`" umschreiben + Backup-Dateinamen eintragen.
 
-## ✅ LIVE-STAND (Redeploy 2026-06-13 #2, Akte S1a+S1b)
+</details>
+
+## ✅ LIVE-STAND (frühere Redeploys — Historie; aktueller Stand siehe Block oben)
 
 **App live: https://cos.cert-expert.de** (HTTPS, HTTP→HTTPS-Redirect). Deployter Commit **`20e6bf9`** (zuvor `15cac89`, `5af2720`, `0ae0a20`, `7cb3915`, `23bd82c`, `dde4f7a`, `0ad7936`, `e84e599`, `d5c9086`, `2242502`, `fe17ad5`, `03429b2`, `5280d9c`, `404d55d`).
 
