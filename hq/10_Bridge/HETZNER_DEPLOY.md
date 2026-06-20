@@ -3,6 +3,43 @@
 > Ziel: **stabile HTTPS-URL** für Tally-Webhooks statt wechselndem cloudflared-Tunnel.  
 > App: `cert-expert-certification-os/apps/certification-os/` · Port **3001** (intern)
 
+## ⏳ NÄCHSTER DEPLOY — VORBEREITET, NOCH NICHT AUSGEFÜHRT (2026-06-20, Login + kumulativer Nachzug)
+
+> **Ziel-Commit `810951e`** (Login/Site-Gate). **⚠️ Das ist KEIN reiner Login-Deploy:** der Live-Stand ist noch `20e6bf9` (2026-06-13), seitdem liegt viel ungedeployter Code auf `main`. `git pull` zieht den GANZEN Bereich `20e6bf9..810951e` mit — verifiziert: Masken **M3–M7** (`f5bee81`/`bf94f40`/`6d22eba`/`29b17b7`/`b17e9aa` + Mockup-Slices), Generator **G1/G1b/G4** (`1d94bcf`/`f8d6f7d`/`b891948`), Nachweis-Upload-Fix (`ff96b12`), Schulungs-Fix von–bis (`7598067`), Qualifikations-Katalog (`8bc16dc`), Visual-Direction-Docs, **Login** (`810951e`).
+>
+> **⚠️ ZWEI Voraussetzungen vor diesem Deploy:**
+> 1. **`db push` + DB-Backup PFLICHT** — `29b17b7` (M6) bringt **3 additive nullable Spalten** an `EmployeeFile` (`exitDate`, `erstunterweisungDatum`, `tallyImportedKeys`; alle `String?`/`Json?`, kein `@default` → P2023-sicher, zerstörungsfrei, gleiches Muster wie frühere Deploys). Diff geprüft = rein additiv, kein Backfill/Datenverlust.
+> 2. **Login-Env VOR Build/Restart in `.env.production.local` setzen** — sonst sperrt das `proxy.ts`-Gate ALLE aus (Login antwortet `500 „nicht konfiguriert"`, jede Route → `307 /login`):
+>    ```
+>    APP_PASSWORD=<echtes Produktiv-Passwort>            # NICHT das Dev-PW
+>    AUTH_SECRET=LKOERTZoycpwDW0GHiOGMP2jgJ53iSFDtHH8Pco73WPo/utETcrf+pjSfHEo6x3W
+>    ```
+>
+> **Deploy-Ablauf (Reihenfolge!):**
+> ```bash
+> ssh root@167.233.63.98
+> cd /opt/cert-expert-ai/cert-expert-certification-os/apps/certification-os
+> # (a) Login-Env anhängen (siehe oben) — ZUERST:
+> nano .env.production.local        # APP_PASSWORD + AUTH_SECRET eintragen
+> # (b) DB-Backup (Pflicht wg. Schema-Change):
+> /usr/local/bin/cos-backup.sh      # -> /var/backups/certification-os/pre-deploy-2026-06-20-*.db
+> # (c) Code + Schema + Build:
+> git pull origin main              # erst möglich, wenn 810951e auf origin gepusht ist
+> npm ci
+> DATABASE_URL="file:./prisma/dev.db" npm run db:push   # additiv (M6), „in sync" erwarten
+> npm run build
+> systemctl restart certification-os
+> ```
+> **Verifikation nach Restart:**
+> ```bash
+> curl -s -o /dev/null -w "/login -> %{http_code}\n" https://cos.cert-expert.de/login   # 200
+> curl -s -o /dev/null -w "/ -> %{http_code}\n"      https://cos.cert-expert.de/         # 307 (-> /login)
+> curl -s -o /dev/null -w "richtiges PW -> %{http_code}\n" -X POST https://cos.cert-expert.de/api/auth/login \
+>   -H 'Content-Type: application/json' -d '{"password":"<echtes Produktiv-Passwort>"}'  # 200
+> curl -s -o /dev/null -w "webhook -> %{http_code}\n" https://cos.cert-expert.de/api/webhooks/tally  # 405 (POST-only, NICHT 307 -> Webhook bleibt offen)
+> ```
+> Danach Browser: Login-Maske → einloggen → **ein ZIP-Export klicken (EC-09)** + db-push-Schema-Akte-Felder sichten. **Nach Erfolg:** unten den LIVE-STAND-Eintrag von „⏳ vorbereitet" auf „✅ deployt `810951e`" umschreiben + Backup-Dateinamen eintragen.
+
 ## ✅ LIVE-STAND (Redeploy 2026-06-13 #2, Akte S1a+S1b)
 
 **App live: https://cos.cert-expert.de** (HTTPS, HTTP→HTTPS-Redirect). Deployter Commit **`20e6bf9`** (zuvor `15cac89`, `5af2720`, `0ae0a20`, `7cb3915`, `23bd82c`, `dde4f7a`, `0ad7936`, `e84e599`, `d5c9086`, `2242502`, `fe17ad5`, `03429b2`, `5280d9c`, `404d55d`).
