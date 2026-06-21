@@ -4,7 +4,7 @@ import React, { useEffect, useMemo, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { Navbar, Footer } from "@/components/layout";
 import CEBadge from "@/components/ui/CEBadge";
-import { ModelCreatorWorkspace } from "@/app/model-creator/ModelCreatorWorkspace";
+import { ModelCreatorWorkspace } from "./ModelCreatorWorkspace";
 import { loadCompaniesForSwitcher } from "@/modules/03-mitarbeiterakte-tool-2/employee-file/load-companies-client";
 import { fetchEmployeeCountsAction } from "@/app/actions/employee-file-actions";
 import { loadEmployeeQueue } from "@/lib/employee-queue-storage";
@@ -133,8 +133,8 @@ export default function GeneratorPageClient() {
             <div className="inline-flex rounded-xl border border-gray-200 bg-white p-1 shadow-sm">
               {(
                 [
-                  ["company", "Firmen-Dokumente", Building2],
-                  ["employee", "Mitarbeiter-Dokumente", Users],
+                  ["company", "Firmen-Dokumente (Vorlagen)", Building2],
+                  ["employee", "Mitarbeiter-Dokumente (pro Person)", Users],
                 ] as const
               ).map(([id, label, Icon]) => {
                 const active = area === id;

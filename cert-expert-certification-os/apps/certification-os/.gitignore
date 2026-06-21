@@ -37,9 +37,13 @@ yarn-error.log*
 .env*
 .env.local
 
-# prisma sqlite
-/prisma/*.db
-/prisma/*.db-journal
+# prisma sqlite — DSGVO: Personendaten NIE committen (jede Tiefe, inkl. Backups/Journale)
+prisma/**/*.db
+prisma/**/*.db-journal
+prisma/**/*.db.bak*
+prisma/**/*.db-*
+*.db
+*.db.bak*
 release/
 # vercel
 .vercel

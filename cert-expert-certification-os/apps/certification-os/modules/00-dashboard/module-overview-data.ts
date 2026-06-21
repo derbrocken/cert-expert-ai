@@ -216,7 +216,7 @@ export const CERT_OS_V1_MAIN_AREAS: V1MainArea[] = [
         id: "tool1",
         title: "Tool 1 / QM-Ordner-Generator",
         status: "active",
-        href: "/model-creator",
+        href: "/generator?area=company",
       },
       {
         id: "template-upload",
@@ -228,7 +228,7 @@ export const CERT_OS_V1_MAIN_AREAS: V1MainArea[] = [
         id: "dokumentenerstellung",
         title: "Dokumentenerstellung",
         status: "active",
-        href: "/model-creator",
+        href: "/generator?area=company",
       },
       { id: "versionen", title: "Versionsstände", status: "planned" },
       { id: "pruefvermerke", title: "Prüfvermerke", status: "planned" },

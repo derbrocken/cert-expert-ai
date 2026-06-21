@@ -134,7 +134,7 @@ export const DocumentForm: React.FC<DocumentFormProps> = ({
         const isAbort = err instanceof DOMException && err.name === "AbortError";
         setFoldersLoadError(
           isAbort
-            ? "Timeout beim Laden der Ordner. Dev-Server prüfen (http://localhost:3001/model-creator)."
+            ? "Timeout beim Laden der Ordner. Dev-Server prüfen (http://localhost:3001/generator)."
             : "Standard-Model-Ordner konnten nicht geladen werden.",
         );
         setFolders([]);

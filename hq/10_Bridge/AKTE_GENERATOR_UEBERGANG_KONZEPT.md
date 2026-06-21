@@ -52,13 +52,13 @@ Das ist **keine neue Architektur**, sondern die saubere Verdrahtung bereits vorh
 
 **Problem:** Zwei Generator-Einträge, einer davon (`/model-creator`) ein Duplikat.
 
-**Lösung:**
+**Lösung (Mark-Gate 2026-06-20: Route ganz entfernen):**
 - „Dokument-Generator" aus `NAV_ITEMS` entfernen (`Navbar.tsx:14`). Es bleibt **ein** Einstieg „Generator" (`/generator`) mit dem Umschalter Firma/Mitarbeiter.
-- Route `/model-creator` **bleibt erhalten**, leitet aber per `redirect()` auf `/generator?area=company` (alte Lesezeichen/Deep-Links brechen nicht).
+- Route `/model-creator` **ganz entfernen** (Mark-Entscheid) → `/model-creator` ergibt 404. `ModelCreatorWorkspace.tsx` wird nach `app/generator/` **verschoben** (wird weiter von `/generator` genutzt), Import in `GeneratorPageClient.tsx` angepasst.
 - Optional (Mark-Entscheid): Labels im Umschalter schärfen, z. B. „Firmen-Dokumente (Vorlagen)" / „Mitarbeiter-Dokumente (pro Person)".
 
-**Betroffen:** `components/layout/Navbar.tsx`, `app/model-creator/page.tsx` (→ Redirect), evtl. `GeneratorPageClient.tsx` (Label-Texte).
-**DoD:** `tsc` 0 · `next build` grün · Navbar zeigt 3 Einträge (Mitarbeiterakte / Generator / Upload-Manager) · `/model-creator` leitet auf `/generator?area=company` · Mark-Klick-Abnahme.
+**Betroffen:** `components/layout/Navbar.tsx`, `app/model-creator/` (gelöscht), `app/generator/ModelCreatorWorkspace.tsx` (verschoben), `app/generator/GeneratorPageClient.tsx` (Import).
+**DoD:** `tsc` 0 · `next build` grün · Navbar zeigt 3 Einträge (Mitarbeiterakte / Generator / Upload-Manager) · `/model-creator` = 404 · `/generator` Firmen-Bereich erzeugt weiter Dokumente · Mark-Klick-Abnahme.
 **Risiko:** minimal. **EC-09 unberührt** (keine Generator-Logik angefasst, nur Einstieg/Redirect).
 
 ---
@@ -73,7 +73,7 @@ Das ist **keine neue Architektur**, sondern die saubere Verdrahtung bereits vorh
    - `kind: "extern"` → behördlich/Anbieter-Nachweis → bleibt „anfordern/hochladen", **kein** Vormerken.
    - `kind: "pruefen"` → `legal-input`/`fachlich prüfen` (z. B. CL-73/CL-74) → Hinweis, **kein** Auto-Vormerken (EC-10).
 2. **Vormerken-Aktion:** Klick fügt die `templateDocId` zu `selectedRoleDocIds` bzw. `selectedAppointmentDocIds` der Person hinzu (bestehende, persistierte Felder) → speichert über den vorhandenen `onSavePerson`-Pfad. Im Generator-Tab ist das Dokument danach sofort ausgewählt.
-3. **Rückmeldung:** kurzer Toast „… zum Generator vorgemerkt" + der Posten zeigt „vorgemerkt ✓".
+3. **Rückmeldung + Listenverhalten (Mark-Gate 2026-06-20: verschwindet aus der Liste):** Klick → kurzer Toast „… zum Generator vorgemerkt", und der Posten **verschwindet aus „Offene Punkte"** (er ist jetzt in der Generator-Auswahl der Person). **EC-10-Sicherung:** „verschwindet" heißt **„in Erzeugung", NICHT „erledigt"** — die Compliance-/Ampel-Berechnung (`compliance-status.ts`) zählt das Dokument **weiterhin als nicht-fertig**, bis es real erzeugt/abgelegt ist. Verschwinden betrifft nur die Anzeige der „noch anzulegen"-Liste, nicht den Erfüllungsstatus. (Umsetzung: vorgemerkte interne Posten werden aus `openIssues` ausgeblendet, sobald ihre `templateDocId` in `selectedRoleDocIds/…` liegt; der Pflicht-Posten bleibt im Soll-Set.)
 
 **Draft der internen Posten (mit CL-Beleg — zu bestätigen in Slice B):**
 
@@ -114,13 +114,13 @@ Das ist **keine neue Architektur**, sondern die saubere Verdrahtung bereits vorh
 
 ## 6. Reihenfolge & offene Gate-Fragen für Mark
 
-**Empfohlene Reihenfolge:** A (Quick-Win) → B (Kern, Übergang) → C (Schulungen).
+**Empfohlene Reihenfolge:** A (Quick-Win) → C (Schulungen, datenunabhängig) → B (Kern, wartet auf Marks Mapping-Daten).
 
-**Gate-Fragen:**
-1. **Labels** im Umschalter — „Firmen-Dokumente (Vorlagen)" / „Mitarbeiter-Dokumente (pro Person)" ok, oder andere Wörter?
-2. **`/model-creator`** — als Redirect behalten (empfohlen) oder Route ganz entfernen?
-3. **Vormerken-Verhalten** — soll ein vorgemerkter Posten in der Liste „vorgemerkt ✓" zeigen und auswählbar bleiben (Empfehlung), oder aus der Offenen-Liste verschwinden?
-4. **Vorlagen↔Rolle-Daten** (Slice-B-Abhängigkeit) — lieferst du die reale Zuordnung der S3-Vorlagen zu den Rollen/Set-Kategorien, oder bauen wir Slice B zunächst nur für die belegten Standard-/Bestellungs-/Unterweisungs-Vorlagen (CL-03/04/05/75/77 + Bestellungen) und führen den Rest als „extern/prüfen"?
+**Gate-Entscheidungen (Mark, 2026-06-20) — GESETZT:**
+1. **Labels** im Umschalter — Schärfung „Firmen-Dokumente (Vorlagen)" / „Mitarbeiter-Dokumente (pro Person)" als Default übernommen (Mark kann beim Klick-Abnahme nachjustieren).
+2. **`/model-creator`** — **Route ganz entfernen** (404), Komponente nach `app/generator/` verschoben.
+3. **Vormerken-Verhalten** — vorgemerkter Posten **verschwindet** aus „Offene Punkte" (mit EC-10-Sicherung, §4).
+4. **Vorlagen↔Rolle-Daten** — **Mark liefert die volle Zuordnung.** → **Slice-B-Bau wartet** auf diese Daten. Slice A + C sind unabhängig und werden zuerst gebaut. (Bis die Daten da sind, könnte Slice B notfalls auf die belegten CL-03/04/05/75/77 + Bestellungen reduziert starten — Mark wählte aber die volle Zuordnung.)
 
 ---
 

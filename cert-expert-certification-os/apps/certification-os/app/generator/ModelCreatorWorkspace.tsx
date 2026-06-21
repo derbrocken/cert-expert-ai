@@ -27,7 +27,7 @@ const initialState: GenerateState = {
 /**
  * Tool-1-Firmen-/Standard-Model-Generator als wiederverwendbarer Workspace
  * (ohne Page-Chrome wie Navbar/Footer/Seiten-Header). Wird von der bestehenden
- * Seite `/model-creator` UND vom Top-Level-`/generator` (Firmen-Bereich) genutzt.
+ * Top-Level-`/generator` (Firmen-Bereich) genutzt.
  *
  * EC-09: Der ZIP-Pfad `generateDocument` ist unverändert — diese Extraktion ist
  * reines Auslagern des bisherigen `ModelCreatorPage`-Bodys, keine Logik-Änderung.

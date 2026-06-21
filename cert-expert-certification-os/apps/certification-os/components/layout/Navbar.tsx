@@ -5,7 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { Users, FileText, Upload, FileStack, LogOut } from "lucide-react";
+import { Users, Upload, FileStack, LogOut } from "lucide-react";
 
 interface NavbarProps {
   className?: string;
@@ -14,7 +14,6 @@ interface NavbarProps {
 const NAV_ITEMS = [
   { href: "/employee-automation", label: "Mitarbeiterakte", icon: Users },
   { href: "/generator", label: "Generator", icon: FileStack },
-  { href: "/model-creator", label: "Dokument-Generator", icon: FileText },
   { href: "/uploads", label: "Upload-Manager", icon: Upload },
 ] as const;
 
