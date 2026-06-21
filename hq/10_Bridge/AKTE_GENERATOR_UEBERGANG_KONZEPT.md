@@ -118,6 +118,8 @@ Das ist **keine neue Architektur**, sondern die saubere Verdrahtung bereits vorh
 
 ## 6. Reihenfolge & offene Gate-Fragen für Mark
 
+**Stand 2026-06-21:** Slice **A ✅** + Slice **C ✅** gebaut **und LIVE deployt** (`cb8313d` auf cos.cert-expert.de). Slice **B** wartet auf Marks Vorlagen↔Rolle-Mapping. Browser-Klick-Abnahme A/C offen (Mark).
+
 **Empfohlene Reihenfolge:** A (Quick-Win) → C (Schulungen, datenunabhängig) → B (Kern, wartet auf Marks Mapping-Daten).
 
 **Gate-Entscheidungen (Mark, 2026-06-20) — GESETZT:**
