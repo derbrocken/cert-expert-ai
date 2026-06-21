@@ -16,6 +16,7 @@ import { generateEmployeeDocs } from "@/app/actions/generate-employee-docs";
 import { generateAuditExport } from "@/app/actions/generate-audit-export";
 import { ArrowLeft, CalendarRange, Download, FileSpreadsheet, FileText, Loader2 } from "lucide-react";
 import { documentDateKey, documentTypeKey, formatIsoDisplay } from "./utils/date";
+import { resolveAssignedSchulungDocs } from "./training-plan";
 import { cn } from "@/lib/utils";
 import type {
   Employee,
@@ -23,6 +24,7 @@ import type {
   GlobalProperties,
   Role,
   Appointment,
+  TrainingPlanItem,
 } from "@/lib/types/employee";
 import { loadCompaniesForSwitcher } from "./load-companies-client";
 import {
@@ -215,6 +217,8 @@ function EmployeeAutomationPageContent() {
   >({});
   const [showDateOverrides, setShowDateOverrides] = useState(false);
   const [showDocTypeOverrides, setShowDocTypeOverrides] = useState(false);
+  // Slice C — Schulungen von–bis je Person im Generator sichtbar/editierbar.
+  const [showSchulungDates, setShowSchulungDates] = useState(false);
   // Lane B / Pt 1 — read-only Batch-Vorzeige-/Audit-Ansicht (je gewählter
   // Person die `EmployeeFileOverview` mit Feld-Kopieren). Eigenständig; fasst
   // den EC-09-ZIP-Generator NICHT an.
@@ -1169,6 +1173,65 @@ function EmployeeAutomationPageContent() {
     });
   }, [generatorGlobalDate, exportDocuments]);
 
+  // Slice C — zugewiesene Schulungen je gewählter Person (Quelle: trainingPlan via
+  // resolveAssignedSchulungDocs). von–bis hier editierbar = EINE Wahrheit mit der
+  // Terminplanung; Dokumentdatum bleibt der LETZTE Tag (plannedBis). Nur
+  // Ausgabedaten durchreichen, kein Engine-/Norm-/Status-Eingriff (EC-10).
+  const exportSchulungen = useMemo(() => {
+    const rows: {
+      key: string;
+      employeeId: string;
+      employeeName: string;
+      itemId: string;
+      label: string;
+      plannedDate: string;
+      plannedBis: string;
+    }[] = [];
+    for (const emp of selectedEmployees) {
+      for (const sch of resolveAssignedSchulungDocs(emp.trainingPlan)) {
+        rows.push({
+          key: `${emp.id}::${sch.itemId}`,
+          employeeId: emp.id,
+          employeeName: emp.fullName,
+          itemId: sch.itemId,
+          label: sch.label,
+          plannedDate: sch.plannedDate ?? "",
+          plannedBis: sch.plannedBis ?? "",
+        });
+      }
+    }
+    return rows;
+  }, [selectedEmployees]);
+
+  // Schreibt von/bis in den trainingPlan der Person (State → Debounce-Save
+  // persistiert). Identische Felder wie die Terminplanung → keine zweite Quelle.
+  const handleSchulungDateChange = useCallback(
+    (
+      employeeId: string,
+      itemId: string,
+      field: "plannedDate" | "plannedBis",
+      value: string,
+    ) => {
+      const patch = (items: TrainingPlanItem[]) =>
+        items.map((it) =>
+          it.id === itemId ? { ...it, [field]: value || undefined } : it,
+        );
+      setEmployees((prev) =>
+        prev.map((e) =>
+          e.id === employeeId && Array.isArray(e.trainingPlan)
+            ? { ...e, trainingPlan: patch(e.trainingPlan) }
+            : e,
+        ),
+      );
+      setEditingEmployee((prev) =>
+        prev && prev.id === employeeId && Array.isArray(prev.trainingPlan)
+          ? { ...prev, trainingPlan: patch(prev.trainingPlan) }
+          : prev,
+      );
+    },
+    [],
+  );
+
   const exportViewContent = (
     <div className="mx-auto max-w-3xl space-y-4 p-4 sm:p-6">
       <div className="flex flex-col gap-3 rounded-lg border border-[#e5e7eb] bg-white px-4 py-4 sm:flex-row sm:items-center sm:justify-between">
@@ -1290,6 +1353,18 @@ function EmployeeAutomationPageContent() {
                   : `Pro Person+Dokument (${exportDocuments.length})`}
               </button>
             ) : null}
+            {exportSchulungen.length > 0 ? (
+              <button
+                type="button"
+                onClick={() => setShowSchulungDates((v) => !v)}
+                title="Durchführung von–bis je Schulung und Person (Quelle: Terminplanung)"
+                className="inline-flex shrink-0 items-center rounded-md border border-[#e5e7eb] px-2.5 py-1 text-xs font-medium text-[#374151] hover:border-[rgba(227,6,19,0.35)] hover:text-[#e30613]"
+              >
+                {showSchulungDates
+                  ? "Schulungen schließen"
+                  : `Schulungen von–bis (${exportSchulungen.length})`}
+              </button>
+            ) : null}
           </div>
         </div>
 
@@ -1366,10 +1441,72 @@ function EmployeeAutomationPageContent() {
           </ul>
           </div>
         ) : null}
+        {showSchulungDates && exportSchulungen.length > 0 ? (
+          <div className="flex flex-col gap-1.5">
+            <p className="text-[10px] font-semibold uppercase tracking-[0.1em] text-[#6b7280]">
+              Schulungen — Durchführung von–bis (je Person)
+            </p>
+            <ul className="divide-y divide-[#f1f3f5] rounded-md border border-[#e5e7eb] bg-white">
+              {exportSchulungen.map((row) => (
+                <li
+                  key={row.key}
+                  className="flex flex-wrap items-center justify-between gap-2 px-3 py-2"
+                >
+                  <div className="min-w-0">
+                    <p className="truncate text-xs text-[#111827]">
+                      {row.label}
+                    </p>
+                    <p className="truncate text-[10px] text-[#9ca3af]">
+                      {row.employeeName} · Schulung · Dokumentdatum = letzter Tag
+                      (bis)
+                    </p>
+                  </div>
+                  <div className="flex shrink-0 items-center gap-2">
+                    <label className="flex items-center gap-1 text-[10px] text-[#6b7280]">
+                      von:
+                      <input
+                        type="date"
+                        value={row.plannedDate}
+                        onChange={(e) =>
+                          handleSchulungDateChange(
+                            row.employeeId,
+                            row.itemId,
+                            "plannedDate",
+                            e.target.value,
+                          )
+                        }
+                        className="rounded-md border border-[#e5e7eb] px-2 py-1 text-xs text-[#111827] focus:border-[#e30613] focus:outline-none"
+                      />
+                    </label>
+                    <label className="flex items-center gap-1 text-[10px] text-[#6b7280]">
+                      bis:
+                      <input
+                        type="date"
+                        value={row.plannedBis}
+                        min={row.plannedDate || undefined}
+                        onChange={(e) =>
+                          handleSchulungDateChange(
+                            row.employeeId,
+                            row.itemId,
+                            "plannedBis",
+                            e.target.value,
+                          )
+                        }
+                        className="rounded-md border border-[#e5e7eb] px-2 py-1 text-xs text-[#111827] focus:border-[#e30613] focus:outline-none"
+                      />
+                    </label>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ) : null}
         <p className="text-[10px] text-[#9ca3af]">
           Reines Ausgabedatum auf den Dokumenten. Auflösung (spezifischer sticht):
           Pro Person+Dokument → Pro Dokument-Typ → globaler Default → heute. Leer =
-          nächste Ebene greift. Keine Freigabe-/Auditfähigkeitsaussage.
+          nächste Ebene greift. Schulungen nutzen ihr eigenes von–bis (oben /
+          Terminplanung); Dokumentdatum = letzter Tag. Keine
+          Freigabe-/Auditfähigkeitsaussage.
         </p>
       </div>
     ) : null;

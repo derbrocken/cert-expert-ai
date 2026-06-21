@@ -97,7 +97,11 @@ Das ist **keine neue Architektur**, sondern die saubere Verdrahtung bereits vorh
 
 ---
 
-## 5. Slice C — Schulungs-von-bis im Generator sichtbar/editierbar
+## 5. Slice C — Schulungs-von-bis im Generator sichtbar/editierbar  ✅ GEBAUT (2026-06-20, noch nicht deployt)
+
+> **Umsetzung:** Im Generator-Datumsblock (`EmployeeAutomationPage.tsx`) neue Sektion „Schulungen — Durchführung von–bis (je Person)" (Toggle-Button + Liste). Quelle = `resolveAssignedSchulungDocs(emp.trainingPlan)` (nur Schulungen, die wirklich exportiert werden). von/bis-Felder schreiben direkt in `trainingPlan.plannedDate`/`plannedBis` der Person → **EINE Quelle** mit der Terminplanung, Persistenz über den vorhandenen Debounce-Save. Dokumentdatum bleibt `plannedBis` (letzter Tag). Gates: `tsc` 0 · `next build` grün. EC-09 unberührt (keine Änderung am ZIP-/Generierungspfad), EC-10 gewahrt (nur Ausgabedaten, kein UE/CL/Status).
+
+
 
 **Problem:** Das von–bis liegt nur in der Terminplanung; im Generator-Datumsblock taucht es nicht auf → Mark „findet" es nicht. (Technisch fließt es schon korrekt ins .docx.)
 
